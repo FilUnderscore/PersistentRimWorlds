@@ -10,7 +10,7 @@ namespace PersistentWorlds.Patches
         [HarmonyPostfix]
         public static void FinalizeInit_Postfix(Game __instance)
         {
-            if (!PersistentWorldConverter.Converting()) return;
+            if (!PersistentWorldConverter.Converting() || PersistentWorldManager.PersistentWorld != null) return;
                 
             PersistentWorldConverter.Convert(__instance);
         }

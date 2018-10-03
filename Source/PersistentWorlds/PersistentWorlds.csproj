@@ -53,6 +53,7 @@
     <Compile Include="Logic\PersistentWorld.cs" />
     <Compile Include="Logic\PersistentWorldData.cs" />
     <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
+    <Compile Include="Patches\Game\Debug_Patches.cs" />
     <Compile Include="Patches\Game\Game_Patches.cs" />
     <Compile Include="Patches\Game\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
     <Compile Include="Patches\Game\WorldGenStep_Components_Patch.cs" />

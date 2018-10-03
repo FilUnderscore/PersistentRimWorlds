@@ -15,6 +15,7 @@ namespace PersistentWorlds.Logic
         public Game Game = new Game();
 
         public PersistentWorldData WorldData = new PersistentWorldData();
+        public PersistentColony colony;
         
         public List<Map> Maps = new List<Map>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
@@ -34,13 +35,20 @@ namespace PersistentWorlds.Logic
             
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
+            
+            Log.Warning("LoadedGame call");
+            GameComponentUtility.LoadedGame();
         }
 
         public void ExposeAndFillGameSmallComponents()
         {
             Log.Message("Calling ExposeAndFillGameSmallComponents");
+
+            Log.Message("Colony size: " + this.Colonies.Count);
+            Log.Message("Index: " + PersistentWorldManager.LoadColonyIndex);
             
-            var colony = Colonies[PersistentWorldManager.LoadColonyIndex];
+            // TODO: Investigate... why we need index - 1?
+            colony = Colonies[PersistentWorldManager.LoadColonyIndex - 1];
 
             if (colony == null)
             {
@@ -103,7 +111,89 @@ namespace PersistentWorlds.Logic
             }
 
             int num = -1;
-            Log.Error("Stop here. Return.");
+            Log.Warning("Stop here. Return.");
+
+            num = colony.ColonyData.currentMapIndex;
+            if (num < 0 && this.Maps.Any<Map>())
+            {
+                Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
+                num = 0;
+            }
+
+            if (num >= this.Maps.Count)
+            {
+                Log.Error("Current map index out of bounds after loading.", false);
+                if (this.Maps.Any<Map>())
+                {
+                    num = 0;
+                }
+                else
+                {
+                    num = -1;
+                }
+            }
+            
+            Log.Message("Maps count: " + this.Maps.Count.ToString());
+
+            AccessTools.Field(typeof(Game), "maps").SetValue(this.Game, this.Maps);
+
+            Game.CurrentMap = ((num < 0) ? null : this.Maps[num]);
+            Log.Warning("Current Map: " + num.ToString());
+            
+            Log.Warning("CameraDriver expose.");
+            Find.CameraDriver.Expose();
+            
+            Log.Warning("Stuff before finalizeinit.");
+
+            for (int i = 0; i < this.Maps.Count; i++)
+            {
+                try
+                {
+                    if (this.Maps[i].temperatureCache == null)
+                    {
+                        Log.Error("Map temp cache null");
+                    }
+                    else
+                    {
+                        if (AccessTools.Field(typeof(TemperatureCache), "temperatureSaveLoad")
+                                .GetValue(this.Maps[i].temperatureCache) == null)
+                        {
+                            Log.Error("TempSaveload is nill?");
+                        }
+                        else
+                        {
+                            Log.Message("Not null?");
+                        }
+                    }
+
+                    if (this.Maps[i].regionGrid == null)
+                    {
+                        Log.Message("Region Grid is null.");
+                    }
+
+                    if (AccessTools.Field(typeof(TemperatureSaveLoad), "map").GetValue(AccessTools
+                            .Field(typeof(TemperatureCache), "temperatureSaveLoad")
+                            .GetValue(this.Maps[i].temperatureCache)) == null)
+                    {
+                        Log.Message("Map in TemperatureSaveLoad is null.");
+                    }
+                    
+                    this.Maps[i].FinalizeLoading();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Error in Map.FinalizeLoading(): " + e, false);
+                }
+
+                try
+                {
+                    this.Maps[i].Parent.FinalizeLoading();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Error in MapParent.FinalizeLoading(): " + e, false);
+                }
+            }
 
             while (true)
             {

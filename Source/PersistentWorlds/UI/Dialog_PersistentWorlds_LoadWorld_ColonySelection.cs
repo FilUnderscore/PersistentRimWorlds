@@ -8,12 +8,15 @@ namespace PersistentWorlds.UI
     public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
     {
         private string _saveFileName;
+        private List<PersistentColony> _colonies;
         
         public Dialog_PersistentWorlds_LoadWorld_ColonySelection(string saveFileName)
-        {
+        {   
             this.doWindowBackground = true;
 
             this._saveFileName = saveFileName;
+
+            this._colonies = SaveUtils.LoadColonies(this._saveFileName);
         }
 
         public override Vector2 InitialSize => new Vector2(600f, 700f);
@@ -26,9 +29,7 @@ namespace PersistentWorlds.UI
 
             List<ListableOption> optList = new List<ListableOption>();
 
-            var colonies = SaveUtils.LoadColonies(this._saveFileName);
-            
-            for (var i = 0; i < colonies.Count; i++)
+            for (var i = 0; i < _colonies.Count; i++)
             {
                 optList.Add(new ListableOption("Colony Index: " + i.ToString(), delegate
                 {

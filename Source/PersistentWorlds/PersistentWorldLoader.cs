@@ -30,13 +30,28 @@ namespace PersistentWorlds
             
             Log.Message("PersistentWorlds - Loading after Dir set.");
             
+            PersistentWorldManager.PersistentWorld = new PersistentWorld();
+            var persistentColonies = new List<PersistentColony>();
+            
+            foreach (var colonyFile in coloniesDirectory.GetFiles("*.pwcf"))
+            {
+                Scribe.loader.InitLoading(colonyFile.FullName);
+                persistentColonies.Add(LoadColonyData());
+                //Scribe.loader.FinalizeLoading();
+                Scribe.loader.ForceStop();
+            }
+            
+            Log.Message("PersistentWorlds - ColonyData loaded.");
+            
             Scribe.loader.InitLoading(worldFilePath);
             var persistentWorld = LoadWorldData();
             persistentWorld.fileName = fileName;
-            Scribe.loader.FinalizeLoading();
-
+            //Scribe.loader.FinalizeLoading();
+            Scribe.loader.ForceStop();
+            
             Log.Message("PersistentWorlds - WorldData loaded.");
             
+            /*
             var persistentColonies = new List<PersistentColony>();
             
             foreach (var colonyFile in coloniesDirectory.GetFiles("*.pwcf"))
@@ -48,6 +63,7 @@ namespace PersistentWorlds
             
             Log.Message("PersistentWorlds - ColonyData loaded.");
 
+            */
             persistentWorld.Colonies = persistentColonies;
             
             Log.Message("PersistentWorlds - Loading World...");
@@ -75,7 +91,8 @@ namespace PersistentWorlds
             {
                 Scribe.loader.InitLoading(mapFile.FullName);
                 maps.Add(LoadMapData());
-                Scribe.loader.FinalizeLoading();
+                //Scribe.loader.FinalizeLoading();
+                Scribe.loader.ForceStop();
             }
             
             Log.Warning("MapData loaded.");
