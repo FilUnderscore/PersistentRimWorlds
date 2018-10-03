@@ -6,6 +6,6 @@ namespace PersistentWorlds
     {
         public static PersistentWorld PersistentWorld;
         public static PersistentWorldLoader WorldLoader;
-        public static int LoadColonyIndex;
+        public static int LoadColonyIndex = -1;
     }
 }

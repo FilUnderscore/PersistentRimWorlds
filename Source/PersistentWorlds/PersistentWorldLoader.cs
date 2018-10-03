@@ -28,8 +28,6 @@ namespace PersistentWorlds
             
             var worldFilePath = worldDirectory.FullName + "/" + fileName + ".pwf";
             
-            Log.Message("PersistentWorlds - Loading after Dir set.");
-            
             PersistentWorldManager.PersistentWorld = new PersistentWorld();
             var persistentColonies = new List<PersistentColony>();
             
@@ -37,33 +35,14 @@ namespace PersistentWorlds
             {
                 Scribe.loader.InitLoading(colonyFile.FullName);
                 persistentColonies.Add(LoadColonyData());
-                //Scribe.loader.FinalizeLoading();
                 Scribe.loader.ForceStop();
             }
-            
-            Log.Message("PersistentWorlds - ColonyData loaded.");
             
             Scribe.loader.InitLoading(worldFilePath);
             var persistentWorld = LoadWorldData();
             persistentWorld.fileName = fileName;
-            //Scribe.loader.FinalizeLoading();
             Scribe.loader.ForceStop();
             
-            Log.Message("PersistentWorlds - WorldData loaded.");
-            
-            /*
-            var persistentColonies = new List<PersistentColony>();
-            
-            foreach (var colonyFile in coloniesDirectory.GetFiles("*.pwcf"))
-            {
-                Scribe.loader.InitLoading(colonyFile.FullName);
-                persistentColonies.Add(LoadColonyData());
-                Scribe.loader.FinalizeLoading();
-            }
-            
-            Log.Message("PersistentWorlds - ColonyData loaded.");
-
-            */
             persistentWorld.Colonies = persistentColonies;
             
             Log.Message("PersistentWorlds - Loading World...");
@@ -91,11 +70,9 @@ namespace PersistentWorlds
             {
                 Scribe.loader.InitLoading(mapFile.FullName);
                 maps.Add(LoadMapData());
-                //Scribe.loader.FinalizeLoading();
+                Log.Message("Resolve CrossRef");
                 Scribe.loader.ForceStop();
             }
-            
-            Log.Warning("MapData loaded.");
 
             persistentWorld.Maps = maps;
         }
@@ -105,7 +82,6 @@ namespace PersistentWorlds
             PersistentWorld persistentWorld = new PersistentWorld();
             PersistentWorldManager.PersistentWorld = persistentWorld;
             
-            Log.Message("Run GameHeader");
             ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
             
             Log.Warning("Calling ExposeData on PersistentWorldData soon...");
@@ -118,14 +94,11 @@ namespace PersistentWorlds
         private Map LoadMapData()
         {
             Log.Warning("Calling LoadMapData.");
-            
+
             Map map = new Map();
             
-            if(Scribe.EnterNode("map"))
-            {
-                Log.Warning("Entering Map Node");
-                map.ExposeData();
-            }
+            Scribe_Deep.Look<Map>(ref map, "map");
+            
             return map;
         }
         

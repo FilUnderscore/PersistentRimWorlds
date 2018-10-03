@@ -36,7 +36,6 @@ namespace PersistentWorlds.Logic
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
             
-            Log.Warning("LoadedGame call");
             GameComponentUtility.LoadedGame();
         }
 
@@ -44,9 +43,7 @@ namespace PersistentWorlds.Logic
         {
             Log.Message("Calling ExposeAndFillGameSmallComponents");
 
-            Log.Message("Colony size: " + this.Colonies.Count);
-            Log.Message("Index: " + PersistentWorldManager.LoadColonyIndex);
-            
+            Log.Warning("Checkout this line!!!");
             // TODO: Investigate... why we need index - 1?
             colony = Colonies[PersistentWorldManager.LoadColonyIndex - 1];
 
@@ -93,13 +90,10 @@ namespace PersistentWorlds.Logic
 
             this.ExposeGameWorldData();
             
-            Log.Message("Calling World FinalizeInit.");
             this.Game.World.FinalizeInit();
 
-            Log.Warning("LoadingMaps after FinalizeInit of World Persistent.");
             this.LoadMaps();
 
-            Log.Message("Gonna call continue loading maps.");
             this.ContinueLoadingMaps();
         }
 
@@ -111,7 +105,6 @@ namespace PersistentWorlds.Logic
             }
 
             int num = -1;
-            Log.Warning("Stop here. Return.");
 
             num = colony.ColonyData.currentMapIndex;
             if (num < 0 && this.Maps.Any<Map>())
@@ -133,51 +126,17 @@ namespace PersistentWorlds.Logic
                 }
             }
             
-            Log.Message("Maps count: " + this.Maps.Count.ToString());
-
             AccessTools.Field(typeof(Game), "maps").SetValue(this.Game, this.Maps);
 
             Game.CurrentMap = ((num < 0) ? null : this.Maps[num]);
-            Log.Warning("Current Map: " + num.ToString());
-            
-            Log.Warning("CameraDriver expose.");
             Find.CameraDriver.Expose();
             
-            Log.Warning("Stuff before finalizeinit.");
-
+            Scribe.loader.crossRefs.ResolveAllCrossReferences();
+            
             for (int i = 0; i < this.Maps.Count; i++)
             {
                 try
                 {
-                    if (this.Maps[i].temperatureCache == null)
-                    {
-                        Log.Error("Map temp cache null");
-                    }
-                    else
-                    {
-                        if (AccessTools.Field(typeof(TemperatureCache), "temperatureSaveLoad")
-                                .GetValue(this.Maps[i].temperatureCache) == null)
-                        {
-                            Log.Error("TempSaveload is nill?");
-                        }
-                        else
-                        {
-                            Log.Message("Not null?");
-                        }
-                    }
-
-                    if (this.Maps[i].regionGrid == null)
-                    {
-                        Log.Message("Region Grid is null.");
-                    }
-
-                    if (AccessTools.Field(typeof(TemperatureSaveLoad), "map").GetValue(AccessTools
-                            .Field(typeof(TemperatureCache), "temperatureSaveLoad")
-                            .GetValue(this.Maps[i].temperatureCache)) == null)
-                    {
-                        Log.Message("Map in TemperatureSaveLoad is null.");
-                    }
-                    
                     this.Maps[i].FinalizeLoading();
                 }
                 catch (Exception e)
@@ -194,28 +153,20 @@ namespace PersistentWorlds.Logic
                     Log.Error("Error in MapParent.FinalizeLoading(): " + e, false);
                 }
             }
-
-            while (true)
-            {
-            }
         }
 
         private void LoadMaps()
         {
-            Log.Warning("LoadingMaps");
             PersistentWorldManager.WorldLoader.LoadMaps(this);
-            Log.Message("map laoding done.,");
         }
 
         public void ExposeGameWorldData()
         {
-            Log.Message("Calling ExposeGameWorldData");
             this.Game.World.info = this.WorldData.info;
             this.Game.World.grid = this.WorldData.grid;
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                Log.Warning("LoadingVars - Experimental (PersistentWorld:PersistentWorld) in ExposeGameWorldData.");
                 if (this.Game.World.grid == null || !this.Game.World.grid.HasWorldData)
                 {
                     WorldGenerator.GenerateWithoutWorldData(this.Game.World.info.seedString);
@@ -267,16 +218,15 @@ namespace PersistentWorlds.Logic
         public static PersistentWorld Convert(Game game)
         {
             Log.Warning("Run persistentworld convert.");
+            
             PersistentWorld persistentWorld = new PersistentWorld();
             persistentWorld.Game = game;
             Current.Game = game;
 
             persistentWorld.WorldData = PersistentWorldData.Convert(game);
 
-            Log.Warning("Converting colony.");
             persistentWorld.Colonies.Add(PersistentColony.Convert(game));
             
-            Log.Warning("copying maps.");
             persistentWorld.Maps = game.Maps;
             
             return persistentWorld;

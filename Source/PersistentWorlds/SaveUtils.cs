@@ -90,7 +90,6 @@ namespace PersistentWorlds
         {
             PersistentColony persistentColony = new PersistentColony();
             
-            Log.Warning("Calling ExposeData on PersistentColonyData soon...");
             persistentColony.ColonyData = new PersistentColonyData();
             persistentColony.ColonyData.ExposeData();
 
@@ -101,9 +100,9 @@ namespace PersistentWorlds
         {
             var persistentGame = PersistentWorld.Convert(game);
             PersistentWorldManager.PersistentWorld = persistentGame;
-            Log.Message("Converted GAME WOWOADOAJIOD");
+            
             SaveWorld(persistentGame);
-            Log.Message("Saved game. Returning.");
+            
             GenScene.GoToMainMenu();
         }
     }
