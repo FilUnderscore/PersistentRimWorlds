@@ -26,13 +26,15 @@ namespace PersistentWorlds.UI
 
             List<ListableOption> optList = new List<ListableOption>();
 
-            var colonies = SaveUtils.LoadColonies(_saveFileName);
+            var colonies = SaveUtils.LoadColonies(this._saveFileName);
             
             for (var i = 0; i < colonies.Count; i++)
             {
                 optList.Add(new ListableOption("Colony Index: " + i.ToString(), delegate
                 {
                     PersistentWorldManager.LoadColonyIndex = i;
+                    PersistentWorldManager.WorldLoader = new PersistentWorldLoader();
+                    
                     GameDataSaveLoader.LoadGame(this._saveFileName);
                 }));
             }

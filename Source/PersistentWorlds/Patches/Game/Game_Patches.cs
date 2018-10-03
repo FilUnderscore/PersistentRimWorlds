@@ -12,6 +12,11 @@ namespace PersistentWorlds.Patches
             [HarmonyPrefix]
             public static bool LoadGame_Prefix(Game __instance)
             {
+                if (PersistentWorldManager.PersistentWorld == null)
+                {
+                    return true;
+                }
+                
                 var persistentWorld = PersistentWorldManager.PersistentWorld;
                 
                 LongEventHandler.SetCurrentEventText("LoadingPersistentWorld".Translate());

@@ -32,21 +32,11 @@ namespace PersistentWorlds
             
             Scribe.loader.InitLoading(worldFilePath);
             var persistentWorld = LoadWorldData();
+            persistentWorld.fileName = fileName;
             Scribe.loader.FinalizeLoading();
 
             Log.Message("PersistentWorlds - WorldData loaded.");
             
-            var persistentMaps = new List<PersistentMap>();
-            
-            foreach (var mapFile in mapsDirectory.GetFiles("*.pwmf"))
-            {
-                Scribe.loader.InitLoading(mapFile.FullName);
-                persistentMaps.Add(LoadMapData());
-                Scribe.loader.FinalizeLoading();
-            }
-            
-            Log.Message("PersistentWorlds - MapData loaded.");
-
             var persistentColonies = new List<PersistentColony>();
             
             foreach (var colonyFile in coloniesDirectory.GetFiles("*.pwcf"))
@@ -58,28 +48,79 @@ namespace PersistentWorlds
             
             Log.Message("PersistentWorlds - ColonyData loaded.");
 
-            persistentWorld.Maps = persistentMaps;
             persistentWorld.Colonies = persistentColonies;
             
             Log.Message("PersistentWorlds - Loading World...");
             
-            PersistentWorldManager.PersistentWorld = persistentWorld;
             persistentWorld.LoadWorld();
+        }
+
+        
+
+        public void LoadMaps(PersistentWorld persistentWorld)
+        {
+            Log.Warning("Calling LoadMaps in Loader.");
+            
+            var fileName = persistentWorld.fileName;
+            
+            var worldDirectory = Directory.CreateDirectory(SaveDir + "/" + fileName);
+            var coloniesDirectory = Directory.CreateDirectory(worldDirectory.FullName + "/" + "Colonies");
+            var mapsDirectory = Directory.CreateDirectory(worldDirectory.FullName + "/" + "Maps");
+            
+            var worldFilePath = worldDirectory.FullName + "/" + fileName + ".pwf";
+            
+            var maps = new List<Map>();
+            
+            foreach (var mapFile in mapsDirectory.GetFiles("*.pwmf"))
+            {
+                Scribe.loader.InitLoading(mapFile.FullName);
+                maps.Add(LoadMapData());
+                Scribe.loader.FinalizeLoading();
+            }
+            
+            Log.Warning("MapData loaded.");
+
+            persistentWorld.Maps = maps;
         }
 
         private PersistentWorld LoadWorldData()
         {
+            PersistentWorld persistentWorld = new PersistentWorld();
+            PersistentWorldManager.PersistentWorld = persistentWorld;
             
+            Log.Message("Run GameHeader");
+            ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
+            
+            Log.Warning("Calling ExposeData on PersistentWorldData soon...");
+            persistentWorld.WorldData = new PersistentWorldData();
+            persistentWorld.WorldData.ExposeData();
+
+            return persistentWorld;
         }
         
-        private PersistentMap LoadMapData()
+        private Map LoadMapData()
         {
+            Log.Warning("Calling LoadMapData.");
             
+            Map map = new Map();
+            
+            if(Scribe.EnterNode("map"))
+            {
+                Log.Warning("Entering Map Node");
+                map.ExposeData();
+            }
+            return map;
         }
         
         private PersistentColony LoadColonyData()
         {
+            PersistentColony persistentColony = new PersistentColony();
             
+            Log.Warning("Calling ExposeData on PersistentColonyData soon...");
+            persistentColony.ColonyData = new PersistentColonyData();
+            persistentColony.ColonyData.ExposeData();
+
+            return persistentColony;
         }
     }
 }

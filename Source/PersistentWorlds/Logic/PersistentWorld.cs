@@ -9,13 +9,15 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorld
     {
+        public string fileName;
+        
         // Game.World is accessed.
         public Game Game = new Game();
 
-        public PersistentWorldData WorldData;
+        public PersistentWorldData WorldData = new PersistentWorldData();
         
-        public List<PersistentMap> Maps;
-        public List<PersistentColony> Colonies;
+        public List<Map> Maps = new List<Map>();
+        public List<PersistentColony> Colonies = new List<PersistentColony>();
 
         public PersistentWorld()
         {
@@ -85,8 +87,34 @@ namespace PersistentWorlds.Logic
             
             Log.Message("Calling World FinalizeInit.");
             this.Game.World.FinalizeInit();
-            
-            
+
+            Log.Warning("LoadingMaps after FinalizeInit of World Persistent.");
+            this.LoadMaps();
+
+            Log.Message("Gonna call continue loading maps.");
+            this.ContinueLoadingMaps();
+        }
+
+        public void ContinueLoadingMaps()
+        {
+            if (this.Maps.RemoveAll((Map x) => x == null) != 0)
+            {
+                Log.Warning("Custom - Some maps were null after loading.", false);
+            }
+
+            int num = -1;
+            Log.Error("Stop here. Return.");
+
+            while (true)
+            {
+            }
+        }
+
+        private void LoadMaps()
+        {
+            Log.Warning("LoadingMaps");
+            PersistentWorldManager.WorldLoader.LoadMaps(this);
+            Log.Message("map laoding done.,");
         }
 
         public void ExposeGameWorldData()
@@ -144,6 +172,24 @@ namespace PersistentWorlds.Logic
                     this.Game.uniqueIDsManager = this.WorldData.uniqueIDsManager;
                 }
             }
+        }
+
+        public static PersistentWorld Convert(Game game)
+        {
+            Log.Warning("Run persistentworld convert.");
+            PersistentWorld persistentWorld = new PersistentWorld();
+            persistentWorld.Game = game;
+            Current.Game = game;
+
+            persistentWorld.WorldData = PersistentWorldData.Convert(game);
+
+            Log.Warning("Converting colony.");
+            persistentWorld.Colonies.Add(PersistentColony.Convert(game));
+            
+            Log.Warning("copying maps.");
+            persistentWorld.Maps = game.Maps;
+            
+            return persistentWorld;
         }
     }
 }

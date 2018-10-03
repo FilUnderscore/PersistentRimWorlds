@@ -28,65 +28,83 @@ namespace PersistentWorlds
             Scribe.loader.FinalizeLoading();
         }
 
-        public static void SaveGame(PersistentGame game)
+        public static void SaveWorld(PersistentWorld world)
         {
-            var world = game.World;
+            var fileName = world.Game.World.info.name;
             
-            var worldDir = Directory.CreateDirectory(SaveDir + "/" + world.World.info.name);
+            var worldDir = Directory.CreateDirectory(SaveDir + "/" + fileName);
             var coloniesDir = Directory.CreateDirectory(worldDir.FullName + "/" + "Colonies");
 
             var mapsDir = Directory.CreateDirectory(worldDir.FullName + "/" + "Maps");
-            var worldFilePath = worldDir.FullName + "/" + world.World.info.name + ".pwf";
+            var worldFilePath = worldDir.FullName + "/" + fileName + ".pwf";
             
             SafeSaver.Save(worldFilePath, "world", delegate
             {
                 ScribeMetaHeaderUtility.WriteMetaHeader();
-                game.ExposeData();
+                world.WorldData.ExposeData();
             });
 
             foreach (var colony in world.Colonies)
             {
-                var colonySaveFile = coloniesDir.FullName + "/" + colony.Name + ".pwc";
+                var colonySaveFile = coloniesDir.FullName + "/" + colony.ToString() + ".pwcf";
                 
                 SafeSaver.Save(colonySaveFile, "colony", delegate
                 {
-                    colony.ExposeData();
+                    ScribeMetaHeaderUtility.WriteMetaHeader();
+                    colony.ColonyData.ExposeData();
+                });
+            }
+
+            foreach (var map in world.Maps)
+            {
+                var mapSaveFile = mapsDir.FullName + "/" + map.Index.ToString() + ".pwmf";
+                
+                SafeSaver.Save(mapSaveFile, "map", delegate
+                {
+                    ScribeMetaHeaderUtility.WriteMetaHeader();
+                    var target = map;
+                    Scribe_Deep.Look<Map>(ref target, "map", new object[0]);
                 });
             }
         }
-
-        public static void LoadGame(string worldName, PersistentGame game)
+        
+        public static List<PersistentColony> LoadColonies(string fileName)
         {
+            var worldDirectory = Directory.CreateDirectory(SaveDir + "/" + fileName);
+            var coloniesDirectory = Directory.CreateDirectory(worldDirectory.FullName + "/" + "Colonies");
             
-        }
-
-        public static List<PersistentColony> LoadColonies(string worldName)
-        {
-            var colonies = new List<PersistentColony>();
+            var persistentColonies = new List<PersistentColony>();
             
-            var worldDir = Directory.CreateDirectory(SaveDir + "/" + worldName);
-            var coloniesDir = Directory.CreateDirectory(worldDir.FullName + "/" + "Colonies");
-
-            var mapsDir = Directory.CreateDirectory(worldDir.FullName + "/" + "Maps");
-            var worldFilePath = worldDir.FullName + "/" + worldName + ".pwf";
-            
-            foreach (var file in coloniesDir.GetFiles("*.pwc"))
+            foreach (var colonyFile in coloniesDirectory.GetFiles("*.pwcf"))
             {
-                var colony = new PersistentColony();
-                
-                Load(file.FullName, "colony", colony.ExposeMetaData);
-                
-               colonies.Add(colony);
+                Scribe.loader.InitLoading(colonyFile.FullName);
+                ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
+                persistentColonies.Add(LoadColonyData());
+                Scribe.loader.FinalizeLoading();
             }
 
-            return colonies;
+            return persistentColonies;
+        }
+        
+        private static PersistentColony LoadColonyData()
+        {
+            PersistentColony persistentColony = new PersistentColony();
+            
+            Log.Warning("Calling ExposeData on PersistentColonyData soon...");
+            persistentColony.ColonyData = new PersistentColonyData();
+            persistentColony.ColonyData.ExposeData();
+
+            return persistentColony;
         }
 
         public static void ConvertAndSaveWorld(Game game)
         {
-            var persistentGame = new PersistentGame(game);
-            
-            SaveGame(persistentGame);
+            var persistentGame = PersistentWorld.Convert(game);
+            PersistentWorldManager.PersistentWorld = persistentGame;
+            Log.Message("Converted GAME WOWOADOAJIOD");
+            SaveWorld(persistentGame);
+            Log.Message("Saved game. Returning.");
+            GenScene.GoToMainMenu();
         }
     }
 }

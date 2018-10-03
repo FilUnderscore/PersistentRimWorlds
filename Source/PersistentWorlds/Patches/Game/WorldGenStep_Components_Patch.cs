@@ -9,6 +9,11 @@ namespace PersistentWorlds.Patches
         [HarmonyPrefix]
         public static bool GenerateFromScribe_Prefix()
         {
+            if (PersistentWorldManager.PersistentWorld == null)
+            {
+                return true;
+            }
+            
             var persistentWorld = PersistentWorldManager.PersistentWorld;
 
             persistentWorld.ConstructGameWorldComponentsAndExposeComponents();
