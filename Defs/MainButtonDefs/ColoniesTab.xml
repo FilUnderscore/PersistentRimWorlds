@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<MainButtonDef>
+		<defName>Colonies</defName>
+		<label>colonies</label>
+		<description>Persistent world colonies</description>
+		<tabWindowClass>PersistentWorlds.UI.MainTabWindow_Colonies</tabWindowClass>
+		<order>75</order>
+		<defaultHotKey>F12</defaultHotKey>
+		<buttonVisible>true</buttonVisible>
+	</MainButtonDef>
+</Defs>
