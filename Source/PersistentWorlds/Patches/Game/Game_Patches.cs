@@ -12,7 +12,7 @@ namespace PersistentWorlds.Patches
             [HarmonyPrefix]
             public static bool LoadGame_Prefix(Game __instance)
             {
-                if (PersistentWorldManager.PersistentWorld == null)
+                if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized)
                 {
                     return true;
                 }

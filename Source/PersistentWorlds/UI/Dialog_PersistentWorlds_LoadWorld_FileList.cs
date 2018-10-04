@@ -37,7 +37,7 @@ namespace PersistentWorlds.UI
         private void LoadWorldsAsItems()
         {
             // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
-            foreach (var worldDir in Directory.GetDirectories(SaveUtils.SaveDir))
+            foreach (var worldDir in Directory.GetDirectories(PersistentWorldLoadSaver.SaveDir))
             {
                 var worldDirInfo = new DirectoryInfo(worldDir);
 
@@ -76,11 +76,21 @@ namespace PersistentWorlds.UI
             {
                 var scrollableListItem = new ScrollableListItem();
 
+                if (SaveFileUtils.HasPossibleSameWorldName(this.items.ToArray(), allSavedGameFile.FullName))
+                {
+                    continue;
+                }
+                
                 scrollableListItem.Text = Path.GetFileNameWithoutExtension(allSavedGameFile.Name);
                 scrollableListItem.ActionButtonText = "Convert";
                 scrollableListItem.ActionButtonAction = delegate
                 {
                     // TODO: Launch converter...
+                    PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(allSavedGameFile.FullName);
+                    PersistentWorldManager.WorldLoadSaver.Status =
+                        PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting;
+                    
+                    GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(allSavedGameFile.Name));
                 };
                 
                 items.Add(scrollableListItem);

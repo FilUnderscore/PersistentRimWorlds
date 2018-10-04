@@ -11,4 +11,10 @@
 	<ConversionComplete-PersistentWorlds>Conversion for world {0} is complete. The persistent world will now be saved as {0}.rws and can be loaded through the Persistent Worlds menu.</ConversionComplete-PersistentWorlds>
 	<ErrorLoadWrongMenu-PersistentWorlds>Please load {0} through the Persistent Worlds menu. This is a warning to ensure you do not corrupt your persistent world by improper loading of the world.</ErrorLoadWrongMenu-PersistentWorlds>
 	<Convert>Convert</Convert>
+	
+	<!-- Persistent Worlds - Loading -->
+	<LoadingPersistentWorld>Loading persistent world</LoadingPersistentWorld>
+	<LoadingColonies>Loading colonies</LoadingColonies>
+	<LoadingColony>Loading colony</LoadingColony>
+	<LoadingMaps>Loading maps</LoadingMaps>
 </LanguageData>

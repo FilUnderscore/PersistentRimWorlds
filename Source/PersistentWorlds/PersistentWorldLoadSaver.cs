@@ -4,17 +4,16 @@ using System.IO;
 using Harmony;
 using PersistentWorlds.Logic;
 using Verse;
+using Verse.Profile;
 using Random = UnityEngine.Random;
 
 namespace PersistentWorlds
 {
     public sealed class PersistentWorldLoadSaver
     {
-        /*
         public static readonly string SaveDir =
             (string) AccessTools.Method(typeof(GenFilePaths), "get_SavedGamesFolderPath", new Type[0]).Invoke(null, new object[0]);
-        */
-
+     
         public static readonly string PersistentWorldFile_Extension = ".pwf";
         public static readonly string PersistentWorldColonyFile_Extension = ".pwcf";
         public static readonly string PersistentWorldMapFile_Extension = ".pwmf";
@@ -27,12 +26,13 @@ namespace PersistentWorlds
         
         private string worldFilePath;
         
-        public PersistentWorldLoadStatus Status;
+        public PersistentWorldLoadStatus Status = PersistentWorldLoadStatus.Uninitialized;
 
         public enum PersistentWorldLoadStatus
         {
             Uninitialized,
             Creating,
+            Converting,
             Loading,
             Finalizing,
             Ingame
@@ -40,7 +40,13 @@ namespace PersistentWorlds
         
         public PersistentWorldLoadSaver(string worldFolderPath)
         {
+            this.ConfigurePaths(worldFolderPath);
+        }
+
+        private void ConfigurePaths(string worldFolderPath)
+        {
             this.worldFolderPath = worldFolderPath;
+
             this.worldFolderDirectoryInfo = new DirectoryInfo(worldFolderPath);
 
             this.coloniesDirectory = worldFolderPath + "/" + "Colonies";
@@ -48,6 +54,32 @@ namespace PersistentWorlds
 
             this.worldFilePath = worldFolderPath + "/" + this.worldFolderDirectoryInfo.Name +
                                  PersistentWorldFile_Extension;
+        }
+
+        private void CreateDirectoriesIfNotExistant()
+        {
+            if (!Directory.Exists(this.worldFolderPath))
+            {
+                Directory.CreateDirectory(this.worldFolderPath);
+            }
+
+            if (!Directory.Exists(this.coloniesDirectory))
+            {
+                Directory.CreateDirectory(this.coloniesDirectory);
+            }
+
+            if (!Directory.Exists(this.mapsDirectory))
+            {
+                Directory.CreateDirectory(this.mapsDirectory);
+            }
+        }
+
+        private void DeletePreviousDirectories()
+        {
+            if (Directory.Exists(this.worldFolderPath))
+            {
+                Directory.Delete(this.worldFolderPath, true);
+            }
         }
         
         /**
@@ -138,7 +170,76 @@ namespace PersistentWorlds
         /**
          * SAVING
          */
-         
+
+        public void SaveWorld(PersistentWorld world)
+        {
+            this.DeletePreviousDirectories();
+            this.CreateDirectoriesIfNotExistant();
+            
+            Log.Message("Saving world...");
+            
+            SafeSaver.Save(this.worldFilePath, "world", delegate
+            {
+                ScribeMetaHeaderUtility.WriteMetaHeader();
+                world.WorldData.ExposeData();
+            });
+            
+            Log.Message("Saved world data.");
+
+            var sameNames = new Dictionary<string, int>(); // Fix overwriting multiple colonies that have same name / name that hasn't been set yet.
+            
+            foreach (var colony in world.Colonies)
+            {
+                // TODO: Revise this fix one day.
+                sameNames.Add(colony.ColonyData.ColonyName, sameNames.ContainsKey(colony.ColonyData.ColonyName) ? sameNames[colony.ColonyData.ColonyName] + 1 : 1);
+                
+                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.ColonyData.ColonyName].ToString() + colony.ColonyData.ColonyName + PersistentWorldColonyFile_Extension;
+                
+                SafeSaver.Save(colonySaveFile, "colony", delegate
+                {
+                    colony.ColonyData.ExposeData();
+                });
+            }
+            
+            Log.Message("Saved colony data.");
+
+            foreach (var map in world.Maps)
+            {
+                var mapSaveFile = mapsDirectory + "/" + map.Tile.ToString() + PersistentWorldMapFile_Extension;
+                
+                SafeSaver.Save(mapSaveFile, "map", delegate
+                {
+                    map.ExposeData();
+                });
+            }
+            
+            Log.Message("Saved map data.");
+            
+            Log.Message("Saved world.");
+        }
+        
+        /**
+         * CONVERT
+         */
+        
+        public void Convert(Game game)
+        {
+            PersistentWorldManager.PersistentWorld = PersistentWorld.Convert(game);
+            
+            this.ConfigurePaths(SaveDir + "/" + game.World.info.name);
+            this.CreateDirectoriesIfNotExistant();
+            
+            this.SaveWorld(PersistentWorldManager.PersistentWorld);
+            
+            GenScene.GoToMainMenu();
+            
+            // TODO: Call these when on main menu.. if called before on main menu, causes world corruption :/
+//            MemoryUtility.ClearAllMapsAndWorld();
+//            MemoryUtility.UnloadUnusedUnityAssets();
+
+            this.Status = PersistentWorldLoadStatus.Uninitialized;
+        }
+        
         /**
          * MISC
          */
@@ -149,10 +250,8 @@ namespace PersistentWorlds
             {
                 // TODO: Run MemoryUtility.ClearAllMapsAndWorld() when Loading world from filelist.
                 Status = PersistentWorldLoadStatus.Finalizing;
-                
-                Current.Game = new Game();
-                Current.Game.InitData = new GameInitData();
-                Current.Game.InitData.gameToLoad = "PersistentWorld"; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
+
+                Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
             }, "Play", "LoadingLongEvent", true, null);
         }
     }
