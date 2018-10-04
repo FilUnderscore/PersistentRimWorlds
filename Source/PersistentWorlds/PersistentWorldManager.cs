@@ -15,7 +15,7 @@ namespace PersistentWorlds
         public enum PersistentWorldLoadStatus
         {
             Uninitialized,
-            Patching,
+            Creating,
             Loading,
             Finalizing,
             Ingame

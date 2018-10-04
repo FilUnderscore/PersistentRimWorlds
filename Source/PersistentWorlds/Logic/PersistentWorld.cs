@@ -190,7 +190,8 @@ namespace PersistentWorlds.Logic
         public void ExposeAndFillGameWorldComponents()
         {
             Log.Message("Calling ExposeAndFillGameWorldComponents");
-            
+
+            this.Game.tickManager = this.WorldData.TickManager;
             this.Game.World.factionManager = this.WorldData.factionManager;
             this.Game.World.worldPawns = this.WorldData.worldPawns;
             this.Game.World.worldObjects = this.WorldData.worldObjectsHolder;

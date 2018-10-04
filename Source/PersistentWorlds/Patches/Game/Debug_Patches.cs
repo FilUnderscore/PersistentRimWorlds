@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Harmony;
 using JetBrains.Annotations;
+using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using UnityEngine.Video;
@@ -11,34 +12,24 @@ namespace PersistentWorlds.Patches
 {
     public static class Debug_Patches
     {
-        /*
-        [HarmonyPatch(typeof(CrossRefHandler), "Clear")]
-        public static class Patch_04
+        [HarmonyPatch(typeof(Storyteller), "MakeIncidentsForInterval")]
+        public static class Storyteller_Patch
         {
             [HarmonyPrefix]
-            public static bool PrefixClear(CrossRefHandler __instance, bool errorIfNotEmpty)
+            public static void Prefix(Storyteller __instance)
             {
-                // TODO: Handle this for multiple file loading... resolving CrossRefHandler Clear() due to calling Scribe.loader.resolveCrossRefs()
+                Log.Warning("Storyteller Injection Patch Debug");
                 
-                if (PersistentWorldManager.LoadColonyIndex == -1) return true;
-                
-                Log.Message("Cancel Clear.");
-                return false;
-            }
-        }
+                if (__instance.AllIncidentTargets == null)
+                {
+                    Log.Error("Error with AllIncidentTargets");
+                }
 
-        [HarmonyPatch(typeof(MapTemperature), "get_OutdoorTemp")]
-        public static class Patch_05
-        {
-            [HarmonyPrefix]
-            public static void PrefixTest(MapTemperature __instance)
-            {
-                if (PersistentWorldManager.LoadColonyIndex == -1) return;
-                
-                Log.Message("Resolve");
-                Scribe.loader.crossRefs.ResolveAllCrossReferences();
+                if (__instance.storytellerComps == null)
+                {
+                    Log.Error("Storyteller comps is null.");
+                }
             }
         }
-        */
     }
 }

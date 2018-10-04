@@ -59,17 +59,19 @@ namespace PersistentWorlds
             {
                 var mapSaveFile = mapsDir.FullName + "/" + map.Index.ToString() + ".pwmf";
                 
-                SafeSaver.Save(mapSaveFile, "map" + map.Tile.ToString(), delegate
+                SafeSaver.Save(mapSaveFile, "map", delegate
                 {
                     ScribeMetaHeaderUtility.WriteMetaHeader();
                     var target = map;
-                    Scribe_Deep.Look<Map>(ref target, "map" + map.Tile.ToString(), new object[0]);
+                    map.ExposeData();
                 });
             }
         }
         
         public static List<PersistentColony> LoadColonies(string fileName)
         {
+            Log.Message("FileName:" + fileName);
+            
             var worldDirectory = Directory.CreateDirectory(SaveDir + "/" + fileName);
             var coloniesDirectory = Directory.CreateDirectory(worldDirectory.FullName + "/" + "Colonies");
             

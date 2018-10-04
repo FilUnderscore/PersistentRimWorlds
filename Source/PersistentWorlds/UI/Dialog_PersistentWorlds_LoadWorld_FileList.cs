@@ -14,167 +14,75 @@ using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_PersistentWorlds_LoadWorld_FileList : Dialog_SaveFileList_Load
+    public class Dialog_PersistentWorlds_LoadWorld_FileList : Window
     {
-        private List<string> worlds = new List<string>();
+        private Vector2 scrollPosition = Vector2.zero;
         
+        private List<ScrollableListItem> items = new List<ScrollableListItem>();
+        
+        public override Vector2 InitialSize => new Vector2(600f, 700f);
+
         public Dialog_PersistentWorlds_LoadWorld_FileList()
         {
-            
+            this.LoadWorldsAsItems();
+            this.LoadPossibleConversions();
+
+            this.doCloseButton = true;
+            this.doCloseX = true;
+            this.forcePause = true;
+            this.absorbInputAroundWindow = true;
+            this.closeOnAccept = false;
         }
 
-        protected override void DoFileInteraction(string saveFileName)
+        private void LoadWorldsAsItems()
         {
-            if (!worlds.Contains(saveFileName))
+            // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
+            foreach (var worldDir in Directory.GetDirectories(SaveUtils.SaveDir))
             {
-                Find.WindowStack.Add((Window) Dialog_MessageBox.CreateConfirmation(
-                    "ConfirmConversion-PersistentWorlds".Translate(),
-                    () =>
-                    {
-                        Log.Message(saveFileName);
-                        var path = GenFilePaths.FilePathForSavedGame(saveFileName);
+                var worldDirInfo = new DirectoryInfo(worldDir);
 
-                        PersistentWorldConverter.PrepareConvert(path);
-                        Log.Message(path);
-                        GameDataSaveLoader.LoadGame(saveFileName);
-                    }, true));
-            }
-            else
-            {
-                Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection(saveFileName));
+                var scrollableListItem = new ScrollableListItem();
+
+                scrollableListItem.Text = worldDirInfo.Name;
+                scrollableListItem.ActionButtonText = "Load";
+                scrollableListItem.ActionButtonAction = delegate
+                {
+                    // TODO: Load world...
+                    Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection(worldDirInfo.Name));
+                };
+
+                scrollableListItem.DeleteButtonTooltip = "Delete persistent world.";
+                scrollableListItem.DeleteButtonAction = delegate
+                {
+                    // TODO: Remove directory.
+                };
+                
+                // TODO: Check if is a persistent world...
+                
+                items.Add(scrollableListItem);
             }
         }
 
-        protected override void ReloadFiles()
+        private void LoadPossibleConversions()
         {
-            base.ReloadFiles();
-            
-            foreach (string worldDir in Directory.GetDirectories(SaveUtils.SaveDir))
+            foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
             {
-                var worldDirInfo = new DirectoryInfo(worldDir);   
-                var worldFile = worldDir + "/" + worldDirInfo.Name + ".pwf";
+                var scrollableListItem = new ScrollableListItem();
+
+                scrollableListItem.Text = Path.GetFileNameWithoutExtension(allSavedGameFile.Name);
+                scrollableListItem.ActionButtonText = "Convert";
+                scrollableListItem.ActionButtonAction = delegate
+                {
+                    // TODO: Launch converter...
+                };
                 
-                this.files.Add(new SaveFileInfo(new FileInfo(worldFile)));
-                
-                worlds.Add(worldDirInfo.Name);
+                items.Add(scrollableListItem);
             }
         }
-        
+
         public override void DoWindowContents(Rect inRect)
         {
-            Vector2 vector2_1 = new Vector2(inRect.width - 16f, 36f);
-            Vector2 vector2_2 = new Vector2(100f, vector2_1.y - 2f);
-          
-            inRect.height -= 45f;
-            
-            float height = (float) this.files.Count * (vector2_1.y + 3f);
-            
-            Rect viewRect = new Rect(0.0f, 0.0f, inRect.width - 16f, height);
-            Rect outRect = new Rect(inRect.AtZero());
-            outRect.height -= this.bottomAreaHeight;
-            
-            Widgets.BeginScrollView(outRect, ref this.scrollPosition, viewRect, true);
-            
-            float y = 0.0f;
-            int num = 0;
-            
-            foreach (SaveFileInfo file in this.files)
-            {
-                var fileNameNoExt = Path.GetFileNameWithoutExtension(file.FileInfo.Name);
-                
-                if ((double) y + (double) vector2_1.y >= (double) this.scrollPosition.y && (double) y <= (double) this.scrollPosition.y + (double) outRect.height)
-                {
-                    Rect rect1 = new Rect(0.0f, y, vector2_1.x, vector2_1.y);
-                    
-                    if (num % 2 == 0)
-                      Widgets.DrawAltRect(rect1);
-                    
-                    Rect position = rect1.ContractedBy(1f);
-                    
-                    GUI.BeginGroup(position);
-                    
-                    GUI.color = this.FileNameColor(file);
-                    
-                    Rect rect2 = new Rect(15f, 0.0f, (float) byte.MaxValue, position.height);
-                    
-                    Text.Anchor = TextAnchor.MiddleLeft;
-                    Text.Font = GameFont.Small;
-                    
-                    Widgets.Label(rect2, fileNameNoExt);
-                    
-                    GUI.color = Color.white;
-                    
-                    Rect rect3 = new Rect(270f, 0.0f, 200f, position.height);
-                    
-                    DrawDateAndVersion(file, rect3);
-                    
-                    GUI.color = Color.white;
-                    
-                    Text.Anchor = TextAnchor.UpperLeft;
-                    Text.Font = GameFont.Small;
-                    
-                    float x = vector2_1.x - 2f - vector2_2.x - vector2_2.y;
-                    
-                    if (Widgets.ButtonText(new Rect(x, 0.0f, vector2_2.x, vector2_2.y), (worlds.Contains(fileNameNoExt) ? this.interactButLabel : "Convert".Translate()), true, false, true))
-                      this.DoFileInteraction(fileNameNoExt);
-                    
-                    Rect rect4 = new Rect((float) ((double) x + (double) vector2_2.x + 5.0), 0.0f, vector2_2.y, vector2_2.y);
-          
-                    Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete", true);          
-                    if (Widgets.ButtonImage(rect4, DeleteX, Color.white, GenUI.SubtleMouseoverColor))
-                    {
-                        FileInfo localFile = file.FileInfo;
-                        
-                        Find.WindowStack.Add((Window) Dialog_MessageBox.CreateConfirmation("ConfirmDelete".Translate((object) localFile.Name), (Action) (() =>
-                        {
-                            localFile.Delete();
-                            this.ReloadFiles();
-                        }), true, (string) null));
-                    }
-                    
-                    TooltipHandler.TipRegion(rect4, (TipSignal) "DeleteThisSavegame".Translate());
-                    
-                    GUI.EndGroup();
-                }
-                
-                y += vector2_1.y + 3f;
-                ++num;
-            }
-            
-            Widgets.EndScrollView();
-            
-            if (!this.ShouldDoTypeInField)
-              return;
-            
-            this.DoTypeInField(inRect.AtZero());
-        }
-
-        private new void DrawDateAndVersion(SaveFileInfo sfi, Rect rect)
-        {
-            GUI.BeginGroup(rect);
-              
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.UpperLeft;
-              
-            Rect rect1 = new Rect(0.0f, 2f, rect.width, rect.height / 2f);
-              
-            GUI.color = SaveFileInfo.UnimportantTextColor;
-              
-            Widgets.Label(rect1, sfi.FileInfo.LastWriteTime.ToString("g"));
-              
-            Rect rect2 = new Rect(0.0f, rect1.yMax, rect.width, rect.height / 2f);
-              
-            GUI.color = sfi.VersionColor;
-
-            var fileNameNoExt = Path.GetFileNameWithoutExtension(sfi.FileInfo.Name);
-            
-            var gameVersionLabel = sfi.GameVersion + (worlds.Contains(fileNameNoExt) ? " [PW]" : "");
-            
-            Widgets.Label(rect2, gameVersionLabel);
-              
-            TooltipHandler.TipRegion(rect2, sfi.CompatibilityTip);
-              
-            GUI.EndGroup();
+            ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, this.items.ToArray());
         }
     }
 }

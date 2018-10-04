@@ -62,6 +62,9 @@ namespace PersistentWorlds.Logic
             
             Log.Message("Called ExposeComponents in persistentworlddata.");
             
+            Scribe_Deep.Look<TickManager>(ref this.TickManager, "tickManager", new object[0]);
+            PersistentWorldManager.PersistentWorld.Game.tickManager = this.TickManager;
+            
             Scribe_Deep.Look<FactionManager>(ref this.factionManager, "factionManager", new object[0]);
             PersistentWorldManager.PersistentWorld.Game.World.factionManager = this.factionManager;
             
@@ -92,6 +95,7 @@ namespace PersistentWorlds.Logic
             persistentWorldData.info = game.World.info;
             persistentWorldData.grid = game.World.grid;
 
+            persistentWorldData.TickManager = game.tickManager;
             persistentWorldData.factionManager = game.World.factionManager;
             persistentWorldData.worldPawns = game.World.worldPawns;
             persistentWorldData.worldObjectsHolder = game.World.worldObjects;

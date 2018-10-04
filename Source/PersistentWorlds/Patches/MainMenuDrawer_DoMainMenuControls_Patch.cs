@@ -22,8 +22,6 @@ namespace PersistentWorlds.Patches
                 if (codes[i + 4].opcode != OpCodes.Ldstr) continue;
                 if ((codes[i + 4].operand as string) != "ReviewScenario") continue;
 
-                if (Current.ProgramState != ProgramState.Entry) break;
-                    
                 var insertInstr = new List<CodeInstruction>();
                 insertInstr.Add(new CodeInstruction(OpCodes.Ldstr, "Persistent Worlds"));
                 insertInstr.Add(new CodeInstruction(OpCodes.Ldsfld, typeof(PersistentWorldsMod).GetField("MainMenuButtonDelegate")));

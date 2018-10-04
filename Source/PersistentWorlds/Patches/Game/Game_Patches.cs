@@ -35,5 +35,11 @@ namespace PersistentWorlds.Patches
                 return false;
             }
         }
+
+        //[HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame")]
+        public static class GameDataSaveLoader_SaveGame_Patch
+        {
+            // TODO: Disallow saving through normal save menu.
+        }
     }
 }

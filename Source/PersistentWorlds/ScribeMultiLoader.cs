@@ -7,10 +7,9 @@ using Verse;
 
 namespace PersistentWorlds
 {
+    // Allows the loading of different files by sharing Cross-References of objects/pawns/things in the game.
     public class ScribeMultiLoader
-    {
-        // Assembles all files into one large element structure.
-
+    { 
         public Dictionary<string, XmlNode> xmlParents = new Dictionary<string, XmlNode>();
         public CrossRefHandler CrossRefHandler = new CrossRefHandler();
         public PostLoadIniter PostIniter = new PostLoadIniter();

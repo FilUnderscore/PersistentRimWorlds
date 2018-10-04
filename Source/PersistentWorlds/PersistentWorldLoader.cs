@@ -36,51 +36,29 @@ namespace PersistentWorlds
             
             var persistentColonies = new List<PersistentColony>();
             
-            /*
-            foreach (var colonyFile in coloniesDirectory.GetFiles("*.pwcf"))
-            {
-                Scribe.loader.InitLoading(colonyFile.FullName);
-                persistentColonies.Add(LoadColonyData());
-                Scribe.loader.ForceStop();
-            }
-            
-            Scribe.loader.InitLoading(worldFilePath);
-            var persistentWorld = LoadWorldData();
-            persistentWorld.fileName = fileName;
-            Scribe.loader.ForceStop();
-            */
-
-            var colonyFiles = coloniesDirectory.GetFiles("*.pwcf");
-            
-            for(var i = 0; i < colonyFiles.Length; i++)
-            {
-                var colonyFile = colonyFiles[i];
-                
-                Scribe.loader.InitLoading(colonyFile.FullName);
-                persistentColonies.Add(LoadColonyData(i));
-                Scribe.loader.ForceStop();
-            }
-            
-            /**
-             * 
-             */
-
             List<string> files = new List<string>();
 
             files.Add(worldFilePath);
             mapsDirectory.GetFiles("*.pwmf").Do((FileInfo p) => files.Add(p.FullName));
             
+            var colonyFiles = coloniesDirectory.GetFiles("*.pwcf");
+            colonyFiles.Do((FileInfo p) => files.Add(p.FullName));
+            
             PersistentWorldManager.MultiLoader.InitLoading(files.ToArray());
+
+            for(var i = 0; i < colonyFiles.Length; i++)
+            {
+                var colonyFile = colonyFiles[i];
+                
+                PersistentWorldManager.MultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
+                persistentColonies.Add(LoadColonyData(i));
+            }
+            
             Log.Message("Loaded all files into MultiLoader.");
             
             PersistentWorldManager.MultiLoader.SetScribeCurXmlParentByFilePath(worldFilePath);
             ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
             persistentWorld.WorldData.ExposeData();
-            //PersistentWorldManager.MultiLoader.CrossRefHandler = Scribe.loader.crossRefs;
-            //PersistentWorldManager.MultiLoader.PostIniter = Scribe.loader.initer;
-            //Scribe.loader.ForceStop();
-            
-            /* */
 
             persistentWorld.fileName = fileName;
             persistentWorld.Colonies = persistentColonies;
@@ -104,23 +82,10 @@ namespace PersistentWorlds
             
             var maps = new List<Map>();
 
-            //Scribe.mode = LoadSaveMode.LoadingVars;
-            //Scribe.loader.crossRefs = PersistentWorldManager.MultiLoader.CrossRefHandler;
-            //Scribe.loader.initer = PersistentWorldManager.MultiLoader.PostIniter;
-            
             Log.Message("Persistent World File Name" + persistentWorld.fileName);
             
             foreach (var mapFile in mapsDirectory.GetFiles("*.pwmf"))
             {
-                /*
-                Scribe.loader.InitLoading(mapFile.FullName);
-                maps.Add(LoadMapData());
-                Log.Message("Resolve CrossRef");
-                Scribe.loader.ForceStop();
-                */
-                
-                Log.Message("MapFile:" + mapFile);
-                
                 PersistentWorldManager.MultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
                 maps.Add(LoadMapData());
             }
@@ -135,9 +100,7 @@ namespace PersistentWorlds
             Log.Warning("Calling LoadMapData.");
 
             Map map = new Map();
-            
-            Log.Message("Cur XML NODE NAME" + PersistentWorldManager.MultiLoader.curXmlNode.Name);
-            Scribe_Deep.Look<Map>(ref map, PersistentWorldManager.MultiLoader.curXmlNode.Name);
+            map.ExposeData();
             
             return map;
         }
