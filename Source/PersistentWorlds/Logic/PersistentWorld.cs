@@ -43,10 +43,6 @@ namespace PersistentWorlds.Logic
         {
             Log.Message("Calling ExposeAndFillGameSmallComponents");
 
-            Log.Warning("Checkout this line!!!");
-            // TODO: Investigate... why we need index - 1?
-            colony = Colonies[PersistentWorldManager.LoadColonyIndex - 1];
-
             if (colony == null)
             {
                 // Return to main menu.
@@ -54,28 +50,28 @@ namespace PersistentWorlds.Logic
                 GenScene.GoToMainMenu();
                 return;
             }
-
-            AccessTools.Field(typeof(Game), "info").SetValue(this.Game, colony.ColonyData.info);
-            AccessTools.Field(typeof(Game), "rules").SetValue(this.Game, colony.ColonyData.rules);
-            this.Game.Scenario = colony.ColonyData.scenario;
+            
+            AccessTools.Field(typeof(Game), "info").SetValue(this.Game, colony.ColonyData.GameData.info);
+            AccessTools.Field(typeof(Game), "rules").SetValue(this.Game, colony.ColonyData.GameData.rules);
+            this.Game.Scenario = colony.ColonyData.GameData.scenario;
             this.Game.tickManager = this.WorldData.TickManager;
-            this.Game.playSettings = colony.ColonyData.playSettings;
-            this.Game.storyWatcher = colony.ColonyData.storyWatcher;
-            this.Game.gameEnder = colony.ColonyData.gameEnder;
-            this.Game.letterStack = colony.ColonyData.letterStack;
-            this.Game.researchManager = colony.ColonyData.researchManager;
-            this.Game.storyteller = colony.ColonyData.storyteller;
-            this.Game.history = colony.ColonyData.history;
-            this.Game.taleManager = colony.ColonyData.taleManager;
-            this.Game.playLog = colony.ColonyData.playLog;
-            this.Game.battleLog = colony.ColonyData.battleLog;
-            this.Game.outfitDatabase = colony.ColonyData.outfitDatabase;
-            this.Game.drugPolicyDatabase = colony.ColonyData.drugPolicyDatabase;
-            this.Game.tutor = colony.ColonyData.tutor;
-            this.Game.dateNotifier = colony.ColonyData.dateNotifier;
-            this.Game.uniqueIDsManager = colony.ColonyData.uniqueIDsManager;
-            this.Game.components = colony.ColonyData.gameComponents;
-
+            this.Game.playSettings = colony.ColonyData.GameData.playSettings;
+            this.Game.storyWatcher = colony.ColonyData.GameData.storyWatcher;
+            this.Game.gameEnder = colony.ColonyData.GameData.gameEnder;
+            this.Game.letterStack = colony.ColonyData.GameData.letterStack;
+            this.Game.researchManager = colony.ColonyData.GameData.researchManager;
+            this.Game.storyteller = colony.ColonyData.GameData.storyteller;
+            this.Game.history = colony.ColonyData.GameData.history;
+            this.Game.taleManager = colony.ColonyData.GameData.taleManager;
+            this.Game.playLog = colony.ColonyData.GameData.playLog;
+            this.Game.battleLog = colony.ColonyData.GameData.battleLog;
+            this.Game.outfitDatabase = colony.ColonyData.GameData.outfitDatabase;
+            this.Game.drugPolicyDatabase = colony.ColonyData.GameData.drugPolicyDatabase;
+            this.Game.tutor = colony.ColonyData.GameData.tutor;
+            this.Game.dateNotifier = colony.ColonyData.GameData.dateNotifier;
+            this.Game.uniqueIDsManager = colony.ColonyData.GameData.uniqueIDsManager;
+            this.Game.components = colony.ColonyData.GameData.gameComponents;
+            
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 Log.Warning("LoadingVars - Experimental (PersistentWorld:PersistentWorld) in ExposeGameSmallComps.");
@@ -106,13 +102,16 @@ namespace PersistentWorlds.Logic
 
             int num = -1;
 
-            num = colony.ColonyData.currentMapIndex;
+            num = colony.ColonyData.GameData.currentMapIndex;
             if (num < 0 && this.Maps.Any<Map>())
             {
                 Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
                 num = 0;
             }
 
+            Log.Message("Num");
+            Log.Message("Maps Count: " + this.Maps.Count);
+            
             if (num >= this.Maps.Count)
             {
                 Log.Error("Current map index out of bounds after loading.", false);
@@ -130,8 +129,6 @@ namespace PersistentWorlds.Logic
 
             Game.CurrentMap = ((num < 0) ? null : this.Maps[num]);
             Find.CameraDriver.Expose();
-            
-            Scribe.loader.crossRefs.ResolveAllCrossReferences();
             
             for (int i = 0; i < this.Maps.Count; i++)
             {
@@ -201,7 +198,7 @@ namespace PersistentWorlds.Logic
             this.Game.World.storyState = this.WorldData.storyState;
             this.Game.World.features = this.WorldData.worldFeatures;
             this.Game.World.components = this.WorldData.worldComponents;
-
+            
             AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents", new Type[0]).Invoke(this.Game.World, new object[0]);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)

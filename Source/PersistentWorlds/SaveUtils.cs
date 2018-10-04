@@ -59,11 +59,11 @@ namespace PersistentWorlds
             {
                 var mapSaveFile = mapsDir.FullName + "/" + map.Index.ToString() + ".pwmf";
                 
-                SafeSaver.Save(mapSaveFile, "map", delegate
+                SafeSaver.Save(mapSaveFile, "map" + map.Tile.ToString(), delegate
                 {
                     ScribeMetaHeaderUtility.WriteMetaHeader();
                     var target = map;
-                    Scribe_Deep.Look<Map>(ref target, "map", new object[0]);
+                    Scribe_Deep.Look<Map>(ref target, "map" + map.Tile.ToString(), new object[0]);
                 });
             }
         }
@@ -80,7 +80,7 @@ namespace PersistentWorlds
                 Scribe.loader.InitLoading(colonyFile.FullName);
                 ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
                 persistentColonies.Add(LoadColonyData());
-                Scribe.loader.FinalizeLoading();
+                Scribe.loader.ForceStop();
             }
 
             return persistentColonies;

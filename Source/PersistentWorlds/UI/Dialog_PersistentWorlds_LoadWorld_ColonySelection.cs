@@ -16,10 +16,20 @@ namespace PersistentWorlds.UI
 
             this._saveFileName = saveFileName;
 
+            Log.Message("LoadColonySelectionWindow.ctor() assigned PWORLD");
+            
+            PersistentWorldManager.PersistentWorld = new PersistentWorld();
+            Current.Game = null;
+            
             this._colonies = SaveUtils.LoadColonies(this._saveFileName);
         }
 
         public override Vector2 InitialSize => new Vector2(600f, 700f);
+
+        public override void PreOpen()
+        {
+            this.SetInitialSizeAndPosition();
+        }
 
         public override void DoWindowContents(Rect inRect)
         {

@@ -11,6 +11,7 @@ namespace PersistentWorlds.Patches
 {
     public static class Debug_Patches
     {
+        /*
         [HarmonyPatch(typeof(CrossRefHandler), "Clear")]
         public static class Patch_04
         {
@@ -25,5 +26,19 @@ namespace PersistentWorlds.Patches
                 return false;
             }
         }
+
+        [HarmonyPatch(typeof(MapTemperature), "get_OutdoorTemp")]
+        public static class Patch_05
+        {
+            [HarmonyPrefix]
+            public static void PrefixTest(MapTemperature __instance)
+            {
+                if (PersistentWorldManager.LoadColonyIndex == -1) return;
+                
+                Log.Message("Resolve");
+                Scribe.loader.crossRefs.ResolveAllCrossReferences();
+            }
+        }
+        */
     }
 }

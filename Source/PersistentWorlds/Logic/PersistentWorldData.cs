@@ -84,11 +84,6 @@ namespace PersistentWorlds.Logic
             PersistentWorldManager.PersistentWorld.Game.World.components = this.worldComponents;
         }
 
-        public void FinalizeInitialization()
-        {
-            WorldComponentUtility.FinalizeInit(PersistentWorldManager.PersistentWorld.Game.World);
-        }
-
         public static PersistentWorldData Convert(Game game)
         {
             Log.Message("Called PersistentWorldData conbvert.");
