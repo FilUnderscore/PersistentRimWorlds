@@ -10,13 +10,14 @@ namespace PersistentWorlds.Patches
         public static bool LoadGameFromSaveFileNow_Prefix(string fileName)
         {
             // Is Persistent World being loaded??
-            if (PersistentWorldManager.WorldLoader == null)
+            if (PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Finalizing)
             {
                 return true;
             }
             
-            PersistentWorldManager.WorldLoader.LoadWorldNow(fileName);
-
+            Log.Message("LoadGameFromSaveFileNow_Patch called LoadWorld from PersistentWorld static var in PersistentWorldManager.");
+            PersistentWorldManager.PersistentWorld.LoadWorld();
+            
             return false;
         }
     }

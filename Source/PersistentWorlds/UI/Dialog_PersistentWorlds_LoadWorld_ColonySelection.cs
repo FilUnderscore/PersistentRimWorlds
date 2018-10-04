@@ -8,27 +8,16 @@ namespace PersistentWorlds.UI
 {
     public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
     {
-        private string _saveFileName;
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
         
         public override Vector2 InitialSize => new Vector2(600f, 700f);
 
         private Vector2 scrollPosition = Vector2.zero;
         
-        public Dialog_PersistentWorlds_LoadWorld_ColonySelection(string saveFileName)
+        public Dialog_PersistentWorlds_LoadWorld_ColonySelection()
         {   
-            this.doWindowBackground = true;
-
-            this._saveFileName = saveFileName;
-
-            Log.Message("LoadColonySelectionWindow.ctor() assigned PWORLD");
-            Log.Message("_saveFileName: " + _saveFileName);
-            
-            PersistentWorldManager.PersistentWorld = new PersistentWorld();
-            Current.Game = null;
-            
             this.LoadColoniesAsItems();
-            
+
             this.doCloseButton = true;
             this.doCloseX = true;
             this.forcePause = true;
@@ -43,23 +32,21 @@ namespace PersistentWorlds.UI
 
         private void LoadColoniesAsItems()
         {
-            var colonies = SaveUtils.LoadColonies(this._saveFileName);
-
-            for (var i = 0; i < colonies.Count; i++)
+            PersistentWorldManager.WorldLoadSaver.LoadColonies();
+            
+            for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
-                var colony = colonies[i];
+                var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
                 
                 var scrollableListItem = new ScrollableListItem();
 
                 scrollableListItem.Text = "Colony Name Here";
                 scrollableListItem.ActionButtonText = "Load";
                 scrollableListItem.ActionButtonAction = delegate
-                {
-                    PersistentWorldManager.LoadColonyIndex = i;
-                    PersistentWorldManager.WorldLoader = new PersistentWorldLoader();
-                    
-                    GameDataSaveLoader.LoadGame(this._saveFileName);
-                };
+                    {
+                        PersistentWorldManager.PersistentWorld.Colony = colony;
+                        PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
+                    };
                 
                 scrollableListItem.DeleteButtonAction = delegate
                 {
@@ -90,8 +77,6 @@ namespace PersistentWorlds.UI
             //optList.Add(new ListableOption("Back to Menu", delegate { Find.WindowStack.TryRemove(this); }));
             
             double num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);
-            
-            Log.Message("Num1: " + num1.ToString());
             
             var rect2 = new Rect(0, (float) num1, inRect.width, inRect.height);
             

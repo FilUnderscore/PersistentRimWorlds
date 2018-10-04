@@ -8,14 +8,12 @@ using Verse;
 namespace PersistentWorlds
 {
     // Allows the loading of different files by sharing Cross-References of objects/pawns/things in the game.
-    public class ScribeMultiLoader
+    public sealed class ScribeMultiLoader
     { 
-        public Dictionary<string, XmlNode> xmlParents = new Dictionary<string, XmlNode>();
-        public CrossRefHandler CrossRefHandler = new CrossRefHandler();
-        public PostLoadIniter PostIniter = new PostLoadIniter();
-        public XmlNode curXmlNode;
+        public static Dictionary<string, XmlNode> xmlParents = new Dictionary<string, XmlNode>();
+        public static XmlNode curXmlNode;
 
-        public void InitLoading(string[] filePaths)
+        public static void InitLoading(string[] filePaths)
         {
             if (Scribe.mode != LoadSaveMode.Inactive)
             {
@@ -33,7 +31,7 @@ namespace PersistentWorlds
                         {
                             XmlDocument xmlDocument = new XmlDocument();
                             xmlDocument.Load(xmlTextReader);
-                            this.xmlParents.Add(filePath, xmlDocument.DocumentElement);
+                            xmlParents.Add(filePath, xmlDocument.DocumentElement);
                         }
                     }
                 }
@@ -54,11 +52,11 @@ namespace PersistentWorlds
             }
         }
 
-        public void SetScribeCurXmlParentByFilePath(string filePath)
+        public static void SetScribeCurXmlParentByFilePath(string filePath)
         {
             Scribe.loader.curXmlParent = xmlParents[filePath];
             Scribe.loader.curPathRelToParent = null;
-            this.curXmlNode = Scribe.loader.curXmlParent;
+            curXmlNode = Scribe.loader.curXmlParent;
             
             Log.Message("Set Scribe.loader.curXmlParent to " + filePath);
         }

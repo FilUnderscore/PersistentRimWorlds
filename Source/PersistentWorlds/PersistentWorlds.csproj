@@ -65,6 +65,7 @@
     <Compile Include="Patches\SettlementBase_PostRemove_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_Patches.cs" />
     <Compile Include="PersistentWorldLoader.cs" />
+    <Compile Include="PersistentWorldLoadSaver.cs" />
     <Compile Include="PersistentWorldManager.cs" />
     <Compile Include="PersistentWorldsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -42,131 +42,99 @@ namespace PersistentWorlds.Logic
             
             Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1, false);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.currentMapIndex = this.currentMapIndex;
-            
             Scribe_Deep.Look<GameInfo>(ref info, "info", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                AccessTools.Field(typeof(Game), "info").SetValue(PersistentWorldManager.PersistentWorld.Game, this.info);
             
             Scribe_Deep.Look<GameRules>(ref rules, "rules", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                AccessTools.Field(typeof(Game), "rules").SetValue(PersistentWorldManager.PersistentWorld.Game, this.rules);
-            
             Scribe_Deep.Look<Scenario>(ref scenario, "scenario", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.Scenario = this.scenario;
             
             Scribe_Deep.Look<PlaySettings>(ref this.playSettings, "playSettings", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.playSettings = this.playSettings;
-            
             Scribe_Deep.Look<StoryWatcher>(ref this.storyWatcher, "storyWatcher", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.storyWatcher = this.storyWatcher;
             
             Scribe_Deep.Look<GameEnder>(ref this.gameEnder, "gameEnder", new object[0]);
 
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.gameEnder = this.gameEnder;
-            
             Scribe_Deep.Look<LetterStack>(ref this.letterStack, "letterStack", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.letterStack = this.letterStack;
             
             Scribe_Deep.Look<ResearchManager>(ref this.researchManager, "researchManager", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.researchManager = this.researchManager;
-            
             Scribe_Deep.Look<Storyteller>(ref this.storyteller, "storyteller", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.storyteller = this.storyteller;
             
             Scribe_Deep.Look<History>(ref this.history, "history", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.history = this.history;
-            
             Scribe_Deep.Look<TaleManager>(ref this.taleManager, "taleManager", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.taleManager = this.taleManager;
             
             Scribe_Deep.Look<PlayLog>(ref this.playLog, "playLog", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.playLog = this.playLog;
-            
             Scribe_Deep.Look<BattleLog>(ref this.battleLog, "battleLog", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.battleLog = this.battleLog;
             
             Scribe_Deep.Look<OutfitDatabase>(ref this.outfitDatabase, "outfitDatabase", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.outfitDatabase = this.outfitDatabase;
-            
             Scribe_Deep.Look<DrugPolicyDatabase>(ref this.drugPolicyDatabase, "drugPolicyDatabase", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.drugPolicyDatabase = this.drugPolicyDatabase;
             
             Scribe_Deep.Look<Tutor>(ref this.tutor, "tutor", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.tutor = this.tutor;
-            
             Scribe_Deep.Look<DateNotifier>(ref this.dateNotifier, "dateNotifier", new object[0]);
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.dateNotifier = this.dateNotifier;
             
             Scribe_Deep.Look<UniqueIDsManager>(ref this.uniqueIDsManager, "uniqueIDsManager", new object[0]);
             
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.uniqueIDsManager = this.uniqueIDsManager;
-            
             Scribe_Collections.Look<GameComponent>(ref this.gameComponents, "components", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game });
-            
-            if(PersistentWorldManager.LoadStatus == PersistentWorldManager.PersistentWorldLoadStatus.Loading && PersistentWorldManager.PersistentWorld.colony.ColonyData.GameData == this)
-                PersistentWorldManager.PersistentWorld.Game.components = this.gameComponents;
             
             if(Find.CameraDriver != null)
                 Find.CameraDriver.Expose();
         }
 
+        public void SetGame()
+        {
+            PersistentWorldManager.PersistentWorld.Game.currentMapIndex = this.currentMapIndex;
+            
+            AccessTools.Field(typeof(Game), "info").SetValue(PersistentWorldManager.PersistentWorld.Game, this.info);
+            AccessTools.Field(typeof(Game), "rules").SetValue(PersistentWorldManager.PersistentWorld.Game, this.rules);
+            
+            PersistentWorldManager.PersistentWorld.Game.Scenario = this.scenario;
+            PersistentWorldManager.PersistentWorld.Game.playSettings = this.playSettings;
+            PersistentWorldManager.PersistentWorld.Game.storyWatcher = this.storyWatcher;
+            PersistentWorldManager.PersistentWorld.Game.gameEnder = this.gameEnder;
+            PersistentWorldManager.PersistentWorld.Game.letterStack = this.letterStack;
+            PersistentWorldManager.PersistentWorld.Game.researchManager = this.researchManager;
+            PersistentWorldManager.PersistentWorld.Game.storyteller = this.storyteller;
+            PersistentWorldManager.PersistentWorld.Game.history = this.history;
+            PersistentWorldManager.PersistentWorld.Game.taleManager = this.taleManager;
+            PersistentWorldManager.PersistentWorld.Game.playLog = this.playLog;
+            PersistentWorldManager.PersistentWorld.Game.battleLog = this.battleLog;
+            PersistentWorldManager.PersistentWorld.Game.outfitDatabase = this.outfitDatabase;
+            PersistentWorldManager.PersistentWorld.Game.drugPolicyDatabase = this.drugPolicyDatabase;
+            PersistentWorldManager.PersistentWorld.Game.tutor = this.tutor;
+            PersistentWorldManager.PersistentWorld.Game.dateNotifier = this.dateNotifier;
+            PersistentWorldManager.PersistentWorld.Game.uniqueIDsManager = this.uniqueIDsManager;
+            PersistentWorldManager.PersistentWorld.Game.components = this.gameComponents;
+        }
+
         public static PersistentColonyGameData Convert(Game game)
         {
-            PersistentColonyGameData persistentColonyGameData = new PersistentColonyGameData();
+            var persistentColonyGameData = new PersistentColonyGameData
+            {
+                currentMapIndex = game.currentMapIndex,
+                info = game.Info,
+                scenario = game.Scenario,
+                playSettings = game.playSettings,
+                storyWatcher = game.storyWatcher,
+                gameEnder = game.gameEnder,
+                letterStack = game.letterStack,
+                researchManager = game.researchManager,
+                storyteller = game.storyteller,
+                history = game.history,
+                taleManager = game.taleManager,
+                playLog = game.playLog,
+                battleLog = game.battleLog,
+                outfitDatabase = game.outfitDatabase,
+                drugPolicyDatabase = game.drugPolicyDatabase,
+                tutor = game.tutor,
+                dateNotifier = game.dateNotifier,
+                uniqueIDsManager = game.uniqueIDsManager,
+                gameComponents = game.components
+            };
 
-            persistentColonyGameData.currentMapIndex = game.currentMapIndex;
-            persistentColonyGameData.info = game.Info;
-            persistentColonyGameData.scenario = game.Scenario;
-            persistentColonyGameData.playSettings = game.playSettings;
-            persistentColonyGameData.storyWatcher = game.storyWatcher;
-            persistentColonyGameData.gameEnder = game.gameEnder;
-            persistentColonyGameData.letterStack = game.letterStack;
-            persistentColonyGameData.researchManager = game.researchManager;
-            persistentColonyGameData.storyteller = game.storyteller;
-            persistentColonyGameData.history = game.history;
-            persistentColonyGameData.taleManager = game.taleManager;
-            persistentColonyGameData.playLog = game.playLog;
-            persistentColonyGameData.battleLog = game.battleLog;
-            persistentColonyGameData.outfitDatabase = game.outfitDatabase;
-            persistentColonyGameData.drugPolicyDatabase = game.drugPolicyDatabase;
-            persistentColonyGameData.tutor = game.tutor;
-            persistentColonyGameData.dateNotifier = game.dateNotifier;
-            persistentColonyGameData.uniqueIDsManager = game.uniqueIDsManager;
-            persistentColonyGameData.gameComponents = game.components;
 
             return persistentColonyGameData;
         }

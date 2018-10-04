@@ -47,8 +47,15 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Load";
                 scrollableListItem.ActionButtonAction = delegate
                 {
+                    MemoryUtility.ClearAllMapsAndWorld();
+                    
                     // TODO: Load world...
-                    Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection(worldDirInfo.Name));
+                    PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
+                    PersistentWorldManager.WorldLoadSaver.LoadWorld();
+
+                    Current.Game = null;
+                    
+                    Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
                 };
 
                 scrollableListItem.DeleteButtonTooltip = "Delete persistent world.";

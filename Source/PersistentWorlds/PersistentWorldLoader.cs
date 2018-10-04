@@ -13,7 +13,7 @@ namespace PersistentWorlds
     {
         public static readonly string SaveDir =
             (string) AccessTools.Method(typeof(GenFilePaths), "get_SavedGamesFolderPath", new Type[0]).Invoke(null, new object[0]);
-        
+        /*
         public void LoadWorldNow(string fileName)
         {
             Log.Message("PersistentWorlds - Loading world " + fileName);
@@ -120,5 +120,6 @@ namespace PersistentWorlds
 
             return persistentColony;
         }
+        */
     }
 }

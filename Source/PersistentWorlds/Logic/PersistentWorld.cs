@@ -9,13 +9,11 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorld
     {
-        public string fileName;
-        
         // Game.World is accessed.
         public Game Game = new Game();
 
         public PersistentWorldData WorldData = new PersistentWorldData();
-        public PersistentColony colony;
+        public PersistentColony Colony;
         
         public List<Map> Maps = new List<Map>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
@@ -28,6 +26,9 @@ namespace PersistentWorlds.Logic
 
         public void LoadWorld()
         {
+            Log.Message("Setting current game.");
+            Current.Game = this.Game;
+            
             Log.Message("Calling LoadWorld");
             LongEventHandler.SetCurrentEventText("LoadingPersistentWorld".Translate());
             
@@ -43,7 +44,7 @@ namespace PersistentWorlds.Logic
         {
             Log.Message("Calling ExposeAndFillGameSmallComponents");
 
-            if (colony == null)
+            if (Colony == null)
             {
                 // Return to main menu.
                 Log.Error("Colony is null. - Persistent Worlds");
@@ -51,26 +52,26 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            AccessTools.Field(typeof(Game), "info").SetValue(this.Game, colony.ColonyData.GameData.info);
-            AccessTools.Field(typeof(Game), "rules").SetValue(this.Game, colony.ColonyData.GameData.rules);
-            this.Game.Scenario = colony.ColonyData.GameData.scenario;
+            AccessTools.Field(typeof(Game), "info").SetValue(this.Game, Colony.ColonyData.GameData.info);
+            AccessTools.Field(typeof(Game), "rules").SetValue(this.Game, Colony.ColonyData.GameData.rules);
+            this.Game.Scenario = Colony.ColonyData.GameData.scenario;
             this.Game.tickManager = this.WorldData.TickManager;
-            this.Game.playSettings = colony.ColonyData.GameData.playSettings;
-            this.Game.storyWatcher = colony.ColonyData.GameData.storyWatcher;
-            this.Game.gameEnder = colony.ColonyData.GameData.gameEnder;
-            this.Game.letterStack = colony.ColonyData.GameData.letterStack;
-            this.Game.researchManager = colony.ColonyData.GameData.researchManager;
-            this.Game.storyteller = colony.ColonyData.GameData.storyteller;
-            this.Game.history = colony.ColonyData.GameData.history;
-            this.Game.taleManager = colony.ColonyData.GameData.taleManager;
-            this.Game.playLog = colony.ColonyData.GameData.playLog;
-            this.Game.battleLog = colony.ColonyData.GameData.battleLog;
-            this.Game.outfitDatabase = colony.ColonyData.GameData.outfitDatabase;
-            this.Game.drugPolicyDatabase = colony.ColonyData.GameData.drugPolicyDatabase;
-            this.Game.tutor = colony.ColonyData.GameData.tutor;
-            this.Game.dateNotifier = colony.ColonyData.GameData.dateNotifier;
-            this.Game.uniqueIDsManager = colony.ColonyData.GameData.uniqueIDsManager;
-            this.Game.components = colony.ColonyData.GameData.gameComponents;
+            this.Game.playSettings = Colony.ColonyData.GameData.playSettings;
+            this.Game.storyWatcher = Colony.ColonyData.GameData.storyWatcher;
+            this.Game.gameEnder = Colony.ColonyData.GameData.gameEnder;
+            this.Game.letterStack = Colony.ColonyData.GameData.letterStack;
+            this.Game.researchManager = Colony.ColonyData.GameData.researchManager;
+            this.Game.storyteller = Colony.ColonyData.GameData.storyteller;
+            this.Game.history = Colony.ColonyData.GameData.history;
+            this.Game.taleManager = Colony.ColonyData.GameData.taleManager;
+            this.Game.playLog = Colony.ColonyData.GameData.playLog;
+            this.Game.battleLog = Colony.ColonyData.GameData.battleLog;
+            this.Game.outfitDatabase = Colony.ColonyData.GameData.outfitDatabase;
+            this.Game.drugPolicyDatabase = Colony.ColonyData.GameData.drugPolicyDatabase;
+            this.Game.tutor = Colony.ColonyData.GameData.tutor;
+            this.Game.dateNotifier = Colony.ColonyData.GameData.dateNotifier;
+            this.Game.uniqueIDsManager = Colony.ColonyData.GameData.uniqueIDsManager;
+            this.Game.components = Colony.ColonyData.GameData.gameComponents;
             
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
@@ -102,7 +103,7 @@ namespace PersistentWorlds.Logic
 
             int num = -1;
 
-            num = colony.ColonyData.GameData.currentMapIndex;
+            num = Colony.ColonyData.GameData.currentMapIndex;
             if (num < 0 && this.Maps.Any<Map>())
             {
                 Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
@@ -154,7 +155,8 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            PersistentWorldManager.WorldLoader.LoadMaps(this);
+            //PersistentWorldManager.WorldLoader.LoadMaps(this);
+            PersistentWorldManager.WorldLoadSaver.LoadMaps();
         }
 
         public void ExposeGameWorldData()
