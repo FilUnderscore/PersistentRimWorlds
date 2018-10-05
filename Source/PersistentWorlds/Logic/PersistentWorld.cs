@@ -230,6 +230,8 @@ namespace PersistentWorlds.Logic
 
             persistentWorld.Colonies.Add(PersistentColony.Convert(game));
             
+            persistentWorld.ConvertCurrentGameSettlements(game);
+            
             //persistentWorld.Maps = game.Maps;
             
             return persistentWorld;
@@ -241,13 +243,13 @@ namespace PersistentWorlds.Logic
         }
 
         // Convert Settlements to Colony Bases (this.Colony) for saving
-        public void ConvertCurrentGameSettlements()
+        public void ConvertCurrentGameSettlements(Game game)
         {
             // Concurrency errors :/
             var toAdd = new List<Colony>();
             var toRemove = new List<Settlement>();
             
-            foreach (var settlement in this.WorldData.worldObjectsHolder.Settlements)
+            foreach (var settlement in game.World.worldObjects.Settlements)
             {
                 if(settlement.Faction != Faction.OfPlayer) continue;
 
@@ -256,14 +258,21 @@ namespace PersistentWorlds.Logic
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.Name;
 
+                if (this.Colony != null)
+                    colony.PersistentColony = this.Colony;
+                else
+                {
+                    colony.PersistentColony = this.Colonies[0];
+                }
+
                 toAdd.Add(colony);
                 toRemove.Add(settlement);
             }
             
-            toAdd.Do(colony => this.Game.World.worldObjects.Add(colony));
+            toAdd.Do(colony => game.World.worldObjects.Add(colony));
             toAdd.Clear();
             
-            toRemove.Do(settlement => this.Game.World.worldObjects.Remove(settlement));
+            toRemove.Do(settlement => game.World.worldObjects.Remove(settlement));
             toRemove.Clear();
         }
 

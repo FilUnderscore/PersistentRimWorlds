@@ -200,8 +200,6 @@ namespace PersistentWorlds
             // If any world changes were made.
             world.WorldData = PersistentWorldData.Convert(PersistentWorldManager.PersistentWorld.Game);
 
-            world.ConvertCurrentGameSettlements();
-            
             SafeSaver.Save(this.worldFilePath, "world", delegate
             {
                 ScribeMetaHeaderUtility.WriteMetaHeader();
