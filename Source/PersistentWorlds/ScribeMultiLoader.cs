@@ -60,5 +60,11 @@ namespace PersistentWorlds
             
             Log.Message("Set Scribe.loader.curXmlParent to " + filePath);
         }
+
+        public static void Clear()
+        {
+            xmlParents.Clear();
+            curXmlNode = null;
+        }
     }
 }

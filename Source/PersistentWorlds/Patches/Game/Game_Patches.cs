@@ -1,4 +1,5 @@
-﻿using Harmony;
+﻿using System.Linq;
+using Harmony;
 using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
@@ -89,14 +90,21 @@ namespace PersistentWorlds.Patches
                 if(settlement == null)
                     Log.Error("Could not generate starting map because there is no player faction base.");
 
+                Log.Warning("MapSize: " + mapSize.ToString());
+                
                 // TODO: Use Map Size from World Info or have custom map sizes depending on colony data.
                 var map = MapGenerator.GenerateMap(mapSize, settlement, settlement.MapGeneratorDef,
                     settlement.ExtraGenStepDefs, null);
                 
+                Current.Game.CurrentMap = map;
+                
                 PawnUtility.GiveAllStartingPlayerPawnsThought(ThoughtDefOf.NewColonyOptimism);
                 __instance.FinalizeInit();
-
-                Current.Game.CurrentMap = map;
+                
+                Log.Message("Game state: " + Current.ProgramState.ToString());
+                
+                Log.Message((__instance == Current.Game).ToString());
+                Log.Message((__instance == PersistentWorldManager.PersistentWorld.Game).ToString());
                 
                 Find.CameraDriver.JumpToCurrentMapLoc(MapGenerator.PlayerStartSpot);
                 Find.CameraDriver.ResetSize();
@@ -109,10 +117,30 @@ namespace PersistentWorlds.Patches
                 PersistentWorldManager.WorldLoadSaver.Status =
                     PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
-                PersistentWorldManager.PersistentWorld.Colonies.Add(PersistentColony.Convert(Current.Game));
-                PersistentWorldManager.PersistentWorld.Maps.Add(map);
+                var colony = PersistentColony.Convert(Current.Game);
+                PersistentWorldManager.PersistentWorld.Colony = colony;
+                PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
+                
+                Log.Message(__instance.DebugString());
+                Log.Message("List things map.." + map.listerThings.AllThings.Count);
                 
                 return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(Map), "FinalizeInit")]
+        public static class Map_FinalizeInit_Patch
+        {
+            [HarmonyPrefix]
+            public static void FinalizeInit_Prefix(Map __instance)
+            {
+                Log.Message("Lister all things.." + __instance.listerThings.AllThings.Count);
+            }
+
+            [HarmonyPostfix]
+            public static void FinalizeInit_Postfix(Map __instance)
+            {
+                Log.Message("Lister all things POST.." + __instance.listerThings.AllThings.Count);
             }
         }
     }

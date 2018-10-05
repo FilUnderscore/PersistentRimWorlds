@@ -15,7 +15,7 @@ namespace PersistentWorlds.Logic
         public PersistentWorldData WorldData = new PersistentWorldData();
         public PersistentColony Colony;
         
-        public List<Map> Maps = new List<Map>();
+        //public List<Map> Maps = new List<Map>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
 
         public PersistentWorld()
@@ -96,7 +96,7 @@ namespace PersistentWorlds.Logic
 
         public void ContinueLoadingMaps()
         {
-            if (this.Maps.RemoveAll((Map x) => x == null) != 0)
+            if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
                 Log.Warning("Custom - Some maps were null after loading.", false);
             }
@@ -104,19 +104,19 @@ namespace PersistentWorlds.Logic
             int num = -1;
 
             num = Colony.ColonyData.GameData.currentMapIndex;
-            if (num < 0 && this.Maps.Any<Map>())
+            if (num < 0 && this.Game.Maps.Any<Map>())
             {
                 Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
                 num = 0;
             }
 
             Log.Message("Num");
-            Log.Message("Maps Count: " + this.Maps.Count);
+            Log.Message("Maps Count: " + this.Game.Maps.Count);
             
-            if (num >= this.Maps.Count)
+            if (num >= this.Game.Maps.Count)
             {
                 Log.Error("Current map index out of bounds after loading.", false);
-                if (this.Maps.Any<Map>())
+                if (this.Game.Maps.Any<Map>())
                 {
                     num = 0;
                 }
@@ -126,18 +126,18 @@ namespace PersistentWorlds.Logic
                 }
             }
             
-            AccessTools.Field(typeof(Game), "maps").SetValue(this.Game, this.Maps);
+            //AccessTools.Field(typeof(Game), "maps").SetValue(this.Game, this.Maps);
 
-            Game.CurrentMap = ((num < 0) ? null : this.Maps[num]);
+            Game.CurrentMap = ((num < 0) ? null : this.Game.Maps[num]);
             
             if(Find.CameraDriver != null)
                 Find.CameraDriver.Expose();
             
-            for (int i = 0; i < this.Maps.Count; i++)
+            for (int i = 0; i < this.Game.Maps.Count; i++)
             {
                 try
                 {
-                    this.Maps[i].FinalizeLoading();
+                    this.Game.Maps[i].FinalizeLoading();
                 }
                 catch (Exception e)
                 {
@@ -146,7 +146,7 @@ namespace PersistentWorlds.Logic
 
                 try
                 {
-                    this.Maps[i].Parent.FinalizeLoading();
+                    this.Game.Maps[i].Parent.FinalizeLoading();
                 }
                 catch (Exception e)
                 {
@@ -228,7 +228,7 @@ namespace PersistentWorlds.Logic
 
             persistentWorld.Colonies.Add(PersistentColony.Convert(game));
             
-            persistentWorld.Maps = game.Maps;
+            //persistentWorld.Maps = game.Maps;
             
             return persistentWorld;
         }

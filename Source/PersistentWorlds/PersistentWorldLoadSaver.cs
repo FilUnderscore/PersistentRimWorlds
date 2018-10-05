@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Harmony;
 using PersistentWorlds.Logic;
 using Verse;
@@ -78,17 +79,17 @@ namespace PersistentWorlds
         {
             // TODO: Review
             
+            /*
             if (Directory.Exists(this.worldFolderPath))
             {
                 Directory.Delete(this.worldFolderPath, true);
             }
-
-            /*
-            if (Directory.Exists(this.mapsDirectory))
-            {
-                Directory.Delete(this.mapsDirectory, true);
-            }
             */
+
+            if (Directory.Exists(this.coloniesDirectory))
+            {
+                Directory.Delete(this.coloniesDirectory, true);
+            }
         }
         
         /**
@@ -174,6 +175,8 @@ namespace PersistentWorlds
             
             Log.Message("Loading maps...");
 
+            List<Map> maps = new List<Map>();
+            
             foreach (var mapFile in mapFiles)
             {
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
@@ -181,13 +184,17 @@ namespace PersistentWorlds
                 var map = new Map();
                 map.ExposeData();
 
-                PersistentWorldManager.PersistentWorld.Maps.Add(map);
+                //PersistentWorldManager.PersistentWorld.Maps.Add(map);
+                maps.Add(map);
             }
+            
+            AccessTools.Field(typeof(Game), "maps").SetValue(PersistentWorldManager.PersistentWorld.Game, maps);
 
             Status = PersistentWorldLoadStatus.Ingame;
             // Basically ingame at this point :/
             
             Scribe.loader.FinalizeLoading();
+            ScribeMultiLoader.Clear();
             
             Log.Message("Loaded map data...");
         }
@@ -203,8 +210,12 @@ namespace PersistentWorlds
             
             Log.Message("Saving world...");
             
+            Log.Message("b4 save: " + Current.Game.CurrentMap.listerThings.AllThings.Count);
+            
             // If any world changes were made.
             world.WorldData = PersistentWorldData.Convert(PersistentWorldManager.PersistentWorld.Game);
+            
+            Log.Message("a4 save: " + Current.Game.CurrentMap.listerThings.AllThings.Count);
             
             SafeSaver.Save(this.worldFilePath, "world", delegate
             {
@@ -243,12 +254,13 @@ namespace PersistentWorlds
             Log.Message("Saved colony data.");
 
             // TODO: Save any newly created maps, if not already.
-            foreach (var map in world.Maps)
+            
+            foreach (var map in Current.Game.Maps)
             {
                 var mapSaveFile = mapsDirectory + "/" + map.Tile.ToString() + PersistentWorldMapFile_Extension;
                 
                 SafeSaver.Save(mapSaveFile, "map", delegate
-                {
+                {   
                     map.ExposeData();
                 });
             }

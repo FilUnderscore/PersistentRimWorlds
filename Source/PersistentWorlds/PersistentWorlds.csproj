@@ -62,6 +62,7 @@
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
+    <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
     <Compile Include="Patches\Root_Play_Start_Patch.cs" />
     <Compile Include="Patches\SettlementBase_PostRemove_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_Patches.cs" />
