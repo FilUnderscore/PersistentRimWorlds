@@ -76,9 +76,18 @@ namespace PersistentWorlds
 
         private void DeletePreviousDirectories()
         {
+            // TODO: Review
+            
+            /*
             if (Directory.Exists(this.worldFolderPath))
             {
                 Directory.Delete(this.worldFolderPath, true);
+            }
+            */
+
+            if (Directory.Exists(this.mapsDirectory))
+            {
+                Directory.Delete(this.mapsDirectory, true);
             }
         }
         

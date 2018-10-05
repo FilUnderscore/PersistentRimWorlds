@@ -31,5 +31,40 @@ namespace PersistentWorlds.Patches
                 }
             }
         }
+
+        [HarmonyPatch(typeof(StoryWatcher_Adaptation), "get_TotalThreatPointsFactor")]
+        public static class StoryWatcher_Patch
+        {
+            [HarmonyPrefix]
+            public static void PrefixPatch(StoryWatcher_Adaptation __instance)
+            {
+                Log.Message("R1");
+                
+                var sDef = AccessTools.Property(typeof(StoryWatcher_Adaptation), "StorytellerDef");
+
+                Log.Message("R2");
+                
+                if (sDef.GetValue(__instance, null) == null)
+                {
+                    Log.Error("Storyteller Def is null.");
+                }
+                
+                Log.Message("R3");
+
+                if (Find.Storyteller == null)
+                {
+                    Log.Error("Storyteller is null of Current.Game");
+                }
+
+                Log.Message("R4");
+                
+                if (Find.Storyteller.def == null)
+                {
+                    Log.Error("Storyteller def is null.");
+                }
+                
+                Log.Message("R5");
+            }
+        }
     }
 }

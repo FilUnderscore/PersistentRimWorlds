@@ -1,4 +1,6 @@
 ﻿using Harmony;
+using RimWorld;
+using RimWorld.Planet;
 using Verse;
 using Verse.Profile;
 
@@ -67,7 +69,44 @@ namespace PersistentWorlds.Patches
                     return true;
                 
                 Log.Message("Creating new colony.");
+                MemoryUtility.UnloadUnusedUnityAssets();
+
+                Current.ProgramState = ProgramState.MapInitializing;
+                var mapSize = new IntVec3(__instance.InitData.mapSize, 1, __instance.InitData.mapSize);
+                var settlement = (Settlement) null;
+
+                var settlements = Find.WorldObjects.Settlements;
+                for (var index = 0; index < settlements.Count; index++)
+                {
+                    if (settlements[index].Faction == Faction.OfPlayer)
+                    {
+                        settlement = settlements[index];
+                        break;
+                    }
+                }
                 
+                if(settlement == null)
+                    Log.Error("Could not generate starting map because there is no player faction base.");
+
+                // TODO: Use Map Size from World Info or have custom map sizes depending on colony data.
+                var map = MapGenerator.GenerateMap(mapSize, settlement, settlement.MapGeneratorDef,
+                    settlement.ExtraGenStepDefs, null);
+                
+                PawnUtility.GiveAllStartingPlayerPawnsThought(ThoughtDefOf.NewColonyOptimism);
+                __instance.FinalizeInit();
+
+                Current.Game.CurrentMap = map;
+                
+                Find.CameraDriver.JumpToCurrentMapLoc(MapGenerator.PlayerStartSpot);
+                Find.CameraDriver.ResetSize();
+                
+                Find.Scenario.PostGameStart();
+                
+                GameComponentUtility.StartedNewGame();
+
+                Current.Game.InitData = null;
+                PersistentWorldManager.WorldLoadSaver.Status =
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
                 
                 return false;
             }

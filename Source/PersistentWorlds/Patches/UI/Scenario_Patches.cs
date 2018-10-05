@@ -50,8 +50,6 @@ namespace PersistentWorlds.Patches.UI
                     
                     codes.InsertRange(i - 1, toInsert);
                     
-                    codes.Do(c => Log.Message(c.ToString()));
-                    
                     // TODO: Add a branch (IF) to check if we have loaded a persistent world, if not show this menu then.
                     //codes.RemoveRange(i, 3); // Don't need to generate/select world. Will be already loaded into memory.
                     
@@ -84,6 +82,7 @@ namespace PersistentWorlds.Patches.UI
                     return;
 
                 PersistentWorldManager.PersistentWorld.Game.Scenario = Current.Game.Scenario;
+                PersistentWorldManager.PersistentWorld.Game.storyteller = Current.Game.storyteller;
                 Current.Game = PersistentWorldManager.PersistentWorld.Game;
                 
                 // TODO: Review
