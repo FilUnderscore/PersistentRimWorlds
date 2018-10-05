@@ -12,14 +12,19 @@ namespace PersistentWorlds.Logic
 
         // TODO: Implement support for 'Colonies' instead of using Factions and custom settlement world objects.
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
-        public Faction ColonyFaction;
+        //public Faction ColonyFaction;
+
+        public int Id = 0;
+        public string Name = "New Arrivals";
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
         
         public void ExposeData()
         {
-            Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
+            //Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
+            Scribe_Values.Look<int>(ref Id, "id");
+            Scribe_Values.Look<string>(ref Name, "name");
             
             Scribe_Deep.Look<PersistentColonyGameData>(ref GameData, "gameData");
             
@@ -30,7 +35,7 @@ namespace PersistentWorlds.Logic
         {
             var persistentColonyData = new PersistentColonyData
             {
-                ColonyFaction = game.World.factionManager.OfPlayer,
+                //ColonyFaction = game.World.factionManager.OfPlayer
                 GameData = PersistentColonyGameData.Convert(game)
             };
 

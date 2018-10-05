@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using Harmony;
+using PersistentWorlds.World;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -231,6 +233,69 @@ namespace PersistentWorlds.Logic
             //persistentWorld.Maps = game.Maps;
             
             return persistentWorld;
+        }
+
+        public void AddColoniesToWorldMap()
+        {
+            
+        }
+
+        // Convert Settlements to Colony Bases (this.Colony) for saving
+        public void ConvertCurrentGameSettlements()
+        {
+            // Concurrency errors :/
+            var toAdd = new List<Colony>();
+            var toRemove = new List<Settlement>();
+            
+            foreach (var settlement in this.WorldData.worldObjectsHolder.Settlements)
+            {
+                if(settlement.Faction != Faction.OfPlayer) continue;
+
+                var colony = new Colony();
+                settlement.Map.info.parent = colony;
+                colony.Tile = settlement.Tile;
+                colony.Name = settlement.Name;
+
+                toAdd.Add(colony);
+                toRemove.Add(settlement);
+            }
+            
+            toAdd.Do(colony => this.Game.World.worldObjects.Add(colony));
+            toAdd.Clear();
+            
+            toRemove.Do(settlement => this.Game.World.worldObjects.Remove(settlement));
+            toRemove.Clear();
+        }
+
+        // Convert Colony Bases to Settlements (this.Colony) for loading
+        public void ConvertToCurrentGameSettlements()
+        {
+            var toAdd = new List<Settlement>();
+            var toRemove = new List<Colony>();
+            
+            foreach (var mapParent in this.WorldData.worldObjectsHolder.MapParents)
+            {
+                if (!(mapParent is Colony)) continue;
+
+                var colony = (Colony) mapParent;
+
+                if (colony.PersistentColony != this.Colony) continue;
+                
+                var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+                settlement.SetFaction(Faction.OfPlayer);
+
+                settlement.Tile = colony.Tile;
+                settlement.Name = colony.Name;
+
+                toAdd.Add(settlement);
+                toRemove.Add(colony);
+            }
+            
+            toAdd.Do(settlement => this.Game.World.worldObjects.Add(settlement));
+            toAdd.Clear();
+            
+            toRemove.Do(colony => this.Game.World.worldObjects.Remove(colony));
+            toRemove.Clear();
         }
     }
 }

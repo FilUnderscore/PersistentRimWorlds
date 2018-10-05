@@ -15,7 +15,7 @@ namespace PersistentWorlds.Patches.UI
         {
             var codes = new List<CodeInstruction>(instr);
 
-            for (var i = 0; i < codes.Count - 1; i++)
+            for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Newobj) continue;
                 if (codes[i].operand != AccessTools.Constructor(typeof(Page_CreateWorldParams))) continue;

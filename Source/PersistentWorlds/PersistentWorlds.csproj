@@ -55,6 +55,7 @@
     <Compile Include="Logic\PersistentWorldData.cs" />
     <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Patches\Game\Debug_Patches.cs" />
+    <Compile Include="Patches\Game\FactionManager_RecacheFactions_Patch.cs" />
     <Compile Include="Patches\Game\GameDataSaveLoader_SaveGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_InitNewGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_LoadGame_Patch.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="UI\ScrollableListUI.cs" />
     <Compile Include="World\BaseResettle.cs" />
     <Compile Include="World\BaseResettleCommand.cs" />
+    <Compile Include="World\Colony.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

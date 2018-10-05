@@ -8,6 +8,8 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorldData : IExposable
     {
+        public int NextColonyId = 1;
+        
         public WorldInfo info = new WorldInfo();
         public WorldGrid grid;
 
@@ -34,6 +36,8 @@ namespace PersistentWorlds.Logic
 
                 return;
             }
+            
+            Scribe_Values.Look<int>(ref NextColonyId, "nextColonyId");
             
             Scribe_Deep.Look<WorldInfo>(ref this.info, "info", new object[0]);
             PersistentWorldManager.PersistentWorld.Game.World.info = this.info;

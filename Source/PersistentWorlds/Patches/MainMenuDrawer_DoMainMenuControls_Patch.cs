@@ -16,7 +16,7 @@ namespace PersistentWorlds.Patches
         {
             var codes = new List<CodeInstruction>(instr);
 
-            for (var i = 0; i < codes.Count - 1; i++)
+            for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Call) continue;
                 if (codes[i + 4].opcode != OpCodes.Ldstr) continue;

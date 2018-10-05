@@ -36,7 +36,8 @@ namespace PersistentWorlds
             Converting,
             Loading,
             Finalizing,
-            Ingame
+            Ingame,
+            Saving
         }
         
         public PersistentWorldLoadSaver(string worldFolderPath)
@@ -192,15 +193,14 @@ namespace PersistentWorlds
         {
             this.DeletePreviousDirectories();
             this.CreateDirectoriesIfNotExistant();
-            
+
+            Status = PersistentWorldLoadStatus.Saving;
             Log.Message("Saving world...");
-            
-            Log.Message("b4 save: " + Current.Game.CurrentMap.listerThings.AllThings.Count);
             
             // If any world changes were made.
             world.WorldData = PersistentWorldData.Convert(PersistentWorldManager.PersistentWorld.Game);
-            
-            Log.Message("a4 save: " + Current.Game.CurrentMap.listerThings.AllThings.Count);
+
+            world.ConvertCurrentGameSettlements();
             
             SafeSaver.Save(this.worldFilePath, "world", delegate
             {
@@ -219,16 +219,16 @@ namespace PersistentWorlds
                     colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game, colony.ColonyData);
 
                 // TODO: Revise this fix one day.
-                if (sameNames.ContainsKey(colony.ColonyData.ColonyFaction.Name))
+                if (sameNames.ContainsKey(colony.AsFaction().Name))
                 {
-                    sameNames[colony.ColonyData.ColonyFaction.Name] = sameNames[colony.ColonyData.ColonyFaction.Name] + 1;
+                    sameNames[colony.AsFaction().Name] = sameNames[colony.AsFaction().Name] + 1;
                 }
                 else
                 {
-                    sameNames.Add(colony.ColonyData.ColonyFaction.Name, 1);
+                    sameNames.Add(colony.AsFaction().Name, 1);
                 }
 
-                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.ColonyData.ColonyFaction.Name].ToString() + colony.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
+                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.AsFaction().Name].ToString() + colony.AsFaction().Name + PersistentWorldColonyFile_Extension;
                 
                 SafeSaver.Save(colonySaveFile, "colony", delegate
                 {

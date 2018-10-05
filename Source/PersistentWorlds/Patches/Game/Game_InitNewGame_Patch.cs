@@ -68,6 +68,7 @@ namespace PersistentWorlds.Patches
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
             var colony = PersistentColony.Convert(Current.Game);
+            colony.ColonyData.Id = PersistentWorldManager.PersistentWorld.WorldData.NextColonyId++;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             PersistentWorldManager.PersistentWorld.Colony = colony;
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);

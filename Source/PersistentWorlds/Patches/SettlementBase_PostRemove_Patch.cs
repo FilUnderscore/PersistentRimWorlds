@@ -3,6 +3,7 @@ using RimWorld.Planet;
 
 namespace PersistentWorlds.Patches
 {
+    /*
     [HarmonyPatch(typeof(SettlementBase), "PostRemove")]
     public static class SettlementBase_PostRemove_Patch
     {
@@ -18,4 +19,5 @@ namespace PersistentWorlds.Patches
             return true;
         }
     }
+    */
 }

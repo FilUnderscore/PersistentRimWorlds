@@ -9,8 +9,7 @@ namespace PersistentWorlds
 
         public static bool Active()
         {
-            return PersistentWorld != null || WorldLoadSaver != null &&
-                   WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
+            return PersistentWorld != null && WorldLoadSaver != null && PersistentWorld.Colony != null;
         }
     }
 }
