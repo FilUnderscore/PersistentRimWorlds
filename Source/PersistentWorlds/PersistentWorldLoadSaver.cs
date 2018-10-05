@@ -194,6 +194,9 @@ namespace PersistentWorlds
             
             Log.Message("Saving world...");
             
+            // If any world changes were made.
+            world.WorldData = PersistentWorldData.Convert(PersistentWorldManager.PersistentWorld.Game);
+            
             SafeSaver.Save(this.worldFilePath, "world", delegate
             {
                 ScribeMetaHeaderUtility.WriteMetaHeader();
@@ -206,9 +209,20 @@ namespace PersistentWorlds
             
             foreach (var colony in world.Colonies)
             {
+                // If colony changed name or data changed..
+                if(PersistentWorldManager.PersistentWorld.Colony == colony)
+                    colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game);
+
                 // TODO: Revise this fix one day.
-                sameNames.Add(colony.ColonyData.ColonyName, sameNames.ContainsKey(colony.ColonyData.ColonyName) ? sameNames[colony.ColonyData.ColonyName] + 1 : 1);
-                
+                if (sameNames.ContainsKey(colony.ColonyData.ColonyName))
+                {
+                    sameNames[colony.ColonyData.ColonyName] = sameNames[colony.ColonyData.ColonyName] + 1;
+                }
+                else
+                {
+                    sameNames.Add(colony.ColonyData.ColonyName, 1);
+                }
+
                 var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.ColonyData.ColonyName].ToString() + colony.ColonyData.ColonyName + PersistentWorldColonyFile_Extension;
                 
                 SafeSaver.Save(colonySaveFile, "colony", delegate
@@ -219,6 +233,7 @@ namespace PersistentWorlds
             
             Log.Message("Saved colony data.");
 
+            // TODO: Save any newly created maps, if not already.
             foreach (var map in world.Maps)
             {
                 var mapSaveFile = mapsDirectory + "/" + map.Tile.ToString() + PersistentWorldMapFile_Extension;

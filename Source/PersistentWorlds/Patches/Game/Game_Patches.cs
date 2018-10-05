@@ -36,10 +36,33 @@ namespace PersistentWorlds.Patches
             }
         }
 
-        //[HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame")]
+        [HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame")]
         public static class GameDataSaveLoader_SaveGame_Patch
         {
             // TODO: Disallow saving through normal save menu.
+            [HarmonyPrefix]
+            public static bool SaveGame_Prefix(string fileName)
+            {
+                if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
+                    PersistentWorldManager.WorldLoadSaver.Status !=
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
+                    return true;
+                
+                PersistentWorldManager.WorldLoadSaver.SaveWorld(PersistentWorldManager.PersistentWorld);
+                Log.Message("World saved.");
+                
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(Game), "InitNewGame")]
+        public static class Game_InitNewGame_Patch
+        {
+            [HarmonyPrefix]
+            public static bool InitNewGame_Prefix(Game __instance)
+            {
+                return true;
+            }
         }
     }
 }

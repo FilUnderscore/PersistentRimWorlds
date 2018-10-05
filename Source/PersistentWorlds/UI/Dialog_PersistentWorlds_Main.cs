@@ -24,7 +24,7 @@ namespace PersistentWorlds.UI
             
             TooltipHandler.TipRegion(rect1, "Disclaimer: Loading/Saving a persistent world can take a while depending on how many colonies are present.");
             
-            optList.Add(new ListableOption("Load World", delegate
+            optList.Add(new ListableOption("Load-PersistentWorlds".Translate(), delegate
             {
                 Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList());
             }, null));
@@ -37,7 +37,7 @@ namespace PersistentWorlds.UI
                 }));
             }
             
-            optList.Add(new ListableOption("Back to Menu", delegate
+            optList.Add(new ListableOption("BackToMenu".Translate(), delegate
             {
                 GenScene.GoToMainMenu();
             }));

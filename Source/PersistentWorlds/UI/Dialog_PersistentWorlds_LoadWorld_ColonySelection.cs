@@ -42,7 +42,7 @@ namespace PersistentWorlds.UI
                 var scrollableListItem = new ScrollableListItem();
 
                 scrollableListItem.Text = colony.ColonyData.ColonyName;
-                scrollableListItem.ActionButtonText = "Load";
+                scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                     {
                         PersistentWorldManager.PersistentWorld.Colony = colony;
@@ -54,7 +54,7 @@ namespace PersistentWorlds.UI
                     
                 };
                 scrollableListItem.DeleteButtonTooltip =
-                    "Delete this colony permanently. It will disappear from the world map without any trace.";
+                    "DeleteColony-PersistentWorlds".Translate();
                 
                 items.Add(scrollableListItem);
             }
@@ -68,7 +68,7 @@ namespace PersistentWorlds.UI
 
             List<ListableOption> optList = new List<ListableOption>();
 
-            optList.Add(new ListableOption("New Colony", delegate
+            optList.Add(new ListableOption("NewColony".Translate(), delegate
             {
                 // TODO: Have normal creation menus without creating world choice however... include scenario and characters and storyteller, as well as world location.
                 // TODO: Have other colonies on same world tiles loaded as a settlement with different color as a whole new worldobject that shows up in Colonies tab on world map.

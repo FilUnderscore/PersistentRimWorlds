@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using Harmony;
+using PersistentWorlds.Logic;
 using PersistentWorlds.UI;
 using RimWorld;
 using RimWorld.Planet;
@@ -60,11 +61,11 @@ namespace PersistentWorlds.Patches.UI
                 if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
                     return;
 
+                PersistentWorldManager.PersistentWorld.Game.Scenario = Current.Game.Scenario;
                 Current.Game = PersistentWorldManager.PersistentWorld.Game;
                 
                 // TODO: Review
                 Current.Game.InitData = new GameInitData();
-                Current.Game.InitData.gameToLoad = "PersistentWorld";
                 PersistentWorldManager.WorldLoadSaver.LoadMaps();
                 
                 Log.Message("Test 2");
@@ -72,7 +73,16 @@ namespace PersistentWorlds.Patches.UI
                 //PersistentWorldManager.PersistentWorld.Game.World.grid.StandardizeTileData();
                 //PersistentWorldManager.PersistentWorld.Game.World.FinalizeInit();
                 //Find.Scenario.PostWorldGenerate();
-                
+                if (Current.Game.Scenario == null)
+                {
+                    Log.Error("game scenario null.");
+                }
+                else
+                {
+                    Log.Error("Game scenario not null.");
+                    Current.Game.Scenario.PostWorldGenerate();
+                }
+
                 // TODO: Review
                 Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));
                 Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_FileList));

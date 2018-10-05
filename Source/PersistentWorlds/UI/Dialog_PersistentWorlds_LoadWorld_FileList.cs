@@ -44,7 +44,7 @@ namespace PersistentWorlds.UI
                 var scrollableListItem = new ScrollableListItem();
 
                 scrollableListItem.Text = worldDirInfo.Name;
-                scrollableListItem.ActionButtonText = "Load";
+                scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
                     MemoryUtility.ClearAllMapsAndWorld();
@@ -58,7 +58,7 @@ namespace PersistentWorlds.UI
                     Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
                 };
 
-                scrollableListItem.DeleteButtonTooltip = "Delete persistent world.";
+                scrollableListItem.DeleteButtonTooltip = "Delete-PersistentWorlds".Translate();
                 scrollableListItem.DeleteButtonAction = delegate
                 {
                     // TODO: Remove directory.
@@ -82,7 +82,7 @@ namespace PersistentWorlds.UI
                 }
                 
                 scrollableListItem.Text = Path.GetFileNameWithoutExtension(allSavedGameFile.Name);
-                scrollableListItem.ActionButtonText = "Convert";
+                scrollableListItem.ActionButtonText = "Convert".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
                     // TODO: Launch converter...
