@@ -129,7 +129,9 @@ namespace PersistentWorlds.Logic
             AccessTools.Field(typeof(Game), "maps").SetValue(this.Game, this.Maps);
 
             Game.CurrentMap = ((num < 0) ? null : this.Maps[num]);
-            Find.CameraDriver.Expose();
+            
+            if(Find.CameraDriver != null)
+                Find.CameraDriver.Expose();
             
             for (int i = 0; i < this.Maps.Count; i++)
             {
@@ -155,7 +157,6 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            //PersistentWorldManager.WorldLoader.LoadMaps(this);
             PersistentWorldManager.WorldLoadSaver.LoadMaps();
         }
 

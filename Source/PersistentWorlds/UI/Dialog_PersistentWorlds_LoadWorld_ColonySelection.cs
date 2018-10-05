@@ -32,6 +32,7 @@ namespace PersistentWorlds.UI
 
         private void LoadColoniesAsItems()
         {
+            // TODO: Review
             PersistentWorldManager.WorldLoadSaver.LoadColonies();
             
             for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)

@@ -60,6 +60,9 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
+            Log.Message("Construct components");
+            PersistentWorldManager.PersistentWorld.Game.World.ConstructComponents();
+            
             Log.Message("Called ExposeComponents in persistentworlddata.");
             
             Scribe_Deep.Look<TickManager>(ref this.TickManager, "tickManager", new object[0]);
