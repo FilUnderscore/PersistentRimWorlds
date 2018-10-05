@@ -92,9 +92,13 @@ namespace PersistentWorlds.Patches
 
                 Log.Warning("MapSize: " + mapSize.ToString());
                 
+                PersistentWorldManager.WorldLoadSaver.LoadMaps();
+                
                 // TODO: Use Map Size from World Info or have custom map sizes depending on colony data.
                 var map = MapGenerator.GenerateMap(mapSize, settlement, settlement.MapGeneratorDef,
                     settlement.ExtraGenStepDefs, null);
+                
+                Log.Message("UID: " + map.uniqueID);
                 
                 Current.Game.CurrentMap = map;
                 
@@ -118,6 +122,7 @@ namespace PersistentWorlds.Patches
                     PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
                 var colony = PersistentColony.Convert(Current.Game);
+                colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
                 PersistentWorldManager.PersistentWorld.Colony = colony;
                 PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
                 
@@ -141,6 +146,37 @@ namespace PersistentWorlds.Patches
             public static void FinalizeInit_Postfix(Map __instance)
             {
                 Log.Message("Lister all things POST.." + __instance.listerThings.AllThings.Count);
+            }
+        }
+
+        [HarmonyPatch(typeof(Map), "MapUpdate")]
+        public static class Map_MapUpdate_Patch
+        {
+            [HarmonyPrefix]
+            public static bool MapUpdate_Prefix(Map __instance)
+            {
+                if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
+                    PersistentWorldManager.WorldLoadSaver.Status !=
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
+                    return true;
+
+                return PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Contains(__instance.Tile);
+            }
+        }
+
+        [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
+        public static class MapGenerator_GenerateMap_Patch
+        {
+            [HarmonyPostfix]
+            public static void GenerateMap_Postfix(Map __result)
+            {
+                if (!PersistentWorldManager.Active())
+                    return;
+
+                if (PersistentWorldManager.PersistentWorld.Colony != null)
+                {
+                    PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
+                }
             }
         }
     }

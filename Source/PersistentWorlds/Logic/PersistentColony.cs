@@ -6,11 +6,11 @@ namespace PersistentWorlds.Logic
     {
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
-        public static PersistentColony Convert(Game game)
+        public static PersistentColony Convert(Game game, PersistentColonyData colonyColonyData = null)
         {
             PersistentColony persistentColony = new PersistentColony();
             
-            persistentColony.ColonyData = PersistentColonyData.Convert(game);
+            persistentColony.ColonyData = PersistentColonyData.Convert(game, colonyColonyData);
 
             return persistentColony;
         }

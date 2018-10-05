@@ -87,7 +87,6 @@ namespace PersistentWorlds.Patches.UI
                 
                 // TODO: Review
                 Current.Game.InitData = new GameInitData();
-                PersistentWorldManager.WorldLoadSaver.LoadMaps();
                 
                 PersistentWorldManager.PersistentWorld.Game.World.pathGrid = new WorldPathGrid();
                 //PersistentWorldManager.PersistentWorld.Game.World.grid.StandardizeTileData();

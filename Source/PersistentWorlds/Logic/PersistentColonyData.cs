@@ -10,25 +10,54 @@ namespace PersistentWorlds.Logic
     {
         public PersistentColonyGameData GameData = new PersistentColonyGameData();
 
+        // TODO: Implement support for 'Colonies' instead of using Factions and custom settlement world objects.
+        // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
-        public Pawn ColonyLeader; // TODO: Support mod like Psychology with Mayor or RelationsTab in the future.
+        
+        // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
+        public List<int> ActiveWorldTiles = new List<int>();
         
         public void ExposeData()
         {
             Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
-            Scribe_Deep.Look<Pawn>(ref ColonyLeader, "leader");
             
             Scribe_Deep.Look<PersistentColonyGameData>(ref GameData, "gameData");
+            
+            Scribe_Collections.Look<int>(ref ActiveWorldTiles, "activeWorldTiles");
         }
 
-        public static PersistentColonyData Convert(Game game)
+        public static PersistentColonyData Convert(Game game, PersistentColonyData colonyColonyData)
         {
-            var persistentColonyData = new PersistentColonyData();
+            Log.Message("Here 1");
+            
+            var persistentColonyData = new PersistentColonyData
+            {
+                ColonyFaction = game.World.factionManager.OfPlayer,
+                GameData = PersistentColonyGameData.Convert(game)
+            };
 
-            persistentColonyData.ColonyFaction = game.World.factionManager.OfPlayer;
-            
-            persistentColonyData.GameData = PersistentColonyGameData.Convert(game);
-            
+            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.PersistentWorld.Colony == null)
+            {
+                foreach (var map in game.Maps)
+                {
+                    if (map == null)
+                    {
+                        Log.Error("Map is null");
+                    }
+
+                    if (map?.Tile == null)
+                    {
+                        Log.Error("Map tile null");
+                    }
+                    
+                    persistentColonyData.ActiveWorldTiles.Add(map.Tile);
+                }
+            }
+            else
+            {
+                persistentColonyData.ActiveWorldTiles = colonyColonyData.ActiveWorldTiles;
+            }
+
             return persistentColonyData;
         }
     }

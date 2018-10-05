@@ -115,19 +115,6 @@ namespace PersistentWorlds
             
             this.PreloadWorldColoniesMaps();
             
-            /* TEST */
-            // Select world to load XML node data for.
-            //ScribeMultiLoader.SetScribeCurXmlParentByFilePath(this.worldFilePath);
-            
-            // Required otherwise errors because of internal requirements.
-            //ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
-
-            //this.LoadColonies();
-            
-            // TODO: Review TEST
-            
-            /* TEST ^ */
-            
             Log.Message("Loading world " + worldFolderPath);
             
             // Select world to load XML node data for.
@@ -139,9 +126,6 @@ namespace PersistentWorlds
             // Load data.
             PersistentWorldManager.PersistentWorld = new PersistentWorld();
             PersistentWorldManager.PersistentWorld.WorldData.ExposeData();
-            
-            // TODO: Review
-            //Scribe.loader.FinalizeLoading();
             
             Log.Message("Loaded world data...");
         }
@@ -175,7 +159,7 @@ namespace PersistentWorlds
             
             Log.Message("Loading maps...");
 
-            List<Map> maps = new List<Map>();
+            var maps = new List<Map>();
             
             foreach (var mapFile in mapFiles)
             {
@@ -184,7 +168,8 @@ namespace PersistentWorlds
                 var map = new Map();
                 map.ExposeData();
 
-                //PersistentWorldManager.PersistentWorld.Maps.Add(map);
+                // TODO: Check if map is being used by a colony loaded right now...
+                
                 maps.Add(map);
             }
             
@@ -231,7 +216,7 @@ namespace PersistentWorlds
             {
                 // If colony changed name or data changed..
                 if(PersistentWorldManager.PersistentWorld.Colony == colony)
-                    colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game);
+                    colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game, colony.ColonyData);
 
                 // TODO: Revise this fix one day.
                 if (sameNames.ContainsKey(colony.ColonyData.ColonyFaction.Name))
