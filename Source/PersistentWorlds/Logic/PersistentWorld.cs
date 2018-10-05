@@ -70,7 +70,6 @@ namespace PersistentWorlds.Logic
             this.Game.drugPolicyDatabase = Colony.ColonyData.GameData.drugPolicyDatabase;
             this.Game.tutor = Colony.ColonyData.GameData.tutor;
             this.Game.dateNotifier = Colony.ColonyData.GameData.dateNotifier;
-            this.Game.uniqueIDsManager = Colony.ColonyData.GameData.uniqueIDsManager;
             this.Game.components = Colony.ColonyData.GameData.gameComponents;
             
             if (Scribe.mode == LoadSaveMode.LoadingVars)
@@ -201,6 +200,7 @@ namespace PersistentWorlds.Logic
             this.Game.World.gameConditionManager = this.WorldData.gameConditionManager;
             this.Game.World.storyState = this.WorldData.storyState;
             this.Game.World.features = this.WorldData.worldFeatures;
+            this.Game.uniqueIDsManager = this.WorldData.uniqueIDsManager;
             this.Game.World.components = this.WorldData.worldComponents;
             
             AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents", new Type[0]).Invoke(this.Game.World, new object[0]);

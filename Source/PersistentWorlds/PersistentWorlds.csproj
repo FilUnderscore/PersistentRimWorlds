@@ -50,13 +50,16 @@
   <ItemGroup>
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
-    <Compile Include="Logic\PersistentColonyFactionDef.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
     <Compile Include="Logic\PersistentWorld.cs" />
     <Compile Include="Logic\PersistentWorldData.cs" />
     <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Patches\Game\Debug_Patches.cs" />
-    <Compile Include="Patches\Game\Game_Patches.cs" />
+    <Compile Include="Patches\Game\GameDataSaveLoader_SaveGame_Patch.cs" />
+    <Compile Include="Patches\Game\Game_InitNewGame_Patch.cs" />
+    <Compile Include="Patches\Game\Game_LoadGame_Patch.cs" />
+    <Compile Include="Patches\Game\MapGenerator_GenerateMap_Patch.cs" />
+    <Compile Include="Patches\Game\Map_UpdateMap_Patch.cs" />
     <Compile Include="Patches\Game\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
     <Compile Include="Patches\Game\WorldGenStep_Components_Patch.cs" />
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
@@ -65,7 +68,9 @@
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
     <Compile Include="Patches\Root_Play_Start_Patch.cs" />
     <Compile Include="Patches\SettlementBase_PostRemove_Patch.cs" />
-    <Compile Include="Patches\UI\Scenario_Patches.cs" />
+    <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
+    <Compile Include="Patches\UI\Page_SelectLandingSite_Patch.cs" />
+    <Compile Include="Patches\UI\Scenario_Patch.cs" />
     <Compile Include="PersistentWorldLoadSaver.cs" />
     <Compile Include="PersistentWorldManager.cs" />
     <Compile Include="PersistentWorldsMod.cs" />

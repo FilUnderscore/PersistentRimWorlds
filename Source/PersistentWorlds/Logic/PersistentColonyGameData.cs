@@ -26,7 +26,6 @@ namespace PersistentWorlds.Logic
         public DrugPolicyDatabase drugPolicyDatabase = new DrugPolicyDatabase();
         public Tutor tutor = new Tutor();
         public DateNotifier dateNotifier = new DateNotifier();
-        public UniqueIDsManager uniqueIDsManager = new UniqueIDsManager();
         public List<GameComponent> gameComponents = new List<GameComponent>();
 
         public void ExposeData()
@@ -76,8 +75,6 @@ namespace PersistentWorlds.Logic
             
             Scribe_Deep.Look<DateNotifier>(ref this.dateNotifier, "dateNotifier", new object[0]);
             
-            Scribe_Deep.Look<UniqueIDsManager>(ref this.uniqueIDsManager, "uniqueIDsManager", new object[0]);
-            
             Scribe_Collections.Look<GameComponent>(ref this.gameComponents, "components", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game });
             
             if(Find.CameraDriver != null)
@@ -106,7 +103,6 @@ namespace PersistentWorlds.Logic
             PersistentWorldManager.PersistentWorld.Game.drugPolicyDatabase = this.drugPolicyDatabase;
             PersistentWorldManager.PersistentWorld.Game.tutor = this.tutor;
             PersistentWorldManager.PersistentWorld.Game.dateNotifier = this.dateNotifier;
-            PersistentWorldManager.PersistentWorld.Game.uniqueIDsManager = this.uniqueIDsManager;
             PersistentWorldManager.PersistentWorld.Game.components = this.gameComponents;
         }
 
@@ -131,10 +127,8 @@ namespace PersistentWorlds.Logic
                 drugPolicyDatabase = game.drugPolicyDatabase,
                 tutor = game.tutor,
                 dateNotifier = game.dateNotifier,
-                uniqueIDsManager = game.uniqueIDsManager,
                 gameComponents = game.components
             };
-
 
             return persistentColonyGameData;
         }

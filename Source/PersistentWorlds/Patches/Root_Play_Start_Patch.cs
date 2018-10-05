@@ -12,6 +12,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(Root_Play), "Start")]
     public static class Root_Play_Start_Patch
     {
+	    /*
         [HarmonyPrefix]
         public static bool Start_Prefix(Root_Play __instance)
         {
@@ -132,15 +133,6 @@ namespace PersistentWorlds.Patches
                 Log.Error("Critical error in root Start(): " + arg, false);
             }
         }
+        */
     }
-
-	[HarmonyPatch(typeof(WorldGrid), "ExposeData")]
-	public static class WorldGrid_ExposeData_Temp_Patch
-	{
-		[HarmonyPrefix]
-		public static void Patch(WorldGrid __instance)
-		{
-			Log.Message("Deflate Mdoe??? " + Scribe.mode.ToString());
-		}
-	}
 }

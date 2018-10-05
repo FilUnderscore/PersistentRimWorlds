@@ -86,6 +86,9 @@ namespace PersistentWorlds.Logic
             Scribe_Deep.Look<WorldFeatures>(ref this.worldFeatures, "worldFeatures", new object[0]);
             PersistentWorldManager.PersistentWorld.Game.World.features = this.worldFeatures;
             
+            Scribe_Deep.Look<UniqueIDsManager>(ref this.uniqueIDsManager, "uniqueIDsManager", new object[0]);
+            PersistentWorldManager.PersistentWorld.Game.uniqueIDsManager = this.uniqueIDsManager;
+            
             Scribe_Collections.Look<WorldComponent>(ref this.worldComponents, "worldComponents", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game.World });
             PersistentWorldManager.PersistentWorld.Game.World.components = this.worldComponents;
         }
@@ -93,20 +96,21 @@ namespace PersistentWorlds.Logic
         public static PersistentWorldData Convert(Game game)
         {
             Log.Message("Called PersistentWorldData conbvert.");
-            PersistentWorldData persistentWorldData = new PersistentWorldData();
+            var persistentWorldData = new PersistentWorldData
+            {
+                info = game.World.info,
+                grid = game.World.grid,
+                TickManager = game.tickManager,
+                factionManager = game.World.factionManager,
+                worldPawns = game.World.worldPawns,
+                worldObjectsHolder = game.World.worldObjects,
+                gameConditionManager = game.World.gameConditionManager,
+                storyState = game.World.storyState,
+                worldFeatures = game.World.features,
+                uniqueIDsManager = game.uniqueIDsManager,
+                worldComponents = game.World.components
+            };
 
-            persistentWorldData.info = game.World.info;
-            persistentWorldData.grid = game.World.grid;
-
-            persistentWorldData.TickManager = game.tickManager;
-            persistentWorldData.factionManager = game.World.factionManager;
-            persistentWorldData.worldPawns = game.World.worldPawns;
-            persistentWorldData.worldObjectsHolder = game.World.worldObjects;
-            persistentWorldData.gameConditionManager = game.World.gameConditionManager;
-            persistentWorldData.storyState = game.World.storyState;
-            persistentWorldData.worldFeatures = game.World.features;
-            persistentWorldData.worldComponents = game.World.components;
-            
             return persistentWorldData;
         }
     }

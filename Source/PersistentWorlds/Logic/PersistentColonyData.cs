@@ -28,8 +28,6 @@ namespace PersistentWorlds.Logic
 
         public static PersistentColonyData Convert(Game game, PersistentColonyData colonyColonyData)
         {
-            Log.Message("Here 1");
-            
             var persistentColonyData = new PersistentColonyData
             {
                 ColonyFaction = game.World.factionManager.OfPlayer,
@@ -40,15 +38,7 @@ namespace PersistentWorlds.Logic
             {
                 foreach (var map in game.Maps)
                 {
-                    if (map == null)
-                    {
-                        Log.Error("Map is null");
-                    }
-
-                    if (map?.Tile == null)
-                    {
-                        Log.Error("Map tile null");
-                    }
+                    if (persistentColonyData.ActiveWorldTiles.Contains(map.Tile)) continue;
                     
                     persistentColonyData.ActiveWorldTiles.Add(map.Tile);
                 }
