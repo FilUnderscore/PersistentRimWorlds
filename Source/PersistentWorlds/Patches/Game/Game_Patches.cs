@@ -61,7 +61,15 @@ namespace PersistentWorlds.Patches
             [HarmonyPrefix]
             public static bool InitNewGame_Prefix(Game __instance)
             {
-                return true;
+                if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
+                    PersistentWorldManager.WorldLoadSaver.Status !=
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating)
+                    return true;
+                
+                Log.Message("Creating new colony.");
+                
+                
+                return false;
             }
         }
     }

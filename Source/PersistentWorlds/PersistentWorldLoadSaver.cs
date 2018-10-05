@@ -214,16 +214,16 @@ namespace PersistentWorlds
                     colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game);
 
                 // TODO: Revise this fix one day.
-                if (sameNames.ContainsKey(colony.ColonyData.ColonyName))
+                if (sameNames.ContainsKey(colony.ColonyData.ColonyFaction.Name))
                 {
-                    sameNames[colony.ColonyData.ColonyName] = sameNames[colony.ColonyData.ColonyName] + 1;
+                    sameNames[colony.ColonyData.ColonyFaction.Name] = sameNames[colony.ColonyData.ColonyFaction.Name] + 1;
                 }
                 else
                 {
-                    sameNames.Add(colony.ColonyData.ColonyName, 1);
+                    sameNames.Add(colony.ColonyData.ColonyFaction.Name, 1);
                 }
 
-                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.ColonyData.ColonyName].ToString() + colony.ColonyData.ColonyName + PersistentWorldColonyFile_Extension;
+                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.ColonyData.ColonyFaction.Name].ToString() + colony.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
                 
                 SafeSaver.Save(colonySaveFile, "colony", delegate
                 {

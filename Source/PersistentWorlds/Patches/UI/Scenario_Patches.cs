@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Runtime.Remoting.Messaging;
 using Harmony;
 using PersistentWorlds.Logic;
 using PersistentWorlds.UI;
@@ -17,7 +18,7 @@ namespace PersistentWorlds.Patches.UI
         public static class Scenario_Patch
         {
             [HarmonyTranspiler]
-            public static IEnumerable<CodeInstruction> GetFirstConfigPage_Transpiler(IEnumerable<CodeInstruction> instr)
+            public static IEnumerable<CodeInstruction> GetFirstConfigPage_Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
             {
                 var codes = new List<CodeInstruction>(instr);
 
@@ -28,10 +29,31 @@ namespace PersistentWorlds.Patches.UI
 
                     var codesToInsert = new List<CodeInstruction>();
 
-                    //codes[i].operand = AccessTools.Constructor(typeof(Page_PersistentWorlds_SelectWorldList));
+                    var skipLabel1 = ilGen.DefineLabel();
+                    var skipLabel2 = ilGen.DefineLabel();
+
+                    Log.Message("i-1: " + codes[i-1].ToString());
+                    Log.Message("i+2: " + codes[i+2].ToString());
+                    
+                    codes[i - 1].labels.Add(skipLabel1);
+                    codes[i + 2].labels.Add(skipLabel2);
+                    
+                    var toInsert = new List<CodeInstruction>();
+
+                    toInsert.Add(new CodeInstruction(OpCodes.Ldsfld,
+                        AccessTools.Field(typeof(PersistentWorldManager), "PersistentWorld")));
+                    toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, skipLabel1));
+
+                    toInsert.Add(new CodeInstruction(OpCodes.Ldsfld,
+                        AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver")));
+                    toInsert.Add(new CodeInstruction(OpCodes.Brtrue_S, skipLabel2));
+                    
+                    codes.InsertRange(i - 1, toInsert);
+                    
+                    codes.Do(c => Log.Message(c.ToString()));
                     
                     // TODO: Add a branch (IF) to check if we have loaded a persistent world, if not show this menu then.
-                    codes.RemoveRange(i, 3); // Don't need to generate/select world. Will be already loaded into memory.
+                    //codes.RemoveRange(i, 3); // Don't need to generate/select world. Will be already loaded into memory.
                     
                     break;
                 }
@@ -68,20 +90,13 @@ namespace PersistentWorlds.Patches.UI
                 Current.Game.InitData = new GameInitData();
                 PersistentWorldManager.WorldLoadSaver.LoadMaps();
                 
-                Log.Message("Test 2");
                 PersistentWorldManager.PersistentWorld.Game.World.pathGrid = new WorldPathGrid();
                 //PersistentWorldManager.PersistentWorld.Game.World.grid.StandardizeTileData();
                 //PersistentWorldManager.PersistentWorld.Game.World.FinalizeInit();
-                //Find.Scenario.PostWorldGenerate();
-                if (Current.Game.Scenario == null)
-                {
-                    Log.Error("game scenario null.");
-                }
-                else
-                {
-                    Log.Error("Game scenario not null.");
-                    Current.Game.Scenario.PostWorldGenerate();
-                }
+                Current.Game.Scenario.PostWorldGenerate();
+
+                PersistentWorldManager.WorldLoadSaver.Status =
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
 
                 // TODO: Review
                 Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));

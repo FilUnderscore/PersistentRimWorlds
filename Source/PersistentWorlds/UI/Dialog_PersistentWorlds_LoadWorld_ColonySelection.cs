@@ -41,7 +41,7 @@ namespace PersistentWorlds.UI
                 
                 var scrollableListItem = new ScrollableListItem();
 
-                scrollableListItem.Text = colony.ColonyData.ColonyName;
+                scrollableListItem.Text = colony.ColonyData.ColonyFaction.Name;
                 scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                     {
