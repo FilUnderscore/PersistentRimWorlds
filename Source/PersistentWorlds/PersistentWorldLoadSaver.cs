@@ -78,17 +78,17 @@ namespace PersistentWorlds
         {
             // TODO: Review
             
-            /*
             if (Directory.Exists(this.worldFolderPath))
             {
                 Directory.Delete(this.worldFolderPath, true);
             }
-            */
 
+            /*
             if (Directory.Exists(this.mapsDirectory))
             {
                 Directory.Delete(this.mapsDirectory, true);
             }
+            */
         }
         
         /**

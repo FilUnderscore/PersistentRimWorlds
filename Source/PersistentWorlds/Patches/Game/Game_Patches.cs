@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -107,6 +108,9 @@ namespace PersistentWorlds.Patches
                 Current.Game.InitData = null;
                 PersistentWorldManager.WorldLoadSaver.Status =
                     PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
+
+                PersistentWorldManager.PersistentWorld.Colonies.Add(PersistentColony.Convert(Current.Game));
+                PersistentWorldManager.PersistentWorld.Maps.Add(map);
                 
                 return false;
             }
