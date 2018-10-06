@@ -58,6 +58,8 @@ namespace PersistentWorlds.UI
                 scrollableListItem.DeleteButtonTooltip =
                     "DeleteColony-PersistentWorlds".Translate();
                 
+                // TODO: Show date/time of file save.
+                
                 items.Add(scrollableListItem);
             }
         }

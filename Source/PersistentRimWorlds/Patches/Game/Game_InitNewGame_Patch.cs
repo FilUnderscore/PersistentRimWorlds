@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Harmony;
 using PersistentWorlds.Logic;
 using RimWorld;
@@ -63,6 +64,10 @@ namespace PersistentWorlds.Patches
             PersistentWorldManager.PersistentWorld.Colony = colony;
             colony.SetFactionData();
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
+            PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<Map>() { map });
+            
+            // TODO: View here
+            //PersistentWorldManager.PersistentWorld.ConvertSettlementsToColonies();
                 
             return false;
         }       

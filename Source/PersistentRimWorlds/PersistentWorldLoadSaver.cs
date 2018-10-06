@@ -206,6 +206,8 @@ namespace PersistentWorlds
             Status = PersistentWorldLoadStatus.Saving;
             Log.Message("Saving world...");
             
+            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+            
             // If any world changes were made.
             world.WorldData = PersistentWorldData.Convert(PersistentWorldManager.PersistentWorld.Game);
 
@@ -262,6 +264,9 @@ namespace PersistentWorlds
             }
             
             Log.Message("Saved map data.");
+            
+            // TODO: Revert.
+            PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
             Log.Message("Saved world.");
         }

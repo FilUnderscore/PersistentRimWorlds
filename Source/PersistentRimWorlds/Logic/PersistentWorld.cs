@@ -224,7 +224,7 @@ namespace PersistentWorlds.Logic
             
             return persistentWorld;
         }
-        
+
         // Convert Settlements to Colony Bases (this.Colony) for saving
         public void ConvertCurrentGameSettlements(Game game)
         {
@@ -236,8 +236,6 @@ namespace PersistentWorlds.Logic
             {
                 if (settlement.Faction != Faction.OfPlayer)
                 {
-                    Log.Message("Settlement: " + settlement.Name);
-                    Log.Message("Faction: " + settlement.Faction.Name.ToString());
                     continue;
                 }
 
@@ -264,72 +262,33 @@ namespace PersistentWorlds.Logic
         // Convert Colony Bases to Settlements (this.Colony) for loading
         public void ConvertToCurrentGameSettlements()
         {   
-            Log.Message("One");
-            
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
-            Log.Message("Two");
-            
             foreach (var mapParent in this.WorldData.worldObjectsHolder.MapParents)
             {
-                Log.Message("Three");
-                
                 if (!(mapParent is Colony)) continue;
-
-                Log.Message("Four");
-                
+   
                 var colony = (Colony) mapParent;
-
-                Log.Message("Five");
                 
-                if (colony.PersistentColonyData == null)
-                {
-                    Log.Error("ColonyData is null for Colony WorldObject.");
-                    continue;
-                }
-                
-                Log.Message("Six");
-
                 if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
-                
-                Log.Message("Seven");
                 
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
-                
-                Log.Message("Eight");
 
-                if (colony.Map == null)
-                {
-                    Log.Error("Null Map");
-                    continue;
-                }
-
-                if (colony.Map.info == null)
-                {
-                    Log.Error("Null Map Info");
-                    continue;
-                }
-                
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 settlement.Name = colony.Name;
-
-                Log.Message("Nine");
                 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
             }
             
-            Log.Message("Ten");
             toAdd.Do(settlement => this.WorldData.worldObjectsHolder.Add(settlement));
             toAdd.Clear();
             
-            Log.Message("Eleven");
             toRemove.Do(colony => this.WorldData.worldObjectsHolder.Remove(colony));
             toRemove.Clear();
-            Log.Message("Twelve");
         }
 
         public void SortMaps(IEnumerable<Map> maps)
@@ -369,23 +328,6 @@ namespace PersistentWorlds.Logic
             if (this.Colony != null && this.Maps.ContainsKey(this.Colony))
             {
                 /*
-                 * Remove Unneeded Maps
-                 */
-                var toRemove = new List<Map>();
-
-                foreach (var map in this.Game.Maps)
-                {
-                    // TODO: Add map when needed so it doesn't get deinitialized by mistake.
-                    if (!this.Maps[this.Colony].Contains(map))
-                    {
-                        toRemove.Add(map);
-                    }
-                }
-
-                toRemove.Do(map => this.Game.DeinitAndRemoveMap(map));
-                toRemove.Clear();
-
-                /*
                  * Add Needed Maps
                  */
                 var toAdd = new List<Map>();
@@ -402,6 +344,23 @@ namespace PersistentWorlds.Logic
                 toAdd.Do(map => map.FinalizeLoading());
                 toAdd.Do(map => MapComponentUtility.MapGenerated(map));
                 toAdd.Clear();
+                
+                /*
+                 * Remove Unneeded Maps
+                 */
+                var toRemove = new List<Map>();
+
+                foreach (var map in this.Game.Maps)
+                {
+                    // TODO: Add map when needed so it doesn't get deinitialized by mistake.
+                    if (!this.Maps[this.Colony].Contains(map))
+                    {
+                        toRemove.Add(map);
+                    }
+                }
+
+                toRemove.Do(map => this.Game.DeinitAndRemoveMap(map));
+                toRemove.Clear();
             }
         }
     }
