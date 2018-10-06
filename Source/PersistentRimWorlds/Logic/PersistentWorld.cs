@@ -366,7 +366,7 @@ namespace PersistentWorlds.Logic
         {
             // Hooks in from Game UpdatePlay()
 
-            if (this.Colony != null)
+            if (this.Colony != null && this.Maps.ContainsKey(this.Colony))
             {
                 /*
                  * Remove Unneeded Maps
