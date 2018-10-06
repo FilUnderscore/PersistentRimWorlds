@@ -49,7 +49,6 @@ namespace PersistentWorlds.UI
                 {
                     MemoryUtility.ClearAllMapsAndWorld();
                     
-                    // TODO: Load world...
                     PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
                     PersistentWorldManager.WorldLoadSaver.LoadWorld();
 
@@ -61,10 +60,8 @@ namespace PersistentWorlds.UI
                 scrollableListItem.DeleteButtonTooltip = "Delete-PersistentWorlds".Translate();
                 scrollableListItem.DeleteButtonAction = delegate
                 {
-                    // TODO: Remove directory.
+                    // TODO: Implement deleting persistent worlds.
                 };
-                
-                // TODO: Check if is a persistent world...
                 
                 items.Add(scrollableListItem);
             }
@@ -85,7 +82,6 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Convert".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
-                    // TODO: Launch converter...
                     PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(allSavedGameFile.FullName);
                     PersistentWorldManager.WorldLoadSaver.Status =
                         PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting;

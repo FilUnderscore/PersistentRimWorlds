@@ -6,6 +6,8 @@ namespace PersistentWorlds.UI
 {
     public class MainTabWindow_Colonies : MainTabWindow
     {
+        // TODO: Draw.
+        
         public MainTabWindow_Colonies()
         {
             this.forcePause = true;

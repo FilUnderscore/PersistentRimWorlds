@@ -16,7 +16,6 @@ namespace PersistentWorlds.Patches
                 return true;
                 
             PersistentWorldManager.WorldLoadSaver.SaveWorld(PersistentWorldManager.PersistentWorld);
-            Log.Message("World saved.");
                 
             return false;
         }

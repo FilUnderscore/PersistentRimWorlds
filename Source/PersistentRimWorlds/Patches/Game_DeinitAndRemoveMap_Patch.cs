@@ -9,10 +9,10 @@ namespace PersistentWorlds.Patches
         [HarmonyPrefix]
         public static bool DeinitAndRemoveMap_Prefix(Game __instance, Map map)
         {
+            // TODO: Review
+            
             if (map.IsPlayerHome)
             {
-                Log.Message("Cancel Deinit and Remove.");
-                    
                 return false;
             }
 

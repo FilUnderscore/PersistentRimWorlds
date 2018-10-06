@@ -11,6 +11,8 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorld
     {
+        // TODO: Refactor.
+        
         // Game.World is accessed.
         public Game Game = new Game();
 

@@ -32,8 +32,8 @@ namespace PersistentWorlds.Logic
         {
             var persistentColonyData = new PersistentColonyData
             {
-                //ColonyFaction = game.World.factionManager.OfPlayer
-                ColonyFaction = game.World.factionManager.FirstFactionOfDef(FactionDefOf.PlayerColony),
+                // TODO: Review
+                ColonyFaction = PersistentWorldManager.PersistentWorld.Colony == null ? game.World.factionManager.FirstFactionOfDef(FactionDefOf.PlayerColony) : PersistentWorldManager.PersistentWorld.Colony.Faction,
                 GameData = PersistentColonyGameData.Convert(game)
             };
 

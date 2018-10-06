@@ -67,8 +67,6 @@
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
-    <Compile Include="Patches\Root_Play_Start_Patch.cs" />
-    <Compile Include="Patches\SettlementBase_PostRemove_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
     <Compile Include="Patches\UI\Page_SelectLandingSite_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />

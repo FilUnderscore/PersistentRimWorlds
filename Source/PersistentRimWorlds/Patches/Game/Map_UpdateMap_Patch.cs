@@ -14,21 +14,7 @@ namespace PersistentWorlds.Patches
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
                 return true;
 
-            if (PersistentWorldManager.PersistentWorld.Colony == null)
-            {
-                return true;
-            }
-            
-            /*
-            Log.Message("Current Tile: " + __instance.Tile);
-
-            foreach (var tile in PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles)
-            {
-                Log.Message("Tile: " + tile);
-            }
-            */
-
-            return PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Contains(__instance.Tile);
+            return PersistentWorldManager.PersistentWorld.Colony == null || PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Contains(__instance.Tile);
         }
     }
 }

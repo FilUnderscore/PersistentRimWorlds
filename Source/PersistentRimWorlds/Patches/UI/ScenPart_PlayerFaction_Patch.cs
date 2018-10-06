@@ -13,9 +13,7 @@ namespace PersistentWorlds.Patches.UI
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null)
                 return true;
 
-            // TODO: Review
-            Log.Message("PostGenerate PlayerFaction Cancelled.");
-
+            // TODO: Review.
             Find.GameInitData.playerFaction = PersistentWorldManager.PersistentWorld.WorldData.factionManager.OfPlayer;
             
             return false;

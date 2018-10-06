@@ -15,7 +15,6 @@ namespace PersistentWorlds.Patches
                 return true;
             }
             
-            Log.Message("LoadGameFromSaveFileNow_Patch called LoadWorld from PersistentWorld static var in PersistentWorldManager.");
             PersistentWorldManager.PersistentWorld.LoadWorld();
             
             return false;

@@ -32,7 +32,6 @@ namespace PersistentWorlds.UI
 
         private void LoadColoniesAsItems()
         {
-            // TODO: Review
             PersistentWorldManager.WorldLoadSaver.LoadColonies();
             
             for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
@@ -51,7 +50,7 @@ namespace PersistentWorlds.UI
                 
                 scrollableListItem.DeleteButtonAction = delegate
                 {
-                    
+                    // TODO: Allow colonies to be deleted.   
                 };
                 scrollableListItem.DeleteButtonTooltip =
                     "DeleteColony-PersistentWorlds".Translate();
@@ -74,8 +73,6 @@ namespace PersistentWorlds.UI
                 // TODO: Have other colonies on same world tiles loaded as a settlement with different color as a whole new worldobject that shows up in Colonies tab on world map.
                 Find.WindowStack.Add((Window) new Page_SelectScenario());
             }));
-            
-            //optList.Add(new ListableOption("Back to Menu", delegate { Find.WindowStack.TryRemove(this); }));
             
             double num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);
             

@@ -15,7 +15,7 @@ namespace PersistentWorlds.Patches
         {
             if (Find.WorldObjects.AnyWorldObjectAt(__instance.Tile, WorldObjectDefOf.AbandonedSettlement))
             {
-                List<Gizmo> gizmos = new List<Gizmo>(__result);
+                var gizmos = new List<Gizmo>(__result);
 
                 gizmos.RemoveAll(g => g.GetType() == typeof(Command_Settle));
                 gizmos.Insert(0, new BaseResettleCommand(__instance));

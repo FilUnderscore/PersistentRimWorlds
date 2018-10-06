@@ -23,7 +23,6 @@ namespace PersistentWorlds.Patches
             MemoryUtility.UnloadUnusedUnityAssets();
             Current.ProgramState = ProgramState.MapInitializing;
 
-            Log.Warning("Setting ScribeMode to LoadingVars in Game_LoadGame_Patch to test.");
             Scribe.mode = LoadSaveMode.LoadingVars;
                 
             persistentWorld.ExposeAndFillGameSmallComponents();

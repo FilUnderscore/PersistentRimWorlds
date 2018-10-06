@@ -18,9 +18,9 @@ namespace PersistentWorlds.UI
         {
             GUI.BeginGroup(inRect);
 
-            Rect rect1 = new Rect((inRect.width - 170f) / 2, 0.0f, 170f, inRect.height);
+            var rect1 = new Rect((inRect.width - 170f) / 2, 0.0f, 170f, inRect.height);
 
-            List<ListableOption> optList = new List<ListableOption>();
+            var optList = new List<ListableOption>();
             
             TooltipHandler.TipRegion(rect1, "Disclaimer: Loading/Saving a persistent world can take a while depending on how many colonies are present.");
             
@@ -37,12 +37,9 @@ namespace PersistentWorlds.UI
                 }));
             }
             
-            optList.Add(new ListableOption("BackToMenu".Translate(), delegate
-            {
-                GenScene.GoToMainMenu();
-            }));
+            optList.Add(new ListableOption("BackToMenu".Translate(), GenScene.GoToMainMenu));
             
-            double num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);
+            var num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);
             
             GUI.EndGroup();
         }
