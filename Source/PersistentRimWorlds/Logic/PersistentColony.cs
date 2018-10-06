@@ -32,12 +32,13 @@ namespace PersistentWorlds.Logic
             {
                 gameColony.Name = dataColony.Name;
             }
+            else
+            {
+                gameColony.Name = null;
+            }
 
-            // TODO: ?
-            /*
             var relationsField = AccessTools.Field(typeof(Faction), "relations");
             relationsField.SetValue(gameColony, relationsField.GetValue(dataColony));
-            */
         }
     }
 }
