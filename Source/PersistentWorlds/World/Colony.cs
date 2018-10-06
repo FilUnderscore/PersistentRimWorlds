@@ -13,6 +13,19 @@ namespace PersistentWorlds.World
 
         public string Name;
         public PersistentColony PersistentColony;
+        private Material cachedMat;
+        
+        public override Material Material
+        {
+            get
+            {
+                if (this.cachedMat == null)
+                    this.cachedMat = MaterialPool.MatFrom("UI/World/Colony", ShaderDatabase.WorldOverlayTransparentLit, Color.green,
+                        WorldMaterials.WorldObjectRenderQueue);
+
+                return this.cachedMat;
+            }
+        }
 
         public override void ExposeData()
         {

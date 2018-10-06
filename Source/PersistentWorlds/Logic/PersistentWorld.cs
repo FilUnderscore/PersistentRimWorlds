@@ -253,7 +253,7 @@ namespace PersistentWorlds.Logic
             {
                 if(settlement.Faction != Faction.OfPlayer) continue;
 
-                var colony = new Colony();
+                var colony = (Colony) WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"));
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.Name;
@@ -274,6 +274,8 @@ namespace PersistentWorlds.Logic
             
             toRemove.Do(settlement => game.World.worldObjects.Remove(settlement));
             toRemove.Clear();
+            
+            // TODO: Have one ofPlayer faction, possibly by removing all player colonies on load and adding current colony as player faction.
         }
 
         // Convert Colony Bases to Settlements (this.Colony) for loading
