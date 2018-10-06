@@ -4,6 +4,7 @@ using Verse;
 
 namespace PersistentWorlds.Patches.UI
 {
+    /*
     [HarmonyPatch(typeof(ScenPart_PlayerFaction), "PostWorldGenerate")]
     public static class ScenPart_PlayerFaction_Patch
     {
@@ -19,4 +20,5 @@ namespace PersistentWorlds.Patches.UI
             return false;
         }
     }
+    */
 }

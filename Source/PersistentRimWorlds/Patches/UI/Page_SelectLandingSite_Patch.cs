@@ -29,8 +29,6 @@ namespace PersistentWorlds.Patches.UI
             PersistentWorldManager.WorldLoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
 
-            PersistentWorldManager.PersistentWorld.AddColoniesToWorldMap();
-            
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_FileList));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_ColonySelection));

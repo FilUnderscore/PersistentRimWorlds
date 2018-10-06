@@ -8,6 +8,7 @@ using Verse;
 
 namespace PersistentWorlds.Patches
 {
+    /*
     [HarmonyPatch(typeof(FactionManager), "RecacheFactions")]
     public static class FactionManager_RecacheFactions_Patch
     {
@@ -42,4 +43,5 @@ namespace PersistentWorlds.Patches
             return codes.AsEnumerable();
         }
     }
+    */
 }
