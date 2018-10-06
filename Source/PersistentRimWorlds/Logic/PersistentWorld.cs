@@ -236,6 +236,8 @@ namespace PersistentWorlds.Logic
             {
                 if (settlement.Faction != Faction.OfPlayer)
                 {
+                    Log.Message("Settlement: " + settlement.Name);
+                    Log.Message("Faction: " + settlement.Faction.Name.ToString());
                     continue;
                 }
 
@@ -348,11 +350,14 @@ namespace PersistentWorlds.Logic
 
         public void PreAddMaps()
         {
-            foreach (var map in this.Maps[this.Colony])
+            if(this.Colony != null)
             {
-                if (!this.Game.Maps.Contains(map))
+                foreach (var map in this.Maps[this.Colony])
                 {
-                    this.Game.Maps.Add(map);
+                    if (!this.Game.Maps.Contains(map))
+                    {
+                        this.Game.Maps.Add(map);
+                    }
                 }
             }
         }
