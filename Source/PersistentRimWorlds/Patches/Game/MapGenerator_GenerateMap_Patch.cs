@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Harmony;
 using Verse;
 
@@ -15,6 +16,18 @@ namespace PersistentWorlds.Patches
             if (PersistentWorldManager.PersistentWorld.Colony != null)
             {
                 PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
+
+                if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(PersistentWorldManager.PersistentWorld
+                    .Colony))
+                {
+                    PersistentWorldManager.PersistentWorld.Maps[PersistentWorldManager.PersistentWorld.Colony]
+                        .Add(__result);
+                }
+                else
+                {
+                    PersistentWorldManager.PersistentWorld.Maps.Add(PersistentWorldManager.PersistentWorld.Colony,
+                        new List<Map>() {__result});
+                }
             }
         }
     }
