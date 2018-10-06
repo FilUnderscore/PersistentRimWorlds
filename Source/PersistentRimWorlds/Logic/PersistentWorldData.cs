@@ -8,7 +8,7 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorldData : IExposable
     {
-        public int NextColonyId = 1;
+        public int NextColonyId;
         
         public WorldInfo info = new WorldInfo();
         public WorldGrid grid;
@@ -37,7 +37,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            Scribe_Values.Look<int>(ref NextColonyId, "nextColonyId");
+            Scribe_Values.Look<int>(ref NextColonyId, "nextColonyId", -1, false);
             
             Scribe_Deep.Look<WorldInfo>(ref this.info, "info", new object[0]);
             PersistentWorldManager.PersistentWorld.Game.World.info = this.info;
@@ -102,6 +102,7 @@ namespace PersistentWorlds.Logic
             Log.Message("Called PersistentWorldData conbvert.");
             var persistentWorldData = new PersistentWorldData
             {
+                NextColonyId = PersistentWorldManager.PersistentWorld == null ? 0 : PersistentWorldManager.PersistentWorld.WorldData.NextColonyId,
                 info = game.World.info,
                 grid = game.World.grid,
                 TickManager = game.tickManager,
