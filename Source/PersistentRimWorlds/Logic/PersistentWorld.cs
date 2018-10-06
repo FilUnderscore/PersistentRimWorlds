@@ -244,7 +244,7 @@ namespace PersistentWorlds.Logic
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.Name;
 
-                colony.PersistentColonyData = this.Colony != null ? this.Colony.ColonyData : this.Colonies[0].ColonyData;
+                colony.PersistentColonyData = PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
 
                 toAdd.Add(colony);
                 toRemove.Add(settlement);
@@ -268,18 +268,36 @@ namespace PersistentWorlds.Logic
             foreach (var mapParent in this.WorldData.worldObjectsHolder.MapParents)
             {
                 if (!(mapParent is Colony)) continue;
-   
+                
                 var colony = (Colony) mapParent;
                 
                 if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
                 
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
+                
+                // TODO: Unexpected? null colony map for some odd reason.
+                if (colony.Map?.info == null)
+                {
+                    if (colony.Map == null)
+                    {
+                        Log.Error("Colony map is null.");
+                    }
+                    else
+                    {
+                        if (colony.Map.info == null)
+                        {
+                            Log.Error("Colony map info is null.");
+                        }
+                    }
 
+                    continue;
+                }
+                
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 settlement.Name = colony.Name;
-                
+ 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
             }
