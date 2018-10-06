@@ -281,6 +281,8 @@ namespace PersistentWorlds.Logic
         // Convert Colony Bases to Settlements (this.Colony) for loading
         public void ConvertToCurrentGameSettlements()
         {
+            Log.Message("Replaced");
+            
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
@@ -302,10 +304,10 @@ namespace PersistentWorlds.Logic
                 toRemove.Add(colony);
             }
             
-            toAdd.Do(settlement => this.Game.World.worldObjects.Add(settlement));
+            toAdd.Do(settlement => this.WorldData.worldObjectsHolder.Add(settlement));
             toAdd.Clear();
             
-            toRemove.Do(colony => this.Game.World.worldObjects.Remove(colony));
+            toRemove.Do(colony => this.WorldData.worldObjectsHolder.Remove(colony));
             toRemove.Clear();
         }
     }

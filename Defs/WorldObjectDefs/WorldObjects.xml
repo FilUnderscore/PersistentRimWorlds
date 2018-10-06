@@ -6,6 +6,7 @@
 		<description>A base from one of your colonies.</description>
 		<worldObjectClass>PersistentWorlds.World.Colony</worldObjectClass>
 		<expandingIcon>true</expandingIcon>
+		<expandingIconPriority>10</expandingIconPriority>
 		<canBePlayerHome>true</canBePlayerHome>
 		<comps>
 		<!--

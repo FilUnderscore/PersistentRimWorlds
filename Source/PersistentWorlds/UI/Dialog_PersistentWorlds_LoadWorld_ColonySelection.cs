@@ -46,7 +46,6 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonAction = delegate
                     {
                         PersistentWorldManager.PersistentWorld.Colony = colony;
-                        PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
                         PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
                     };
                 

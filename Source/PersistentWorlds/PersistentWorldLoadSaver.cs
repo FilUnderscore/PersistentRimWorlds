@@ -146,7 +146,7 @@ namespace PersistentWorlds
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
                 
                 var colony = new PersistentColony();
-                colony.ColonyData.ExposeData();
+                colony.ExposeData();
 
                 PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
             }
@@ -178,6 +178,8 @@ namespace PersistentWorlds
 
             Status = PersistentWorldLoadStatus.Ingame;
             // Basically ingame at this point :/
+            
+            PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
             Scribe.loader.FinalizeLoading();
             ScribeMultiLoader.Clear();
@@ -230,7 +232,7 @@ namespace PersistentWorlds
                 
                 SafeSaver.Save(colonySaveFile, "colony", delegate
                 {
-                    colony.ColonyData.ExposeData();
+                    colony.ExposeData();
                 });
             }
             

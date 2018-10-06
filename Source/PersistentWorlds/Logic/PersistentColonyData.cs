@@ -14,7 +14,7 @@ namespace PersistentWorlds.Logic
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         //public Faction ColonyFaction;
 
-        public int Id = 0;
+        public int uniqueID = 0;
         public string Name = "New Arrivals";
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
@@ -23,7 +23,7 @@ namespace PersistentWorlds.Logic
         public void ExposeData()
         {
             //Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
-            Scribe_Values.Look<int>(ref Id, "id");
+            Scribe_Values.Look<int>(ref uniqueID, "uniqueID", -1, false);
             Scribe_Values.Look<string>(ref Name, "name");
             
             Scribe_Deep.Look<PersistentColonyGameData>(ref GameData, "gameData");

@@ -20,12 +20,14 @@ namespace PersistentWorlds.World
             get
             {
                 if (this.cachedMat == null)
-                    this.cachedMat = MaterialPool.MatFrom("UI/World/Colony", ShaderDatabase.WorldOverlayTransparentLit, Color.green,
+                    this.cachedMat = MaterialPool.MatFrom("World/WorldObjects/DefaultSettlement", ShaderDatabase.WorldOverlayTransparentLit, Color.green,
                         WorldMaterials.WorldObjectRenderQueue);
 
                 return this.cachedMat;
             }
         }
+
+        public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
 
         public override void ExposeData()
         {

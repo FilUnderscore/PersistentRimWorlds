@@ -3,10 +3,15 @@ using Verse;
 
 namespace PersistentWorlds.Logic
 {
-    public class PersistentColony : ILoadReferenceable
+    public class PersistentColony : IExposable, ILoadReferenceable
     {
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
+        public void ExposeData()
+        {
+            this.ColonyData.ExposeData();
+        }
+        
         public static PersistentColony Convert(Game game, PersistentColonyData colonyColonyData = null)
         {
             var persistentColony = new PersistentColony
@@ -32,10 +37,10 @@ namespace PersistentWorlds.Logic
 
             return faction;
         }
-
+        
         public string GetUniqueLoadID()
         {
-            return "Colony_" + ColonyData.Id;
+            return "Colony_" + this.ColonyData.uniqueID;
         }
     }
 }
