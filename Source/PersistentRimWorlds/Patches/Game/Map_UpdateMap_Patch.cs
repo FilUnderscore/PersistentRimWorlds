@@ -18,13 +18,15 @@ namespace PersistentWorlds.Patches
             {
                 return true;
             }
-                
+            
+            /*
             Log.Message("Current Tile: " + __instance.Tile);
 
             foreach (var tile in PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles)
             {
                 Log.Message("Tile: " + tile);
             }
+            */
 
             return PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Contains(__instance.Tile);
         }

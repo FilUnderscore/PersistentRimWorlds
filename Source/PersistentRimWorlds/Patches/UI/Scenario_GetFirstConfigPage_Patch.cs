@@ -8,7 +8,7 @@ using Verse;
 namespace PersistentWorlds.Patches.UI
 {
     [HarmonyPatch(typeof(Scenario), "GetFirstConfigPage")]
-    public static class Scenario_Patch
+    public static class Scenario_GetFirstConfigPage_Patch
     {
         [HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> GetFirstConfigPage_Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)

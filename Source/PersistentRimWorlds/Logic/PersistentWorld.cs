@@ -18,6 +18,7 @@ namespace PersistentWorlds.Logic
         public PersistentColony Colony;
         
         //public List<Map> Maps = new List<Map>();
+        public Dictionary<Map, bool> Maps = new Dictionary<Map, bool>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
 
         public PersistentWorld()
@@ -39,7 +40,19 @@ namespace PersistentWorlds.Logic
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
             
+            Log.Message("Set faction second time ?");
+            AccessTools.Field(typeof(FactionManager), "ofPlayer").SetValue(this.Game.World.factionManager, this.Colony.ColonyData.ColonyFaction);
+            FactionGenerator.EnsureRequiredEnemies(this.Colony.ColonyData.ColonyFaction);
+            
             GameComponentUtility.LoadedGame();
+
+            var pFaction = Current.Game.World.factionManager.FirstFactionOfDef(FactionDefOf.PlayerColony);
+            Current.Game.World.factionManager.Remove(pFaction);
+
+            this.Colony.ColonyData.ColonyFaction.loadID = 9;
+            Current.Game.World.factionManager.Add(this.Colony.ColonyData.ColonyFaction);
+            
+//            GenScene.GoToMainMenu();
         }
 
         public void ExposeAndFillGameSmallComponents()
@@ -54,6 +67,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
+            /*
             AccessTools.Field(typeof(Game), "info").SetValue(this.Game, Colony.ColonyData.GameData.info);
             AccessTools.Field(typeof(Game), "rules").SetValue(this.Game, Colony.ColonyData.GameData.rules);
             this.Game.Scenario = Colony.ColonyData.GameData.scenario;
@@ -73,13 +87,15 @@ namespace PersistentWorlds.Logic
             this.Game.tutor = Colony.ColonyData.GameData.tutor;
             this.Game.dateNotifier = Colony.ColonyData.GameData.dateNotifier;
             this.Game.components = Colony.ColonyData.GameData.gameComponents;
+            */
             
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                Log.Warning("LoadingVars - Experimental (PersistentWorld:PersistentWorld) in ExposeGameSmallComps.");
-                AccessTools.Method(typeof(Game), "FillComponents", new Type[0]).Invoke(this.Game, new object[0]);
-                BackCompatibility.GameLoadingVars(this.Game);
-            }
+            Colony.ColonyData.GameData.SetGame();
+
+            if (Scribe.mode != LoadSaveMode.LoadingVars) return;
+            
+            Log.Warning("LoadingVars - Experimental (PersistentWorld:PersistentWorld) in ExposeGameSmallComps.");
+            AccessTools.Method(typeof(Game), "FillComponents", new Type[0]).Invoke(this.Game, new object[0]);
+            BackCompatibility.GameLoadingVars(this.Game);
         }
 
         public void LoadGameWorldAndMaps()
@@ -251,19 +267,19 @@ namespace PersistentWorlds.Logic
             
             foreach (var settlement in game.World.worldObjects.Settlements)
             {
-                if(settlement.Faction != Faction.OfPlayer) continue;
+                if (settlement.Faction != Faction.OfPlayer)
+                {
+                    Log.Message("settlement faction: " + settlement.Faction.Name);
+                    Log.Message("settlement name: " + settlement.Name);
+                    continue;
+                }
 
                 var colony = (Colony) WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"));
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.Name;
 
-                if (this.Colony != null)
-                    colony.PersistentColony = this.Colony;
-                else
-                {
-                    colony.PersistentColony = this.Colonies[0];
-                }
+                colony.PersistentColonyData = this.Colony != null ? this.Colony.ColonyData : this.Colonies[0].ColonyData;
 
                 toAdd.Add(colony);
                 toRemove.Add(settlement);
@@ -280,9 +296,7 @@ namespace PersistentWorlds.Logic
 
         // Convert Colony Bases to Settlements (this.Colony) for loading
         public void ConvertToCurrentGameSettlements()
-        {
-            Log.Message("Replaced");
-            
+        {   
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
@@ -292,11 +306,26 @@ namespace PersistentWorlds.Logic
 
                 var colony = (Colony) mapParent;
 
-                if (colony.PersistentColony != this.Colony) continue;
+                Log.Message("Yes");
+                
+                if (colony.PersistentColonyData == null)
+                {
+                    Log.Error("ColonyData is null for Colony WorldObject.");
+                    continue;
+                }
+                
+                Log.Message("Yes2");
+
+                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
+                
+                Log.Message("Yes 3");
                 
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
 
+                Log.Message("Yes 4");
+                
+                colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 settlement.Name = colony.Name;
 

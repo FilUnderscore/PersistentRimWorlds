@@ -126,7 +126,8 @@ namespace PersistentWorlds
             
             // Load data.
             PersistentWorldManager.PersistentWorld = new PersistentWorld();
-            PersistentWorldManager.PersistentWorld.WorldData.ExposeData();
+            //PersistentWorldManager.PersistentWorld.WorldData.ExposeData();
+            Scribe_Deep.Look<PersistentWorldData>(ref PersistentWorldManager.PersistentWorld.WorldData, "data");
             
             Log.Message("Loaded world data...");
         }
@@ -146,8 +147,9 @@ namespace PersistentWorlds
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
                 
                 var colony = new PersistentColony();
-                colony.ExposeData();
-
+                //colony.ExposeData();
+                Scribe_Deep.Look<PersistentColony>(ref colony, "colony");
+                
                 PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
             }
             
@@ -167,7 +169,8 @@ namespace PersistentWorlds
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
 
                 var map = new Map();
-                map.ExposeData();
+//                map.ExposeData();
+                Scribe_Deep.Look<Map>(ref map, "map");
 
                 // TODO: Check if map is being used by a colony loaded right now...
                 
@@ -179,11 +182,12 @@ namespace PersistentWorlds
             Status = PersistentWorldLoadStatus.Ingame;
             // Basically ingame at this point :/
             
-            PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
-            
             Scribe.loader.FinalizeLoading();
             ScribeMultiLoader.Clear();
-            
+
+            // TODO: Maybe relocate?
+            PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
+
             Log.Message("Loaded map data...");
         }
         
@@ -202,10 +206,11 @@ namespace PersistentWorlds
             // If any world changes were made.
             world.WorldData = PersistentWorldData.Convert(PersistentWorldManager.PersistentWorld.Game);
 
-            SafeSaver.Save(this.worldFilePath, "world", delegate
+            SafeSaver.Save(this.worldFilePath, "worldfile", delegate
             {
                 ScribeMetaHeaderUtility.WriteMetaHeader();
-                world.WorldData.ExposeData();
+                //world.WorldData.ExposeData();
+                Scribe_Deep.Look<PersistentWorldData>(ref world.WorldData, "data");
             });
             
             Log.Message("Saved world data.");
@@ -230,9 +235,11 @@ namespace PersistentWorlds
 
                 var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.AsFaction().Name].ToString() + colony.AsFaction().Name + PersistentWorldColonyFile_Extension;
                 
-                SafeSaver.Save(colonySaveFile, "colony", delegate
+                SafeSaver.Save(colonySaveFile, "colonyfile", delegate
                 {
-                    colony.ExposeData();
+                    //colony.ExposeData();
+                    var colony1 = colony;
+                    Scribe_Deep.Look<PersistentColony>(ref colony1, "colony");
                 });
             }
             
@@ -244,9 +251,10 @@ namespace PersistentWorlds
             {
                 var mapSaveFile = mapsDirectory + "/" + map.Tile.ToString() + PersistentWorldMapFile_Extension;
                 
-                SafeSaver.Save(mapSaveFile, "map", delegate
-                {   
-                    map.ExposeData();
+                SafeSaver.Save(mapSaveFile, "mapfile", delegate
+                {
+                    var map1 = map;
+                    Scribe_Deep.Look<Map>(ref map1, "map");
                 });
             }
             

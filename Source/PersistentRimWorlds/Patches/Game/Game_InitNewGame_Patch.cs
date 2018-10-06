@@ -69,10 +69,11 @@ namespace PersistentWorlds.Patches
 
             var colony = PersistentColony.Convert(Current.Game);
             colony.ColonyData.uniqueID = PersistentWorldManager.PersistentWorld.WorldData.NextColonyId++;
+            Log.Message("UNiqueID: " + colony.ColonyData.uniqueID.ToString());
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             PersistentWorldManager.PersistentWorld.Colony = colony;
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
-                
+
             Log.Message(__instance.DebugString());
             Log.Message("List things map.." + map.listerThings.AllThings.Count);
                 

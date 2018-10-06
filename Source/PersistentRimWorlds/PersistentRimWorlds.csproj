@@ -71,7 +71,8 @@
     <Compile Include="Patches\SettlementBase_PostRemove_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
     <Compile Include="Patches\UI\Page_SelectLandingSite_Patch.cs" />
-    <Compile Include="Patches\UI\Scenario_Patch.cs" />
+    <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />
+    <Compile Include="Patches\UI\ScenPart_PlayerFaction_Patch.cs" />
     <Compile Include="PersistentWorldLoadSaver.cs" />
     <Compile Include="PersistentWorldManager.cs" />
     <Compile Include="PersistentWorldsMod.cs" />

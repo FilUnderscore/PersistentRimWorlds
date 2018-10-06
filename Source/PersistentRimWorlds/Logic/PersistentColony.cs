@@ -3,13 +3,13 @@ using Verse;
 
 namespace PersistentWorlds.Logic
 {
-    public class PersistentColony : IExposable, ILoadReferenceable
+    public class PersistentColony : IExposable
     {
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
         public void ExposeData()
         {
-            this.ColonyData.ExposeData();
+            Scribe_Deep.Look<PersistentColonyData>(ref ColonyData, "data");
         }
         
         public static PersistentColony Convert(Game game, PersistentColonyData colonyColonyData = null)
@@ -24,23 +24,21 @@ namespace PersistentWorlds.Logic
         
         public Faction AsFaction()
         {
-            var faction = new Faction {Name = ColonyData.Name};
+            // TODO: Check if ColonyFaction is null, if so return new arrivals.
+            Log.Message("As Faction.");
+            var preexistingFaction =
+                PersistentWorldManager.PersistentWorld.Game.World.factionManager.FirstFactionOfDef(FactionDefOf
+                    .PlayerColony);
 
-            if (PersistentWorldManager.PersistentWorld != null && PersistentWorldManager.PersistentWorld.Colony == this)
+            if (preexistingFaction == ColonyData.ColonyFaction)
             {
-                faction.def = FactionDefOf.PlayerColony;
+                return ColonyData.ColonyFaction;
             }
-            else
-            {
-                faction.def = FactionDefOf.Ancients;
-            }
-
-            return faction;
-        }
-        
-        public string GetUniqueLoadID()
-        {
-            return "Colony_" + this.ColonyData.uniqueID;
+            
+            PersistentWorldManager.PersistentWorld.Game.World.factionManager.Add(ColonyData.ColonyFaction);
+            PersistentWorldManager.PersistentWorld.Game.World.factionManager.Remove(preexistingFaction);
+            
+            return ColonyData.ColonyFaction;
         }
     }
 }

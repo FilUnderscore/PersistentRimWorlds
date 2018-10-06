@@ -6,25 +6,22 @@ using Verse;
 
 namespace PersistentWorlds.Logic
 {
-    public class PersistentColonyData : IExposable
+    public class PersistentColonyData : IExposable, ILoadReferenceable
     {
         public PersistentColonyGameData GameData = new PersistentColonyGameData();
 
         // TODO: Implement support for 'Colonies' instead of using Factions and custom settlement world objects.
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
-        //public Faction ColonyFaction;
-
+        public Faction ColonyFaction;
         public int uniqueID = 0;
-        public string Name = "New Arrivals";
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
         
         public void ExposeData()
         {
-            //Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
             Scribe_Values.Look<int>(ref uniqueID, "uniqueID", -1, false);
-            Scribe_Values.Look<string>(ref Name, "name");
+            Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
             
             Scribe_Deep.Look<PersistentColonyGameData>(ref GameData, "gameData");
             
@@ -36,6 +33,7 @@ namespace PersistentWorlds.Logic
             var persistentColonyData = new PersistentColonyData
             {
                 //ColonyFaction = game.World.factionManager.OfPlayer
+                ColonyFaction = game.World.factionManager.FirstFactionOfDef(FactionDefOf.PlayerColony),
                 GameData = PersistentColonyGameData.Convert(game)
             };
 
@@ -50,10 +48,16 @@ namespace PersistentWorlds.Logic
             }
             else
             {
+                persistentColonyData.uniqueID = colonyColonyData.uniqueID;
                 persistentColonyData.ActiveWorldTiles = colonyColonyData.ActiveWorldTiles;
             }
 
             return persistentColonyData;
+        }
+        
+        public string GetUniqueLoadID()
+        {
+            return "Colony_" + this.uniqueID;
         }
     }
 }
