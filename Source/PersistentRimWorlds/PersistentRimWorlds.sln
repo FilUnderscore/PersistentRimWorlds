@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersistentWorlds", "PersistentWorlds.csproj", "{58FE1008-FE3A-44FC-A71A-4E9315B76A94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersistentRimWorlds", "PersistentRimWorlds.csproj", "{58FE1008-FE3A-44FC-A71A-4E9315B76A94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
