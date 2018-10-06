@@ -1,10 +1,13 @@
-﻿using RimWorld;
+﻿using Harmony;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds.Logic
 {
     public class PersistentColony : IExposable
     {
+        public Faction Faction; // Used when AsFaction() is called.
+        
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
         public void ExposeData()
@@ -26,19 +29,31 @@ namespace PersistentWorlds.Logic
         {
             // TODO: Check if ColonyFaction is null, if so return new arrivals.
             Log.Message("As Faction.");
+
+            if (Faction != null)
+            {
+                return Faction;
+            }
+            
             var preexistingFaction =
                 PersistentWorldManager.PersistentWorld.Game.World.factionManager.FirstFactionOfDef(FactionDefOf
                     .PlayerColony);
 
-            if (preexistingFaction == ColonyData.ColonyFaction)
+            preexistingFaction.Name = this.ColonyData.ColonyFaction.Name;
+
+            if (!this.ColonyData.ColonyFaction.HasName)
             {
-                return ColonyData.ColonyFaction;
+                preexistingFaction.Name = null;
             }
             
-            PersistentWorldManager.PersistentWorld.Game.World.factionManager.Add(ColonyData.ColonyFaction);
-            PersistentWorldManager.PersistentWorld.Game.World.factionManager.Remove(preexistingFaction);
-            
-            return ColonyData.ColonyFaction;
+            preexistingFaction.leader = this.ColonyData.ColonyFaction.leader;
+            var factionRelations =
+                AccessTools.Field(typeof(Faction), "relations").GetValue(this.ColonyData.ColonyFaction);
+            AccessTools.Field(typeof(Faction), "relations").SetValue(preexistingFaction, factionRelations);
+
+            Faction = preexistingFaction;
+
+            return preexistingFaction;
         }
     }
 }
