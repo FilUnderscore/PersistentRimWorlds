@@ -15,7 +15,11 @@ namespace PersistentWorlds
         public PersistentWorldsMod(ModContentPack content) : base(content)
         {
             var harmony = HarmonyInstance.Create("PersistentWorlds");
+
+#if DEBUG
             HarmonyInstance.DEBUG = true;
+#endif
+
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
