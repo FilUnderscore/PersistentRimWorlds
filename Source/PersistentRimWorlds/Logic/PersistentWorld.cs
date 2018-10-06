@@ -31,10 +31,8 @@ namespace PersistentWorlds.Logic
 
         public void LoadWorld()
         {
-            Log.Message("Setting current game.");
             Current.Game = this.Game;
             
-            Log.Message("Calling LoadWorld");
             LongEventHandler.SetCurrentEventText("LoadingPersistentWorld".Translate());
             
             this.Game.LoadGame();
@@ -42,19 +40,7 @@ namespace PersistentWorlds.Logic
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
             
-            Log.Message("Set faction second time ?");
-            AccessTools.Field(typeof(FactionManager), "ofPlayer").SetValue(this.Game.World.factionManager, this.Colony.ColonyData.ColonyFaction);
-            FactionGenerator.EnsureRequiredEnemies(this.Colony.ColonyData.ColonyFaction);
-            
             GameComponentUtility.LoadedGame();
-
-            var pFaction = Current.Game.World.factionManager.FirstFactionOfDef(FactionDefOf.PlayerColony);
-            Current.Game.World.factionManager.Remove(pFaction);
-
-            this.Colony.ColonyData.ColonyFaction.loadID = 9;
-            Current.Game.World.factionManager.Add(this.Colony.ColonyData.ColonyFaction);
-            
-//            GenScene.GoToMainMenu();
         }
 
         public void ExposeAndFillGameSmallComponents()
@@ -65,6 +51,28 @@ namespace PersistentWorlds.Logic
                 Log.Error("Colony is null. - Persistent Worlds");
                 GenScene.GoToMainMenu();
                 return;
+            }
+            
+            if (Colony.ColonyData == null)
+            {
+                Log.Error("Colony Data null?");
+                GenScene.GoToMainMenu();
+                return;
+            }
+            else
+            {
+                Log.Message("One fine.");
+                
+                if (Colony.ColonyData.GameData == null)
+                {
+                    Log.Error("GameData null?");
+                    GenScene.GoToMainMenu();
+                    return;
+                }
+                else
+                {
+                    Log.Message("Both fine.");
+                }
             }
             
             Colony.ColonyData.GameData.SetGame();

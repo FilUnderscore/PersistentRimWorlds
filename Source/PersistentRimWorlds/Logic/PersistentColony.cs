@@ -6,8 +6,6 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentColony : IExposable
     {
-        public Faction Faction; // Used when AsFaction() is called.
-        
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
         public void ExposeData()
@@ -24,36 +22,22 @@ namespace PersistentWorlds.Logic
 
             return persistentColony;
         }
-        
-        public Faction AsFaction()
+
+        public void SetFactionData()
         {
-            // TODO: Check if ColonyFaction is null, if so return new arrivals.
-            Log.Message("As Faction.");
+            var gameColony = PersistentWorldManager.PersistentWorld.Game.World.factionManager.OfPlayer;
+            var dataColony = this.ColonyData.ColonyFaction;
 
-            if (Faction != null)
+            if (dataColony.HasName)
             {
-                return Faction;
+                gameColony.Name = dataColony.Name;
             }
-            
-            var preexistingFaction =
-                PersistentWorldManager.PersistentWorld.Game.World.factionManager.FirstFactionOfDef(FactionDefOf
-                    .PlayerColony);
 
-            preexistingFaction.Name = this.ColonyData.ColonyFaction.Name;
-
-            if (!this.ColonyData.ColonyFaction.HasName)
-            {
-                preexistingFaction.Name = null;
-            }
-            
-            preexistingFaction.leader = this.ColonyData.ColonyFaction.leader;
-            var factionRelations =
-                AccessTools.Field(typeof(Faction), "relations").GetValue(this.ColonyData.ColonyFaction);
-            AccessTools.Field(typeof(Faction), "relations").SetValue(preexistingFaction, factionRelations);
-
-            Faction = preexistingFaction;
-
-            return preexistingFaction;
+            // TODO: ?
+            /*
+            var relationsField = AccessTools.Field(typeof(Faction), "relations");
+            relationsField.SetValue(gameColony, relationsField.GetValue(dataColony));
+            */
         }
     }
 }

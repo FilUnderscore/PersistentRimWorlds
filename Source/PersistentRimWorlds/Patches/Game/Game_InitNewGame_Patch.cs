@@ -61,6 +61,7 @@ namespace PersistentWorlds.Patches
             colony.ColonyData.uniqueID = PersistentWorldManager.PersistentWorld.WorldData.NextColonyId++;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             PersistentWorldManager.PersistentWorld.Colony = colony;
+            colony.SetFactionData();
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
                 
             return false;

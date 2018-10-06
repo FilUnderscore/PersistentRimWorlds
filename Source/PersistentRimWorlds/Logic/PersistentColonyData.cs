@@ -21,11 +21,29 @@ namespace PersistentWorlds.Logic
         public void ExposeData()
         {
             Scribe_Values.Look<int>(ref uniqueID, "uniqueID", -1, false);
-            Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
             
             Scribe_Deep.Look<PersistentColonyGameData>(ref GameData, "gameData");
             
             Scribe_Collections.Look<int>(ref ActiveWorldTiles, "activeWorldTiles");
+            
+            // Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
+            // Don't need to cross-ref.
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                if (Scribe.EnterNode("faction"))
+                {
+                    this.ColonyFaction = new Faction();
+                    this.ColonyFaction.ExposeData();
+                }
+                else
+                {
+                    Log.Message("No Faction :/");
+                }
+            }
+            else if(Scribe.mode == LoadSaveMode.Saving)
+            {
+                Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
+            }
         }
 
         public static PersistentColonyData Convert(Game game, PersistentColonyData colonyColonyData)
@@ -33,7 +51,7 @@ namespace PersistentWorlds.Logic
             var persistentColonyData = new PersistentColonyData
             {
                 // TODO: Review
-                ColonyFaction = PersistentWorldManager.PersistentWorld.Colony == null ? game.World.factionManager.FirstFactionOfDef(FactionDefOf.PlayerColony) : PersistentWorldManager.PersistentWorld.Colony.Faction,
+                ColonyFaction = game.World.factionManager.OfPlayer,
                 GameData = PersistentColonyGameData.Convert(game)
             };
 

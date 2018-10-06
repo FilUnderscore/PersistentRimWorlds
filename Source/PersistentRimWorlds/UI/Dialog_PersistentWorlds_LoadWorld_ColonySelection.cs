@@ -40,11 +40,14 @@ namespace PersistentWorlds.UI
                 
                 var scrollableListItem = new ScrollableListItem();
 
-                scrollableListItem.Text = colony.AsFaction().Name;
+                scrollableListItem.Text = colony.ColonyData.ColonyFaction.Name;
                 scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                     {
                         PersistentWorldManager.PersistentWorld.Colony = colony;
+                        
+                        // Set Player Faction Data.
+                        PersistentWorldManager.PersistentWorld.Colony.SetFactionData();
                         PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
                     };
                 

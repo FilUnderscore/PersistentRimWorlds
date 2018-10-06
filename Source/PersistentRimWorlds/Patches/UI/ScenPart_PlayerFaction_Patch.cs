@@ -4,7 +4,6 @@ using Verse;
 
 namespace PersistentWorlds.Patches.UI
 {
-    /*
     [HarmonyPatch(typeof(ScenPart_PlayerFaction), "PostWorldGenerate")]
     public static class ScenPart_PlayerFaction_Patch
     {
@@ -14,11 +13,10 @@ namespace PersistentWorlds.Patches.UI
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null)
                 return true;
 
-            // TODO: Review.
+            // In order to prevent cloned factions :/
             Find.GameInitData.playerFaction = PersistentWorldManager.PersistentWorld.WorldData.factionManager.OfPlayer;
             
             return false;
         }
     }
-    */
 }
