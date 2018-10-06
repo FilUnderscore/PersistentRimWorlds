@@ -169,25 +169,28 @@ namespace PersistentWorlds
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
 
                 var map = new Map();
-//                map.ExposeData();
+                
                 Scribe_Deep.Look<Map>(ref map, "map");
 
-                // TODO: Check if map is being used by a colony loaded right now...
-                
                 maps.Add(map);
             }
             
-            AccessTools.Field(typeof(Game), "maps").SetValue(PersistentWorldManager.PersistentWorld.Game, maps);
-
-            Status = PersistentWorldLoadStatus.Ingame;
-            // Basically ingame at this point :/
+            //AccessTools.Field(typeof(Game), "maps").SetValue(PersistentWorldManager.PersistentWorld.Game, maps);
             
             Scribe.loader.FinalizeLoading();
+
+            // TODO: Test
+            PersistentWorldManager.PersistentWorld.SortMaps(maps);            
+            PersistentWorldManager.PersistentWorld.PreAddMaps();
+            
             ScribeMultiLoader.Clear();
 
             // TODO: Maybe relocate?
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
 
+            Status = PersistentWorldLoadStatus.Ingame;
+            // Basically ingame at this point :/
+            
             Log.Message("Loaded map data...");
         }
         

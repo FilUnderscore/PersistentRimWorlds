@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using Harmony;
 using PersistentWorlds.World;
 using RimWorld;
@@ -19,8 +21,7 @@ namespace PersistentWorlds.Logic
         public PersistentWorldData WorldData = new PersistentWorldData();
         public PersistentColony Colony;
         
-        //public List<Map> Maps = new List<Map>();
-        public Dictionary<Map, bool> Maps = new Dictionary<Map, bool>();
+        public Dictionary<PersistentColony, List<Map>> Maps = new Dictionary<PersistentColony, List<Map>>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
 
         public PersistentWorld()
@@ -261,39 +262,142 @@ namespace PersistentWorlds.Logic
         // Convert Colony Bases to Settlements (this.Colony) for loading
         public void ConvertToCurrentGameSettlements()
         {   
+            Log.Message("One");
+            
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
+            Log.Message("Two");
+            
             foreach (var mapParent in this.WorldData.worldObjectsHolder.MapParents)
             {
+                Log.Message("Three");
+                
                 if (!(mapParent is Colony)) continue;
 
+                Log.Message("Four");
+                
                 var colony = (Colony) mapParent;
 
+                Log.Message("Five");
+                
                 if (colony.PersistentColonyData == null)
                 {
                     Log.Error("ColonyData is null for Colony WorldObject.");
                     continue;
                 }
+                
+                Log.Message("Six");
 
                 if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
                 
+                Log.Message("Seven");
+                
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
+                
+                Log.Message("Eight");
+
+                if (colony.Map == null)
+                {
+                    Log.Error("Null Map");
+                    continue;
+                }
+
+                if (colony.Map.info == null)
+                {
+                    Log.Error("Null Map Info");
+                    continue;
+                }
                 
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 settlement.Name = colony.Name;
 
+                Log.Message("Nine");
+                
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
             }
             
+            Log.Message("Ten");
             toAdd.Do(settlement => this.WorldData.worldObjectsHolder.Add(settlement));
             toAdd.Clear();
             
+            Log.Message("Eleven");
             toRemove.Do(colony => this.WorldData.worldObjectsHolder.Remove(colony));
             toRemove.Clear();
+            Log.Message("Twelve");
+        }
+
+        public void SortMaps(IEnumerable<Map> maps)
+        {            
+            foreach (var map in maps)
+            {
+                foreach (var colony in this.Colonies)
+                { 
+                    if (!colony.ColonyData.ActiveWorldTiles.Contains(map.Tile)) continue;
+                    
+                    if(!this.Maps.ContainsKey(colony))
+                        this.Maps.Add(colony, new List<Map>());
+                    
+                    this.Maps[colony].Add(map);
+                }
+            }
+        }
+
+        public void PreAddMaps()
+        {
+            foreach (var map in this.Maps[this.Colony])
+            {
+                if (!this.Game.Maps.Contains(map))
+                {
+                    this.Game.Maps.Add(map);
+                }
+            }
+        }
+
+        public void UpdateWorld()
+        {
+            // Hooks in from Game UpdatePlay()
+
+            if (this.Colony != null)
+            {
+                /*
+                 * Remove Unneeded Maps
+                 */
+                var toRemove = new List<Map>();
+
+                foreach (var map in this.Game.Maps)
+                {
+                    // TODO: Add map when needed so it doesn't get deinitialized by mistake.
+                    if (!this.Maps[this.Colony].Contains(map))
+                    {
+                        toRemove.Add(map);
+                    }
+                }
+
+                toRemove.Do(map => this.Game.DeinitAndRemoveMap(map));
+                toRemove.Clear();
+
+                /*
+                 * Add Needed Maps
+                 */
+                var toAdd = new List<Map>();
+
+                foreach (var map in this.Maps[this.Colony])
+                {
+                    if (!this.Game.Maps.Contains(map))
+                    {
+                        toAdd.Add(map);
+                    }
+                }
+
+                toAdd.Do(map => this.Game.AddMap(map));
+                toAdd.Do(map => map.FinalizeLoading());
+                toAdd.Do(map => MapComponentUtility.MapGenerated(map));
+                toAdd.Clear();
+            }
         }
     }
 }
