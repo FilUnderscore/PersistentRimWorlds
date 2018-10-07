@@ -27,6 +27,7 @@ namespace PersistentWorlds.Logic
 
         public PersistentWorld()
         {
+            Current.Game = this.Game;
             this.Game.World = new RimWorld.Planet.World();
         }
 

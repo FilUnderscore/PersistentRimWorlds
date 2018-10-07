@@ -48,10 +48,14 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonAction = delegate
                 {
                     MemoryUtility.ClearAllMapsAndWorld();
+
+                    var previousGame = Current.Game;
                     
                     PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
                     PersistentWorldManager.WorldLoadSaver.LoadWorld();
 
+                    Current.Game = previousGame;
+                    
                     Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
                 };
 
