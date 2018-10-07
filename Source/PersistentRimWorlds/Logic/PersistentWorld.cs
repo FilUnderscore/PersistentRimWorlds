@@ -41,6 +41,8 @@ namespace PersistentWorlds.Logic
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
             
+            this.LoadCameraDriver();
+            
             GameComponentUtility.LoadedGame();
         }
         
@@ -116,10 +118,7 @@ namespace PersistentWorlds.Logic
             }
             
             Game.CurrentMap = ((num < 0) ? null : this.Game.Maps[num]);
-            
-            if(Find.CameraDriver != null)
-                Find.CameraDriver.Expose();
-            
+
             foreach (var t in this.Game.Maps)
             {
                 try
@@ -140,6 +139,17 @@ namespace PersistentWorlds.Logic
                     Log.Error("Error in MapParent.FinalizeLoading(): " + e, false);
                 }
             }
+        }
+
+        private void LoadCameraDriver()
+        {
+            if (Find.CameraDriver == null)
+            {
+                Log.Error("Current CameraDriver is null.");
+                return;
+            }
+            
+            Find.CameraDriver.SetRootPosAndSize(this.Colony.ColonyData.GameData.camRootPos, this.Colony.ColonyData.GameData.desiredSize);
         }
 
         public void ExposeGameWorldData()

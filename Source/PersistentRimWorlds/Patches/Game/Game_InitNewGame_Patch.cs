@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Harmony;
+using Ionic.Zlib;
 using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
@@ -48,8 +49,32 @@ namespace PersistentWorlds.Patches
                 
             Find.CameraDriver.JumpToCurrentMapLoc(MapGenerator.PlayerStartSpot);
             Find.CameraDriver.ResetSize();
-                
+
+            if (Prefs.PauseOnLoad && Current.Game.InitData.startedFromEntry)
+            {
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    Current.Game.tickManager.DoSingleTick();
+                    Current.Game.tickManager.CurTimeSpeed = TimeSpeed.Paused;
+                });
+            }
+            
             Find.Scenario.PostGameStart();
+
+            /*
+             * Complete research needed depending if PlayerFaction is PlayerColony or PlayerTribe.
+             */
+            if (Faction.OfPlayer.def.startingResearchTags != null)
+            {
+                foreach (var startingResearchTag in Faction.OfPlayer.def.startingResearchTags)
+                {
+                    foreach (var allDef in DefDatabase<ResearchProjectDef>.AllDefs)
+                    {
+                        if(allDef.HasTag(startingResearchTag))
+                            Current.Game.researchManager.FinishProject(allDef, false, null);
+                    }
+                }
+            }
                 
             GameComponentUtility.StartedNewGame();
 

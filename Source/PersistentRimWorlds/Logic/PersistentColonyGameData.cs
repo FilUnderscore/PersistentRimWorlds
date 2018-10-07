@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Harmony;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace PersistentWorlds.Logic
@@ -28,6 +29,12 @@ namespace PersistentWorlds.Logic
         public DateNotifier dateNotifier = new DateNotifier();
         public List<GameComponent> gameComponents = new List<GameComponent>();
 
+        /*
+         * Camera Driver.
+         */
+        public Vector3 camRootPos;
+        public float desiredSize;
+        
         public void ExposeData()
         {
             if (PersistentWorldManager.PersistentWorld == null)
@@ -77,8 +84,8 @@ namespace PersistentWorlds.Logic
             
             Scribe_Collections.Look<GameComponent>(ref this.gameComponents, "components", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game });
             
-            if(Find.CameraDriver != null)
-                Find.CameraDriver.Expose();
+            Scribe_Values.Look<Vector3>(ref this.camRootPos, "camRootPos", new Vector3(), false);
+            Scribe_Values.Look<float>(ref this.desiredSize, "desiredSize", 0.0f, false);
         }
 
         public void SetGame()
@@ -108,6 +115,12 @@ namespace PersistentWorlds.Logic
 
         public static PersistentColonyGameData Convert(Game game)
         {
+            /*
+             * Camera Driver.
+             */
+            var cameraDriverRootPos = (Vector3) AccessTools.Field(typeof(CameraDriver), "rootPos").GetValue(Find.CameraDriver);
+            var cameraDriverDesiredSize = (float) AccessTools.Field(typeof(CameraDriver), "desiredSize").GetValue(Find.CameraDriver);
+            
             var persistentColonyGameData = new PersistentColonyGameData
             {
                 currentMapIndex = game.currentMapIndex,
@@ -127,7 +140,9 @@ namespace PersistentWorlds.Logic
                 drugPolicyDatabase = game.drugPolicyDatabase,
                 tutor = game.tutor,
                 dateNotifier = game.dateNotifier,
-                gameComponents = game.components
+                gameComponents = game.components,
+                camRootPos = cameraDriverRootPos,
+                desiredSize = cameraDriverDesiredSize
             };
 
             return persistentColonyGameData;
