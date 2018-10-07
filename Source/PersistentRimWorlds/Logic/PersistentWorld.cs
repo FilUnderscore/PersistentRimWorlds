@@ -227,13 +227,6 @@ namespace PersistentWorlds.Logic
             
             foreach (var settlement in game.World.worldObjects.Settlements)
             {
-                /*
-                if (!isTileOccupiedByPlayer(settlement.Tile))
-                {
-                    continue;
-                }
-                */
-
                 if (settlement.Faction != Faction.OfPlayer)
                 {
                     continue;
@@ -255,24 +248,7 @@ namespace PersistentWorlds.Logic
             
             toRemove.Do(settlement => game.World.worldObjects.Remove(settlement));
             toRemove.Clear();
-            
-            // TODO: Have one ofPlayer faction, possibly by removing all player colonies on load and adding current colony as player faction.
         }
-
-        /*
-        public bool isTileOccupiedByPlayer(int tile)
-        {
-            foreach (var colony in this.Colonies)
-            {
-                if (colony.ColonyData.ActiveWorldTiles.Contains(tile))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        */
 
         // Convert Colony Bases to Settlements (this.Colony) for loading
         public void ConvertToCurrentGameSettlements()
@@ -312,7 +288,7 @@ namespace PersistentWorlds.Logic
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 settlement.Name = colony.Name;
- 
+                
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
             }
@@ -416,7 +392,6 @@ namespace PersistentWorlds.Logic
 
         private void SetPlayerFactionVarsOf(Faction newFaction)
         {
-            Log.Message("Pt1");
             var ofPlayerFaction = this.WorldData.factionManager.OfPlayer;
             ofPlayerFaction.leader = newFaction.leader;
             ofPlayerFaction.avoidGridsSmart = newFaction.avoidGridsSmart;
@@ -424,26 +399,42 @@ namespace PersistentWorlds.Logic
 
             ofPlayerFaction.Name = newFaction.HasName ? newFaction.Name : null;
             
-            // ofPlayerFaction.loadID = newFaction.loadID;
             ofPlayerFaction.randomKey = newFaction.randomKey;
             ofPlayerFaction.colorFromSpectrum = newFaction.colorFromSpectrum;
 
-            Log.Message("Pt2");
             var relationsField = AccessTools.Field(typeof(Faction), "relations");
-            relationsField.SetValue(ofPlayerFaction, relationsField.GetValue(newFaction));
-            Log.Message("Pt3");
+            var newFactionRelations = (List<FactionRelation>) relationsField.GetValue(newFaction);
+
+            // Change all relations.
+            foreach (var faction in this.WorldData.factionManager.AllFactionsListForReading)
+            {
+                var relations = (List<FactionRelation>) relationsField.GetValue(faction);
+
+                foreach (var relation in relations)
+                {
+                    if (relation.other == newFaction)
+                    {
+                        relation.other = ofPlayerFaction;
+                    }
+                }
+            }
+            
+            relationsField.SetValue(ofPlayerFaction, newFactionRelations);
+            
             ofPlayerFaction.kidnapped = newFaction.kidnapped;
-            Log.Message("pt4");
+            
             var predatorThreatsField = AccessTools.Field(typeof(Faction), "predatorThreats");
             predatorThreatsField.SetValue(ofPlayerFaction, predatorThreatsField.GetValue(newFaction));
-            Log.Message("pt5");
+            
             ofPlayerFaction.defeated = newFaction.defeated;
             ofPlayerFaction.lastTraderRequestTick = newFaction.lastTraderRequestTick;
             ofPlayerFaction.lastMilitaryAidRequestTick = newFaction.lastMilitaryAidRequestTick;
-Log.Message("pt6");
+
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
-            Log.Message("pt7");
+            
+            // Remove any relations with other player colonies.
+            // newFaction.RemoveAllRelations() doesn't work because requires Find.FactionManager which can be null depending on when this is called.
         }
 
         // TODO: Reset player faction to be tribe or colony depending on scenario. Should be called before selecting landing site.
