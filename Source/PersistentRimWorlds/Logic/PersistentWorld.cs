@@ -332,6 +332,14 @@ namespace PersistentWorlds.Logic
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
+            
+            // Because saving doesn't always work?
+            if (PersistentWorldManager.WorldLoadSaver != null && PersistentWorldManager.WorldLoadSaver.Status !=
+                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
+            {
+                PersistentWorldManager.WorldLoadSaver.Status =
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
+            }
         }
 
         public void PatchPlayerFaction()

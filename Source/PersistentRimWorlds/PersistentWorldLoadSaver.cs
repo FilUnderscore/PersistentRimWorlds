@@ -180,6 +180,9 @@ namespace PersistentWorlds
             
             Scribe.loader.FinalizeLoading();
 
+            Status = PersistentWorldLoadStatus.Ingame;
+            // Basically ingame at this point :/
+            
             // TODO: Test
             PersistentWorldManager.PersistentWorld.SortMaps(maps);            
             PersistentWorldManager.PersistentWorld.PreAddMaps();
@@ -188,9 +191,6 @@ namespace PersistentWorlds
 
             // TODO: Maybe relocate?
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
-
-            Status = PersistentWorldLoadStatus.Ingame;
-            // Basically ingame at this point :/
             
             Log.Message("Loaded map data...");
         }

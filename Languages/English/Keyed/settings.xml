@@ -5,7 +5,7 @@
 	<BaseResettleDesc>Resettle into this abandoned colony base, it may be left in ruins after being left unmaintained for some time, or inhabited by pirates. Beware.</BaseResettleDesc>
 	
 	<!-- Persistent Worlds Core -->
-	<PersistentWorlds>Persistent Worlds</PersistentWorlds>
+	<PersistentRimWorlds>Persistent RimWorlds</PersistentRimWorlds>
 	<ConfirmConversion-PersistentWorlds>Are you sure you want to convert this world to a persistent world? There is no going back, and may be incompatible with some mods. This action will also overwrite any saves with the same name as the world name, this can be checked through the World tab in the save by clicking a tile and clicking the Planet tab in the bottom-left corner of your screen. You have been warned.</ConfirmConversion-PersistentWorlds>
 	<ConvertingWorld-PersistentWorlds>Converting world to persistent world</ConvertingWorld-PersistentWorlds>
 	<ConversionComplete-PersistentWorlds>Conversion for world {0} is complete. The persistent world will now be saved as {0}.rws and can be loaded through the Persistent Worlds menu.</ConversionComplete-PersistentWorlds>

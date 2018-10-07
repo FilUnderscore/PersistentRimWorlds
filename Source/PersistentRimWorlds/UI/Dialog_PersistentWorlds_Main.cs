@@ -10,6 +10,8 @@ namespace PersistentWorlds.UI
         public Dialog_PersistentWorlds_Main()
         {
             this.doWindowBackground = true;
+            this.doCloseButton = true;
+            this.doCloseX = true;
         }
 
         public override Vector2 InitialSize => new Vector2(600f, 700f);
@@ -18,27 +20,18 @@ namespace PersistentWorlds.UI
         {
             GUI.BeginGroup(inRect);
 
-            var rect1 = new Rect((inRect.width - 170f) / 2, 0.0f, 170f, inRect.height);
+            Text.Font = GameFont.Medium;
+            Widgets.Label(new Rect(inRect.width / 2 - inRect.width / 6f, 0.0f, inRect.width, 45f), "PersistentRimWorlds".Translate());
+            Text.Font = GameFont.Small;
+            
+            var rect1 = new Rect((inRect.width - 170f) / 2, 0.0f + 45f, 170f, inRect.height);
 
-            var optList = new List<ListableOption>();
-            
-            TooltipHandler.TipRegion(rect1, "Disclaimer: Loading/Saving a persistent world can take a while depending on how many colonies are present.");
-            
-            optList.Add(new ListableOption("Load-PersistentWorlds".Translate(), delegate
+            var optList = new List<ListableOption>
             {
-                Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList());
-            }, null));
-            
-            if (Prefs.DevMode)
-            {
-                optList.Add(new ListableOption("Dev: Generate World", delegate
-                {
-                    
-                }));
-            }
-            
-            optList.Add(new ListableOption("BackToMenu".Translate(), GenScene.GoToMainMenu));
-            
+                new ListableOption("Load-PersistentWorlds".Translate(),
+                    delegate { Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList()); }, null)
+            };
+
             var num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);
             
             GUI.EndGroup();
