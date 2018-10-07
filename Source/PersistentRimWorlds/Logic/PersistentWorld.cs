@@ -332,7 +332,8 @@ namespace PersistentWorlds.Logic
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
-
+            return;
+            
             if (this.Colony != null && this.Maps.ContainsKey(this.Colony))
             {
                 /*
