@@ -43,9 +43,14 @@ namespace PersistentWorlds.Logic
             
             GameComponentUtility.LoadedGame();
         }
-
-        public void ExposeAndFillGameSmallComponents()
+        
+        // Called from Patched Game.LoadGame().
+        public void LoadGame()
         {
+            /*
+             * Fill Game components.
+             */
+            
             if (Colony == null)
             {
                 // Return to main menu.
@@ -54,34 +59,18 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            if (Colony.ColonyData == null)
-            {
-                Log.Error("Colony Data null?");
-                GenScene.GoToMainMenu();
-                return;
-            }
-            else
-            {
-                Log.Message("One fine.");
-                
-                if (Colony.ColonyData.GameData == null)
-                {
-                    Log.Error("GameData null?");
-                    GenScene.GoToMainMenu();
-                    return;
-                }
-                else
-                {
-                    Log.Message("Both fine.");
-                }
-            }
-            
             Colony.ColonyData.GameData.SetGame();
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
             
             AccessTools.Method(typeof(Game), "FillComponents", new Type[0]).Invoke(this.Game, new object[0]);
             BackCompatibility.GameLoadingVars(this.Game);
+
+            /*
+             * Load world and maps.
+             */
+            
+            this.LoadGameWorldAndMaps();
         }
 
         public void LoadGameWorldAndMaps()
@@ -91,12 +80,12 @@ namespace PersistentWorlds.Logic
             this.Game.World.FinalizeInit();
 
             this.LoadMaps();
-
-            this.ContinueLoadingMaps();
         }
 
-        public void ContinueLoadingMaps()
+        private void LoadMaps()
         {
+            PersistentWorldManager.WorldLoadSaver.LoadMaps();
+            
             // TODO: Load all maps in memory but have maps in Current.Game.Maps depending on active maps. Maps can be shared.
             
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
@@ -126,18 +115,16 @@ namespace PersistentWorlds.Logic
                 }
             }
             
-            //AccessTools.Field(typeof(Game), "maps").SetValue(this.Game, this.Maps);
-
             Game.CurrentMap = ((num < 0) ? null : this.Game.Maps[num]);
             
             if(Find.CameraDriver != null)
                 Find.CameraDriver.Expose();
             
-            for (int i = 0; i < this.Game.Maps.Count; i++)
+            foreach (var t in this.Game.Maps)
             {
                 try
                 {
-                    this.Game.Maps[i].FinalizeLoading();
+                    t.FinalizeLoading();
                 }
                 catch (Exception e)
                 {
@@ -146,18 +133,13 @@ namespace PersistentWorlds.Logic
 
                 try
                 {
-                    this.Game.Maps[i].Parent.FinalizeLoading();
+                    t.Parent.FinalizeLoading();
                 }
                 catch (Exception e)
                 {
                     Log.Error("Error in MapParent.FinalizeLoading(): " + e, false);
                 }
             }
-        }
-
-        private void LoadMaps()
-        {
-            PersistentWorldManager.WorldLoadSaver.LoadMaps();
         }
 
         public void ExposeGameWorldData()
@@ -327,14 +309,13 @@ namespace PersistentWorlds.Logic
 
         public void PreAddMaps()
         {
-            if(this.Colony != null)
+            if (this.Colony == null) return;
+            
+            foreach (var map in this.Maps[this.Colony])
             {
-                foreach (var map in this.Maps[this.Colony])
+                if (!this.Game.Maps.Contains(map))
                 {
-                    if (!this.Game.Maps.Contains(map))
-                    {
-                        this.Game.Maps.Add(map);
-                    }
+                    this.Game.Maps.Add(map);
                 }
             }
         }

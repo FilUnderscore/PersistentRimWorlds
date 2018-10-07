@@ -24,10 +24,8 @@ namespace PersistentWorlds.Patches
             Current.ProgramState = ProgramState.MapInitializing;
 
             Scribe.mode = LoadSaveMode.LoadingVars;
-                
-            persistentWorld.ExposeAndFillGameSmallComponents();
 
-            persistentWorld.LoadGameWorldAndMaps();
+            persistentWorld.LoadGame();
                 
             return false;
         }
