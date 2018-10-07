@@ -52,8 +52,6 @@ namespace PersistentWorlds.UI
                     PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
                     PersistentWorldManager.WorldLoadSaver.LoadWorld();
 
-                    Current.Game = null;
-                    
                     Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
                 };
 
