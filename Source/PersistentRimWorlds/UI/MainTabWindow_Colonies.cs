@@ -123,12 +123,21 @@ namespace PersistentWorlds.UI
             
             //toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
             // Deinit maps but allow for reuse.
-            toRemove.Do(map => map.areaManager.Notify_MapRemoved());
-            toRemove.Do(map => Current.Game.tickManager.RemoveAllFromMap(map));
-            toRemove.Do(map => AccessTools.Method(typeof(MapDeiniter), "NotifyEverythingWhichUsesMapReference", new Type[] { typeof(Map) }).Invoke(null, new object[] { map }));
+
+            List<Thing> things = new List<Thing>();
+            
+            foreach (var map in toRemove)
+            {
+                foreach (var thing in map.listerThings.AllThings)
+                {
+                    things.Add(thing);
+                }
+            }
+            
+            things.Do(thing => thing.DeSpawn());
+            things.Clear();
+            
             toRemove.Do(map => Current.Game.Maps.Remove(map));
-            toRemove.Do(MapComponentUtility.MapRemoved);
-            toRemove.Do(map => map.Parent.Notify_MyMapRemoved(map));
             toRemove.Clear();
             
             Find.ColonistBar.MarkColonistsDirty();

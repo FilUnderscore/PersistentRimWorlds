@@ -78,7 +78,6 @@
     <Compile Include="PersistentWorldManager.cs" />
     <Compile Include="PersistentWorldsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResolveRuntimeCrossReferences.cs" />
     <Compile Include="SaveFileUtils.cs" />
     <Compile Include="ScribeMultiLoader.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_ColonySelection.cs" />
