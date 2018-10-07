@@ -47,8 +47,6 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
-                    MemoryUtility.ClearAllMapsAndWorld();
-
                     var previousGame = Current.Game;
                     
                     PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);

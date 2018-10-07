@@ -34,51 +34,68 @@ namespace PersistentWorlds.Logic
          */
         public Vector3 camRootPos;
         public float desiredSize;
-        
+
         public void ExposeData()
         {
             if (PersistentWorldManager.PersistentWorld == null)
             {
                 Log.Error("PersistentWorld is null.");
-                
+
                 GenScene.GoToMainMenu();
-                
+
                 return;
             }
-            
+
             Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1, false);
-            
+
             Scribe_Deep.Look<GameInfo>(ref info, "info", new object[0]);
-            
+
             Scribe_Deep.Look<GameRules>(ref rules, "rules", new object[0]);
-            
+
             Scribe_Deep.Look<Scenario>(ref scenario, "scenario", new object[0]);
-            
+
             Scribe_Deep.Look<PlaySettings>(ref this.playSettings, "playSettings", new object[0]);
-            
+
             Scribe_Deep.Look<StoryWatcher>(ref this.storyWatcher, "storyWatcher", new object[0]);
-            
+
             Scribe_Deep.Look<GameEnder>(ref this.gameEnder, "gameEnder", new object[0]);
 
             Scribe_Deep.Look<LetterStack>(ref this.letterStack, "letterStack", new object[0]);
-            
+
             Scribe_Deep.Look<ResearchManager>(ref this.researchManager, "researchManager", new object[0]);
-            
+
             Scribe_Deep.Look<Storyteller>(ref this.storyteller, "storyteller", new object[0]);
-            
+
             Scribe_Deep.Look<History>(ref this.history, "history", new object[0]);
-            
+
             Scribe_Deep.Look<TaleManager>(ref this.taleManager, "taleManager", new object[0]);
-            
+
             Scribe_Deep.Look<PlayLog>(ref this.playLog, "playLog", new object[0]);
-            
+
             Scribe_Deep.Look<BattleLog>(ref this.battleLog, "battleLog", new object[0]);
-            
+
             Scribe_Deep.Look<OutfitDatabase>(ref this.outfitDatabase, "outfitDatabase", new object[0]);
-            
+
             Scribe_Deep.Look<DrugPolicyDatabase>(ref this.drugPolicyDatabase, "drugPolicyDatabase", new object[0]);
-            
-            Scribe_Deep.Look<Tutor>(ref this.tutor, "tutor", new object[0]);
+
+            // Remove outfits and drug policies to prevent unneeded errors and wrong data.
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                var crossReferencingExposables = (List<IExposable>) AccessTools
+                    .Field(typeof(CrossRefHandler), "crossReferencingExposables").GetValue(Scribe.loader.crossRefs);
+                
+                foreach (var outfit in this.outfitDatabase.AllOutfits)
+                {
+                    crossReferencingExposables.Remove(outfit);
+                }
+
+                foreach (var drugPolicy in this.drugPolicyDatabase.AllPolicies)
+                {
+                    crossReferencingExposables.Remove(drugPolicy);
+                }
+            }
+
+        Scribe_Deep.Look<Tutor>(ref this.tutor, "tutor", new object[0]);
             
             Scribe_Deep.Look<DateNotifier>(ref this.dateNotifier, "dateNotifier", new object[0]);
             
@@ -111,6 +128,17 @@ namespace PersistentWorlds.Logic
             PersistentWorldManager.PersistentWorld.Game.tutor = this.tutor;
             PersistentWorldManager.PersistentWorld.Game.dateNotifier = this.dateNotifier;
             PersistentWorldManager.PersistentWorld.Game.components = this.gameComponents;
+            
+            // Register outfits and drug policies to Cross-Referencer.
+            foreach (var outfit in this.outfitDatabase.AllOutfits)
+            {
+                Scribe.loader.crossRefs.RegisterForCrossRefResolve(outfit);
+            }
+
+            foreach (var drugPolicy in this.drugPolicyDatabase.AllPolicies)
+            {
+                Scribe.loader.crossRefs.RegisterForCrossRefResolve(drugPolicy);
+            }
         }
 
         public static PersistentColonyGameData Convert(Game game)

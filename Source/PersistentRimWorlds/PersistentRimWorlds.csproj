@@ -64,6 +64,7 @@
     <Compile Include="Patches\Game\MapGenerator_GenerateMap_Patch.cs" />
     <Compile Include="Patches\Game\Map_UpdateMap_Patch.cs" />
     <Compile Include="Patches\Game\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
+    <Compile Include="Patches\Game\UIRoot_Play_UIRootOnGUI_Patch.cs" />
     <Compile Include="Patches\Game\WorldGenStep_Components_Patch.cs" />
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />

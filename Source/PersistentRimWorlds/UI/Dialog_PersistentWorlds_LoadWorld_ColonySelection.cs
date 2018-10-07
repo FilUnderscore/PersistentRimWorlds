@@ -3,6 +3,7 @@ using PersistentWorlds.Logic;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
@@ -46,9 +47,9 @@ namespace PersistentWorlds.UI
                     {
                         PersistentWorldManager.PersistentWorld.Colony = colony;
                         
-                        // Set Player Faction Data.
-                        //PersistentWorldManager.PersistentWorld.Colony.SetFactionData();
-                        // TODO: Factions.
+                        // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
+                        MemoryUtility.ClearAllMapsAndWorld();
+
                         PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
                         PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
                     };
