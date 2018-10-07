@@ -75,6 +75,8 @@ namespace PersistentWorlds.UI
                     {
                         LongEventHandler.QueueLongEvent(delegate
                             {
+                                this.Close();
+                                
                                 PersistentWorldManager.PersistentWorld.Colony = colony;
                                 PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
                                 PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
@@ -82,10 +84,10 @@ namespace PersistentWorlds.UI
 
                                 LoadMaps(colony);
 
+                                UnloadMaps(colony);
+                                
                                 Current.Game.CurrentMap = PersistentWorldManager.PersistentWorld.Maps[colony][0];
                                 Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
-                                
-                                this.Close();
                             }, "LoadingColony", false, null);
                     };
                 }
@@ -103,7 +105,10 @@ namespace PersistentWorlds.UI
                 map.FinalizeLoading();
                 map.Parent.FinalizeLoading();
             }
+        }
 
+        private void UnloadMaps(PersistentColony colony)
+        {
             // Concurrency...
             var toRemove = new List<Map>();
             
@@ -115,9 +120,10 @@ namespace PersistentWorlds.UI
                 toRemove.Add(map);
             }
             
-            toRemove.Do(map => Current.Game.Maps.Remove(map));
-            toRemove.Do(map => Find.TickManager.RemoveAllFromMap(map));
+            toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
             toRemove.Clear();
+            
+            Find.ColonistBar.MarkColonistsDirty();
         }
     }
 }
