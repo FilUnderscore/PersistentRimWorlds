@@ -30,6 +30,8 @@ namespace PersistentWorlds.World
 
         public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
 
+        public override string Label => Name ?? base.Label;
+        
         public override void ExposeData()
         {
             base.ExposeData();
@@ -45,7 +47,11 @@ namespace PersistentWorlds.World
 
         public override string GetInspectString()
         {
-            return base.GetInspectString();
+            var inspectString = "";
+
+            inspectString += "Colony: " + this.PersistentColonyData.ColonyFaction.Name;
+            
+            return inspectString;
         }
 
         public override IEnumerable<InspectTabBase> GetInspectTabs()
