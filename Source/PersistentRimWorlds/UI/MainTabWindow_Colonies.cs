@@ -116,6 +116,7 @@ namespace PersistentWorlds.UI
             }
             
             toRemove.Do(map => Current.Game.Maps.Remove(map));
+            toRemove.Do(map => Find.TickManager.RemoveAllFromMap(map));
             toRemove.Clear();
         }
     }
