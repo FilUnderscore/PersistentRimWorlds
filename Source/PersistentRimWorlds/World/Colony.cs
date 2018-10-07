@@ -42,6 +42,8 @@ namespace PersistentWorlds.World
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
+            // TODO: Add visit.
+            
             return base.GetGizmos();
         }
 
