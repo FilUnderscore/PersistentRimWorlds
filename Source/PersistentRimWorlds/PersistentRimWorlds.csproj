@@ -60,6 +60,7 @@
     <Compile Include="Patches\Game\Game_InitNewGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_LoadGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_UpdatePlay_Patch.cs" />
+    <Compile Include="Patches\Game\LogEntry_Patch.cs" />
     <Compile Include="Patches\Game\MapGenerator_GenerateMap_Patch.cs" />
     <Compile Include="Patches\Game\Map_UpdateMap_Patch.cs" />
     <Compile Include="Patches\Game\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />

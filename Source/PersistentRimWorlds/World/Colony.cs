@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
@@ -35,6 +36,21 @@ namespace PersistentWorlds.World
             
             Scribe_Values.Look<string>(ref Name, "name");
             Scribe_References.Look<PersistentColonyData>(ref PersistentColonyData, "colony");
+        }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            return base.GetGizmos();
+        }
+
+        public override string GetInspectString()
+        {
+            return base.GetInspectString();
+        }
+
+        public override IEnumerable<InspectTabBase> GetInspectTabs()
+        {
+            return base.GetInspectTabs();
         }
     }
 }
