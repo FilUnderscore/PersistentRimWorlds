@@ -47,7 +47,9 @@ namespace PersistentWorlds.UI
                         PersistentWorldManager.PersistentWorld.Colony = colony;
                         
                         // Set Player Faction Data.
-                        PersistentWorldManager.PersistentWorld.Colony.SetFactionData();
+                        //PersistentWorldManager.PersistentWorld.Colony.SetFactionData();
+                        // TODO: Factions.
+                        PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
                         PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
                     };
                 

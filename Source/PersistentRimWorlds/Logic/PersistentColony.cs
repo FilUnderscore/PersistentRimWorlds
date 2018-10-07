@@ -22,23 +22,5 @@ namespace PersistentWorlds.Logic
 
             return persistentColony;
         }
-
-        public void SetFactionData()
-        {
-            var gameColony = PersistentWorldManager.PersistentWorld.Game.World.factionManager.OfPlayer;
-            var dataColony = this.ColonyData.ColonyFaction;
-
-            if (dataColony.HasName)
-            {
-                gameColony.Name = dataColony.Name;
-            }
-            else
-            {
-                gameColony.Name = null;
-            }
-
-            var relationsField = AccessTools.Field(typeof(Faction), "relations");
-            relationsField.SetValue(gameColony, relationsField.GetValue(dataColony));
-        }
     }
 }
