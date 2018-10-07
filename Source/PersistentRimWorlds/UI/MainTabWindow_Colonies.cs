@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Harmony;
 using PersistentWorlds.Logic;
@@ -72,21 +73,21 @@ namespace PersistentWorlds.UI
                 {
                     item.ActionButtonText = "Switch To";
                     item.ActionButtonAction = delegate
-                    {
+                    {                         
+                        this.Close();
+
                         LongEventHandler.QueueLongEvent(delegate
-                            {
-                                this.Close();
-                                
+                        {       
                                 PersistentWorldManager.PersistentWorld.Colony = colony;
                                 PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
+
+                                LoadMaps(colony);
+                                Current.Game.CurrentMap = PersistentWorldManager.PersistentWorld.Maps[colony][0];
+                                UnloadMaps(colony);    
+                            
                                 PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
                                 PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
 
-                                LoadMaps(colony);
-
-                                UnloadMaps(colony);
-                                
-                                Current.Game.CurrentMap = PersistentWorldManager.PersistentWorld.Maps[colony][0];
                                 Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
                             }, "LoadingColony", false, null);
                     };
@@ -120,7 +121,14 @@ namespace PersistentWorlds.UI
                 toRemove.Add(map);
             }
             
-            toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
+            //toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
+            // Deinit maps but allow for reuse.
+            toRemove.Do(map => map.areaManager.Notify_MapRemoved());
+            toRemove.Do(map => Current.Game.tickManager.RemoveAllFromMap(map));
+            toRemove.Do(map => AccessTools.Method(typeof(MapDeiniter), "NotifyEverythingWhichUsesMapReference", new Type[] { typeof(Map) }).Invoke(null, new object[] { map }));
+            toRemove.Do(map => Current.Game.Maps.Remove(map));
+            toRemove.Do(MapComponentUtility.MapRemoved);
+            toRemove.Do(map => map.Parent.Notify_MyMapRemoved(map));
             toRemove.Clear();
             
             Find.ColonistBar.MarkColonistsDirty();

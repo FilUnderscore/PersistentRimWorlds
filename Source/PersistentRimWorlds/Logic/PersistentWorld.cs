@@ -332,45 +332,6 @@ namespace PersistentWorlds.Logic
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
-            return;
-            
-            if (this.Colony != null && this.Maps.ContainsKey(this.Colony))
-            {
-                /*
-                 * Add Needed Maps
-                 */
-                var toAdd = new List<Map>();
-
-                foreach (var map in this.Maps[this.Colony])
-                {
-                    if (!this.Game.Maps.Contains(map))
-                    {
-                        toAdd.Add(map);
-                    }
-                }
-
-                toAdd.Do(map => this.Game.AddMap(map));
-                toAdd.Do(map => map.FinalizeLoading());
-                toAdd.Do(map => MapComponentUtility.MapGenerated(map));
-                toAdd.Clear();
-                
-                /*
-                 * Remove Unneeded Maps
-                 */
-                var toRemove = new List<Map>();
-
-                foreach (var map in this.Game.Maps)
-                {
-                    // TODO: Add map when needed so it doesn't get deinitialized by mistake.
-                    if (!this.Maps[this.Colony].Contains(map))
-                    {
-                        toRemove.Add(map);
-                    }
-                }
-
-                toRemove.Do(map => this.Game.DeinitAndRemoveMap(map));
-                toRemove.Clear();
-            }
         }
 
         public void PatchPlayerFaction()
