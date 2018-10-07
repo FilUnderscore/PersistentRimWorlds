@@ -11,10 +11,12 @@ namespace PersistentWorlds.Patches
         {
             // TODO: Review
             
+            /*
             if (map.IsPlayerHome)
             {
                 return false;
             }
+            */
 
             return true;
         }
