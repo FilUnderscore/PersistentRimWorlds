@@ -9,19 +9,21 @@ namespace PersistentWorlds.UI
 {
     public class Dialog_ColorPicker : Window
     {
-        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
-
+        private ScrollableListItem item;
+        
         private float rValue = 128;
         private float gValue = 128;
         private float bValue = 128;
         
         public override Vector2 InitialSize => new Vector2(600, 220);
         
-        public Dialog_ColorPicker()
+        public Dialog_ColorPicker(ScrollableListItem item)
         {
             this.doCloseX = true;
             this.doCloseButton = true;
             this.forcePause = true;
+
+            this.item = item;
         }
         
         public override void DoWindowContents(Rect inRect)
@@ -36,7 +38,7 @@ namespace PersistentWorlds.UI
             var greenSideRect = new Rect(inRect.width * 0.70f + 20, 80, inRect.width * 0.25f, 20);
             var blueSideRect = new Rect(inRect.width * 0.70f + 20, 120, inRect.width * 0.25f, 20);
             
-            var textureTestRect = new Rect(inRect.width * 0.875f, inRect.height / 2 - Town.height / 2f, Town.width, Town.height);
+            var textureTestRect = new Rect(inRect.width * 0.875f, inRect.height / 2 - item.texture.height / 2f, item.texture.width, item.texture.height);
             
             Text.Font = GameFont.Medium;
 
@@ -50,8 +52,10 @@ namespace PersistentWorlds.UI
             Widgets.Label(greenSideRect, ((int) gValue).ToString());
             Widgets.Label(blueSideRect, ((int) bValue).ToString());
             
-            GUI.color = new Color(rValue / 255, gValue / 255, bValue / 255);
-            GUI.DrawTexture(textureTestRect, Town);
+            item.color = new Color(rValue / 255, gValue / 255, bValue / 255);
+            
+            GUI.color = item.color;
+            GUI.DrawTexture(textureTestRect, item.texture);
             GUI.color = Color.white;
             
             GUI.EndGroup();

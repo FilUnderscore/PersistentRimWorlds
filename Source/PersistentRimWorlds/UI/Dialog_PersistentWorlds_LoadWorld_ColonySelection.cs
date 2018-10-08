@@ -8,7 +8,9 @@ using Verse.Profile;
 namespace PersistentWorlds.UI
 {
     public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
-    {
+    {        
+        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
+
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
         
         public override Vector2 InitialSize => new Vector2(600f, 700f);
@@ -60,6 +62,9 @@ namespace PersistentWorlds.UI
                 };
                 scrollableListItem.DeleteButtonTooltip =
                     "DeleteColony-PersistentWorlds".Translate();
+
+                scrollableListItem.canChangeColor = true;
+                scrollableListItem.texture = Town; 
                 
                 // TODO: Show date/time of file save.
                 

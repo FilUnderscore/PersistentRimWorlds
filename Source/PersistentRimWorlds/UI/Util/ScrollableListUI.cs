@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Harmony;
 using UnityEngine;
 using Verse;
 
@@ -65,6 +66,35 @@ namespace PersistentWorlds.UI
 
                     var x = vector2_1.x - 2f - vector2_2.x - vector2_2.y;
 
+                    /*
+                     * Color changing..
+                     */
+                    if (item.canChangeColor)
+                    {
+                        var colorBoxX = x - (vector2_2.y + 5);
+                        var colorBoxRect = new Rect(colorBoxX, 0.0f, vector2_2.y, vector2_2.y);
+
+                        if (item.texture == null)
+                        {
+                            var texture = new Texture2D((int) colorBoxRect.width, (int) colorBoxRect.height,
+                                TextureFormat.RGBA32, false);
+
+                            item.texture = texture;
+                        }
+                        
+                        GUI.color = item.color;
+                        var press = Widgets.ButtonImage(colorBoxRect, item.texture);
+                        GUI.color = Color.white;
+                        
+                        if (press)
+                        {
+                            Find.WindowStack.Add(new Dialog_ColorPicker(item));
+                        }
+                    }
+                    /*
+                     * End
+                     */
+                    
                     if(!string.IsNullOrEmpty(item.ActionButtonText))
                         if (Widgets.ButtonText(new Rect(x, 0.0f, vector2_2.x, vector2_2.y), item.ActionButtonText, true, false,
                             true))
