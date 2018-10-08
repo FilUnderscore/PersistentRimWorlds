@@ -32,7 +32,7 @@ namespace PersistentWorlds.Patches
                 
                 var toInsert = new List<CodeInstruction>
                 {
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PersistentWorldManager), "Active")),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PersistentWorldManager), "NotNull")),
                     new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
                     
                     new CodeInstruction(OpCodes.Ldsfld,
