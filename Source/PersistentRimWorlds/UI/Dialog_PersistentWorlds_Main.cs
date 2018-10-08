@@ -29,7 +29,13 @@ namespace PersistentWorlds.UI
             var optList = new List<ListableOption>
             {
                 new ListableOption("Load-PersistentWorlds".Translate(),
-                    delegate { Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList()); }, null)
+                    delegate { Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList()); }, null),
+                
+                // TODO: Temp, color picker.
+                new ListableOption("Color Picker Test", delegate
+                {
+                    Find.WindowStack.Add(new Dialog_ColorPicker());
+                }, null)
             };
 
             var num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);

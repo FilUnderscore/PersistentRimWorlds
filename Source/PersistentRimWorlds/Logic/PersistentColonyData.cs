@@ -14,6 +14,9 @@ namespace PersistentWorlds.Logic
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
         public int uniqueID = 0;
+
+        // Allow color picking colonies.
+        public Color color;
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();

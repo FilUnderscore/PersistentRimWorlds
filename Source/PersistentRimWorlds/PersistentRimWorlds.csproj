@@ -84,9 +84,10 @@
     <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
-    <Compile Include="UI\ScrollableListItem.cs" />
-    <Compile Include="UI\ScrollableListItemInfo.cs" />
-    <Compile Include="UI\ScrollableListUI.cs" />
+    <Compile Include="UI\Util\Dialog_ColorPicker.cs" />
+    <Compile Include="UI\Util\ScrollableListItem.cs" />
+    <Compile Include="UI\Util\ScrollableListItemInfo.cs" />
+    <Compile Include="UI\Util\ScrollableListUI.cs" />
     <Compile Include="World\BaseResettle.cs" />
     <Compile Include="World\BaseResettleCommand.cs" />
     <Compile Include="World\Colony.cs" />
