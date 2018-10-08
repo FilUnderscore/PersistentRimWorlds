@@ -12,7 +12,7 @@ namespace PersistentWorlds.UI
 {
     public class MainTabWindow_Colonies : MainTabWindow
     {
-        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
+        public static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
         // TODO: Draw.
 
         private Vector2 scrollPosition = Vector2.zero;
