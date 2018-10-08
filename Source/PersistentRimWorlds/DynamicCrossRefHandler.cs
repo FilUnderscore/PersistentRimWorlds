@@ -38,8 +38,12 @@ namespace PersistentWorlds
          * Lists
          */
         
-        private static readonly MethodInfo countMethod = AccessTools.Method(typeof(List<>), "get_Count");
+        private static MethodInfo countMethod = AccessTools.Method(typeof(List<>), "get_Count");
+        private static readonly MethodInfo getItemMethod = AccessTools.Method(typeof(List<>), "get_Item", new Type[] { typeof(int) });
         
+        /*
+         * Reflection stuff.
+         */
         // TODO: Try type by name access tools.
         private static readonly Type IdRecordType = Type.GetType("Verse.LoadIDsWantedBank.IdRecord, Assembly-CSharp");
 
@@ -80,16 +84,36 @@ namespace PersistentWorlds
 
         private static void loadLists()
         {
+            Log.Message("Load lists");
+            
             var idsReadList = idsReadField.GetValue(Scribe.loader.crossRefs.loadIDs);
             var idListsRead = idListsReadField.GetValue(Scribe.loader.crossRefs.loadIDs);
 
+            countMethod = countMethod.MakeGenericMethod(new Type[] {IdRecordType});
+            
             var list1Count = (int) countMethod.Invoke(idsReadList, new object[0]);
+
+            countMethod = countMethod.MakeGenericMethod(new Type[] {IdListRecordType});
+            
             var list2Count = (int) countMethod.Invoke(idListsRead, new object[0]);
 
+            Log.Message("List 1 count: " + list1Count);
+            Log.Message("List 2 count: " + list2Count);
+            
             for (var i = 0; i < list1Count; i++)
             {
+                var value = getItemMethod.Invoke(idsReadList, new object[] {i});
+
+                var targetLoadID = (string) targetLoadIDField_1.GetValue(value);
+                var targetType = (System.Type) targetTypeField_1.GetValue(value);
+                var pathRelToParent = (string) pathRelToParentField_1.GetValue(value);
+                var parent = (IExposable) parentField_1.GetValue(value);
                 
+                var idRecord = new IdRecord(targetLoadID, targetType, pathRelToParent, parent);
+                idsRead.Add(idRecord);
             }
+            
+            Log.Message("Done");
         }
 
         public static void Resolve()
