@@ -45,10 +45,12 @@ namespace PersistentWorlds
          * Reflection stuff.
          */
         // TODO: Try type by name access tools.
-        private static readonly Type IdRecordType = Type.GetType("Verse.LoadIDsWantedBank.IdRecord, Assembly-CSharp");
+        //private static readonly Type IdRecordType = Type.GetType("Verse.LoadIDsWantedBank.IdRecord, Assembly-CSharp");
 
-        private static readonly Type IdListRecordType =
-            Type.GetType("Verse.LoadIDsWantedBank.IdListRecord, Assembly-CSharp");
+        //private static readonly Type IdListRecordType =            Type.GetType("Verse.LoadIDsWantedBank.IdListRecord, Assembly-CSharp");
+
+        private static readonly Type IdRecordType = AccessTools.TypeByName("Verse.LoadIDsWantedBank.IdRecord");
+        private static readonly Type IdListRecordType = AccessTools.TypeByName("Verse.LoadIDsWantedBank.IdListRecord");
         
         private static readonly FieldInfo targetLoadIDField_1 = AccessTools.Field(IdRecordType, "targetLoadID");
         private static readonly FieldInfo targetTypeField_1 = AccessTools.Field(IdRecordType, "targetType");
@@ -89,11 +91,11 @@ namespace PersistentWorlds
             var idsReadList = idsReadField.GetValue(Scribe.loader.crossRefs.loadIDs);
             var idListsRead = idListsReadField.GetValue(Scribe.loader.crossRefs.loadIDs);
 
-            countMethod = countMethod.MakeGenericMethod(new Type[] {IdRecordType});
+            countMethod = countMethod.MakeGenericMethod(IdRecordType);
             
             var list1Count = (int) countMethod.Invoke(idsReadList, new object[0]);
 
-            countMethod = countMethod.MakeGenericMethod(new Type[] {IdListRecordType});
+            countMethod = countMethod.MakeGenericMethod(IdListRecordType);
             
             var list2Count = (int) countMethod.Invoke(idListsRead, new object[0]);
 
