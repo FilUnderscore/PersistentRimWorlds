@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Harmony;
 using UnityEngine;
@@ -6,16 +7,16 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public sealed class ScrollableListUI
+    public static class ScrollableListUI
     {
-        public static void DrawList(ref Rect inRect, ref Vector2 scrollPosition, ScrollableListItem[] items)
+        public static void DrawList(ref Rect inRect, ref Vector2 scrollPosition, ref List<ScrollableListItem> items)
         {
             var vector2_1 = new Vector2(inRect.width - 16f, 36f);
             var vector2_2 = new Vector2(100f, vector2_1.y - 2f);
 
             inRect.height -= 45f;
 
-            var height = (float) items.Length * (vector2_1.y + 3f);
+            var height = (float) items.Count * (vector2_1.y + 3f);
             
             var viewRect = new Rect(0.0f, 0.0f, inRect.width - 16f, height);
             var outRect = new Rect(inRect.AtZero());

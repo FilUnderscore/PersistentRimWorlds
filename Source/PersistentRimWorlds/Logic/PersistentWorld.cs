@@ -22,7 +22,8 @@ namespace PersistentWorlds.Logic
         public PersistentWorldData WorldData = new PersistentWorldData();
         public PersistentColony Colony;
         
-        public Dictionary<PersistentColony, List<Map>> Maps = new Dictionary<PersistentColony, List<Map>>();
+        // Stores map tile ids.
+        public Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
 
         public PersistentWorld()
@@ -87,7 +88,8 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            PersistentWorldManager.WorldLoadSaver.LoadMaps();
+            PersistentWorldManager.WorldLoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
+            this.ConvertToCurrentGameSettlements();
             
             // TODO: Load all maps in memory but have maps in Current.Game.Maps depending on active maps. Maps can be shared.
             
@@ -300,6 +302,7 @@ namespace PersistentWorlds.Logic
             toRemove.Clear();
         }
 
+        /*
         public void SortMaps(IEnumerable<Map> maps)
         {            
             foreach (var map in maps)
@@ -328,6 +331,7 @@ namespace PersistentWorlds.Logic
                 }
             }
         }
+        */
 
         public void UpdateWorld()
         {

@@ -21,8 +21,9 @@ namespace PersistentWorlds.Patches.UI
                 
             Current.Game.InitData = new GameInitData();
                 
-            PersistentWorldManager.WorldLoadSaver.LoadMaps();
-                
+            // TODO: Review
+            //PersistentWorldManager.WorldLoadSaver.LoadMaps();  
+            
             PersistentWorldManager.PersistentWorld.Game.World.pathGrid = new WorldPathGrid();
             Current.Game.Scenario.PostWorldGenerate();
 

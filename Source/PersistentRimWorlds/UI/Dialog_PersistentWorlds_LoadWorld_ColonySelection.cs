@@ -92,7 +92,7 @@ namespace PersistentWorlds.UI
             var rect2 = new Rect(0, (float) num1, inRect.width, inRect.height);
             
             GUI.BeginGroup(rect2);
-            ScrollableListUI.DrawList(ref rect2, ref this.scrollPosition, this.items.ToArray());
+            ScrollableListUI.DrawList(ref rect2, ref this.scrollPosition, ref this.items);
             GUI.EndGroup();
             
             GUI.EndGroup();

@@ -48,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicCrossRefHandler.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />

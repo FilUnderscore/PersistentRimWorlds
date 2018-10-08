@@ -107,7 +107,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, this.items.ToArray());
+            ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, ref this.items);
         }
     }
 }

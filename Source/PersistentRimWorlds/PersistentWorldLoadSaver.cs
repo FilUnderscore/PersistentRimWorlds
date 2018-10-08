@@ -157,6 +157,7 @@ namespace PersistentWorlds
             Log.Message("Loaded colony data...");
         }
 
+        /*
         public void LoadMaps()
         {
             var mapFiles = new DirectoryInfo(this.mapsDirectory).GetFiles("*" + PersistentWorldMapFile_Extension);
@@ -193,6 +194,42 @@ namespace PersistentWorlds
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
             Log.Message("Loaded map data...");
+        }
+        */
+
+        public List<Map> LoadMaps(int[] mapTiles)
+        {
+            var mapFiles = new DirectoryInfo(this.mapsDirectory).GetFiles("*" + PersistentWorldMapFile_Extension);
+            
+            Log.Message("Loading maps v2...");
+
+            var maps = new List<Map>();
+
+            if (Scribe.mode == LoadSaveMode.Inactive)
+            {
+                this.PreloadWorldColoniesMaps();
+            }
+
+            foreach (var mapFile in mapFiles)
+            {
+                if (!mapTiles.Any(tile => mapFile.FullName.Contains(tile.ToString()))) continue;
+                
+                var map = new Map();
+
+                Scribe_Deep.Look<Map>(ref map, "map");
+
+                maps.Add(map);
+            }
+            
+            Scribe.loader.FinalizeLoading();
+
+            Status = PersistentWorldLoadStatus.Ingame;
+            
+            ScribeMultiLoader.Clear();
+
+            Log.Message("Loaded map data...");
+            
+            return maps;
         }
         
         /**

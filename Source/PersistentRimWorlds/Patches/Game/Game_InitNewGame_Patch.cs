@@ -90,7 +90,7 @@ namespace PersistentWorlds.Patches
             // TODO: FACTIONS.
             // colony.SetFactionData();
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
-            PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<Map>() { map });
+            PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
             
             // TODO: View here
             //PersistentWorldManager.PersistentWorld.ConvertSettlementsToColonies();

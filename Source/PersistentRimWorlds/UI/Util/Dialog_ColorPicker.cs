@@ -25,7 +25,7 @@ namespace PersistentWorlds.UI
 
             this.item = item;
         }
-        
+
         public override void DoWindowContents(Rect inRect)
         {
             GUI.BeginGroup(inRect);
@@ -52,9 +52,7 @@ namespace PersistentWorlds.UI
             Widgets.Label(greenSideRect, ((int) gValue).ToString());
             Widgets.Label(blueSideRect, ((int) bValue).ToString());
             
-            item.color = new Color(rValue / 255, gValue / 255, bValue / 255);
-            
-            GUI.color = item.color;
+            GUI.color = new Color(rValue / 255, gValue / 255, bValue / 255);
             GUI.DrawTexture(textureTestRect, item.texture);
             GUI.color = Color.white;
             

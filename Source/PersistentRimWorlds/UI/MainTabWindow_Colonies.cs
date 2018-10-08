@@ -43,7 +43,7 @@ namespace PersistentWorlds.UI
             GUI.EndGroup();
             */
             
-            ScrollableListUI.DrawList(ref inRect, ref scrollPosition, this.items.ToArray());
+            ScrollableListUI.DrawList(ref inRect, ref scrollPosition, ref this.items);
         }
 
         public override void PreOpen()
@@ -82,7 +82,7 @@ namespace PersistentWorlds.UI
                                 PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
                                 LoadMaps(colony);
-                                Current.Game.CurrentMap = PersistentWorldManager.PersistentWorld.Maps[colony][0];
+                                Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
                                 UnloadMaps(colony);    
                             
                                 PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
@@ -99,12 +99,31 @@ namespace PersistentWorlds.UI
 
         private void LoadMaps(PersistentColony colony)
         {
+            /*
             foreach (var map in PersistentWorldManager.PersistentWorld.Maps[colony])
             {
                 Current.Game.Maps.Add(map);
                 map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();
                 map.Parent.FinalizeLoading();
+            }
+            */
+
+            var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
+
+            foreach (var map in maps)
+            {
+                Current.Game.Maps.Add(map);
+                map.mapDrawer.RegenerateEverythingNow();
+                map.FinalizeLoading();
+                map.Parent.FinalizeLoading();
+
+                if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(colony))
+                    PersistentWorldManager.PersistentWorld.Maps[colony].Add(map.Tile);
+                else
+                {
+                    PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<int>() {map.Tile});
+                }
             }
         }
 
@@ -115,29 +134,13 @@ namespace PersistentWorlds.UI
             
             foreach (var map in Current.Game.Maps)
             {
-                if (PersistentWorldManager.PersistentWorld.Maps[colony].Contains(map)) continue;
+                if (PersistentWorldManager.PersistentWorld.Maps[colony].Contains(map.Tile)) continue;
                 
                 // Remove maps.
                 toRemove.Add(map);
             }
             
-            //toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
-            // Deinit maps but allow for reuse.
-
-            List<Thing> things = new List<Thing>();
-            
-            foreach (var map in toRemove)
-            {
-                foreach (var thing in map.listerThings.AllThings)
-                {
-                    things.Add(thing);
-                }
-            }
-            
-            things.Do(thing => thing.DeSpawn());
-            things.Clear();
-            
-            toRemove.Do(map => Current.Game.Maps.Remove(map));
+            toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
             toRemove.Clear();
             
             Find.ColonistBar.MarkColonistsDirty();
