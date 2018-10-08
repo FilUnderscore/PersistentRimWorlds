@@ -14,6 +14,16 @@ namespace PersistentWorlds.Patches
 {
     public static class Debug_Patches
     {
-        
+        [HarmonyPatch(typeof(MapDrawer), "SectionAt")]
+        public static class MapDrawer_SectionAt_Patch
+        {
+            [HarmonyPrefix]
+            public static void Prefix_Patch(MapDrawer __instance, IntVec3 loc, Section __result)
+            {
+                //Log.Message("Patch");
+                
+                //__instance.RegenerateEverythingNow();
+            }
+        }
     }
 }

@@ -88,7 +88,9 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            PersistentWorldManager.WorldLoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
+            var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
+            maps.Do(Current.Game.AddMap);
+            
             this.ConvertToCurrentGameSettlements();
             
             // TODO: Load all maps in memory but have maps in Current.Game.Maps depending on active maps. Maps can be shared.

@@ -109,8 +109,14 @@ namespace PersistentWorlds.UI
             }
             */
 
+            Current.ProgramState = ProgramState.MapInitializing;
+            
             var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
 
+            DynamicCrossRefHandler.Resolve();
+            
+            Log.Message("Calld2");
+            
             foreach (var map in maps)
             {
                 Current.Game.Maps.Add(map);
@@ -125,6 +131,8 @@ namespace PersistentWorlds.UI
                     PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<int>() {map.Tile});
                 }
             }
+
+            Current.ProgramState = ProgramState.Playing;
         }
 
         private void UnloadMaps(PersistentColony colony)

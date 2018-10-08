@@ -214,14 +214,21 @@ namespace PersistentWorlds
             {
                 if (!mapTiles.Any(tile => mapFile.FullName.Contains(tile.ToString()))) continue;
                 
+                Log.Message("Scribing map " + mapFile);
+                ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
+                
                 var map = new Map();
 
                 Scribe_Deep.Look<Map>(ref map, "map");
 
                 maps.Add(map);
             }
-            
-            Scribe.loader.FinalizeLoading();
+
+            if (PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadStatus.Ingame)
+            {
+                DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
+                Scribe.loader.FinalizeLoading();
+            }
 
             Status = PersistentWorldLoadStatus.Ingame;
             
