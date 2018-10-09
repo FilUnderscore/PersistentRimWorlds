@@ -120,6 +120,10 @@ namespace PersistentWorlds.UI
                 
                 Log.Error("MAP LOAD HERE");
                 Current.Game.Maps.Add(map);
+                
+                foreach(var faction in Find.FactionManager.AllFactions)
+                    map.pawnDestinationReservationManager.RegisterFaction(faction);
+                
                 map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();
                 map.Parent.FinalizeLoading();
