@@ -219,6 +219,7 @@ namespace PersistentWorlds
                 
                 var map = new Map();
 
+                Log.Message("Status: " + Scribe.mode);
                 Scribe_Deep.Look<Map>(ref map, "map");
 
                 maps.Add(map);
