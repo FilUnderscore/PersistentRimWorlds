@@ -113,12 +113,11 @@ namespace PersistentWorlds.UI
             
             var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
 
-            DynamicCrossRefHandler.Resolve();
-            
-            Log.Message("Calld2");
-            
-            foreach (var map in maps)
+            for (var i = 0; i < maps.Count; i++)
             {
+                var map = maps[i];
+                DynamicCrossRefHandler.FixMap(ref map);
+                
                 Current.Game.Maps.Add(map);
                 map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();
@@ -149,7 +148,10 @@ namespace PersistentWorlds.UI
             }
             
             toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
+            
+            Log.Message("Removed. " + toRemove.Count);
             toRemove.Clear();
+            
             
             Find.ColonistBar.MarkColonistsDirty();
         }
