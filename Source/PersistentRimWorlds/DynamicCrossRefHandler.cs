@@ -46,10 +46,5 @@ namespace PersistentWorlds
                 }
             }
         }
-
-        public static void FixMap(ref Map map)
-        {
-            //map.info.parent = loadables
-        }
     }
 }

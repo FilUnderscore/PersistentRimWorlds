@@ -19,108 +19,67 @@ namespace PersistentWorlds.Patches
     #if DEBUG
     public static class Debug_Patches
     {
-        [HarmonyPatch()]
-        public static class Look_Patch_Class
-        {
-            static void Postfix(ref ILoadReferenceable refee, string label)
-            {
-                if (PersistentWorldManager.WorldLoadSaver.Status !=
-                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
-                {
-                    return;
-                }
-                
-                Log.Message("Current Mode: " + Scribe.mode.ToString());
-
-                if (Scribe.mode == LoadSaveMode.LoadingVars)
-                {
-                    if (Scribe.loader.curParent != null && Scribe.loader.curParent.GetType().IsValueType)
-                        Log.Warning(
-                            "Trying to load reference of an object of type " + (object) refee.GetType() +
-                            " with label " + label +
-                            ", but our current node is a value type. The reference won't be loaded properly. curParent=" +
-                            (object) Scribe.loader.curParent, false);
-                    XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
-                    string targetLoadID = xmlNode == null ? (string) null : xmlNode.InnerText;
-
-                    Log.Message("Target Load ID: " + targetLoadID);
-
-                    //refee = DynamicCrossRefHandler.loadables[targetLoadID];
-                    if(!DynamicCrossRefHandler.requests.ContainsKey(Scribe.loader.curPathRelToParent + "/" + label))
-                        DynamicCrossRefHandler.requests.Add(Scribe.loader.curPathRelToParent + "/" + label, targetLoadID);
-                }
-                else if (Scribe.mode == LoadSaveMode.Saving)
-                {
-                    refee = DynamicCrossRefHandler.loadables[
-                        DynamicCrossRefHandler.requests[Scribe.loader.curPathRelToParent + "/" + label]];
-                }
-                
-                Log.ResetMessageCount();
-            }
-
-            static MethodBase TargetMethod()
-            {
-                return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod).MakeGenericMethod(typeof(ILoadReferenceable));
-            }
-        }
-
-        /*
-        [HarmonyPatch()]
-        public static class Look_FactionPatch
-        {
-            static void Postfix(ref Faction refee, string label)
-            {
-                
-            }
-
-            static MethodBase TargetMethod()
-            {
-                return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod)
-                    .MakeGenericMethod(typeof(Faction));
-            }
-        }
-        */
-
-        /*
-        [HarmonyPatch(typeof(Log), "Warning")]
-        public static class Log_Temp_Patch
+        [HarmonyPatch(typeof(ParentRelationUtility), "GetFather")]
+        public static class Patch_1
         {
             [HarmonyPrefix]
-            public static void Warning(string text, bool ignoreStopLoggingLimit)
+            public static void Prefix_Test(Pawn pawn)
             {
-                Log.ResetMessageCount();
+                if (pawn == null)
+                {
+                    Log.Error("Pawn null wut");
+                }
+                
+                if (pawn.relations == null)
+                {
+                    Log.Error("Pawn rel null");
+                }
+
+                if (pawn.relations.DirectRelations == null)
+                {
+                    Log.Error("Dir null");
+                }
+
+                foreach (var r in pawn.relations.DirectRelations)
+                {
+                    if (r == null)
+                    {
+                        Log.Error("R null");
+                    }
+
+                    if (r.def == null)
+                    {
+                        Log.Error("R DEF NULL");
+                    }
+
+                    if (r.otherPawn == null)
+                    {
+                        Log.Error("Other pawn null");
+                    }
+                }
             }
         }
-        */
-
-        [HarmonyPatch(typeof(MapInfo), "ExposeData")]
-        public static class MapInfo_ExposeData_Patch
+        
+        [HarmonyPatch(typeof(ParentRelationUtility), "GetMother")]
+        public static class Patch_2
         {
             [HarmonyPrefix]
-            public static bool ExposeData_Prefix(MapInfo __instance)
+            public static void Prefix_Test(Pawn pawn)
             {
-                if (PersistentWorldManager.WorldLoadSaver.Status !=
-                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
+                if (pawn == null)
                 {
-                    return true;
+                    Log.Error("Pawn null wut");
+                }
+                
+                if (pawn.relations == null)
+                {
+                    Log.Error("Pawn rel null");
                 }
 
-                if (Scribe.mode == LoadSaveMode.LoadingVars)
+                if (pawn.relations.DirectRelations == null)
                 {
-                    var size = new IntVec3();
-                    Scribe_Values.Look<IntVec3>(ref size, "size", new IntVec3(), false);
-                    Log.Message("Size: " + size.ToString());
-                    __instance.Size = size;
-
-                    MapParent parent = null;
-                    XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent["parent"];
-                    string targetLoadID = xmlNode == null ? null : xmlNode.InnerText;
-
-                    parent = (MapParent) DynamicCrossRefHandler.loadables[targetLoadID];
-                    __instance.parent = parent;
+                    Log.Error("Dir null");
                 }
-
-                return false;
             }
         }
     }

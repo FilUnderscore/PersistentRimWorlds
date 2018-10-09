@@ -49,11 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicCrossRefHandler.cs" />
+    <Compile Include="FileMemoryLoader.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
     <Compile Include="Logic\PersistentWorld.cs" />
     <Compile Include="Logic\PersistentWorldData.cs" />
+    <Compile Include="MultiScribeLoader.cs" />
     <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Patches\Game\Debug_Patches.cs" />
     <Compile Include="Patches\Game\FactionManager_RecacheFactions_Patch.cs" />
@@ -70,7 +72,9 @@
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
+    <Compile Include="Patches\MapInfo_ExposeData_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
+    <Compile Include="Patches\Scribe_References_Look_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
     <Compile Include="Patches\UI\Page_SelectLandingSite_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />

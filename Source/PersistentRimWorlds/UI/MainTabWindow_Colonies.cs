@@ -81,15 +81,16 @@ namespace PersistentWorlds.UI
                                 PersistentWorldManager.PersistentWorld.Colony = colony;
                                 PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
+                                PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+                                
                                 LoadMaps(colony);
                                 Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
                                 UnloadMaps(colony);    
                             
-                                PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
                                 PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
 
-                                Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
-                            }, "LoadingColony", false, null);
+                                //Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
+                            }, "LoadingColony", true, null);
                     };
                 }
                 
@@ -113,12 +114,8 @@ namespace PersistentWorlds.UI
             
             var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
 
-            for (var i = 0; i < maps.Count; i++)
+            foreach (var map in maps)
             {
-                var map = maps[i];
-                DynamicCrossRefHandler.FixMap(ref map);
-                
-                Log.Error("MAP LOAD HERE");
                 Current.Game.Maps.Add(map);
                 
                 foreach(var faction in Find.FactionManager.AllFactions)
@@ -128,8 +125,6 @@ namespace PersistentWorlds.UI
                 map.FinalizeLoading();
                 map.Parent.FinalizeLoading();
 
-                Log.Message("FINALIZE HERE");
-                
                 if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(colony))
                     PersistentWorldManager.PersistentWorld.Maps[colony].Add(map.Tile);
                 else
@@ -143,7 +138,8 @@ namespace PersistentWorlds.UI
 
         private void UnloadMaps(PersistentColony colony)
         {
-            Log.Error("UNLOADD");
+            // TODO: Save map first.
+            
             // Concurrency...
             var toRemove = new List<Map>();
             

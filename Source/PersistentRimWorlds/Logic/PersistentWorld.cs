@@ -235,6 +235,11 @@ namespace PersistentWorlds.Logic
                 {
                     continue;
                 }
+
+                if (settlement.Map?.info == null)
+                {
+                    continue;
+                }
                 
                 var colony = (Colony) WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"));
                 settlement.Map.info.parent = colony;
@@ -266,7 +271,7 @@ namespace PersistentWorlds.Logic
                 
                 var colony = (Colony) mapParent;
                 
-                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
+                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID || colony.Map?.info == null) continue;
                 
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);

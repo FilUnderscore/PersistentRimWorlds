@@ -22,7 +22,8 @@ namespace PersistentWorlds.UI
             this.doCloseX = true;
             this.doCloseButton = true;
             this.forcePause = true;
-
+            this.draggable = true;
+            
             this.item = item;
         }
 
