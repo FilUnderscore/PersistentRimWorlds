@@ -89,7 +89,7 @@ namespace PersistentWorlds.UI
                                 PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
 
                                 Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
-                            }, "LoadingColony", false, null);
+                            }, "LoadingColony", true, null);
                     };
                 }
                 
@@ -118,11 +118,14 @@ namespace PersistentWorlds.UI
                 var map = maps[i];
                 DynamicCrossRefHandler.FixMap(ref map);
                 
+                Log.Error("MAP LOAD HERE");
                 Current.Game.Maps.Add(map);
-                map.mapDrawer.RegenerateEverythingNow();
+                //map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();
                 map.Parent.FinalizeLoading();
 
+                Log.Message("FINALIZE HERE");
+                
                 if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(colony))
                     PersistentWorldManager.PersistentWorld.Maps[colony].Add(map.Tile);
                 else
@@ -136,6 +139,7 @@ namespace PersistentWorlds.UI
 
         private void UnloadMaps(PersistentColony colony)
         {
+            Log.Error("UNLOADD");
             // Concurrency...
             var toRemove = new List<Map>();
             

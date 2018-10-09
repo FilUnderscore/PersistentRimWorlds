@@ -19,6 +19,7 @@ namespace PersistentWorlds.Patches
     #if DEBUG
     public static class Debug_Patches
     {
+        /*
         [HarmonyPatch()]
         public static class Look_Patch_Class
         {
@@ -45,6 +46,7 @@ namespace PersistentWorlds.Patches
                 return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod).MakeGenericMethod(typeof(MapParent));
             }
         }
+        */
 
         /*
         [HarmonyPatch()]
@@ -63,6 +65,7 @@ namespace PersistentWorlds.Patches
         }
         */
 
+        /*
         [HarmonyPatch(typeof(Log), "Warning")]
         public static class Log_Temp_Patch
         {
@@ -70,6 +73,34 @@ namespace PersistentWorlds.Patches
             public static void Warning(string text, bool ignoreStopLoggingLimit)
             {
                 Log.ResetMessageCount();
+            }
+        }
+        */
+
+        [HarmonyPatch(typeof(MapInfo), "ExposeData")]
+        public static class MapInfo_ExposeData_Patch
+        {
+            [HarmonyPrefix]
+            public static bool ExposeData_Prefix(MapInfo __instance)
+            {
+                if (PersistentWorldManager.WorldLoadSaver.Status !=
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
+                {
+                    return true;
+                }
+
+                var size = new IntVec3();
+                Scribe_Values.Look<IntVec3>(ref size, "size", new IntVec3(), false);
+                __instance.Size = size;
+
+                MapParent parent = null;
+                XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent["parent"];
+                string targetLoadID = xmlNode == null ? null : xmlNode.InnerText;
+
+                parent = (MapParent) DynamicCrossRefHandler.loadables[targetLoadID];
+                __instance.parent = parent;
+                
+                return false;
             }
         }
     }
