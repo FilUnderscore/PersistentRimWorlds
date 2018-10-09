@@ -205,22 +205,36 @@ namespace PersistentWorlds
 
             var maps = new List<Map>();
 
+            /*
             if (Scribe.mode == LoadSaveMode.Inactive)
             {
                 this.PreloadWorldColoniesMaps();
             }
+            */
 
             foreach (var mapFile in mapFiles)
             {
                 if (!mapTiles.Any(tile => mapFile.FullName.Contains(tile.ToString()))) continue;
                 
                 Log.Message("Scribing map " + mapFile);
-                ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
+                
+                if(PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadStatus.Ingame)
+                    ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
+                else
+                {
+                    Scribe.loader.InitLoading(mapFile.FullName);
+                }
                 
                 var map = new Map();
 
                 Log.Message("Status: " + Scribe.mode);
                 Scribe_Deep.Look<Map>(ref map, "map");
+
+                if (PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadStatus.Ingame)
+                {
+                    DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
+                    Scribe.loader.FinalizeLoading();
+                }
 
                 maps.Add(map);
             }

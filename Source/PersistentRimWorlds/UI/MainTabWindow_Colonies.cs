@@ -89,7 +89,7 @@ namespace PersistentWorlds.UI
                                 PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
 
                                 Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
-                            }, "LoadingColony", true, null);
+                            }, "LoadingColony", false, null);
                     };
                 }
                 
@@ -120,7 +120,7 @@ namespace PersistentWorlds.UI
                 
                 Log.Error("MAP LOAD HERE");
                 Current.Game.Maps.Add(map);
-                //map.mapDrawer.RegenerateEverythingNow();
+                map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();
                 map.Parent.FinalizeLoading();
 

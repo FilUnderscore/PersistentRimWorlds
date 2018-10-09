@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using Harmony;
 using RimWorld;
 using Verse;
@@ -12,6 +13,7 @@ namespace PersistentWorlds
      */
     public class DynamicCrossRefHandler
     {
+        public static Dictionary<string, string> requests = new Dictionary<string, string>();
         public static Dictionary<string, ILoadReferenceable> loadables = new Dictionary<string, ILoadReferenceable>();
         private static List<IExposable> exposables = new List<IExposable>();
 
@@ -35,7 +37,12 @@ namespace PersistentWorlds
 
                 if (reffable != null)
                 {
-                    loadables.Add(reffable.GetUniqueLoadID(), reffable);
+                    if (!loadables.ContainsKey(reffable.GetUniqueLoadID()))
+                    {
+                        loadables.Add(reffable.GetUniqueLoadID(), reffable);
+                        Log.Message("Added ref: " + reffable.GetUniqueLoadID(), true);
+                        Log.ResetMessageCount();
+                    }
                 }
             }
         }
