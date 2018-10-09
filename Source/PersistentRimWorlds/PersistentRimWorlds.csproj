@@ -49,13 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicCrossRefHandler.cs" />
-    <Compile Include="FileMemoryLoader.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
     <Compile Include="Logic\PersistentWorld.cs" />
     <Compile Include="Logic\PersistentWorldData.cs" />
-    <Compile Include="MultiScribeLoader.cs" />
     <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Patches\Game\Debug_Patches.cs" />
     <Compile Include="Patches\Game\FactionManager_RecacheFactions_Patch.cs" />
@@ -83,6 +81,7 @@
     <Compile Include="PersistentWorldManager.cs" />
     <Compile Include="PersistentWorldsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceSaveLoader.cs" />
     <Compile Include="SaveFileUtils.cs" />
     <Compile Include="ScribeMultiLoader.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_ColonySelection.cs" />

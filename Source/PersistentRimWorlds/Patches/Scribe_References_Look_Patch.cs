@@ -1,7 +1,9 @@
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Harmony;
+using UnityEngine.Rendering;
 using Verse;
 
 namespace PersistentWorlds.Patches
@@ -9,6 +11,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch()]
     public static class Scribe_References_Look_Patch
     {
+        /*
         static void Postfix(ref ILoadReferenceable refee, string label)
         {
             if (PersistentWorldManager.WorldLoadSaver.Status !=
@@ -43,6 +46,40 @@ namespace PersistentWorlds.Patches
         static MethodBase TargetMethod()
         {
             return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod).MakeGenericMethod(typeof(ILoadReferenceable));
+        }
+        */
+
+        static bool Prefix(ref ILoadReferenceable refee, string label)
+        {
+            if (!(refee is IExposable) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            {
+                return true;
+            }
+
+            var exposable = (IExposable) refee;
+            
+            switch (Scribe.mode)
+            {
+                case LoadSaveMode.Saving:
+                    ReferenceSaveLoader.SaveReferenceFile(exposable);
+                    
+                    Scribe.saver.WriteElement(label, refee.GetUniqueLoadID());
+                    break;
+                case LoadSaveMode.LoadingVars:
+                    XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
+                    string targetLoadID = xmlNode == null ? (string) null : xmlNode.InnerText;
+                    
+                    refee = (ILoadReferenceable) ReferenceSaveLoader.GetReference<IExposable>(targetLoadID);
+                    break;
+            }
+            
+            return false;
+        }
+
+        static MethodBase TargetMethod()
+        {
+            return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod)
+                .MakeGenericMethod(typeof(ILoadReferenceable));
         }
     }
 }

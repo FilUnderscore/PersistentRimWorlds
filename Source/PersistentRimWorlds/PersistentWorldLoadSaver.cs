@@ -260,6 +260,8 @@ namespace PersistentWorlds
 
         public void SaveWorld(PersistentWorld world)
         {
+            ReferenceSaveLoader.ClearReferences();
+            
             this.DeletePreviousDirectories();
             this.CreateDirectoriesIfNotExistant();
 
@@ -328,6 +330,9 @@ namespace PersistentWorlds
             // TODO: Revert.
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
+            Log.Message("Saving references.");
+            ReferenceSaveLoader.SaveReferences();
+            
             Log.Message("Saved world.");
         }
         
@@ -337,10 +342,10 @@ namespace PersistentWorlds
         
         public void Convert(Game game)
         {
-            PersistentWorldManager.PersistentWorld = PersistentWorld.Convert(game);
-            
             this.ConfigurePaths(SaveDir + "/" + game.World.info.name);
             this.CreateDirectoriesIfNotExistant();
+            
+            PersistentWorldManager.PersistentWorld = PersistentWorld.Convert(game);
             
             this.SaveWorld(PersistentWorldManager.PersistentWorld);
             
@@ -366,6 +371,11 @@ namespace PersistentWorlds
 
                 Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
             }, "Play", "LoadingLongEvent", true, null);
+        }
+
+        public string GetWorldFolder()
+        {
+            return this.worldFolderPath;
         }
     }
 }
