@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Harmony;
 using Verse;
@@ -21,6 +22,8 @@ namespace PersistentWorlds
 #endif
 
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+            
+            DynamicGenericPatcher.PatchScribeCollectionsLook(harmony);
         }
 
         private static void PatchMainMenu()

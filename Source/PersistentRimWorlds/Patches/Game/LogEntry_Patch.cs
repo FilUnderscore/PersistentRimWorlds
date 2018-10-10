@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using PersistentWorlds.Logic;
@@ -51,6 +52,11 @@ namespace PersistentWorlds.Patches
             }
                 
             return codes;
+        }
+
+        static ConstructorInfo TargetMethod()
+        {
+            return AccessTools.Constructor(typeof(LogEntry), new Type[] { typeof(LogEntryDef) });
         }
     }
 }

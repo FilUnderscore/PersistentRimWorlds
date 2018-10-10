@@ -48,23 +48,33 @@ namespace PersistentWorlds
 
                 var reffable = referencable.Value;
                 
-                SafeSaver.Save(file, "reference",
-                    delegate { Scribe_Deep.Look<IExposable>(ref reffable, referencable.Key); });
+                SafeSaver.Save(file, "referencefile",
+                    delegate { Scribe_Deep.Look<IExposable>(ref reffable, "reference"); });
             }
         }
 
         public static T LoadReference<T>(string uniqueLoadID) where T : IExposable
         {
             var file = ReferenceFolder + "/" + uniqueLoadID + ".pwrf";
+
+            if (ScribeVars.mode != LoadSaveMode.Inactive)
+            {
+                Scribe.loader.ForceStop();
+            }
             
             Scribe.loader.InitLoading(file);
 
             var exposable = default(T);
-            Scribe_Deep.Look<T>(ref exposable, uniqueLoadID);
+            Scribe_Deep.Look<T>(ref exposable, "reference");
             
             references.Add(uniqueLoadID, exposable);
 
             Scribe.ForceStop();
+
+            if (ScribeVars.mode != LoadSaveMode.Inactive)
+            {
+                ScribeVars.Reset();
+            }
             
             return exposable;
         }
