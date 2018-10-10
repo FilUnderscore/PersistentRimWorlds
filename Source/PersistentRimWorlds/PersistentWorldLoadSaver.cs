@@ -205,12 +205,10 @@ namespace PersistentWorlds
 
             var maps = new List<Map>();
 
-            /*
             if (Scribe.mode == LoadSaveMode.Inactive)
             {
                 this.PreloadWorldColoniesMaps();
             }
-            */
 
             foreach (var mapFile in mapFiles)
             {
@@ -232,7 +230,6 @@ namespace PersistentWorlds
 
                 if (PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadStatus.Ingame)
                 {
-                    DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
                     Scribe.loader.FinalizeLoading();
                 }
 
@@ -241,7 +238,6 @@ namespace PersistentWorlds
 
             if (PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadStatus.Ingame)
             {
-                DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
                 Scribe.loader.FinalizeLoading();
             }
 

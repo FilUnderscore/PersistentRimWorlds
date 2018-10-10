@@ -39,6 +39,8 @@ namespace PersistentWorlds
             {
                 references.Add(referencable.GetUniqueLoadID(), exposable);
             }
+            
+            Scribe.saver.loadIDsErrorsChecker.RegisterReferenced(referencable, referencable.GetUniqueLoadID());
         }
 
         public static void SaveReferences()
@@ -84,6 +86,8 @@ namespace PersistentWorlds
             {
                 ScribeVars.Reset();
             }
+            
+            //Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
             
             return exposable;
         }

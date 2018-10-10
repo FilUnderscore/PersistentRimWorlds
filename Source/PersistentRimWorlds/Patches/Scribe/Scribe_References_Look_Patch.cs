@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Harmony;
+using RimWorld.Planet;
 using UnityEngine.Rendering;
 using Verse;
 
@@ -51,7 +52,7 @@ namespace PersistentWorlds.Patches
 
         static bool Prefix(ref ILoadReferenceable refee, string label)
         {
-            if ((!(refee is Pawn) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            if ((!(refee is Pawn) && !(refee is WorldObject) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
             {
                 return true;
             }
@@ -64,17 +65,15 @@ namespace PersistentWorlds.Patches
                     ReferenceSaveLoader.SaveReferenceFile(exposable);
                     
                     Scribe.saver.WriteElement(label, refee.GetUniqueLoadID());
-                    Scribe.saver.loadIDsErrorsChecker.RegisterReferenced(refee, label);
                     break;
                 case LoadSaveMode.LoadingVars:
                     var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
                     var targetLoadID = xmlNode == null ? label : xmlNode.InnerText;
                     
-                    Log.Message("targetloadid: " + targetLoadID);
-                    Log.Message("label: " + label);
+                    //Log.Message("targetloadid: " + targetLoadID);
+                    //Log.Message("label: " + label);
                     
                     refee = (ILoadReferenceable) ReferenceSaveLoader.GetReference<IExposable>(targetLoadID);
-                    Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
                     break;
             }
             

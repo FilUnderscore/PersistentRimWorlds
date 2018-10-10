@@ -27,7 +27,11 @@ namespace PersistentWorlds.Patches
                 XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent["parent"];
                 string targetLoadID = xmlNode == null ? null : xmlNode.InnerText;
 
-                parent = (MapParent) DynamicCrossRefHandler.loadables[targetLoadID];
+                Log.Message("targetLoadID: " + targetLoadID);
+                
+                //Scribe_References.Look<MapParent>(ref parent, targetLoadID);
+                parent = ReferenceSaveLoader.GetReference<MapParent>(targetLoadID);
+                
                 __instance.parent = parent;
             }
 

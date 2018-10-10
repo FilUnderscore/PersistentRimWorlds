@@ -48,7 +48,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicCrossRefHandler.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
+    <Compile Include="Patches\Scribe\LoadedObjectDirectory_RegisterLoaded_Patch.cs" />
     <Compile Include="Patches\Scribe\MapInfo_ExposeData_Patch.cs" />
     <Compile Include="Patches\Scribe\ScribeLoader_ForceStop_Patch.cs" />
     <Compile Include="Patches\Scribe\Scribe_References_Look_Patch.cs" />

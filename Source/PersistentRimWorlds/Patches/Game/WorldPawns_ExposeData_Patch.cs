@@ -91,7 +91,7 @@ namespace PersistentWorlds.Patches
 
             codes[16].labels.Add(label3);
             
-            codes.Do(code => Log.Message(code.ToString(), true));
+            //codes.Do(code => Log.Message(code.ToString(), true));
             
             return codes.AsEnumerable();
         }
