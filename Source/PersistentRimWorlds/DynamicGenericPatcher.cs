@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using Harmony.ILCopying;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds
@@ -22,13 +23,17 @@ namespace PersistentWorlds
             {
                 foreach (var type in assembly.GetExportedTypes())
                 {
+                    if (type == typeof(DynamicGenericPatcher)) continue;
+                    
                     if (type.Namespace.ToLower().Contains("rimworld") || type.Namespace.ToLower().Contains("verse") ||
                         type.Namespace.ToLower().Contains("persistentworlds"))
-                    {
-
+                    {   
                         var genericMethod = method.MakeGenericMethod(type);
-                        var patchedGenericMethod = CreateDynamicMethod(genericMethod, type);
+                        var patchedGenericMethod = typeof(DynamicGenericPatcher).GetMethod("Look_Patch")
+                            .MakeGenericMethod(type);
 
+                        Log.Message("Patching: " + type.Name, true);
+                        
                         harmony.Patch(genericMethod, new HarmonyMethod(patchedGenericMethod));
                     }
                 }
@@ -37,26 +42,17 @@ namespace PersistentWorlds
             Log.ResetMessageCount();
         }
 
-        private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type type)
+        public static bool Look_Patch<T>(ref List<T> list, bool saveDestroyedThings, string label, LookMode lookMode,
+            params object[] ctorArgs)
         {
-            Log.Message("Patching DynamicMethod (Scribe_Collections.Look<>) for type: " + type.Name, true);
-            
-            var parameters = new List<Type>();
-
-            parameters.Add(typeof(List<>).MakeGenericType(type).MakeByRefType());
-            
-            for (var i = 1; i < method.GetParameters().Length; i++)
+            if (lookMode != LookMode.Reference)
             {
-                var param = method.GetParameters()[i];
-                parameters.Add(param.GetType());
+                return true;
             }
             
-            var dynamicMethod = new DynamicMethod(method.Name, typeof(bool), parameters.ToArray());
-            var ilGenerator = dynamicMethod.GetILGenerator();
-            ilGenerator.Emit(OpCodes.Ldc_I4_1);
-            ilGenerator.Emit(OpCodes.Ret);
-            
-            return dynamicMethod;
+            Log.Message("Reference");
+
+            return false;
         }
     }
 }
