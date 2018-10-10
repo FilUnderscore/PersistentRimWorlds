@@ -29,7 +29,8 @@ namespace PersistentWorlds.Patches
 
                 Log.Message("targetLoadID: " + targetLoadID);
                 
-                Scribe_References.Look<MapParent>(ref parent, targetLoadID);
+                //Scribe_References.Look<MapParent>(ref parent, targetLoadID);
+                parent = ReferenceSaveLoader.GetReference<MapParent>(targetLoadID);
                 
                 __instance.parent = parent;
             }

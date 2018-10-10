@@ -205,12 +205,10 @@ namespace PersistentWorlds
 
             var maps = new List<Map>();
 
-            /*
             if (Scribe.mode == LoadSaveMode.Inactive)
             {
                 this.PreloadWorldColoniesMaps();
             }
-            */
 
             foreach (var mapFile in mapFiles)
             {
