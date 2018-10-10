@@ -232,7 +232,6 @@ namespace PersistentWorlds
 
                 if (PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadStatus.Ingame)
                 {
-                    DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
                     Scribe.loader.FinalizeLoading();
                 }
 
@@ -241,7 +240,6 @@ namespace PersistentWorlds
 
             if (PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadStatus.Ingame)
             {
-                DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
                 Scribe.loader.FinalizeLoading();
             }
 
