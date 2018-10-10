@@ -64,6 +64,7 @@ namespace PersistentWorlds.Patches
                     ReferenceSaveLoader.SaveReferenceFile(exposable);
                     
                     Scribe.saver.WriteElement(label, refee.GetUniqueLoadID());
+                    Scribe.saver.loadIDsErrorsChecker.RegisterReferenced(refee, label);
                     break;
                 case LoadSaveMode.LoadingVars:
                     var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
@@ -73,6 +74,7 @@ namespace PersistentWorlds.Patches
                     Log.Message("label: " + label);
                     
                     refee = (ILoadReferenceable) ReferenceSaveLoader.GetReference<IExposable>(targetLoadID);
+                    Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
                     break;
             }
             

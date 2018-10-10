@@ -84,8 +84,6 @@ namespace PersistentWorlds.UI
             {
                 // TODO: Have normal creation menus without creating world choice however... include scenario and characters and storyteller, as well as world location.
                 // TODO: Have other colonies on same world tiles loaded as a settlement with different color as a whole new worldobject that shows up in Colonies tab on world map.
-
-                Scribe.loader.FinalizeLoading();
                 
                 Find.WindowStack.Add((Window) new Page_SelectScenario());
             }));
