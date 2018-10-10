@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Harmony;
 using UnityEngine;
 using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public sealed class ScrollableListUI
+    public static class ScrollableListUI
     {
-        public static void DrawList(ref Rect inRect, ref Vector2 scrollPosition, ScrollableListItem[] items)
+        public static void DrawList(ref Rect inRect, ref Vector2 scrollPosition, ref List<ScrollableListItem> items)
         {
             var vector2_1 = new Vector2(inRect.width - 16f, 36f);
             var vector2_2 = new Vector2(100f, vector2_1.y - 2f);
 
             inRect.height -= 45f;
 
-            var height = (float) items.Length * (vector2_1.y + 3f);
+            var height = (float) items.Count * (vector2_1.y + 3f);
             
             var viewRect = new Rect(0.0f, 0.0f, inRect.width - 16f, height);
             var outRect = new Rect(inRect.AtZero());
@@ -65,6 +67,35 @@ namespace PersistentWorlds.UI
 
                     var x = vector2_1.x - 2f - vector2_2.x - vector2_2.y;
 
+                    /*
+                     * Color changing..
+                     */
+                    if (item.canChangeColor)
+                    {
+                        var colorBoxX = x - (vector2_2.y + 5);
+                        var colorBoxRect = new Rect(colorBoxX, 0.0f, vector2_2.y, vector2_2.y);
+
+                        if (item.texture == null)
+                        {
+                            var texture = new Texture2D((int) colorBoxRect.width, (int) colorBoxRect.height,
+                                TextureFormat.RGBA32, false);
+
+                            item.texture = texture;
+                        }
+                        
+                        GUI.color = item.color;
+                        var press = Widgets.ButtonImage(colorBoxRect, item.texture);
+                        GUI.color = Color.white;
+                        
+                        if (press)
+                        {
+                            Find.WindowStack.Add(new Dialog_ColorPicker(item));
+                        }
+                    }
+                    /*
+                     * End
+                     */
+                    
                     if(!string.IsNullOrEmpty(item.ActionButtonText))
                         if (Widgets.ButtonText(new Rect(x, 0.0f, vector2_2.x, vector2_2.y), item.ActionButtonText, true, false,
                             true))

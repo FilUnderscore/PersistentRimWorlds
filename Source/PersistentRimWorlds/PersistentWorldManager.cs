@@ -11,5 +11,10 @@ namespace PersistentWorlds
         {
             return PersistentWorld != null && WorldLoadSaver != null && PersistentWorld.Colony != null;
         }
+
+        public static bool NotNull()
+        {
+            return PersistentWorld != null && WorldLoadSaver != null;
+        }
     }
 }

@@ -22,7 +22,8 @@ namespace PersistentWorlds.Logic
         public PersistentWorldData WorldData = new PersistentWorldData();
         public PersistentColony Colony;
         
-        public Dictionary<PersistentColony, List<Map>> Maps = new Dictionary<PersistentColony, List<Map>>();
+        // Stores map tile ids.
+        public Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
 
         public PersistentWorld()
@@ -87,7 +88,10 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            PersistentWorldManager.WorldLoadSaver.LoadMaps();
+            var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
+            maps.Do(Current.Game.AddMap);
+            
+            this.ConvertToCurrentGameSettlements();
             
             // TODO: Load all maps in memory but have maps in Current.Game.Maps depending on active maps. Maps can be shared.
             
@@ -231,6 +235,11 @@ namespace PersistentWorlds.Logic
                 {
                     continue;
                 }
+
+                if (settlement.Map?.info == null)
+                {
+                    continue;
+                }
                 
                 var colony = (Colony) WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"));
                 settlement.Map.info.parent = colony;
@@ -262,7 +271,7 @@ namespace PersistentWorlds.Logic
                 
                 var colony = (Colony) mapParent;
                 
-                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
+                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID || colony.Map?.info == null) continue;
                 
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
@@ -300,6 +309,7 @@ namespace PersistentWorlds.Logic
             toRemove.Clear();
         }
 
+        /*
         public void SortMaps(IEnumerable<Map> maps)
         {            
             foreach (var map in maps)
@@ -328,47 +338,18 @@ namespace PersistentWorlds.Logic
                 }
             }
         }
+        */
 
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
-
-            if (this.Colony != null && this.Maps.ContainsKey(this.Colony))
+            
+            // Because saving doesn't always work?
+            if (PersistentWorldManager.WorldLoadSaver != null && PersistentWorldManager.WorldLoadSaver.Status !=
+                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
             {
-                /*
-                 * Add Needed Maps
-                 */
-                var toAdd = new List<Map>();
-
-                foreach (var map in this.Maps[this.Colony])
-                {
-                    if (!this.Game.Maps.Contains(map))
-                    {
-                        toAdd.Add(map);
-                    }
-                }
-
-                toAdd.Do(map => this.Game.AddMap(map));
-                toAdd.Do(map => map.FinalizeLoading());
-                toAdd.Do(map => MapComponentUtility.MapGenerated(map));
-                toAdd.Clear();
-                
-                /*
-                 * Remove Unneeded Maps
-                 */
-                var toRemove = new List<Map>();
-
-                foreach (var map in this.Game.Maps)
-                {
-                    // TODO: Add map when needed so it doesn't get deinitialized by mistake.
-                    if (!this.Maps[this.Colony].Contains(map))
-                    {
-                        toRemove.Add(map);
-                    }
-                }
-
-                toRemove.Do(map => this.Game.DeinitAndRemoveMap(map));
-                toRemove.Clear();
+                PersistentWorldManager.WorldLoadSaver.Status =
+                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
             }
         }
 

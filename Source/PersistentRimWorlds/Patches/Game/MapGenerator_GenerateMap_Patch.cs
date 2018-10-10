@@ -21,12 +21,12 @@ namespace PersistentWorlds.Patches
                     .Colony))
                 {
                     PersistentWorldManager.PersistentWorld.Maps[PersistentWorldManager.PersistentWorld.Colony]
-                        .Add(__result);
+                        .Add(__result.Tile);
                 }
                 else
                 {
                     PersistentWorldManager.PersistentWorld.Maps.Add(PersistentWorldManager.PersistentWorld.Colony,
-                        new List<Map>() {__result});
+                        new List<int>() {__result.Tile});
                 }
             }
         }

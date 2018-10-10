@@ -20,9 +20,12 @@ namespace PersistentWorlds.Patches.UI
             Current.Game = PersistentWorldManager.PersistentWorld.Game;
                 
             Current.Game.InitData = new GameInitData();
+            
+            Scribe.loader.FinalizeLoading();
                 
-            PersistentWorldManager.WorldLoadSaver.LoadMaps();
-                
+            // TODO: Review
+            //PersistentWorldManager.WorldLoadSaver.LoadMaps();  
+            
             PersistentWorldManager.PersistentWorld.Game.World.pathGrid = new WorldPathGrid();
             Current.Game.Scenario.PostWorldGenerate();
 

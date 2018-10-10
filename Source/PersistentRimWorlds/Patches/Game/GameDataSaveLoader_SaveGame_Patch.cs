@@ -10,6 +10,8 @@ namespace PersistentWorlds.Patches
         [HarmonyPrefix]
         public static bool SaveGame_Prefix(string fileName)
         {
+            // TODO: Possibly checking if status is not convert instead of ingame.
+            
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
                 PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)

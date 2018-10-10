@@ -8,7 +8,9 @@ using Verse.Profile;
 namespace PersistentWorlds.UI
 {
     public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
-    {
+    {        
+        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
+
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
         
         public override Vector2 InitialSize => new Vector2(600f, 700f);
@@ -60,6 +62,9 @@ namespace PersistentWorlds.UI
                 };
                 scrollableListItem.DeleteButtonTooltip =
                     "DeleteColony-PersistentWorlds".Translate();
+
+                scrollableListItem.canChangeColor = true;
+                scrollableListItem.texture = Town; 
                 
                 // TODO: Show date/time of file save.
                 
@@ -79,6 +84,7 @@ namespace PersistentWorlds.UI
             {
                 // TODO: Have normal creation menus without creating world choice however... include scenario and characters and storyteller, as well as world location.
                 // TODO: Have other colonies on same world tiles loaded as a settlement with different color as a whole new worldobject that shows up in Colonies tab on world map.
+                
                 Find.WindowStack.Add((Window) new Page_SelectScenario());
             }));
             
@@ -87,7 +93,7 @@ namespace PersistentWorlds.UI
             var rect2 = new Rect(0, (float) num1, inRect.width, inRect.height);
             
             GUI.BeginGroup(rect2);
-            ScrollableListUI.DrawList(ref rect2, ref this.scrollPosition, this.items.ToArray());
+            ScrollableListUI.DrawList(ref rect2, ref this.scrollPosition, ref this.items);
             GUI.EndGroup();
             
             GUI.EndGroup();

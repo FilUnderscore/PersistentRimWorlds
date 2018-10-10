@@ -26,6 +26,12 @@ namespace PersistentWorlds.Logic
 
         public void ExposeData()
         {
+            if (PersistentWorldManager.WorldLoadSaver.Status ==
+                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
+            {
+                return;
+            }
+            
             Log.Warning("Calling PersistentWorldData ExposeData()");
 
             if (PersistentWorldManager.PersistentWorld == null)

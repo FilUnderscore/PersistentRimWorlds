@@ -61,6 +61,18 @@ namespace PersistentWorlds.UI
                 scrollableListItem.DeleteButtonAction = delegate
                 {
                     // TODO: Implement deleting persistent worlds.
+                    var dialogBox = new Dialog_MessageBox("DeleteWorld-PersistentWorlds".Translate(), "Delete",
+                        delegate { }, "Cancel", delegate { }, "DeleteWorldTitle-PersistentWorlds".Translate(), true)
+                    {
+                        buttonCText = "Convert",
+                        buttonCAction = delegate
+                        {
+                            // TODO: Convert world back to single colony game.  
+                        }
+                    };
+
+
+                    Find.WindowStack.Add(dialogBox);
                 };
                 
                 items.Add(scrollableListItem);
@@ -95,7 +107,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, this.items.ToArray());
+            ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, ref this.items);
         }
     }
 }

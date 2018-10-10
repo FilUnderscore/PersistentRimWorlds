@@ -157,6 +157,7 @@ namespace PersistentWorlds
             Log.Message("Loaded colony data...");
         }
 
+        /*
         public void LoadMaps()
         {
             var mapFiles = new DirectoryInfo(this.mapsDirectory).GetFiles("*" + PersistentWorldMapFile_Extension);
@@ -180,6 +181,9 @@ namespace PersistentWorlds
             
             Scribe.loader.FinalizeLoading();
 
+            Status = PersistentWorldLoadStatus.Ingame;
+            // Basically ingame at this point :/
+            
             // TODO: Test
             PersistentWorldManager.PersistentWorld.SortMaps(maps);            
             PersistentWorldManager.PersistentWorld.PreAddMaps();
@@ -188,11 +192,66 @@ namespace PersistentWorlds
 
             // TODO: Maybe relocate?
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
-
-            Status = PersistentWorldLoadStatus.Ingame;
-            // Basically ingame at this point :/
             
             Log.Message("Loaded map data...");
+        }
+        */
+
+        public List<Map> LoadMaps(int[] mapTiles)
+        {
+            var mapFiles = new DirectoryInfo(this.mapsDirectory).GetFiles("*" + PersistentWorldMapFile_Extension);
+            
+            Log.Message("Loading maps v2...");
+
+            var maps = new List<Map>();
+
+            /*
+            if (Scribe.mode == LoadSaveMode.Inactive)
+            {
+                this.PreloadWorldColoniesMaps();
+            }
+            */
+
+            foreach (var mapFile in mapFiles)
+            {
+                if (!mapTiles.Any(tile => mapFile.FullName.Contains(tile.ToString()))) continue;
+                
+                Log.Message("Scribing map " + mapFile);
+                
+                if(PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadStatus.Ingame)
+                    ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
+                else
+                {
+                    Scribe.loader.InitLoading(mapFile.FullName);
+                }
+                
+                var map = new Map();
+
+                Log.Message("Status: " + Scribe.mode);
+                Scribe_Deep.Look<Map>(ref map, "map");
+
+                if (PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadStatus.Ingame)
+                {
+                    DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
+                    Scribe.loader.FinalizeLoading();
+                }
+
+                maps.Add(map);
+            }
+
+            if (PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadStatus.Ingame)
+            {
+                DynamicCrossRefHandler.LoadUpBeforeScribeLoaderClear();
+                Scribe.loader.FinalizeLoading();
+            }
+
+            Status = PersistentWorldLoadStatus.Ingame;
+            
+            ScribeMultiLoader.Clear();
+
+            Log.Message("Loaded map data...");
+            
+            return maps;
         }
         
         /**
@@ -201,6 +260,8 @@ namespace PersistentWorlds
 
         public void SaveWorld(PersistentWorld world)
         {
+            ReferenceSaveLoader.ClearReferences();
+            
             this.DeletePreviousDirectories();
             this.CreateDirectoriesIfNotExistant();
 
@@ -269,6 +330,9 @@ namespace PersistentWorlds
             // TODO: Revert.
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
+            Log.Message("Saving references.");
+            ReferenceSaveLoader.SaveReferences();
+            
             Log.Message("Saved world.");
         }
         
@@ -278,10 +342,10 @@ namespace PersistentWorlds
         
         public void Convert(Game game)
         {
-            PersistentWorldManager.PersistentWorld = PersistentWorld.Convert(game);
-            
             this.ConfigurePaths(SaveDir + "/" + game.World.info.name);
             this.CreateDirectoriesIfNotExistant();
+            
+            PersistentWorldManager.PersistentWorld = PersistentWorld.Convert(game);
             
             this.SaveWorld(PersistentWorldManager.PersistentWorld);
             
@@ -307,6 +371,11 @@ namespace PersistentWorlds
 
                 Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
             }, "Play", "LoadingLongEvent", true, null);
+        }
+
+        public string GetWorldFolder()
+        {
+            return this.worldFolderPath;
         }
     }
 }
