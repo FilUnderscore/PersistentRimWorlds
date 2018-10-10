@@ -23,7 +23,7 @@ namespace PersistentWorlds
 
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             
-            DynamicGenericPatcher.PatchScribeCollectionsLook(harmony);
+            // DynamicGenericPatcher.PatchScribeCollectionsLook(harmony);
         }
 
         private static void PatchMainMenu()

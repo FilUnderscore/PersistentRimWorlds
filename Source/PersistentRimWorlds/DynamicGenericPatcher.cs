@@ -10,6 +10,7 @@ using Verse;
 
 namespace PersistentWorlds
 {
+    // TODO: Harmony generic patching not really working :/
     public static class DynamicGenericPatcher
     {
         public static void PatchScribeCollectionsLook(HarmonyInstance harmony)
@@ -42,17 +43,10 @@ namespace PersistentWorlds
             Log.ResetMessageCount();
         }
 
-        public static bool Look_Patch<T>(ref List<T> list, bool saveDestroyedThings, string label, LookMode lookMode,
+        public static void Look_Patch<T>(ref List<T> list, bool saveDestroyedThings, string label, LookMode lookMode,
             params object[] ctorArgs)
         {
-            if (lookMode != LookMode.Reference)
-            {
-                return true;
-            }
-            
-            Log.Message("Reference");
-
-            return false;
+            Log.Message("Type of list: " + typeof(T).Name);
         }
     }
 }

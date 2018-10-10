@@ -68,6 +68,7 @@
     <Compile Include="Patches\Game\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
     <Compile Include="Patches\Game\UIRoot_Play_UIRootOnGUI_Patch.cs" />
     <Compile Include="Patches\Game\WorldGenStep_Components_Patch.cs" />
+    <Compile Include="Patches\Game\WorldPawns_ExposeData_Patch.cs" />
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
