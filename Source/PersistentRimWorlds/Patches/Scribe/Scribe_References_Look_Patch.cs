@@ -51,7 +51,7 @@ namespace PersistentWorlds.Patches
 
         static bool Prefix(ref ILoadReferenceable refee, string label)
         {
-            if (!(refee is IExposable) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            if ((!(refee is Pawn) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
             {
                 return true;
             }
@@ -66,8 +66,11 @@ namespace PersistentWorlds.Patches
                     Scribe.saver.WriteElement(label, refee.GetUniqueLoadID());
                     break;
                 case LoadSaveMode.LoadingVars:
-                    XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
-                    string targetLoadID = xmlNode == null ? (string) null : xmlNode.InnerText;
+                    var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
+                    var targetLoadID = xmlNode == null ? label : xmlNode.InnerText;
+                    
+                    Log.Message("targetloadid: " + targetLoadID);
+                    Log.Message("label: " + label);
                     
                     refee = (ILoadReferenceable) ReferenceSaveLoader.GetReference<IExposable>(targetLoadID);
                     break;

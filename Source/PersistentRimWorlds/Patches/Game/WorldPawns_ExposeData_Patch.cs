@@ -1,165 +1,162 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Xml;
 using Harmony;
-using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
 namespace PersistentWorlds.Patches
 {
+    /*
+     * Gotta transpile this because there is just no other way, I've tried them all :|
+     */
     [HarmonyPatch(typeof(WorldPawns), "ExposeData")]
     public class WorldPawns_ExposeData_Patch
     {
-        private static readonly FieldInfo pawnsForcefullyKeptAsWorldPawnsField = AccessTools
-            .Field(typeof(WorldPawns), "pawnsForcefullyKeptAsWorldPawns");
-
-        private static readonly FieldInfo pawnsAliveField = AccessTools.Field(typeof(WorldPawns), "pawnsAlive");
-
-        private static readonly FieldInfo pawnsMothballedField =
-            AccessTools.Field(typeof(WorldPawns), "pawnsMothballed");
-
-        private static readonly FieldInfo pawnsDeadField = AccessTools.Field(typeof(WorldPawns), "pawnsDead");
-        
-        // Unfortunately, gotta patch like this :(
-        // TODO: transpile if for first scribe collections reference.
+        /*
         public static bool Prefix(WorldPawns __instance)
         {
-            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status ==
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
-                return true;
-
-            var pawnsForcefullyKeptAsWorldPawns = (HashSet<Pawn>) pawnsForcefullyKeptAsWorldPawnsField.GetValue(__instance);
-
-            var pawnsAlive = (HashSet<Pawn>) pawnsAliveField.GetValue(__instance);
-
-            var pawnsMothballed =
-                (HashSet<Pawn>) pawnsMothballedField.GetValue(__instance);
-
-            var pawnsDead = (HashSet<Pawn>) pawnsDeadField.GetValue(__instance);
-            
-            // Use reference files.
-            //Scribe_Collections.Look<Pawn>(ref this.pawnsForcefullyKeptAsWorldPawns, true, "pawnsForcefullyKeptAsWorldPawns", LookMode.Reference);
-            ScribePawns(ref pawnsForcefullyKeptAsWorldPawns, true, "pawnsForcefullyKeptAsWorldPawns",
-                LookMode.Reference);
-
-            if (pawnsForcefullyKeptAsWorldPawns != null)
+            if (Scribe.mode != LoadSaveMode.LoadingVars && Scribe.mode != LoadSaveMode.Saving)
             {
-                pawnsForcefullyKeptAsWorldPawnsField.SetValue(__instance, pawnsForcefullyKeptAsWorldPawns);
-            }
-            
-            Scribe_Collections.Look<Pawn>(ref pawnsAlive, "pawnsAlive", LookMode.Deep);
+                Log.Message("Call prefixs");
+                
+                var mothballedField = AccessTools.Field(typeof(WorldPawns), "pawnsMothballed");
+                var mothballed = (HashSet<Pawn>) mothballedField.GetValue(__instance);
+                
+                BackCompatibility.WorldPawnPostLoadInit(__instance, ref mothballed);
 
-            if (pawnsAlive != null)
-            {
-                pawnsAliveField.SetValue(__instance, pawnsAlive);
-            }
-            
-            Scribe_Collections.Look<Pawn>(ref pawnsMothballed, "pawnsMothballed", LookMode.Deep);
+                if (mothballed == null)
+                {
+                    mothballed = new HashSet<Pawn>();
+                }
+                
+                mothballedField.SetValue(__instance, mothballed);
 
-            if (pawnsMothballed != null)
-            {
-                pawnsMothballedField.SetValue(__instance, pawnsMothballed);
-            }
-            
-            Scribe_Collections.Look<Pawn>(ref pawnsDead, true, "pawnsDead", LookMode.Deep);
+                // TODO: Investigate why is this null ??/
+                var aliveField = AccessTools.Field(typeof(WorldPawns), "pawnsAlive");
 
-            if (pawnsDead != null)
-            {
-                pawnsDeadField.SetValue(__instance, pawnsDead);
-            }
-            
-            Scribe_Deep.Look<WorldPawnGC>(ref __instance.gc, "gc");
-            
-            if (Scribe.mode != LoadSaveMode.PostLoadInit)
+                if (aliveField.GetValue(__instance) == null)
+                {
+                    aliveField.SetValue(__instance, new HashSet<Pawn>());
+                }
+                
                 return false;
-            BackCompatibility.WorldPawnPostLoadInit(__instance, ref pawnsMothballed);
-            if (pawnsForcefullyKeptAsWorldPawns.RemoveWhere((Predicate<Pawn>) (x => x == null)) != 0)
-                Log.Error("Some pawnsForcefullyKeptAsWorldPawns were null after loading.", false);
+            }
+
+            return true;
+        }
+        */
+        
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr,
+            ILGenerator ilGenerator)
+        {
+            var codes = new List<CodeInstruction>(instr);
+
+            var label1 = ilGenerator.DefineLabel();
+            codes[0].labels.Add(label1);
+
+            var label2 = ilGenerator.DefineLabel();
+            var label3 = ilGenerator.DefineLabel();
             
-            pawnsForcefullyKeptAsWorldPawnsField.SetValue(__instance, pawnsForcefullyKeptAsWorldPawns);
+            var toInsert = new List<CodeInstruction>();
+
+            toInsert.Add(new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver")));
+            toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, label1));
+
+            toInsert.Add(new CodeInstruction(OpCodes.Ldsfld,
+                AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver")));
+            toInsert.Add(new CodeInstruction(OpCodes.Ldfld,
+                AccessTools.Field(typeof(PersistentWorldLoadSaver), "Status")));
+            toInsert.Add(new CodeInstruction(OpCodes.Ldc_I4_2));
+            toInsert.Add(new CodeInstruction(OpCodes.Bne_Un_S, label2));
             
-            if (pawnsAlive.RemoveWhere((Predicate<Pawn>) (x => x == null)) != 0)
-                Log.Error("Some pawnsAlive were null after loading.", false);
+            codes.InsertRange(0, toInsert);
+
+            toInsert = new List<CodeInstruction>();
+
+            toInsert.Add(new CodeInstruction(OpCodes.Br_S, label3));
             
-            pawnsAliveField.SetValue(__instance, pawnsAlive);
+            toInsert.Add(new CodeInstruction(OpCodes.Ldarg_0));
+            toInsert[1].labels.Add(label2);
+
+            toInsert.Add(new CodeInstruction(OpCodes.Ldflda,
+                AccessTools.Field(typeof(WorldPawns), "pawnsForcefullyKeptAsWorldPawns")));
+            toInsert.Add(new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(WorldPawns_ExposeData_Patch), "Load")));
             
-            if (pawnsMothballed.RemoveWhere((Predicate<Pawn>) (x => x == null)) != 0)
-                Log.Error("Some pawnsMothballed were null after loading.", false);
+            codes.InsertRange(12, toInsert);
+
+            codes[16].labels.Add(label3);
             
-            pawnsMothballedField.SetValue(__instance, pawnsMothballed);
+            codes.Do(code => Log.Message(code.ToString(), true));
             
-            if (pawnsDead.RemoveWhere((Predicate<Pawn>) (x => x == null)) != 0)
-                Log.Error("Some pawnsDead were null after loading.", false);
-            
-            pawnsDeadField.SetValue(__instance, pawnsDead);
-            
-            if (pawnsAlive.RemoveWhere((Predicate<Pawn>) (x =>
-            {
-                if (x.def != null)
-                    return x.kindDef == null;
-                return true;
-            })) != 0)
-                Log.Error("Some pawnsAlive had null def after loading.", false);
-            
-            pawnsAliveField.SetValue(__instance, pawnsAlive);
-            
-            if (pawnsMothballed.RemoveWhere((Predicate<Pawn>) (x =>
-            {
-                if (x.def != null)
-                    return x.kindDef == null;
-                return true;
-            })) != 0)
-                Log.Error("Some pawnsMothballed had null def after loading.", false);
-            
-            pawnsMothballedField.SetValue(__instance, pawnsMothballed);
-            
-            if (pawnsDead.RemoveWhere((Predicate<Pawn>) (x =>
-            {
-                if (x.def != null)
-                    return x.kindDef == null;
-                return true;
-            })) == 0)
-                return false;
-            Log.Error("Some pawnsDead had null def after loading.", false);
-            
-            pawnsDeadField.SetValue(__instance, pawnsDead);
-            
-            return false;
+            return codes.AsEnumerable();
         }
 
-        private static void ScribePawns(ref HashSet<Pawn> set, bool saveDestroyedThings, string label, LookMode lookmode)
+        public static void Load(ref HashSet<Pawn> pawns)
         {
-            switch (Scribe.mode)
-            {
-                case LoadSaveMode.Saving:
-                    var setRef = set;
-                    Scribe_Collections.Look<Pawn>(ref setRef, saveDestroyedThings, label, lookmode);
-                    break;
-                case LoadSaveMode.LoadingVars:
-                    if (Scribe.EnterNode(label))
-                    {
-                        var curXmlParent = Scribe.loader.curXmlParent;
-                        var attribute = curXmlParent.Attributes["IsNull"];
-
-                        if (attribute != null && attribute.Value.ToLower() == "true")
+            if (Scribe.EnterNode("pawnsForcefullyKeptAsWorldPawns"))
+            {Log.Message("Enter node");
+                switch (Scribe.mode)
+                {
+                    case LoadSaveMode.Saving:
+                        if (pawns == null)
                         {
-                            set = null;
+                            Scribe.saver.WriteAttribute("IsNull", "True");
                             break;
                         }
 
-                        set = new HashSet<Pawn>();
-                        var targetLoadIDList = new List<string>(curXmlParent.ChildNodes.Count);
-                        var enumerator = curXmlParent.ChildNodes.GetEnumerator();
-                        while (enumerator.MoveNext())
+                        foreach (var pawn in pawns)
                         {
-                            var current = (XmlNode) enumerator.Current;
-                            set.Add(ReferenceSaveLoader.GetReference<Pawn>(current.InnerText));
+                            Log.Message("Pawn: " + pawn.GetUniqueLoadID());
+                            var refee = pawn;
+                            Scribe_References.Look<Pawn>(ref refee, "li", true);
                         }
-                    }
-                    break;
+                        
+                        break;
+                    case LoadSaveMode.LoadingVars:
+                        Log.Message("yes");
+                        var curXmlParent = Scribe.loader.curXmlParent;
+                        var attribute = curXmlParent.Attributes["IsNull"];
+                        if (attribute != null && attribute.Value.ToLower() == "true")
+                        {
+                            pawns = null;
+                            Log.Message("None");
+                            break;
+                        }
+                        else
+                        {
+                            pawns = new HashSet<Pawn>();
+                        }
+                        Log.Message("Childs: " + curXmlParent.ChildNodes.Count);
+
+                        foreach (var node in curXmlParent.ChildNodes)
+                        {
+                            var nodeText = ((XmlNode) node).InnerText;
+                            Log.Message("Node: " + nodeText);
+                            
+                            var pawn = new Pawn();
+                            Scribe_References.Look<Pawn>(ref pawn, nodeText);
+                            pawns.Add(pawn);
+                        }
+
+                        break;
+                    default:
+                        Log.Message("Default load");
+                        break;
+                }
+                
+                Scribe.ExitNode();
             }
+            else
+            {
+                Log.Message("Unable to enter node");
+            }
+            
+            Log.Message("Done");
         }
     }
 }

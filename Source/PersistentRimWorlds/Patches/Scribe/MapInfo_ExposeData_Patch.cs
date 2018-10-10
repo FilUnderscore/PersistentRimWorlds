@@ -11,7 +11,7 @@ namespace PersistentWorlds.Patches
         [HarmonyPrefix]
         public static bool ExposeData_Prefix(MapInfo __instance)
         {
-            if (PersistentWorldManager.WorldLoadSaver.Status !=
+            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
             {
                 return true;

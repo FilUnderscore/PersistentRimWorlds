@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Harmony;
 using Verse;
 
@@ -42,8 +43,10 @@ namespace PersistentWorlds
 
         public static void SaveReferences()
         {
-            foreach (var referencable in references)
+            for (var i = 0; i < references.Count; i++)
             {
+                var referencable = references.ElementAt(i);
+                
                 var file = ReferenceFolder + "/" + referencable.Key + ".pwrf";
 
                 var reffable = referencable.Value;
@@ -57,9 +60,17 @@ namespace PersistentWorlds
         {
             var file = ReferenceFolder + "/" + uniqueLoadID + ".pwrf";
 
-            if (ScribeVars.mode != LoadSaveMode.Inactive)
+            if (Scribe.mode != LoadSaveMode.Inactive)
             {
-                Scribe.loader.ForceStop();
+                ScribeVars.mode = Scribe.mode;
+                ScribeVars.curXmlParent = Scribe.loader.curXmlParent;
+                ScribeVars.curParent = Scribe.loader.curParent;
+                ScribeVars.curPathRelToParent = Scribe.loader.curPathRelToParent;
+                
+                Scribe.mode = LoadSaveMode.Inactive;
+                Scribe.loader.curXmlParent = null;
+                Scribe.loader.curParent = null;
+                Scribe.loader.curPathRelToParent = null;
             }
             
             Scribe.loader.InitLoading(file);
@@ -68,8 +79,6 @@ namespace PersistentWorlds
             Scribe_Deep.Look<T>(ref exposable, "reference");
             
             references.Add(uniqueLoadID, exposable);
-
-            Scribe.ForceStop();
 
             if (ScribeVars.mode != LoadSaveMode.Inactive)
             {
