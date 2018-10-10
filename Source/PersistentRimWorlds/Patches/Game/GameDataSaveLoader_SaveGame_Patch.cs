@@ -18,6 +18,7 @@ namespace PersistentWorlds.Patches
                 return true;
                 
             PersistentWorldManager.WorldLoadSaver.SaveWorld(PersistentWorldManager.PersistentWorld);
+            PersistentWorldManager.WorldLoadSaver.Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
                 
             return false;
         }

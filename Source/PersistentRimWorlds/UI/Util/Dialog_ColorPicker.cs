@@ -10,7 +10,7 @@ namespace PersistentWorlds.UI
     public class Dialog_ColorPicker : Window
     {
         private ScrollableListItem item;
-        
+   
         private float rValue = 128;
         private float gValue = 128;
         private float bValue = 128;
@@ -23,7 +23,7 @@ namespace PersistentWorlds.UI
             this.doCloseButton = true;
             this.forcePause = true;
             this.draggable = true;
-            
+
             this.item = item;
         }
 
@@ -54,6 +54,7 @@ namespace PersistentWorlds.UI
             Widgets.Label(blueSideRect, ((int) bValue).ToString());
             
             GUI.color = new Color(rValue / 255, gValue / 255, bValue / 255);
+            item.color = GUI.color;
             GUI.DrawTexture(textureTestRect, item.texture);
             GUI.color = Color.white;
             

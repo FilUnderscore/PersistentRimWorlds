@@ -24,25 +24,7 @@ namespace PersistentWorlds.UI
         }
 
         public override void DoWindowContents(Rect inRect)
-        {
-            /*
-            base.DoWindowContents(inRect);
-            
-            GUI.BeginGroup(inRect);
-
-            var boxRect = new Rect(0, 0, 100, 100);
-            Widgets.DrawBox(boxRect, 1);
-            
-            GUI.BeginGroup(boxRect);
-
-            var townTexRect = new Rect(boxRect.x + 10, boxRect.y, 80, 80);
-            GUI.DrawTexture(townTexRect, Town);
-            
-            GUI.EndGroup();
-            
-            GUI.EndGroup();
-            */
-            
+        {   
             ScrollableListUI.DrawList(ref inRect, ref scrollPosition, ref this.items);
         }
 
@@ -100,16 +82,6 @@ namespace PersistentWorlds.UI
 
         private void LoadMaps(PersistentColony colony)
         {
-            /*
-            foreach (var map in PersistentWorldManager.PersistentWorld.Maps[colony])
-            {
-                Current.Game.Maps.Add(map);
-                map.mapDrawer.RegenerateEverythingNow();
-                map.FinalizeLoading();
-                map.Parent.FinalizeLoading();
-            }
-            */
-
             Current.ProgramState = ProgramState.MapInitializing;
             
             var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
