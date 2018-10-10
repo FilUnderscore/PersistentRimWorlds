@@ -70,8 +70,8 @@ namespace PersistentWorlds.Patches
                     var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
                     var targetLoadID = xmlNode == null ? label : xmlNode.InnerText;
                     
-                    Log.Message("targetloadid: " + targetLoadID);
-                    Log.Message("label: " + label);
+                    //Log.Message("targetloadid: " + targetLoadID);
+                    //Log.Message("label: " + label);
                     
                     refee = (ILoadReferenceable) ReferenceSaveLoader.GetReference<IExposable>(targetLoadID);
                     break;
