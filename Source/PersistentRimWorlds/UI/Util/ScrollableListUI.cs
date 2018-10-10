@@ -26,8 +26,10 @@ namespace PersistentWorlds.UI
             var y = 0.0f;
             var num = 0;
 
-            foreach (var item in items)
+            for (var i = 0; i < items.Count; i++)
             {
+                var item = items[i];
+                
                 if ((double) y + (double) vector2_1.y >= (double) scrollPosition.y &&
                     (double) y <= (double) scrollPosition.y + (double) outRect.height)
                 {

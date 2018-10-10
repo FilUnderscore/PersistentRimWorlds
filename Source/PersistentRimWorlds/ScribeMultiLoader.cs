@@ -25,6 +25,8 @@ namespace PersistentWorlds
             {
                 foreach (var filePath in filePaths)
                 {
+                    if (xmlParents.ContainsKey(filePath)) continue;
+                    
                     using (StreamReader streamReader = new StreamReader(filePath))
                     {
                         using (XmlTextReader xmlTextReader = new XmlTextReader(streamReader))

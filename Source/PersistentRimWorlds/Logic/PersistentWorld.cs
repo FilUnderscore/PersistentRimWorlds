@@ -375,13 +375,13 @@ namespace PersistentWorlds.Logic
         {
             var ofPlayerFaction = this.WorldData.factionManager.OfPlayer;
             ofPlayerFaction.leader = newFaction.leader;
-            ofPlayerFaction.avoidGridsSmart = newFaction.avoidGridsSmart;
             ofPlayerFaction.def = newFaction.def;
 
             ofPlayerFaction.Name = newFaction.HasName ? newFaction.Name : null;
             
             ofPlayerFaction.randomKey = newFaction.randomKey;
             ofPlayerFaction.colorFromSpectrum = newFaction.colorFromSpectrum;
+            ofPlayerFaction.centralMelanin = newFaction.centralMelanin;
 
             var relationsField = AccessTools.Field(typeof(Faction), "relations");
             var newFactionRelations = (List<FactionRelation>) relationsField.GetValue(newFaction);

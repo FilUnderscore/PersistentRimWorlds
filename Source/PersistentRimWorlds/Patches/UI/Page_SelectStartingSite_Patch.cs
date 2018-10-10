@@ -6,11 +6,11 @@ using Verse;
 
 namespace PersistentWorlds.Patches.UI
 {
-    [HarmonyPatch(typeof(Page_SelectLandingSite), "PreOpen")]
+    [HarmonyPatch(typeof(Page_SelectStartingSite), "PreOpen")]
     public static class Page_SelectLandingSite_Patch
     {
         [HarmonyPrefix]
-        public static void SelectLandingSite_Prefix(Page_SelectLandingSite __instance)
+        public static void SelectLandingSite_Prefix(Page_SelectStartingSite __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
                 return;

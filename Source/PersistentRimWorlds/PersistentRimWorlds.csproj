@@ -35,7 +35,7 @@
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Assemblies\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.19.6814.14609, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Assembly-CSharp, Version=1.0.6856.21184, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -76,7 +76,7 @@
     <Compile Include="Patches\Scribe\ScribeLoader_ForceStop_Patch.cs" />
     <Compile Include="Patches\Scribe\Scribe_References_Look_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
-    <Compile Include="Patches\UI\Page_SelectLandingSite_Patch.cs" />
+    <Compile Include="Patches\UI\Page_SelectStartingSite_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />
     <Compile Include="Patches\UI\ScenPart_PlayerFaction_Patch.cs" />
     <Compile Include="PersistentWorldLoadSaver.cs" />
