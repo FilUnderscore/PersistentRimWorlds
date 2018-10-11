@@ -139,7 +139,6 @@ namespace PersistentWorlds.UI
 
             var prevRect = new Rect(0.0f, 2f, 0, 0);
             
-            // TODO: Add support for more than two elements by using a List<ScrollableListItemInfo> with a Color, Height/Width proportion value and text.
             foreach (var info in item.Info)
             {
                 var rectInfo = new Rect(0.0f, prevRect.yMax, rect.width, rect.height / item.Info.Count);

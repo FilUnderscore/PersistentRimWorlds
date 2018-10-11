@@ -14,7 +14,7 @@ using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_PersistentWorlds_LoadWorld_FileList : Window
+    public sealed class Dialog_PersistentWorlds_LoadWorld_FileList : Window
     {
         private Vector2 scrollPosition = Vector2.zero;
         
@@ -65,7 +65,10 @@ namespace PersistentWorlds.UI
                 {
                     // TODO: Implement deleting persistent worlds.
                     var dialogBox = new Dialog_MessageBox("DeleteWorld-PersistentWorlds".Translate(), "Delete",
-                        delegate { }, "Cancel", delegate { }, "DeleteWorldTitle-PersistentWorlds".Translate(), true)
+                        delegate
+                        {
+                            // TODO: Delete persistent world.
+                        }, "Cancel", null, "DeleteWorldTitle-PersistentWorlds".Translate(), true)
                     {
                         buttonCText = "Convert",
                         buttonCAction = delegate

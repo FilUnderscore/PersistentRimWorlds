@@ -132,6 +132,7 @@ namespace PersistentWorlds.Logic
             var persistentColonyGameData = new PersistentColonyGameData
             {
                 currentMapIndex = game.currentMapIndex,
+                mapSize = game.World.info.initialMapSize.x,
                 info = game.Info,
                 scenario = game.Scenario,
                 playSettings = game.playSettings,

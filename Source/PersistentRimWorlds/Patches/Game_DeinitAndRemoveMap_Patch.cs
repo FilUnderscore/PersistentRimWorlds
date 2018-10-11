@@ -8,15 +8,8 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix(Game __instance, Map map)
         {
-            // TODO: Review
+            // TODO: Patch. Can use map.isPlayerHome()
             
-            /*
-            if (map.IsPlayerHome)
-            {
-                return false;
-            }
-            */
-
             return true;
         }
     }

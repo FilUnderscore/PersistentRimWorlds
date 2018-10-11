@@ -301,7 +301,6 @@ namespace PersistentWorlds
             
             Log.Message("Saved map data.");
             
-            // TODO: Revert.
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
             Log.Message("Saving references.");
@@ -324,10 +323,6 @@ namespace PersistentWorlds
             this.SaveWorld(PersistentWorldManager.PersistentWorld);
             
             GenScene.GoToMainMenu();
-            
-            // TODO: Call these when on main menu.. if called before on main menu, causes world corruption :/
-//            MemoryUtility.ClearAllMapsAndWorld();
-//            MemoryUtility.UnloadUnusedUnityAssets();
 
             this.Status = PersistentWorldLoadStatus.Uninitialized;
         }
@@ -340,7 +335,6 @@ namespace PersistentWorlds
         {
             LongEventHandler.QueueLongEvent(delegate
             {
-                // TODO: Run MemoryUtility.ClearAllMapsAndWorld() when Loading world from filelist.
                 Status = PersistentWorldLoadStatus.Finalizing;
 
                 Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.

@@ -17,7 +17,6 @@ namespace PersistentWorlds.Logic
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
 
-        // TODO: Preload only colony faction / color for selection, load when switching or loading.
         public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);

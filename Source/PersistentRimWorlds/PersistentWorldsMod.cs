@@ -12,7 +12,7 @@ namespace PersistentWorlds
     /// <summary>
     /// The main mod class that interacts with RimWorld when it is loaded.
     /// </summary>
-    public class PersistentWorldsMod : Mod
+    public sealed class PersistentWorldsMod : Mod
     {
         // Must be public or IL transpiler throws error of ldsfld NULL.
         public static Delegate MainMenuButtonDelegate = new Action(PatchMainMenu);

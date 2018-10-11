@@ -36,7 +36,6 @@ namespace PersistentWorlds.Patches
             if(settlement == null)
                 Log.Error("Could not generate starting map because there is no player faction base.");
     
-                // TODO: Use Map Size from World Info or have custom map sizes depending on colony data.
             var map = MapGenerator.GenerateMap(mapSize, settlement, settlement.MapGeneratorDef,
                 settlement.ExtraGenStepDefs, null);
                 

@@ -11,10 +11,9 @@ using Verse;
 namespace PersistentWorlds.UI
 {
     [StaticConstructorOnStartup]
-    public class MainTabWindow_Colonies : MainTabWindow
+    public sealed class MainTabWindow_Colonies : MainTabWindow
     {
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
-        // TODO: Draw.
 
         private Vector2 scrollPosition = Vector2.zero;
         private List<ScrollableListItem> items;
@@ -76,7 +75,7 @@ namespace PersistentWorlds.UI
                             
                             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
 
-                            //Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
+                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);
                         }, "LoadingColony", false, null);
                     };
                 }

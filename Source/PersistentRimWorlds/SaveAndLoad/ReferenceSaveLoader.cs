@@ -68,7 +68,6 @@ namespace PersistentWorlds
         {
             var file = ReferenceFolder + "/" + uniqueLoadID + ReferenceFile_Extension;
 
-            // TODO: Refactor.
             if (Scribe.mode != LoadSaveMode.Inactive)
             {
                 ScribeVars.Set();

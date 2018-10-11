@@ -10,8 +10,6 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorld
     {
-        // TODO: Refactor.
-        
         // Game.World is accessed.
         public Game Game = new Game();
 
@@ -88,8 +86,6 @@ namespace PersistentWorlds.Logic
             maps.Do(Current.Game.AddMap);
             
             this.ConvertToCurrentGameSettlements();
-            
-            // TODO: Load all maps in memory but have maps in Current.Game.Maps depending on active maps. Maps can be shared.
             
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
@@ -271,24 +267,6 @@ namespace PersistentWorlds.Logic
                 
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
-                
-                // TODO: Unexpected? null colony map for some odd reason.
-                if (colony.Map?.info == null)
-                {
-                    if (colony.Map == null)
-                    {
-                        Log.Error("Colony map is null.");
-                    }
-                    else
-                    {
-                        if (colony.Map.info == null)
-                        {
-                            Log.Error("Colony map info is null.");
-                        }
-                    }
-
-                    continue;
-                }
                 
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;

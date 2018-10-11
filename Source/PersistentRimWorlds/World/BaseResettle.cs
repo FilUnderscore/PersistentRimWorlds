@@ -2,7 +2,7 @@
 
 namespace PersistentWorlds.World
 {
-    public class BaseResettle : MapParent
+    public sealed class BaseResettle : MapParent
     {
         public override void Tick()
         {

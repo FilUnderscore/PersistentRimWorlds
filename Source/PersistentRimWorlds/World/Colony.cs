@@ -10,7 +10,7 @@ namespace PersistentWorlds.World
     /// <summary>
     /// Colony world object class that handles colonies on the world map.
     /// </summary>
-    public class Colony : MapParent
+    public sealed class Colony : MapParent
     {
         // TODO: Implement commands.
         //public static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);

@@ -6,7 +6,7 @@ using Verse.Sound;
 
 namespace PersistentWorlds.World
 {
-    public class BaseResettleCommand : Command_Action
+    public sealed class BaseResettleCommand : Command_Action
     {
         public BaseResettleCommand(Caravan caravan)
         {

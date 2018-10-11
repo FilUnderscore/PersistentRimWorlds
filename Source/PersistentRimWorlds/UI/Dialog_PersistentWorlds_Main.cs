@@ -5,7 +5,7 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_PersistentWorlds_Main : Window
+    public sealed class Dialog_PersistentWorlds_Main : Window
     {
         public Dialog_PersistentWorlds_Main()
         {

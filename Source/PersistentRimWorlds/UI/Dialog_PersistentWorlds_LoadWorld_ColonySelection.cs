@@ -8,7 +8,7 @@ using Verse.Profile;
 namespace PersistentWorlds.UI
 {
     [StaticConstructorOnStartup]
-    public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
+    public sealed class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
     {        
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
@@ -87,9 +87,6 @@ namespace PersistentWorlds.UI
 
             optList.Add(new ListableOption("NewColony".Translate(), delegate
             {
-                // TODO: Have normal creation menus without creating world choice however... include scenario and characters and storyteller, as well as world location.
-                // TODO: Have other colonies on same world tiles loaded as a settlement with different color as a whole new worldobject that shows up in Colonies tab on world map.
-                
                 Find.WindowStack.Add((Window) new Page_SelectScenario());
             }));
             

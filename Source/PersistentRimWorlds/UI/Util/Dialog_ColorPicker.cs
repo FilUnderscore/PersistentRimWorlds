@@ -7,7 +7,7 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_ColorPicker : Window
+    public sealed class Dialog_ColorPicker : Window
     {
         private ScrollableListItemColored item;
         private Color color;
