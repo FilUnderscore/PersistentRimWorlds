@@ -47,14 +47,17 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
-                    var previousGame = Current.Game;
+                    LongEventHandler.QueueLongEvent(delegate
+                    {
+                        var previousGame = Current.Game;
                     
-                    PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
-                    PersistentWorldManager.WorldLoadSaver.LoadWorld();
+                        PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
+                        PersistentWorldManager.WorldLoadSaver.LoadWorld();
 
-                    Current.Game = previousGame;
+                        Current.Game = previousGame;
                     
-                    Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
+                        Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
+                    }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
                 };
 
                 scrollableListItem.DeleteButtonTooltip = "Delete-PersistentWorlds".Translate();

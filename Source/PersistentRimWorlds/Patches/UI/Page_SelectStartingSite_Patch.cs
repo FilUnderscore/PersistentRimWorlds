@@ -7,10 +7,9 @@ using Verse;
 namespace PersistentWorlds.Patches.UI
 {
     [HarmonyPatch(typeof(Page_SelectStartingSite), "PreOpen")]
-    public static class Page_SelectLandingSite_Patch
+    public class Page_SelectLandingSite_Patch
     {
-        [HarmonyPrefix]
-        public static void SelectLandingSite_Prefix(Page_SelectStartingSite __instance)
+        static void Prefix(Page_SelectStartingSite __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
                 return;

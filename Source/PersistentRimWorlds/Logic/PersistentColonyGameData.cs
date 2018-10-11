@@ -10,24 +10,24 @@ namespace PersistentWorlds.Logic
     {
         public sbyte currentMapIndex;
         
-        public GameInfo info = new GameInfo();
-        public GameRules rules = new GameRules();
-        public Scenario scenario;
-        public PlaySettings playSettings = new PlaySettings();
-        public StoryWatcher storyWatcher = new StoryWatcher();
-        public GameEnder gameEnder = new GameEnder();
-        public LetterStack letterStack = new LetterStack();
-        public ResearchManager researchManager = new ResearchManager();
-        public Storyteller storyteller = new Storyteller();
-        public History history = new History();
-        public TaleManager taleManager = new TaleManager();
-        public PlayLog playLog = new PlayLog();
-        public BattleLog battleLog = new BattleLog();
-        public OutfitDatabase outfitDatabase = new OutfitDatabase();
-        public DrugPolicyDatabase drugPolicyDatabase = new DrugPolicyDatabase();
-        public Tutor tutor = new Tutor();
-        public DateNotifier dateNotifier = new DateNotifier();
-        public List<GameComponent> gameComponents = new List<GameComponent>();
+        private GameInfo info = new GameInfo();
+        private GameRules rules = new GameRules();
+        private Scenario scenario;
+        private PlaySettings playSettings = new PlaySettings();
+        private StoryWatcher storyWatcher = new StoryWatcher();
+        private GameEnder gameEnder = new GameEnder();
+        private LetterStack letterStack = new LetterStack();
+        private ResearchManager researchManager = new ResearchManager();
+        private Storyteller storyteller = new Storyteller();
+        private History history = new History();
+        private TaleManager taleManager = new TaleManager();
+        private PlayLog playLog = new PlayLog();
+        private BattleLog battleLog = new BattleLog();
+        private OutfitDatabase outfitDatabase = new OutfitDatabase();
+        private DrugPolicyDatabase drugPolicyDatabase = new DrugPolicyDatabase();
+        private Tutor tutor = new Tutor();
+        private DateNotifier dateNotifier = new DateNotifier();
+        private List<GameComponent> gameComponents = new List<GameComponent>();
 
         /*
          * Camera Driver.
@@ -46,37 +46,37 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1, false);
+            Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1);
 
-            Scribe_Deep.Look<GameInfo>(ref info, "info", new object[0]);
+            Scribe_Deep.Look(ref info, "info");
 
-            Scribe_Deep.Look<GameRules>(ref rules, "rules", new object[0]);
+            Scribe_Deep.Look(ref rules, "rules");
 
-            Scribe_Deep.Look<Scenario>(ref scenario, "scenario", new object[0]);
+            Scribe_Deep.Look(ref scenario, "scenario");
 
-            Scribe_Deep.Look<PlaySettings>(ref this.playSettings, "playSettings", new object[0]);
+            Scribe_Deep.Look(ref this.playSettings, "playSettings");
 
-            Scribe_Deep.Look<StoryWatcher>(ref this.storyWatcher, "storyWatcher", new object[0]);
+            Scribe_Deep.Look(ref this.storyWatcher, "storyWatcher");
 
-            Scribe_Deep.Look<GameEnder>(ref this.gameEnder, "gameEnder", new object[0]);
+            Scribe_Deep.Look(ref this.gameEnder, "gameEnder");
 
-            Scribe_Deep.Look<LetterStack>(ref this.letterStack, "letterStack", new object[0]);
+            Scribe_Deep.Look(ref this.letterStack, "letterStack");
 
-            Scribe_Deep.Look<ResearchManager>(ref this.researchManager, "researchManager", new object[0]);
+            Scribe_Deep.Look(ref this.researchManager, "researchManager");
 
-            Scribe_Deep.Look<Storyteller>(ref this.storyteller, "storyteller", new object[0]);
+            Scribe_Deep.Look(ref this.storyteller, "storyteller");
 
-            Scribe_Deep.Look<History>(ref this.history, "history", new object[0]);
+            Scribe_Deep.Look(ref this.history, "history");
 
-            Scribe_Deep.Look<TaleManager>(ref this.taleManager, "taleManager", new object[0]);
+            Scribe_Deep.Look(ref this.taleManager, "taleManager");
 
-            Scribe_Deep.Look<PlayLog>(ref this.playLog, "playLog", new object[0]);
+            Scribe_Deep.Look(ref this.playLog, "playLog");
 
-            Scribe_Deep.Look<BattleLog>(ref this.battleLog, "battleLog", new object[0]);
+            Scribe_Deep.Look(ref this.battleLog, "battleLog");
 
-            Scribe_Deep.Look<OutfitDatabase>(ref this.outfitDatabase, "outfitDatabase", new object[0]);
+            Scribe_Deep.Look(ref this.outfitDatabase, "outfitDatabase");
 
-            Scribe_Deep.Look<DrugPolicyDatabase>(ref this.drugPolicyDatabase, "drugPolicyDatabase", new object[0]);
+            Scribe_Deep.Look(ref this.drugPolicyDatabase, "drugPolicyDatabase");
 
             // Remove outfits and drug policies to prevent unneeded errors and wrong data.
             if (Scribe.mode == LoadSaveMode.LoadingVars)
@@ -95,14 +95,14 @@ namespace PersistentWorlds.Logic
                 }
             }
 
-        Scribe_Deep.Look<Tutor>(ref this.tutor, "tutor", new object[0]);
+            Scribe_Deep.Look(ref this.tutor, "tutor");
             
-            Scribe_Deep.Look<DateNotifier>(ref this.dateNotifier, "dateNotifier", new object[0]);
+            Scribe_Deep.Look(ref this.dateNotifier, "dateNotifier");
             
-            Scribe_Collections.Look<GameComponent>(ref this.gameComponents, "components", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game });
+            Scribe_Collections.Look(ref this.gameComponents, "components", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game });
             
-            Scribe_Values.Look<Vector3>(ref this.camRootPos, "camRootPos", new Vector3(), false);
-            Scribe_Values.Look<float>(ref this.desiredSize, "desiredSize", 0.0f, false);
+            Scribe_Values.Look(ref this.camRootPos, "camRootPos");
+            Scribe_Values.Look(ref this.desiredSize, "desiredSize");
         }
 
         public void SetGame()

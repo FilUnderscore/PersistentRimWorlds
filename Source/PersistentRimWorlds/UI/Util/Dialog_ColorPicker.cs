@@ -9,15 +9,16 @@ namespace PersistentWorlds.UI
 {
     public class Dialog_ColorPicker : Window
     {
-        private ScrollableListItem item;
-   
+        private ScrollableListItemColored item;
+        private Color color;
+        
         private float rValue = 128;
         private float gValue = 128;
         private float bValue = 128;
-        
+
         public override Vector2 InitialSize => new Vector2(600, 220);
         
-        public Dialog_ColorPicker(ScrollableListItem item)
+        public Dialog_ColorPicker(ScrollableListItemColored item)
         {
             this.doCloseX = true;
             this.doCloseButton = true;
@@ -53,8 +54,9 @@ namespace PersistentWorlds.UI
             Widgets.Label(greenSideRect, ((int) gValue).ToString());
             Widgets.Label(blueSideRect, ((int) bValue).ToString());
             
-            GUI.color = new Color(rValue / 255, gValue / 255, bValue / 255);
-            item.color = GUI.color;
+            color = new Color(rValue / 255, gValue / 255, bValue / 255);
+            
+            GUI.color = color;
             GUI.DrawTexture(textureTestRect, item.texture);
             GUI.color = Color.white;
             

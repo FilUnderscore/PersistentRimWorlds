@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Harmony;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -10,17 +9,17 @@ namespace PersistentWorlds.Logic
     {
         public PersistentColonyGameData GameData = new PersistentColonyGameData();
 
-        // TODO: Implement support for 'Colonies' instead of using Factions and custom settlement world objects.
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
         public int uniqueID = 0;
 
-        // Allow color picking colonies.
+        // TODO: Allow color picking colonies.
         public Color color;
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
         
+        // TODO: Preload only colony faction / color for selection, load when switching or loading.
         public void ExposeData()
         {
             Scribe_Values.Look<int>(ref uniqueID, "uniqueID", -1, false);
@@ -29,23 +28,18 @@ namespace PersistentWorlds.Logic
             
             Scribe_Collections.Look<int>(ref ActiveWorldTiles, "activeWorldTiles");
             
-            // Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
-            // Don't need to cross-ref.
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            switch (Scribe.mode)
             {
-                if (Scribe.EnterNode("faction"))
-                {
+                case LoadSaveMode.LoadingVars when Scribe.EnterNode("faction"):
                     this.ColonyFaction = new Faction();
                     this.ColonyFaction.ExposeData();
-                }
-                else
-                {
-                    Log.Message("No Faction :/");
-                }
-            }
-            else if(Scribe.mode == LoadSaveMode.Saving)
-            {
-                Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
+                    break;
+                case LoadSaveMode.LoadingVars:
+                    Log.Error("No faction for colony found. Corrupt colony save?");
+                    break;
+                case LoadSaveMode.Saving:
+                    Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
+                    break;
             }
         }
 
@@ -53,7 +47,6 @@ namespace PersistentWorlds.Logic
         {
             var persistentColonyData = new PersistentColonyData
             {
-                // TODO: Review
                 ColonyFaction = game.World.factionManager.OfPlayer,
                 GameData = PersistentColonyGameData.Convert(game)
             };

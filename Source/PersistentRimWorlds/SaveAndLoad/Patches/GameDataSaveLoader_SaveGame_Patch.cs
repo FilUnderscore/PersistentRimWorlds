@@ -4,11 +4,10 @@ using Verse;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame")]
-    public static class GameDataSaveLoader_SaveGame_Patch
+    public class GameDataSaveLoader_SaveGame_Patch
     {
         // TODO: Disallow saving through normal save menu.
-        [HarmonyPrefix]
-        public static bool SaveGame_Prefix(string fileName)
+        static bool Prefix(string fileName)
         {
             // TODO: Possibly checking if status is not convert instead of ingame.
             

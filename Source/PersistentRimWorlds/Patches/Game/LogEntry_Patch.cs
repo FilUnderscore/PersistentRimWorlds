@@ -8,10 +8,10 @@ using Verse;
 
 namespace PersistentWorlds.Patches
 {
-    [HarmonyPatch(typeof(LogEntry), new Type[] { typeof(LogEntryDef) })]
-    public static class LogEntry_Patch
+    [HarmonyPatch]
+    public class LogEntry_Patch
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
         {
             var codes = new List<CodeInstruction>(instr);
 

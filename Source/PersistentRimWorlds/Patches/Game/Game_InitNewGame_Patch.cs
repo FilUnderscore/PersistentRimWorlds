@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Harmony;
-using Ionic.Zlib;
 using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
@@ -10,10 +9,9 @@ using Verse.Profile;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(Game), "InitNewGame")]
-    public static class Game_InitNewGame_Patch
+    public class Game_InitNewGame_Patch
     {
-        [HarmonyPrefix]
-        public static bool InitNewGame_Prefix(Game __instance)
+        static bool Prefix(Game __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
                 PersistentWorldManager.WorldLoadSaver.Status !=

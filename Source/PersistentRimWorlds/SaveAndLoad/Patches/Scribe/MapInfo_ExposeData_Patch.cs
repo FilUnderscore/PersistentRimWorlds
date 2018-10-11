@@ -6,10 +6,9 @@ using Verse;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(MapInfo), "ExposeData")]
-    public static class MapInfo_ExposeData_Patch
+    public class MapInfo_ExposeData_Patch
     {
-        [HarmonyPrefix]
-        public static bool ExposeData_Prefix(MapInfo __instance)
+        static bool Prefix(MapInfo __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)

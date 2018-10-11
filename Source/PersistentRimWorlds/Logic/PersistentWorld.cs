@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 using Harmony;
 using PersistentWorlds.World;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
-using Verse.AI.Group;
 
 namespace PersistentWorlds.Logic
 {
@@ -309,37 +305,6 @@ namespace PersistentWorlds.Logic
             toRemove.Clear();
         }
 
-        /*
-        public void SortMaps(IEnumerable<Map> maps)
-        {            
-            foreach (var map in maps)
-            {
-                foreach (var colony in this.Colonies)
-                { 
-                    if (!colony.ColonyData.ActiveWorldTiles.Contains(map.Tile)) continue;
-                    
-                    if(!this.Maps.ContainsKey(colony))
-                        this.Maps.Add(colony, new List<Map>());
-                    
-                    this.Maps[colony].Add(map);
-                }
-            }
-        }
-
-        public void PreAddMaps()
-        {
-            if (this.Colony == null) return;
-            
-            foreach (var map in this.Maps[this.Colony])
-            {
-                if (!this.Game.Maps.Contains(map))
-                {
-                    this.Game.Maps.Add(map);
-                }
-            }
-        }
-        */
-
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
@@ -361,13 +326,11 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            // TODO: Change all vars.
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
         }
 
         public void ResetPlayerFaction()
         {
-            // TODO: Change all vars.
             SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(FactionDefOf.PlayerColony));
         }
 
@@ -413,9 +376,6 @@ namespace PersistentWorlds.Logic
 
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
-            
-            // Remove any relations with other player colonies.
-            // newFaction.RemoveAllRelations() doesn't work because requires Find.FactionManager which can be null depending on when this is called.
         }
 
         // TODO: Reset player faction to be tribe or colony depending on scenario. Should be called before selecting landing site.

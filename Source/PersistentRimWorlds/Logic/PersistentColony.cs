@@ -1,6 +1,4 @@
-﻿using Harmony;
-using RimWorld;
-using Verse;
+﻿using Verse;
 
 namespace PersistentWorlds.Logic
 {
@@ -10,7 +8,7 @@ namespace PersistentWorlds.Logic
 
         public void ExposeData()
         {
-            Scribe_Deep.Look<PersistentColonyData>(ref ColonyData, "data");
+            Scribe_Deep.Look(ref ColonyData, "data");
         }
         
         public static PersistentColony Convert(Game game, PersistentColonyData colonyColonyData = null)

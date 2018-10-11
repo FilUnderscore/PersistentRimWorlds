@@ -72,7 +72,7 @@ namespace PersistentWorlds.UI
                     /*
                      * Color changing..
                      */
-                    if (item.canChangeColor)
+                    if (item is ScrollableListItemColored coloredItem && coloredItem.canChangeColor)
                     {
                         var colorBoxX = x - (vector2_2.y + 5);
                         var colorBoxRect = new Rect(colorBoxX, 0.0f, vector2_2.y, vector2_2.y);
@@ -84,14 +84,14 @@ namespace PersistentWorlds.UI
 
                             item.texture = texture;
                         }
-                        
-                        GUI.color = item.color;
+
+                        GUI.color = coloredItem.color;
                         var press = Widgets.ButtonImage(colorBoxRect, item.texture);
                         GUI.color = Color.white;
                         
                         if (press)
                         {
-                            Find.WindowStack.Add(new Dialog_ColorPicker(item));
+                            Find.WindowStack.Add(new Dialog_ColorPicker(coloredItem));
                         }
                     }
                     /*

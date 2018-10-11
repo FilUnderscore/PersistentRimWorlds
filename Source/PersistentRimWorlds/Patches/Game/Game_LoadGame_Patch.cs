@@ -5,10 +5,9 @@ using Verse.Profile;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(Game), "LoadGame")]
-    public static class Game_LoadGame_Patch
+    public class Game_LoadGame_Patch
     {
-        [HarmonyPrefix]
-        public static bool LoadGame_Prefix(Game __instance)
+        static bool Prefix(Game __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
             {

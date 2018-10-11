@@ -4,9 +4,9 @@ using Verse;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(ScribeLoader), "ForceStop")]
-    public static class ScribeLoader_ForceStop_Patch
+    public class ScribeLoader_ForceStop_Patch
     {
-        public static bool Prefix(ScribeLoader __instance)
+        static bool Prefix(ScribeLoader __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)

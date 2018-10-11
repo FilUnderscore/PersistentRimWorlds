@@ -7,6 +7,7 @@ using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
+    [StaticConstructorOnStartup]
     public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
     {        
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
@@ -41,7 +42,7 @@ namespace PersistentWorlds.UI
             {
                 var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
                 
-                var scrollableListItem = new ScrollableListItem();
+                var scrollableListItem = new ScrollableListItemColored();
 
                 scrollableListItem.Text = colony.ColonyData.ColonyFaction.Name;
                 scrollableListItem.ActionButtonText = "Load".Translate();

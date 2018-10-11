@@ -58,7 +58,7 @@ namespace PersistentWorlds
             }
         }
 
-        public static T LoadReference<T>(string uniqueLoadID) where T : IExposable
+        private static T LoadReference<T>(string uniqueLoadID) where T : IExposable
         {
             var file = ReferenceFolder + "/" + uniqueLoadID + ".pwrf";
 
@@ -86,8 +86,6 @@ namespace PersistentWorlds
             {
                 ScribeVars.Reset();
             }
-            
-            //Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
             
             return exposable;
         }

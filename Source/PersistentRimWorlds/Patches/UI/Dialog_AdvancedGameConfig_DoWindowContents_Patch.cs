@@ -7,10 +7,9 @@ using RimWorld;
 namespace PersistentWorlds.Patches.UI
 {
     [HarmonyPatch(typeof(Dialog_AdvancedGameConfig), "DoWindowContents")]
-    public static class Dialog_AdvancedGameConfig_DoWindowContents_Patch
+    public class Dialog_AdvancedGameConfig_DoWindowContents_Patch
     {
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> DoWindowContents_Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
         {
             var codes = new List<CodeInstruction>(instr);
 

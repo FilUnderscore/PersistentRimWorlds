@@ -3,15 +3,13 @@ using System.Linq;
 using System.Reflection.Emit;
 using Harmony;
 using RimWorld;
-using Verse;
 
 namespace PersistentWorlds.Patches.UI
 {
     [HarmonyPatch(typeof(Scenario), "GetFirstConfigPage")]
-    public static class Scenario_GetFirstConfigPage_Patch
+    public class Scenario_GetFirstConfigPage_Patch
     {
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> GetFirstConfigPage_Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
         {
             var codes = new List<CodeInstruction>(instr);
 
