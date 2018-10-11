@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using Harmony;
 using RimWorld;
+using Verse;
 
 namespace PersistentWorlds.Patches.UI
 {
@@ -19,7 +20,7 @@ namespace PersistentWorlds.Patches.UI
 
             var label1 = ilGenerator.DefineLabel();
 
-            codes[204].labels.Add(label1);
+            codes[201].labels.Add(label1);
             
             for (var i = 0; i < codes.Count; i++)
             {
@@ -34,6 +35,8 @@ namespace PersistentWorlds.Patches.UI
                 };
 
                 codes.InsertRange(i + 3, codesToInsert);
+                
+                codes.Do(code => Log.Message(code.ToString()));
                 
                 break;
             }
