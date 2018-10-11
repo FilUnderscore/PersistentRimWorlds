@@ -27,11 +27,11 @@ namespace PersistentWorlds
                 {
                     if (xmlParents.ContainsKey(filePath)) continue;
                     
-                    using (StreamReader streamReader = new StreamReader(filePath))
+                    using (var streamReader = new StreamReader(filePath))
                     {
-                        using (XmlTextReader xmlTextReader = new XmlTextReader(streamReader))
+                        using (var xmlTextReader = new XmlTextReader(streamReader))
                         {
-                            XmlDocument xmlDocument = new XmlDocument();
+                            var xmlDocument = new XmlDocument();
                             xmlDocument.Load(xmlTextReader);
                             xmlParents.Add(filePath, xmlDocument.DocumentElement);
                         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Harmony;
+using PersistentWorlds.SaveAndLoad;
 using Verse;
 
 namespace PersistentWorlds
@@ -70,15 +71,9 @@ namespace PersistentWorlds
             // TODO: Refactor.
             if (Scribe.mode != LoadSaveMode.Inactive)
             {
-                ScribeVars.mode = Scribe.mode;
-                ScribeVars.curXmlParent = Scribe.loader.curXmlParent;
-                ScribeVars.curParent = Scribe.loader.curParent;
-                ScribeVars.curPathRelToParent = Scribe.loader.curPathRelToParent;
+                ScribeVars.Set();
                 
-                Scribe.mode = LoadSaveMode.Inactive;
-                Scribe.loader.curXmlParent = null;
-                Scribe.loader.curParent = null;
-                Scribe.loader.curPathRelToParent = null;
+                ScribeVars.TrickScribe();
             }
             
             Scribe.loader.InitLoading(file);
@@ -96,6 +91,11 @@ namespace PersistentWorlds
             if (ScribeVars.mode != LoadSaveMode.Inactive)
             {
                 ScribeVars.Reset();
+            }
+            else
+            {
+                // Clear up errors.
+                ScribeVars.TrickScribe();
             }
 
             return exposable;

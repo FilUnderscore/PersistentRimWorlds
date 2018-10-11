@@ -116,6 +116,26 @@ namespace PersistentWorlds
             Log.Message("Loaded world data...");
         }
 
+        /// <summary>
+        /// Loads all colony data for a specific colony. Fully loads the referenced colony.
+        /// </summary>
+        /// <param name="colony"></param>
+        public void LoadColony(ref PersistentColony colony)
+        {
+            var file = colony.FileInfo;
+
+            Log.Message("Loading colony... " + Path.GetFileNameWithoutExtension(file.FullName));
+            
+            ScribeMultiLoader.SetScribeCurXmlParentByFilePath(file.FullName);
+
+            Scribe_Deep.Look<PersistentColony>(ref colony, "colony");
+
+            PersistentWorldManager.PersistentWorld.Colony = colony;
+            
+            Log.Message("Loaded colony.");
+        }
+
+        /*
         public void LoadColonies()
         {
             var colonyFiles = new DirectoryInfo(this.coloniesDirectory).GetFiles("*" + PersistentWorldColonyFile_Extension);
@@ -132,6 +152,42 @@ namespace PersistentWorlds
 
                 var colony = new PersistentColony();
                 Scribe_Deep.Look<PersistentColony>(ref colony, "colony");
+                colony.FileInfo = colonyFile;
+                
+                PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
+            }
+            
+            Log.Message("Loaded colony data...");
+        }
+        */
+
+        /// <summary>
+        /// Loads some colony information for loading screens.
+        /// </summary>
+        public void LoadColonies()
+        {
+            var colonyFiles = new DirectoryInfo(this.coloniesDirectory).GetFiles("*" + PersistentWorldColonyFile_Extension);
+
+            Log.Message("Loading colonies...");
+            
+            foreach (var colonyFile in colonyFiles)
+            {                
+                ScribeMultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
+
+                var colony = new PersistentColony();
+                
+                if (Scribe.EnterNode("colony"))
+                {
+                    if (Scribe.EnterNode("data"))
+                    {
+                        colony.ColonyData.PreExposeData();
+                        
+                        Scribe.ExitNode();
+                    }
+                    
+                    Scribe.ExitNode();
+                }
+
                 colony.FileInfo = colonyFile;
                 
                 PersistentWorldManager.PersistentWorld.Colonies.Add(colony);

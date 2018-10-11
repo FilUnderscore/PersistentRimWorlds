@@ -7,6 +7,9 @@ using Verse;
 
 namespace PersistentWorlds.World
 {
+    /// <summary>
+    /// Colony world object class that handles colonies on the world map.
+    /// </summary>
     public class Colony : MapParent
     {
         // TODO: Implement commands.
@@ -16,6 +19,9 @@ namespace PersistentWorlds.World
         public PersistentColonyData PersistentColonyData;
         private Material cachedMat;
         
+        /// <summary>
+        /// Material for colonies, such as color properties that are set here depending on colony data.
+        /// </summary>
         public override Material Material
         {
             get
@@ -32,6 +38,9 @@ namespace PersistentWorlds.World
 
         public override string Label => Name ?? base.Label;
         
+        /// <summary>
+        /// Saving/loading of colony world object instance.
+        /// </summary>
         public override void ExposeData()
         {
             base.ExposeData();
@@ -47,6 +56,10 @@ namespace PersistentWorlds.World
             return base.GetGizmos();
         }
 
+        /// <summary>
+        /// Inspect string that shows up in bottom-left corner of screen when world object is clicked.
+        /// </summary>
+        /// <returns></returns>
         public override string GetInspectString()
         {
             var inspectString = "";

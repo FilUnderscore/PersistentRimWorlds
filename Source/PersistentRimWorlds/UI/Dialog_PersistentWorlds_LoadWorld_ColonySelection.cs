@@ -38,15 +38,17 @@ namespace PersistentWorlds.UI
         {
             PersistentWorldManager.WorldLoadSaver.LoadColonies();
 
-            foreach (var colony in PersistentWorldManager.PersistentWorld.Colonies)
+            for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
+                var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
+                
                 var scrollableListItem = new ScrollableListItemColored
                 {
                     Text = colony.ColonyData.ColonyFaction.Name,
                     ActionButtonText = "Load".Translate(),
                     ActionButtonAction = delegate
                     {
-                        PersistentWorldManager.PersistentWorld.Colony = colony;
+                        PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
 
                         // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
                         MemoryUtility.ClearAllMapsAndWorld();

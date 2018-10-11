@@ -2,6 +2,10 @@
 
 namespace PersistentWorlds
 {
+    /// <summary>
+    /// Mainly a static class that keeps track of the current persistent world as well as the loader for the persistent world.
+    /// Also has methods to help with keeping track of current game state.
+    /// </summary>
     public static class PersistentWorldManager
     {
         public static PersistentWorld PersistentWorld;

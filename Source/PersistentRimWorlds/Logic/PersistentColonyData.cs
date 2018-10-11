@@ -18,15 +18,13 @@ namespace PersistentWorlds.Logic
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
-        
-        // TODO: Preload only colony faction / color for selection, load when switching or loading.
-        public void ExposeData()
+
+        /// <summary>
+        /// Called for colony lists.
+        /// </summary>
+        public void PreExposeData()
         {
-            Scribe_Values.Look<int>(ref uniqueID, "uniqueID", -1, false);
-            
-            Scribe_Deep.Look<PersistentColonyGameData>(ref GameData, "gameData");
-            
-            Scribe_Collections.Look<int>(ref ActiveWorldTiles, "activeWorldTiles");
+            Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
             
             switch (Scribe.mode)
             {
@@ -41,6 +39,14 @@ namespace PersistentWorlds.Logic
                     Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
                     break;
             }
+            
+            Scribe_Collections.Look(ref ActiveWorldTiles, "activeWorldTiles");
+        }
+        
+        // TODO: Preload only colony faction / color for selection, load when switching or loading.
+        public void ExposeData()
+        {
+            Scribe_Deep.Look(ref GameData, "gameData");
         }
 
         public static PersistentColonyData Convert(Game game, PersistentColonyData colonyColonyData)
