@@ -18,11 +18,8 @@ namespace PersistentWorlds.UI
 
         private Vector2 scrollPosition = Vector2.zero;
         private List<ScrollableListItem> items;
-        
-        public MainTabWindow_Colonies()
-        {
-            this.forcePause = true;
-        }
+
+        public override Vector2 RequestedTabSize => new Vector2(Verse.UI.screenWidth * 0.5f, Verse.UI.screenHeight / 3.5f);
 
         public override void DoWindowContents(Rect inRect)
         {   

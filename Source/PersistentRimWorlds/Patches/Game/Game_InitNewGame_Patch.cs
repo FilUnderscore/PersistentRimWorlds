@@ -85,14 +85,10 @@ namespace PersistentWorlds.Patches
             colony.ColonyData.uniqueID = ++PersistentWorldManager.PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             PersistentWorldManager.PersistentWorld.Colony = colony;
-            // TODO: FACTIONS.
-            // colony.SetFactionData();
+            
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
             PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
-            
-            // TODO: View here
-            //PersistentWorldManager.PersistentWorld.ConvertSettlementsToColonies();
-                
+    
             return false;
         }       
     }

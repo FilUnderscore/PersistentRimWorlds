@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds.Patches
@@ -8,6 +9,9 @@ namespace PersistentWorlds.Patches
     {
         static void Postfix(Game __instance)
         {
+            // Toggle colonies tab.
+            DefDatabase<MainButtonDef>.GetNamed("Colonies").buttonVisible = PersistentWorldManager.PersistentWorld != null;
+            
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
                 return;
