@@ -282,7 +282,7 @@ namespace PersistentWorlds
                 {
                     //colony.ExposeData();
                     var colony1 = colony;
-                    Scribe_Deep.Look<PersistentColony>(ref colony1, "colony");
+                    Scribe_Deep.Look(ref colony1, "colony");
                 });
             }
             

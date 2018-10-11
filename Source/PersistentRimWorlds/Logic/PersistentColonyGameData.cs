@@ -25,6 +25,7 @@ namespace PersistentWorlds.Logic
         private BattleLog battleLog = new BattleLog();
         private OutfitDatabase outfitDatabase = new OutfitDatabase();
         private DrugPolicyDatabase drugPolicyDatabase = new DrugPolicyDatabase();
+        private FoodRestrictionDatabase foodRestrictionDatabase = new FoodRestrictionDatabase();
         private Tutor tutor = new Tutor();
         private DateNotifier dateNotifier = new DateNotifier();
         private List<GameComponent> gameComponents = new List<GameComponent>();
@@ -78,22 +79,7 @@ namespace PersistentWorlds.Logic
 
             Scribe_Deep.Look(ref this.drugPolicyDatabase, "drugPolicyDatabase");
 
-            // Remove outfits and drug policies to prevent unneeded errors and wrong data.
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                var crossReferencingExposables = (List<IExposable>) AccessTools
-                    .Field(typeof(CrossRefHandler), "crossReferencingExposables").GetValue(Scribe.loader.crossRefs);
-                
-                foreach (var outfit in this.outfitDatabase.AllOutfits)
-                {
-                    crossReferencingExposables.Remove(outfit);
-                }
-
-                foreach (var drugPolicy in this.drugPolicyDatabase.AllPolicies)
-                {
-                    crossReferencingExposables.Remove(drugPolicy);
-                }
-            }
+            Scribe_Deep.Look(ref this.foodRestrictionDatabase, "foodRestrictionDatabase");
 
             Scribe_Deep.Look(ref this.tutor, "tutor");
             
@@ -125,20 +111,10 @@ namespace PersistentWorlds.Logic
             PersistentWorldManager.PersistentWorld.Game.battleLog = this.battleLog;
             PersistentWorldManager.PersistentWorld.Game.outfitDatabase = this.outfitDatabase;
             PersistentWorldManager.PersistentWorld.Game.drugPolicyDatabase = this.drugPolicyDatabase;
+            PersistentWorldManager.PersistentWorld.Game.foodRestrictionDatabase = this.foodRestrictionDatabase;
             PersistentWorldManager.PersistentWorld.Game.tutor = this.tutor;
             PersistentWorldManager.PersistentWorld.Game.dateNotifier = this.dateNotifier;
             PersistentWorldManager.PersistentWorld.Game.components = this.gameComponents;
-            
-            // Register outfits and drug policies to Cross-Referencer.
-            foreach (var outfit in this.outfitDatabase.AllOutfits)
-            {
-                Scribe.loader.crossRefs.RegisterForCrossRefResolve(outfit);
-            }
-
-            foreach (var drugPolicy in this.drugPolicyDatabase.AllPolicies)
-            {
-                Scribe.loader.crossRefs.RegisterForCrossRefResolve(drugPolicy);
-            }
         }
 
         public static PersistentColonyGameData Convert(Game game)
@@ -166,6 +142,7 @@ namespace PersistentWorlds.Logic
                 battleLog = game.battleLog,
                 outfitDatabase = game.outfitDatabase,
                 drugPolicyDatabase = game.drugPolicyDatabase,
+                foodRestrictionDatabase = game.foodRestrictionDatabase,
                 tutor = game.tutor,
                 dateNotifier = game.dateNotifier,
                 gameComponents = game.components,
