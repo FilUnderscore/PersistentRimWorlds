@@ -59,7 +59,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            Colony.ColonyData.GameData.SetGame();
+            Colony.GameData.SetGame();
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
             
@@ -98,7 +98,7 @@ namespace PersistentWorlds.Logic
 
             int num = -1;
 
-            num = Colony.ColonyData.GameData.currentMapIndex;
+            num = Colony.GameData.currentMapIndex;
             if (num < 0 && this.Game.Maps.Any<Map>())
             {
                 Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
@@ -150,7 +150,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            Find.CameraDriver.SetRootPosAndSize(this.Colony.ColonyData.GameData.camRootPos, this.Colony.ColonyData.GameData.desiredSize);
+            Find.CameraDriver.SetRootPosAndSize(this.Colony.GameData.camRootPos, this.Colony.GameData.desiredSize);
         }
 
         public void ExposeGameWorldData()

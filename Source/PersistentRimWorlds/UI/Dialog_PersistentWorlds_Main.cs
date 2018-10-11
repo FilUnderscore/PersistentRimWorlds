@@ -21,14 +21,14 @@ namespace PersistentWorlds.UI
             GUI.BeginGroup(inRect);
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(inRect.width / 2 - inRect.width / 6f, 0.0f, inRect.width, 45f), "PersistentRimWorlds".Translate());
+            Widgets.Label(new Rect(inRect.width / 2 - inRect.width / 6f, 0.0f, inRect.width, 45f), "FilUnderscore.PersistentRimWorlds".Translate());
             Text.Font = GameFont.Small;
             
             var rect1 = new Rect((inRect.width - 170f) / 2, 0.0f + 45f, 170f, inRect.height);
 
             var optList = new List<ListableOption>
             {
-                new ListableOption("Load-PersistentWorlds".Translate(),
+                new ListableOption("FilUnderscore.PersistentRimWorlds.LoadWorld".Translate(),
                     delegate { Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList()); }, null),
             };
 

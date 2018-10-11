@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Harmony;
@@ -36,8 +37,7 @@ namespace PersistentWorlds
         /// </summary>
         private static void PatchMainMenu()
         {
-            // Close main menu...
-            Find.WindowStack.Add((Window) new Dialog_PersistentWorlds_Main());
+            Find.WindowStack.Add(new Dialog_PersistentWorlds_Main());
         }
     }
 }

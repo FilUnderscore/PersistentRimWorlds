@@ -7,8 +7,6 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentColonyData : IExposable, ILoadReferenceable
     {
-        public PersistentColonyGameData GameData = new PersistentColonyGameData();
-
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
         public int uniqueID = 0;
@@ -19,10 +17,8 @@ namespace PersistentWorlds.Logic
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
 
-        /// <summary>
-        /// Called for colony lists.
-        /// </summary>
-        public void PreExposeData()
+        // TODO: Preload only colony faction / color for selection, load when switching or loading.
+        public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
             
@@ -43,21 +39,12 @@ namespace PersistentWorlds.Logic
             
             Scribe_Collections.Look(ref ActiveWorldTiles, "activeWorldTiles");
         }
-        
-        // TODO: Preload only colony faction / color for selection, load when switching or loading.
-        public void ExposeData()
-        {
-            this.PreExposeData();
-            
-            Scribe_Deep.Look(ref GameData, "gameData");
-        }
 
         public static PersistentColonyData Convert(Game game, PersistentColonyData colonyColonyData)
         {
             var persistentColonyData = new PersistentColonyData
             {
-                ColonyFaction = game.World.factionManager.OfPlayer,
-                GameData = PersistentColonyGameData.Convert(game)
+                ColonyFaction = game.World.factionManager.OfPlayer
             };
 
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.PersistentWorld.Colony == null)

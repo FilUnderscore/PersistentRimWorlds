@@ -2,6 +2,8 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Harmony;
+using PersistentWorlds.World;
+using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -35,9 +37,9 @@ namespace PersistentWorlds.Patches
                     
 #if DEBUG
                     // Reference Debugging.
-                    //Log.Message("targetloadid: " + targetLoadID);
-                    //Log.Message("label: " + label);
-                    //Log.Message("Type: " + exposable.GetType());
+                    Log.Message("targetloadid: " + targetLoadID);
+                    Log.Message("label: " + label);
+                    Log.Message("Type: " + exposable.GetType());
 #endif
                     
                     // Prevent default(T) being null in generic method.

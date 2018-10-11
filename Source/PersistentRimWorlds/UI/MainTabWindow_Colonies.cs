@@ -10,9 +10,10 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
+    [StaticConstructorOnStartup]
     public class MainTabWindow_Colonies : MainTabWindow
     {
-        public static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
+        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
         // TODO: Draw.
 
         private Vector2 scrollPosition = Vector2.zero;
@@ -48,11 +49,14 @@ namespace PersistentWorlds.UI
             for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
                 var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
-                
-                var item = new ScrollableListItem {Text = colony.ColonyData.ColonyFaction.Name};
+
+                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name};
 
                 if (colony != PersistentWorldManager.PersistentWorld.Colony)
                 {
+                    item.canChangeColor = true;
+                    item.texture = Town;
+                    
                     var index = i;
                     
                     item.ActionButtonText = "Switch To";

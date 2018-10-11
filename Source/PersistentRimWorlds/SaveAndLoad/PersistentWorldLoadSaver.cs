@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Harmony;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using Verse;
 using Verse.Profile;
 using Random = UnityEngine.Random;
@@ -159,7 +160,7 @@ namespace PersistentWorlds
                 {
                     if (Scribe.EnterNode("data"))
                     {
-                        colony.ColonyData.PreExposeData();
+                        colony.ColonyData.ExposeData();
                         
                         Scribe.ExitNode();
                     }
@@ -198,12 +199,14 @@ namespace PersistentWorlds
                     ScribeMultiLoader.SetScribeCurXmlParentByFilePath(mapFile.FullName);
                 else
                 {
+                    // Reset scribe if not already reset.
+                    ScribeVars.TrickScribe();
+                    
                     Scribe.loader.InitLoading(mapFile.FullName);
                 }
                 
                 var map = new Map();
 
-                Log.Message("Status: " + Scribe.mode);
                 Scribe_Deep.Look<Map>(ref map, "map");
 
                 if (PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadStatus.Ingame)
@@ -285,8 +288,6 @@ namespace PersistentWorlds
             
             Log.Message("Saved colony data.");
 
-            // TODO: Save any newly created maps, if not already.
-            
             foreach (var map in Current.Game.Maps)
             {
                 var mapSaveFile = mapsDirectory + "/" + map.Tile.ToString() + PersistentWorldMapFile_Extension;

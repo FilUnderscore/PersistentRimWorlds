@@ -18,12 +18,16 @@ namespace PersistentWorlds.Logic
         /// </summary>
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
+        public PersistentColonyGameData GameData = new PersistentColonyGameData();
+        
         /// <summary>
         /// Saving/loading of colony data.
         /// </summary>
         public void ExposeData()
         {
             Scribe_Deep.Look(ref ColonyData, "data");
+            
+            Scribe_Deep.Look(ref GameData, "gameData");
         }
         
         /// <summary>
@@ -36,7 +40,8 @@ namespace PersistentWorlds.Logic
         {
             var persistentColony = new PersistentColony
             {
-                ColonyData = PersistentColonyData.Convert(game, colonyColonyData)
+                ColonyData = PersistentColonyData.Convert(game, colonyColonyData),
+                GameData = PersistentColonyGameData.Convert(game)
             };
 
             return persistentColony;

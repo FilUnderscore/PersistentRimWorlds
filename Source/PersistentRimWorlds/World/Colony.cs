@@ -16,7 +16,7 @@ namespace PersistentWorlds.World
         //public static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
         public string Name;
-        public PersistentColonyData PersistentColonyData;
+        public PersistentColonyData PersistentColonyData = new PersistentColonyData();
         private Material cachedMat;
         
         /// <summary>
@@ -45,8 +45,8 @@ namespace PersistentWorlds.World
         {
             base.ExposeData();
             
-            Scribe_Values.Look<string>(ref Name, "name");
-            Scribe_References.Look<PersistentColonyData>(ref PersistentColonyData, "colony");
+            Scribe_Values.Look(ref Name, "name");
+            Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
