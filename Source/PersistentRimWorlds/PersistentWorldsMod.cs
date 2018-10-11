@@ -23,7 +23,7 @@ namespace PersistentWorlds
         /// <param name="content"></param>
         public PersistentWorldsMod(ModContentPack content) : base(content)
         {
-            var harmony = HarmonyInstance.Create("PersistentWorlds");
+            var harmony = HarmonyInstance.Create("me.filunderscore.persistentrimworlds");
 
 #if DEBUG
             HarmonyInstance.DEBUG = true;
