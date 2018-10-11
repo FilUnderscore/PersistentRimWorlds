@@ -252,7 +252,6 @@ namespace PersistentWorlds
             SafeSaver.Save(this.worldFilePath, "worldfile", delegate
             {
                 ScribeMetaHeaderUtility.WriteMetaHeader();
-                //world.WorldData.ExposeData();
                 Scribe_Deep.Look<PersistentWorldData>(ref world.WorldData, "data");
             });
             
@@ -263,8 +262,13 @@ namespace PersistentWorlds
             foreach (var colony in world.Colonies)
             {
                 // If colony changed name or data changed..
-                if(PersistentWorldManager.PersistentWorld.Colony == colony)
-                    colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game, colony.ColonyData);
+                if (PersistentWorldManager.PersistentWorld.Colony == colony)
+                {
+                    colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game,
+                        colony.ColonyData);
+                    
+                    colony.GameData = PersistentColonyGameData.Convert(PersistentWorldManager.PersistentWorld.Game);
+                }
 
                 // TODO: Revise this fix one day.
                 if (sameNames.ContainsKey(colony.ColonyData.ColonyFaction.Name))
@@ -280,7 +284,6 @@ namespace PersistentWorlds
                 
                 SafeSaver.Save(colonySaveFile, "colonyfile", delegate
                 {
-                    //colony.ExposeData();
                     var colony1 = colony;
                     Scribe_Deep.Look(ref colony1, "colony");
                 });

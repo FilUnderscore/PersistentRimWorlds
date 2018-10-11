@@ -90,7 +90,7 @@ namespace PersistentWorlds.Patches
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             
             colony.GameData.mapSize = __instance.InitData.mapSize;
-
+            
             Current.Game.InitData = null;
             
             PersistentWorldManager.PersistentWorld.Colony = colony;
