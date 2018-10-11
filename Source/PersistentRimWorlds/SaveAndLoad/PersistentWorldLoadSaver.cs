@@ -261,30 +261,27 @@ namespace PersistentWorlds
             
             foreach (var colony in world.Colonies)
             {
+                var colony1 = colony;
                 // If colony changed name or data changed..
                 if (PersistentWorldManager.PersistentWorld.Colony == colony)
                 {
-                    colony.ColonyData = PersistentColonyData.Convert(PersistentWorldManager.PersistentWorld.Game,
-                        colony.ColonyData);
-                    
-                    colony.GameData = PersistentColonyGameData.Convert(PersistentWorldManager.PersistentWorld.Game);
+                    colony1 = PersistentColony.Convert(PersistentWorldManager.PersistentWorld.Game, colony.ColonyData);
                 }
 
                 // TODO: Revise this fix one day.
-                if (sameNames.ContainsKey(colony.ColonyData.ColonyFaction.Name))
+                if (sameNames.ContainsKey(colony1.ColonyData.ColonyFaction.Name))
                 {
-                    sameNames[colony.ColonyData.ColonyFaction.Name] = sameNames[colony.ColonyData.ColonyFaction.Name] + 1;
+                    sameNames[colony1.ColonyData.ColonyFaction.Name] = sameNames[colony1.ColonyData.ColonyFaction.Name] + 1;
                 }
                 else
                 {
-                    sameNames.Add(colony.ColonyData.ColonyFaction.Name, 1);
+                    sameNames.Add(colony1.ColonyData.ColonyFaction.Name, 1);
                 }
 
-                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony.ColonyData.ColonyFaction.Name].ToString() + colony.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
+                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony1.ColonyData.ColonyFaction.Name].ToString() + colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
                 
                 SafeSaver.Save(colonySaveFile, "colonyfile", delegate
                 {
-                    var colony1 = colony;
                     Scribe_Deep.Look(ref colony1, "colony");
                 });
             }
