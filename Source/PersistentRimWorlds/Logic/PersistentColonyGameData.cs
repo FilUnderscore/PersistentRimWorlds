@@ -9,6 +9,7 @@ namespace PersistentWorlds.Logic
     public class PersistentColonyGameData : IExposable
     {
         public sbyte currentMapIndex;
+        public int mapSize;
         
         private GameInfo info = new GameInfo();
         private GameRules rules = new GameRules();
@@ -49,6 +50,8 @@ namespace PersistentWorlds.Logic
 
             Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1);
 
+            Scribe_Values.Look<int>(ref mapSize, "mapSize");
+            
             Scribe_Deep.Look(ref info, "info");
 
             Scribe_Deep.Look(ref rules, "rules");
@@ -94,6 +97,7 @@ namespace PersistentWorlds.Logic
         public void SetGame()
         {
             PersistentWorldManager.PersistentWorld.Game.currentMapIndex = this.currentMapIndex;
+            PersistentWorldManager.PersistentWorld.Game.World.info.initialMapSize = new IntVec3(mapSize, 1, mapSize);
             
             AccessTools.Field(typeof(Game), "info").SetValue(PersistentWorldManager.PersistentWorld.Game, this.info);
             AccessTools.Field(typeof(Game), "rules").SetValue(PersistentWorldManager.PersistentWorld.Game, this.rules);

@@ -41,7 +41,13 @@ namespace PersistentWorlds.Patches
                 settlement.ExtraGenStepDefs, null);
                 
             Current.Game.CurrentMap = map;
-                
+
+            // TODO: Implement permanent death mode for colonies.
+            if (__instance.InitData.permadeath)
+            {
+                __instance.Info.permadeathMode = true;
+            }
+            
             PawnUtility.GiveAllStartingPlayerPawnsThought(ThoughtDefOf.NewColonyOptimism);
             __instance.FinalizeInit();
                 
@@ -76,7 +82,6 @@ namespace PersistentWorlds.Patches
                 
             GameComponentUtility.StartedNewGame();
 
-            Current.Game.InitData = null;
             PersistentWorldManager.WorldLoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
@@ -84,6 +89,11 @@ namespace PersistentWorlds.Patches
 
             colony.ColonyData.uniqueID = ++PersistentWorldManager.PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
+            
+            colony.GameData.mapSize = __instance.InitData.mapSize;
+
+            Current.Game.InitData = null;
+            
             PersistentWorldManager.PersistentWorld.Colony = colony;
             
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
