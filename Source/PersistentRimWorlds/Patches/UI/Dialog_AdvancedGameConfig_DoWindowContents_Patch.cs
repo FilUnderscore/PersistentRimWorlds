@@ -36,8 +36,6 @@ namespace PersistentWorlds.Patches.UI
 
                 codes.InsertRange(i + 3, codesToInsert);
                 
-                codes.Do(code => Log.Message(code.ToString()));
-                
                 break;
             }
             
