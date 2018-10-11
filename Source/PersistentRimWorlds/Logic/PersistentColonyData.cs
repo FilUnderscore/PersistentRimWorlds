@@ -31,6 +31,7 @@ namespace PersistentWorlds.Logic
                 case LoadSaveMode.LoadingVars when Scribe.EnterNode("faction"):
                     this.ColonyFaction = new Faction();
                     this.ColonyFaction.ExposeData();
+                    Scribe.ExitNode();
                     break;
                 case LoadSaveMode.LoadingVars:
                     Log.Error("No faction for colony found. Corrupt colony save?");
@@ -46,6 +47,8 @@ namespace PersistentWorlds.Logic
         // TODO: Preload only colony faction / color for selection, load when switching or loading.
         public void ExposeData()
         {
+            this.PreExposeData();
+            
             Scribe_Deep.Look(ref GameData, "gameData");
         }
 

@@ -326,7 +326,9 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
+            Log.Message("Patch");
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
+            Log.Message("Ok");
         }
 
         public void ResetPlayerFaction()
@@ -337,7 +339,9 @@ namespace PersistentWorlds.Logic
         private void SetPlayerFactionVarsOf(Faction newFaction)
         {
             var ofPlayerFaction = this.WorldData.factionManager.OfPlayer;
+            
             ofPlayerFaction.leader = newFaction.leader;
+    
             ofPlayerFaction.def = newFaction.def;
 
             ofPlayerFaction.Name = newFaction.HasName ? newFaction.Name : null;

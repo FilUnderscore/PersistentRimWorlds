@@ -128,38 +128,12 @@ namespace PersistentWorlds
             
             ScribeMultiLoader.SetScribeCurXmlParentByFilePath(file.FullName);
 
-            Scribe_Deep.Look<PersistentColony>(ref colony, "colony");
+            Scribe_Deep.Look(ref colony, "colony");
 
             PersistentWorldManager.PersistentWorld.Colony = colony;
             
             Log.Message("Loaded colony.");
         }
-
-        /*
-        public void LoadColonies()
-        {
-            var colonyFiles = new DirectoryInfo(this.coloniesDirectory).GetFiles("*" + PersistentWorldColonyFile_Extension);
-
-            Log.Message(this.coloniesDirectory);
-            
-            Log.Message("Loading colonies...");
-            
-            foreach (var colonyFile in colonyFiles)
-            {
-                Log.Message("Colony File: " + colonyFile.FullName);
-                
-                ScribeMultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
-
-                var colony = new PersistentColony();
-                Scribe_Deep.Look<PersistentColony>(ref colony, "colony");
-                colony.FileInfo = colonyFile;
-                
-                PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
-            }
-            
-            Log.Message("Loaded colony data...");
-        }
-        */
 
         /// <summary>
         /// Loads some colony information for loading screens.

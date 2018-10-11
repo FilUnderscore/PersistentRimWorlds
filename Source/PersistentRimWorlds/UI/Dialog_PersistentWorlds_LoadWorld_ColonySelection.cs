@@ -41,7 +41,8 @@ namespace PersistentWorlds.UI
             for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
                 var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
-                
+
+                var i1 = i;
                 var scrollableListItem = new ScrollableListItemColored
                 {
                     Text = colony.ColonyData.ColonyFaction.Name,
@@ -49,6 +50,7 @@ namespace PersistentWorlds.UI
                     ActionButtonAction = delegate
                     {
                         PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
+                        PersistentWorldManager.PersistentWorld.Colonies[i1] = colony;
 
                         // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
                         MemoryUtility.ClearAllMapsAndWorld();
