@@ -359,11 +359,5 @@ namespace PersistentWorlds.Logic
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
         }
-
-        // TODO: Reset player faction to be tribe or colony depending on scenario. Should be called before selecting landing site.
-        public void ResetPlayerFactionScenario()
-        {
-            
-        }
     }
 }
