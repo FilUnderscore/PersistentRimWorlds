@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -32,6 +33,11 @@ namespace PersistentWorlds.UI
         public override void PreOpen()
         {
             this.SetInitialSizeAndPosition();
+        }
+
+        public override void PostClose()
+        {
+            PersistentWorldManager.Clear();
         }
 
         private void LoadColoniesAsItems()

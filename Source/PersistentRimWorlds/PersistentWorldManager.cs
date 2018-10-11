@@ -1,4 +1,6 @@
 ﻿using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
+using Verse;
 
 namespace PersistentWorlds
 {
@@ -19,6 +21,19 @@ namespace PersistentWorlds
         public static bool NotNull()
         {
             return PersistentWorld != null && WorldLoadSaver != null;
+        }
+
+        // TODO: May break current game if Persistent Worlds menu is accessed in game then quit on colony page.
+        public static void Clear()
+        {
+            PersistentWorld = null;
+            WorldLoadSaver = null;
+            
+            ScribeVars.Clear();
+            ScribeMultiLoader.Clear();
+            ReferenceSaveLoader.ClearReferences();
+            
+            Scribe.ForceStop();
         }
     }
 }

@@ -8,8 +8,7 @@ namespace PersistentWorlds.Patches
     {
         static void Prefix(Root_Entry __instance)
         {
-            PersistentWorldManager.PersistentWorld = null;
-            PersistentWorldManager.WorldLoadSaver = null;
+            PersistentWorldManager.Clear();
         }
     }
 }
