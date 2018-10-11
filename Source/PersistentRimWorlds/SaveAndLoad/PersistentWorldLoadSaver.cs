@@ -124,6 +124,11 @@ namespace PersistentWorlds
         {
             var file = colony.FileInfo;
 
+            if (Scribe.mode == LoadSaveMode.Inactive)
+            {
+                this.PreloadWorldColoniesMaps();
+            }
+            
             Log.Message("Loading colony... " + Path.GetFileNameWithoutExtension(file.FullName));
             
             ScribeMultiLoader.SetScribeCurXmlParentByFilePath(file.FullName);

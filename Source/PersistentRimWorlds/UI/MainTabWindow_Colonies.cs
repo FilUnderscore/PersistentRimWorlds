@@ -45,34 +45,38 @@ namespace PersistentWorlds.UI
         {
             this.items = new List<ScrollableListItem>();
 
-            foreach (var colony in PersistentWorldManager.PersistentWorld.Colonies)
+            for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
-                var item = new ScrollableListItem();
-
-                item.Text = colony.ColonyData.ColonyFaction.Name;
+                var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
+                
+                var item = new ScrollableListItem {Text = colony.ColonyData.ColonyFaction.Name};
 
                 if (colony != PersistentWorldManager.PersistentWorld.Colony)
                 {
+                    var index = i;
+                    
                     item.ActionButtonText = "Switch To";
                     item.ActionButtonAction = delegate
                     {                         
                         this.Close();
 
                         LongEventHandler.QueueLongEvent(delegate
-                        {       
-                                PersistentWorldManager.PersistentWorld.Colony = colony;
-                                PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
-
-                                PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
-                                
-                                LoadMaps(colony);
-                                Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
-                                UnloadMaps(colony);    
+                        {
+                            PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
+                            PersistentWorldManager.PersistentWorld.Colonies[index] = colony;
                             
-                                PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
+                            PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
-                                //Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
-                            }, "LoadingColony", false, null);
+                            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+                                
+                            LoadMaps(colony);
+                            Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
+                            UnloadMaps(colony);    
+                            
+                            PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
+
+                            //Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
+                        }, "LoadingColony", false, null);
                     };
                 }
                 
