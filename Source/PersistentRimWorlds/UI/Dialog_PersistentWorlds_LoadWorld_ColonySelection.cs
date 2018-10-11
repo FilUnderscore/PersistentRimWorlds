@@ -37,37 +37,37 @@ namespace PersistentWorlds.UI
         private void LoadColoniesAsItems()
         {
             PersistentWorldManager.WorldLoadSaver.LoadColonies();
-            
-            for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
-            {
-                var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
-                
-                var scrollableListItem = new ScrollableListItemColored();
 
-                scrollableListItem.Text = colony.ColonyData.ColonyFaction.Name;
-                scrollableListItem.ActionButtonText = "Load".Translate();
-                scrollableListItem.ActionButtonAction = delegate
+            foreach (var colony in PersistentWorldManager.PersistentWorld.Colonies)
+            {
+                var scrollableListItem = new ScrollableListItemColored
+                {
+                    Text = colony.ColonyData.ColonyFaction.Name,
+                    ActionButtonText = "Load".Translate(),
+                    ActionButtonAction = delegate
                     {
                         PersistentWorldManager.PersistentWorld.Colony = colony;
-                        
+
                         // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
                         MemoryUtility.ClearAllMapsAndWorld();
 
                         PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
                         PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
-                    };
-                
-                scrollableListItem.DeleteButtonAction = delegate
-                {
-                    // TODO: Allow colonies to be deleted.   
+                    },
+                    DeleteButtonAction = delegate
+                    {
+                        // TODO: Allow colonies to be deleted.   
+                    },
+                    DeleteButtonTooltip = "DeleteColony-PersistentWorlds".Translate(),
+                    canChangeColor = true,
+                    texture = Town
                 };
-                scrollableListItem.DeleteButtonTooltip =
-                    "DeleteColony-PersistentWorlds".Translate();
 
-                scrollableListItem.canChangeColor = true;
-                scrollableListItem.texture = Town; 
-                
-                // TODO: Show date/time of file save.
+                scrollableListItem.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
+                    color = SaveFileInfo.UnimportantTextColor
+                });
                 
                 items.Add(scrollableListItem);
             }

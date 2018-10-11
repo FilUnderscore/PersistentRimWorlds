@@ -57,7 +57,7 @@ namespace PersistentWorlds.UI
                     if (item.Info != null && item.Info.Count > 0)
                     {                        
                         //var rect3 = new Rect(270f, 0.0f, 200f, position.height);
-                        var rect3 = new Rect(inRect.width * 0.5f, 0.0f, 200f, position.height);
+                        var rect3 = new Rect(inRect.width * 0.45f, 0.0f, 200f, position.height);
                         
                         DrawItemInfo(item, rect3);
                     }

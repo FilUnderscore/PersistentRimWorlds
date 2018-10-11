@@ -16,6 +16,6 @@ namespace PersistentWorlds.UI
 
         public Texture2D texture;
         
-        public List<ScrollableListItemInfo> Info = new List<ScrollableListItemInfo>();
+        public readonly List<ScrollableListItemInfo> Info = new List<ScrollableListItemInfo>();
     }
 }

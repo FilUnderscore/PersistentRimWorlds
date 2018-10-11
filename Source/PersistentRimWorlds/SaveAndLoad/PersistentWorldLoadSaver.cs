@@ -129,10 +129,10 @@ namespace PersistentWorlds
                 Log.Message("Colony File: " + colonyFile.FullName);
                 
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
-                
+
                 var colony = new PersistentColony();
-                //colony.ExposeData();
                 Scribe_Deep.Look<PersistentColony>(ref colony, "colony");
+                colony.FileInfo = colonyFile;
                 
                 PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
             }

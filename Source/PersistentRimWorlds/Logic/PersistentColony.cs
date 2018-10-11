@@ -1,9 +1,11 @@
-﻿using Verse;
+﻿using System.IO;
+using Verse;
 
 namespace PersistentWorlds.Logic
 {
     public class PersistentColony : IExposable
     {
+        public FileInfo FileInfo;
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
         public void ExposeData()

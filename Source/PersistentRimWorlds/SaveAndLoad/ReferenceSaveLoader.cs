@@ -1,3 +1,5 @@
+using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +11,8 @@ namespace PersistentWorlds
     public static class ReferenceSaveLoader
     {
         private static readonly Dictionary<string, IExposable> references = new Dictionary<string, IExposable>();
-
+        private const string ReferenceFile_Extension = ".ref";
+        
         private static string ReferenceFolder
         {
             get
@@ -49,19 +52,22 @@ namespace PersistentWorlds
             {
                 var referencable = references.ElementAt(i);
                 
-                var file = ReferenceFolder + "/" + referencable.Key + ".pwrf";
-
+                var file = ReferenceFolder + "/" + referencable.Key + ReferenceFile_Extension;
+ 
                 var reffable = referencable.Value;
                 
-                SafeSaver.Save(file, "referencefile",
-                    delegate { Scribe_Deep.Look<IExposable>(ref reffable, "reference"); });
+                SafeSaver.Save(file, "referencefile", delegate
+                {
+                    reffable.ExposeData();
+                });
             }
         }
 
         private static T LoadReference<T>(string uniqueLoadID) where T : IExposable
         {
-            var file = ReferenceFolder + "/" + uniqueLoadID + ".pwrf";
+            var file = ReferenceFolder + "/" + uniqueLoadID + ReferenceFile_Extension;
 
+            // TODO: Refactor.
             if (Scribe.mode != LoadSaveMode.Inactive)
             {
                 ScribeVars.mode = Scribe.mode;
@@ -78,16 +84,22 @@ namespace PersistentWorlds
             Scribe.loader.InitLoading(file);
 
             var exposable = default(T);
-            Scribe_Deep.Look<T>(ref exposable, "reference");
+
+            if (exposable == null)
+                throw new NullReferenceException("ReferenceSaveLoader.LoadReference<T>(string) : IExposable of type " +
+                                                 typeof(T) + " is null.");
             
+            exposable.ExposeData();
+
             references.Add(uniqueLoadID, exposable);
 
             if (ScribeVars.mode != LoadSaveMode.Inactive)
             {
                 ScribeVars.Reset();
             }
-            
+
             return exposable;
+
         }
 
         public static T GetReference<T>(string uniqueLoadID) where T : IExposable
