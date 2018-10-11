@@ -18,6 +18,9 @@ namespace PersistentWorlds.Logic
         /// </summary>
         public PersistentColonyData ColonyData = new PersistentColonyData();
 
+        /// <summary>
+        /// Main source of data for colony game information.
+        /// </summary>
         public PersistentColonyGameData GameData = new PersistentColonyGameData();
         
         /// <summary>
