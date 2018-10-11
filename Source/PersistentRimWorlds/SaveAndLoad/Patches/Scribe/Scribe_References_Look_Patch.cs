@@ -1,10 +1,8 @@
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Harmony;
 using RimWorld.Planet;
-using UnityEngine.Rendering;
 using Verse;
 
 namespace PersistentWorlds.Patches
@@ -12,6 +10,9 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch]
     public class Scribe_References_Look_Patch
     {
+        private static readonly MethodInfo GetReferenceMethod = AccessTools.Method(typeof(ReferenceSaveLoader),
+            "GetReference", new[] {typeof(string)});
+        
         static bool Prefix(ref ILoadReferenceable refee, string label)
         {
             if ((!(refee is Pawn) && !(refee is WorldObject) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
@@ -32,10 +33,18 @@ namespace PersistentWorlds.Patches
                     var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
                     var targetLoadID = xmlNode == null ? label : xmlNode.InnerText;
                     
+#if DEBUG
+                    // Reference Debugging.
                     //Log.Message("targetloadid: " + targetLoadID);
                     //Log.Message("label: " + label);
+                    //Log.Message("Type: " + exposable.GetType());
+#endif
                     
-                    refee = (ILoadReferenceable) ReferenceSaveLoader.GetReference<IExposable>(targetLoadID);
+                    // Prevent default(T) being null in generic method.
+                    var originalType = exposable.GetType();
+                    var genericMethod = GetReferenceMethod.MakeGenericMethod(originalType);
+                    refee = (ILoadReferenceable) genericMethod.Invoke(null, new object[] { targetLoadID });
+                    
                     break;
             }
             

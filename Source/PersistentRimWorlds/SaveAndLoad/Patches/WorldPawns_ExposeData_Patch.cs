@@ -61,7 +61,7 @@ namespace PersistentWorlds.Patches
             return codes.AsEnumerable();
         }
 
-        private static void Load(ref HashSet<Pawn> pawns)
+        public static void Load(ref HashSet<Pawn> pawns)
         {
             if (!Scribe.EnterNode("pawnsForcefullyKeptAsWorldPawns")) return;
                 
@@ -99,7 +99,7 @@ namespace PersistentWorlds.Patches
                         var nodeText = ((XmlNode) node).InnerText;
                             
                         var pawn = new Pawn();
-                        Scribe_References.Look<Pawn>(ref pawn, nodeText);
+                        Scribe_References.Look(ref pawn, nodeText);
                         pawns.Add(pawn);
                     }
 

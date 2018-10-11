@@ -63,7 +63,7 @@ namespace PersistentWorlds
             }
         }
 
-        private static T LoadReference<T>(string uniqueLoadID) where T : IExposable
+        private static T LoadReference<T>(string uniqueLoadID) where T : IExposable, new()
         {
             var file = ReferenceFolder + "/" + uniqueLoadID + ReferenceFile_Extension;
 
@@ -83,7 +83,7 @@ namespace PersistentWorlds
             
             Scribe.loader.InitLoading(file);
 
-            var exposable = default(T);
+            var exposable = new T();
 
             if (exposable == null)
                 throw new NullReferenceException("ReferenceSaveLoader.LoadReference<T>(string) : IExposable of type " +
@@ -102,7 +102,7 @@ namespace PersistentWorlds
 
         }
 
-        public static T GetReference<T>(string uniqueLoadID) where T : IExposable
+        public static T GetReference<T>(string uniqueLoadID) where T : IExposable, new()
         {
             if (!references.ContainsKey(uniqueLoadID))
             {
