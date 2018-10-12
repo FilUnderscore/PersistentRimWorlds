@@ -12,9 +12,14 @@ namespace PersistentWorlds
 {
     public static class ReferenceSaveLoader
     {
-        // TODO: Append references to files that call Look first instead of loading from separate files to have less files.
+        // TODO: New update - my new approach works, however -
+        // I could just have a mapping table file created when saving that gets loaded into memory and redirects the
+        // scribe saver/loader to relevant locations without needing to load any additional files than the file its
+        // currently reading. I will try that, and it should also solve all my errors I currently get when loading
         
         private static readonly Dictionary<string, Dictionary<string, IExposable>> references = new Dictionary<string, Dictionary<string, IExposable>>();
+
+        private static ReferenceMap map;
         //private const string ReferenceFile_Extension = ".ref";
         
         /*
@@ -123,9 +128,9 @@ namespace PersistentWorlds
         }
         */
 
+        /*
         private static T LoadReference<T>(string uniqueLoadID) where T : IExposable, new()
         {
-            /*
             var file = ReferenceFolder + "/" + uniqueLoadID + ReferenceFile_Extension;
 
             if (Scribe.mode != LoadSaveMode.Inactive)
@@ -158,23 +163,38 @@ namespace PersistentWorlds
             }
 
             return exposable;
-            */
+            
+        }
+        */
 
-            return default(T);
+        public static void LoadReferencesForCurrentFile()
+        {
+            if (Scribe.mode != LoadSaveMode.LoadingVars)
+            {
+                throw new InvalidOperationException("LoadReference: Called LoadReference when not loading vars.");
+            }
+            
+            var file = PersistentWorldManager.WorldLoadSaver.currentFile.FullName;
+            
+            var reference = new Dictionary<string, IExposable>();
+            Scribe_Collections.Look(ref reference, "references", LookMode.Value, LookMode.Deep);
+            references.Add(file, reference);
         }
 
         public static T GetReference<T>(string uniqueLoadID) where T : IExposable, new()
         {
+            /*
             if (!references.ContainsKey(uniqueLoadID))
             {
                 return LoadReference<T>(uniqueLoadID);
             }
+            */
             
-            foreach (var reference in references[uniqueLoadID])
+            foreach (var dict in references.Values)
             {
-                if (reference.Key == uniqueLoadID)
+                if (dict.ContainsKey(uniqueLoadID))
                 {
-                    return (T) reference.Value;
+                    return (T) dict[uniqueLoadID];
                 }
             }
             

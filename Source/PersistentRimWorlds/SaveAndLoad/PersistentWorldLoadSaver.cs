@@ -107,9 +107,11 @@ namespace PersistentWorlds
             
             // Select world to load XML node data for.
             ScribeMultiLoader.SetScribeCurXmlParentByFilePath(this.worldFilePath);
-            
+
             // Required otherwise errors because of internal requirements.
             ScribeMetaHeaderUtility.LoadGameDataHeader(ScribeMetaHeaderUtility.ScribeHeaderMode.Map, true);
+
+            ReferenceSaveLoader.LoadReferencesForCurrentFile();
             
             // Load data.
             PersistentWorldManager.PersistentWorld = new PersistentWorld();
@@ -139,6 +141,8 @@ namespace PersistentWorlds
             
             ScribeMultiLoader.SetScribeCurXmlParentByFilePath(file.FullName);
 
+            ReferenceSaveLoader.LoadReferencesForCurrentFile();
+
             Scribe_Deep.Look(ref colony, "colony");
 
             PersistentWorldManager.PersistentWorld.Colony = colony;
@@ -160,6 +164,8 @@ namespace PersistentWorlds
                 currentFile = colonyFile;
                 
                 ScribeMultiLoader.SetScribeCurXmlParentByFilePath(colonyFile.FullName);
+
+                ReferenceSaveLoader.LoadReferencesForCurrentFile();
 
                 var colony = new PersistentColony();
                 
@@ -213,6 +219,8 @@ namespace PersistentWorlds
                     
                     Scribe.loader.InitLoading(mapFile.FullName);
                 }
+
+                ReferenceSaveLoader.LoadReferencesForCurrentFile();
                 
                 var map = new Map();
 
