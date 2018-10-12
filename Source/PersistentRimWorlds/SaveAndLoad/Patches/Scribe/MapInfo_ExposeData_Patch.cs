@@ -11,7 +11,6 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(MapInfo __instance)
         {
-            /*
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
             {
@@ -24,22 +23,20 @@ namespace PersistentWorlds.Patches
                 Scribe_Values.Look<IntVec3>(ref size, "size", new IntVec3(), false);
                 __instance.Size = size;
 
-                MapParent parent = null;
+                MapParent parent = new MapParent();
                 XmlNode xmlNode = (XmlNode) Scribe.loader.curXmlParent["parent"];
                 string targetLoadID = xmlNode == null ? null : xmlNode.InnerText;
 
                 Log.Message("targetLoadID: " + targetLoadID);
                 
-                //Scribe_References.Look<MapParent>(ref parent, targetLoadID);
-                parent = ReferenceSaveLoader.GetReference<MapParent>(targetLoadID);
-                
-                __instance.parent = parent;
+                Scribe_References.Look<MapParent>(ref parent, targetLoadID);
+            }
+            else if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
+            {
+                __instance.parent = (MapParent) PersistentWorldManager.ReferenceTable.ResolveReference("parent");
             }
 
             return false;
-            */
-
-            return true;
         }
         #endregion
     }

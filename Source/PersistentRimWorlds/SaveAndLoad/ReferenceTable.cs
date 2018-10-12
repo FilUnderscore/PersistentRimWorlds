@@ -158,14 +158,15 @@ namespace PersistentWorlds.SaveAndLoad
             else if(Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 // TODO: Do same thing with loading like saving.
-                pathRelToParent = Scribe.loader.curPathRelToParent;
+                pathRelToParent = label;
+                Debug.FileLog.Log("PathRelToParent RefTable: " + pathRelToParent);
             }
             else
             {
                 throw new InvalidProgramException("Invalid state.");
             }
 
-            var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent);
+            var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent){};
             referenceEntry.LoadReference(reference);
 
             if (referenceEntryDict.ContainsKey(referenceEntry.uniqueLoadID))
@@ -219,13 +220,53 @@ namespace PersistentWorlds.SaveAndLoad
             var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
-            foreach (var requestedReference in requestedReferences[currentFile])
+            Debug.FileLog.Log("RESOLVE --");
+            Debug.FileLog.Log("CurFile: " + currentFile);
+            Debug.FileLog.Log("PathRelToParent: " + pathRelToParent);
+            Debug.FileLog.Log("Label: " + label);
+
+            if (requestedReferences.ContainsKey(currentFile))
             {
-                if (requestedReference.pathFromParentThatRequested == pathRelToParent || Equals(requestedReference.parent, Scribe.loader.curParent) && requestedReference.label == label)
+                foreach (var requestedReference in requestedReferences[currentFile])
                 {
-                    return requestedReference.linkToReferenceEntry.reference;
+                    if (requestedReference.pathFromParentThatRequested == pathRelToParent ||
+                        Scribe.loader.curParent != null && requestedReference.parent != null &&
+                        Equals(requestedReference.parent, Scribe.loader.curParent) && requestedReference.label == label)
+                    {
+                        if (requestedReference.linkToReferenceEntry?.reference != null)
+                        {
+                            return requestedReference.linkToReferenceEntry.reference;
+                        }
+
+                        break;
+                    }
                 }
             }
+            else
+            {
+                Debug.FileLog.Log("No key for file: " + currentFile + " when resolving.");
+            }
+
+            Debug.FileLog.Log("Fallback.");
+            
+            // Fallback
+            foreach (var requestedReferenceList in requestedReferences.Values)
+            {
+                foreach (var requestedReference in requestedReferenceList)
+                {
+                    if (requestedReference.pathFromParentThatRequested == pathRelToParent || Equals(requestedReference.parent, Scribe.loader.curParent) && requestedReference.label == label)
+                    {
+                        if (requestedReference.linkToReferenceEntry?.reference != null)
+                        {
+                            return requestedReference.linkToReferenceEntry.reference;
+                        }
+
+                        break;
+                    }
+                }
+            }
+            
+            Debug.FileLog.Log("Both failed. Triple fallback.");
 
             throw new NullReferenceException("Could not resolve reference at " + currentFile + ":" + pathRelToParent);
         }

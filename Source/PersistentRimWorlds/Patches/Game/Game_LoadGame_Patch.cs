@@ -23,8 +23,6 @@ namespace PersistentWorlds.Patches
             MemoryUtility.UnloadUnusedUnityAssets();
             Current.ProgramState = ProgramState.MapInitializing;
 
-            Scribe.mode = LoadSaveMode.LoadingVars;
-
             persistentWorld.LoadGame();
                 
             return false;

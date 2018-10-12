@@ -159,6 +159,12 @@ namespace PersistentWorlds.Logic
             this.Game.World.info = this.WorldData.info;
             this.Game.World.grid = this.WorldData.grid;
 
+            if (this.Game.World.components == null)
+            {
+                Log.Error("Game World Components is null! Please look into this.");
+                this.Game.World.components = new List<WorldComponent>();
+            }
+            
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 if (this.Game.World.grid == null || !this.Game.World.grid.HasWorldData)
@@ -177,7 +183,7 @@ namespace PersistentWorlds.Logic
         }
 
         public void ConstructGameWorldComponentsAndExposeComponents()
-        {
+        {   
             this.Game.World.ConstructComponents();
 
             this.ExposeAndFillGameWorldComponents();
@@ -193,7 +199,12 @@ namespace PersistentWorlds.Logic
             this.Game.World.storyState = this.WorldData.storyState;
             this.Game.World.features = this.WorldData.worldFeatures;
             this.Game.uniqueIDsManager = this.WorldData.uniqueIDsManager;
-            this.Game.World.components = this.WorldData.worldComponents;
+
+            if (this.WorldData.worldComponents != null)
+            {
+                Log.Error("WorldData worldComponents is null. Please look into this.");
+                this.Game.World.components = this.WorldData.worldComponents;
+            }
             
             AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents", new Type[0]).Invoke(this.Game.World, new object[0]);
 
