@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Harmony;
+using PersistentWorlds.Patches;
 using Verse;
 
 namespace PersistentWorlds.SaveAndLoad
@@ -69,8 +70,18 @@ namespace PersistentWorlds.SaveAndLoad
         public void AddReference(ILoadReferenceable reference, string label)
         {
             var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
-            var pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
             
+            var pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
+
+            if (label == "li")
+            {
+                pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetIndexInList(pathRelToParent, label) + "]";
+            }
+            else if (label == "thing")
+            {
+                // TODO: ...
+            }
+
             var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent);
             referenceEntry.LoadReference(reference);
 

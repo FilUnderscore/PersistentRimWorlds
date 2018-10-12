@@ -22,6 +22,18 @@ namespace PersistentWorlds.Patches
 
         private static int currentThingIndex;
         #endregion
+
+        public static int GetIndexInList(string curPath, string nodeName)
+        {
+            var currentListIndex = Regex.Matches(curPath + "/", "\\/li\\[(\\d+)\\]\\/").Count;
+
+            if (nodeName == "li")
+            {
+                ++currentListIndex;
+            }
+            
+            return listIndexes[currentListIndex];
+        }
         
         #region Methods
         static bool Prefix(ScribeSaver __instance, string nodeName)
@@ -55,7 +67,9 @@ namespace PersistentWorlds.Patches
                         listIndexes.Add(currentListIndex, 0);
                     }
                     
+                    Debug.FileLog.Log("CurPath b4 set: " + curPath);
                     curPath = curPath + "[" + listIndexes[currentListIndex] + "]";
+                    Debug.FileLog.Log("CurPath after set: " + curPath);
                 }
                 else
                 {
