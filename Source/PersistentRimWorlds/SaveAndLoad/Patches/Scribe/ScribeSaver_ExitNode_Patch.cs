@@ -23,6 +23,12 @@ namespace PersistentWorlds.Patches
 
             var curPath = (string) curPathField.GetValue(__instance);
 
+            if (curPath.EndsWith("thing"))
+            {
+                // Reset thing index.
+                ScribeSaver_EnterNode_Patch.ResetThingIndex();
+            }
+            
             var length = curPath.LastIndexOf('/');
             curPath = length <= 0 ? null : curPath.Substring(0, length);
             

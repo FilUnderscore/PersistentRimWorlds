@@ -1,8 +1,11 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using Harmony;
+using Ionic.Zlib;
 using PersistentWorlds.Patches;
 using Verse;
 
@@ -10,7 +13,12 @@ namespace PersistentWorlds.SaveAndLoad
 {
     public sealed class ReferenceTable
     {
+        // TODO: Important! Compression, saves a lot of space. Can be done asynchronously.
+        
         #region Fields
+
+        private bool compress = false;
+        
         private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
         
         /// <summary>
@@ -42,28 +50,69 @@ namespace PersistentWorlds.SaveAndLoad
             requestedReferences.Clear();
         }
         
-        public void LoadReferences()
+        public void LoadReferences(string filePath)
         {
-            using (var reader = new StreamReader(ReferenceTableFileMapPath))
+            // TODO: Check for compression header.
+            if (!compress)
             {
-                while (!reader.EndOfStream)
+                using (var reader = new StreamReader(ReferenceTableFileMapPath))
                 {
-                    var line = reader.ReadLine();
-                    var referenceEntry = ReferenceEntry.FromString(line);
-                    
-                    referenceEntryDict.Add(referenceEntry.uniqueLoadID, referenceEntry);
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+
+                        if (line == null || !line.Split(':')[1].Contains(filePath)) continue;
+                        
+                        var referenceEntry = ReferenceEntry.FromString(line);
+                        referenceEntryDict.Add(referenceEntry.uniqueLoadID, referenceEntry);
+                    }
                 }
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
         public void SaveReferences()
         {
-            using (var writer = new StreamWriter(ReferenceTableFileMapPath, false))
+            if (!compress)
             {
-                foreach (var referenceSet in referenceEntryDict)
+                using (var writer = new StreamWriter(ReferenceTableFileMapPath, false))
                 {
-                    writer.WriteLine(referenceSet.Value.ToString());
+                    foreach (var referenceSet in referenceEntryDict)
+                    {
+                        writer.WriteLine(referenceSet.Value.ToString());
+                    }
                 }
+            }
+            else
+            {
+                var sb = new StringBuilder();
+
+                using (var writer = new StringWriter(sb))
+                {
+                    foreach (var referenceSet in referenceEntryDict)
+                    {
+                        writer.WriteLine(referenceSet.Value.ToString());
+                    }
+                }
+
+                Log.Message("Written to stringbuilder.");
+
+                var bytes = Encoding.UTF8.GetBytes(sb.ToString());
+
+                using (var fs = new FileStream(ReferenceTableFileMapPath, FileMode.Create))
+                {
+                    // Level 4 is best time/size ratio for this format.
+                    using (var zipStream =
+                        new GZipStream(fs, CompressionMode.Compress, CompressionLevel.Level4, false))
+                    {
+                        zipStream.Write(bytes, 0, bytes.Length);
+                    }
+                }
+
+                Log.Message("Compressed!");
             }
         }
 
@@ -80,6 +129,7 @@ namespace PersistentWorlds.SaveAndLoad
             else if (label == "thing")
             {
                 // TODO: ...
+                pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetThingIndex() + "]";
             }
 
             var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent);
@@ -87,7 +137,7 @@ namespace PersistentWorlds.SaveAndLoad
 
             if (referenceEntryDict.ContainsKey(referenceEntry.uniqueLoadID))
             {
-                //Log.Error("There is already a reference entry with the unique load ID \"" + referenceEntry.uniqueLoadID + "\"!");
+                Log.Error("There is already a reference entry with the unique load ID \"" + referenceEntry.uniqueLoadID + "\"!");
                 return;
             }
 

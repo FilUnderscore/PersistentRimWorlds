@@ -34,6 +34,16 @@ namespace PersistentWorlds.Patches
             
             return listIndexes[currentListIndex];
         }
+
+        public static int GetThingIndex()
+        {
+            return currentThingIndex;
+        }
+        
+        public static void ResetThingIndex()
+        {
+            currentThingIndex = 0;
+        }
         
         #region Methods
         static bool Prefix(ScribeSaver __instance, string nodeName)
