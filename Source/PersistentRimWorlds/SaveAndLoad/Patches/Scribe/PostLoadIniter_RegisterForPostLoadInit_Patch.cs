@@ -1,26 +1,120 @@
 using System.Collections.Generic;
-using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Xml;
 using Harmony;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds.Patches
 {
-    // Silence some errors..
-    [HarmonyPatch(typeof(LoadedObjectDirectory), "RegisterLoaded")]
-    public class LoadedObjectDirectory_RegisterLoaded_Patch
+    [HarmonyPatch(typeof(PostLoadIniter), "RegisterForPostLoadInit")]
+    public class PostLoadIniter_RegisterForPostLoadInit_Patch
     {
-        #region Fields
-        private static readonly FieldInfo AllObjectsByLoadIdField =
-            AccessTools.Field(typeof(LoadedObjectDirectory), "allObjectsByLoadID");
-        #endregion
+        /// <summary>
+        /// Keeps track of the current list index in the current list when loading. Used for ReferenceTable.
+        /// </summary>
+        private static readonly Dictionary<int, int> listIndexes = new Dictionary<int, int>();
         
-        #region Methods
-        static bool Prefix(LoadedObjectDirectory __instance, ILoadReferenceable reffable)
-        {
-            var allObjectsByLoadID = (Dictionary<string, ILoadReferenceable>) AllObjectsByLoadIdField.GetValue(__instance);
+        private static int currentThingIndex = 0;
 
-            return !allObjectsByLoadID.ContainsKey(reffable.GetUniqueLoadID());
+        public static int GetIndexInList(string path, string nodeName)
+        {
+            var currentListIndex = Regex.Matches(path + "/", "\\/li\\[(\\d+)\\]\\/").Count;
+
+            if (nodeName == "li")
+            {
+                ++currentListIndex;
+            }
+
+            return listIndexes[currentListIndex];
         }
-        #endregion
+
+        public static int GetThingIndex()
+        {
+            return currentThingIndex;
+        }
+
+        public static void ResetThingIndex()
+        {
+            currentThingIndex = 0;
+        }
+        
+        static void Postfix(PostLoadIniter __instance, IExposable s)
+        {
+            if (Scribe.mode != LoadSaveMode.LoadingVars) return;
+
+            if (s != null && s is ILoadReferenceable referenceable)
+            {                
+                var path = FindParent(Scribe.loader.curXmlParent);
+                Log.Message("Path: " + path);
+
+                var pathToLoad = "";
+                
+                if (Scribe.loader.curXmlParent.HasChildNodes)
+                {
+                    var currentListIndex = Regex.Matches(path + "/", "\\/li\\[(\\d+)\\]\\/").Count;
+
+                    if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
+                    {
+                        ++currentListIndex;
+                    }
+                    
+                    if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
+                    {
+                        if (listIndexes.ContainsKey(currentListIndex))
+                        {
+                            listIndexes[currentListIndex] += 1;
+                        }
+                        else
+                        {
+                            listIndexes.Add(currentListIndex, 0);
+                        }
+                        
+                        pathToLoad = path + "/" +
+                                   Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + listIndexes[currentListIndex] + "]";
+                        
+                        Log.Message("Path LI: " + pathToLoad);
+                    }
+                    else if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
+                    {
+                        pathToLoad = path + "/" +
+                                   Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + ++currentThingIndex + "]";
+                        
+                        Log.Message("Path THING: " + pathToLoad);
+                    }
+                    else
+                    {
+                        Log.Message("CurPathRelToParent Child Nodes: " + pathToLoad + "/" + Scribe.loader.curXmlParent.ChildNodes[0].Name);
+                    }
+                }
+                else
+                {
+                    Log.Message("CurPathRelToParent: " + path);
+                }
+                
+                Log.Message("Adding reference: " + pathToLoad);
+                Log.Message("Ref ID: " + referenceable.GetUniqueLoadID());
+                LogSimple.FlushToStandardLog();
+                PersistentWorldManager.ReferenceTable.AddReference(referenceable, pathToLoad);
+            }
+        }
+
+        public static string FindParent(XmlNode loaderCurXmlParent)
+        {
+            var path = loaderCurXmlParent.Name;
+
+            while (loaderCurXmlParent.ParentNode != null && loaderCurXmlParent.ParentNode.Name != "#document")
+            {
+                path = loaderCurXmlParent.ParentNode.Name + "/" + path;
+                loaderCurXmlParent = loaderCurXmlParent.ParentNode;
+            }
+
+            if (!path.StartsWith("/"))
+            {
+                path = "/" + path;
+            }
+
+            return path;
+        }
     }
 }

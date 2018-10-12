@@ -206,11 +206,11 @@ namespace PersistentWorlds.SaveAndLoad
 
             if (requestedReferences.ContainsKey(currentFile))
             {
-                requestedReferences[currentFile].Add(new ReferenceRequest(pathRelToParent, uniqueLoadID));
+                requestedReferences[currentFile].Add(new ReferenceRequest(pathRelToParent, uniqueLoadID){parent = Scribe.loader.curParent,label = label});
             }
             else
             {
-                requestedReferences.Add(currentFile, new List<ReferenceRequest>() { new ReferenceRequest(pathRelToParent, uniqueLoadID) });
+                requestedReferences.Add(currentFile, new List<ReferenceRequest>() { new ReferenceRequest(pathRelToParent, uniqueLoadID){parent=Scribe.loader.curParent,label=label} });
             }
         }
 
@@ -221,7 +221,7 @@ namespace PersistentWorlds.SaveAndLoad
 
             foreach (var requestedReference in requestedReferences[currentFile])
             {
-                if (requestedReference.pathFromParentThatRequested == pathRelToParent)
+                if (requestedReference.pathFromParentThatRequested == pathRelToParent || Equals(requestedReference.parent, Scribe.loader.curParent) && requestedReference.label == label)
                 {
                     return requestedReference.linkToReferenceEntry.reference;
                 }
@@ -281,6 +281,9 @@ namespace PersistentWorlds.SaveAndLoad
             public string pathFromParentThatRequested;
             public string uniqueLoadIDRequested;
 
+            public IExposable parent;
+            public string label;
+            
             public ReferenceEntry linkToReferenceEntry;
 
             public ReferenceRequest(string pathFromParentThatRequested, string uniqueLoadIdRequested)

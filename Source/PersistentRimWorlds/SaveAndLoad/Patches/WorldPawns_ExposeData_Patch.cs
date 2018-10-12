@@ -27,9 +27,10 @@ namespace PersistentWorlds.Patches
             AccessTools.Field(typeof(WorldPawns), "pawnsForcefullyKeptAsWorldPawns");
 
         private static readonly MethodInfo LoadMethod = AccessTools.Method(typeof(WorldPawns_ExposeData_Patch), "Load");
+        
+        private static readonly List<string> referenceUniqueIDs = new List<string>();
         #endregion
         
-        /*
         #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr,
             ILGenerator ilGenerator)
@@ -110,15 +111,17 @@ namespace PersistentWorlds.Patches
                             
                         var pawn = new Pawn();
                         Scribe_References.Look(ref pawn, nodeText);
-                        pawns.Add(pawn);
+                        //pawns.Add(pawn);
                     }
 
+                    break;
+                case LoadSaveMode.ResolvingCrossRefs:
+                    pawns = new HashSet<Pawn>();
                     break;
             }
                 
             Scribe.ExitNode();
         }
         #endregion
-        */
     }
 }

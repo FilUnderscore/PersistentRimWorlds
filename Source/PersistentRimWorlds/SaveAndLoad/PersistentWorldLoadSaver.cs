@@ -122,8 +122,6 @@ namespace PersistentWorlds
             PersistentWorldManager.PersistentWorld = new PersistentWorld();
             Scribe_Deep.Look<PersistentWorldData>(ref PersistentWorldManager.PersistentWorld.WorldData, "data");
             
-            PersistentWorldManager.PersistentWorld.ResetPlayerFaction();
-            
             Log.Message("Loaded world data...");
         }
 

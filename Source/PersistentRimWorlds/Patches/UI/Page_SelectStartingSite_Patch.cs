@@ -18,7 +18,7 @@ namespace PersistentWorlds.Patches.UI
             PersistentWorldManager.PersistentWorld.Game.Scenario = Current.Game.Scenario;
             PersistentWorldManager.PersistentWorld.Game.storyteller = Current.Game.storyteller;
             Current.Game = PersistentWorldManager.PersistentWorld.Game;
-                
+            
             Current.Game.InitData = new GameInitData();
             
             Scribe.loader.FinalizeLoading();
