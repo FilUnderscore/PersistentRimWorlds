@@ -9,6 +9,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(DebugLoadIDsSavingErrorsChecker), "RegisterDeepSaved")]
     public class DebugLoadIDsSavingErrorsChecker_RegisterDeepSaved_Patch
     {
+        #region Methods
         static bool Prefix(DebugLoadIDsSavingErrorsChecker __instance, object obj, string label)
         {
             if (Scribe.mode != LoadSaveMode.Saving) return true;
@@ -20,5 +21,6 @@ namespace PersistentWorlds.Patches
 
             return true;
         }
+        #endregion
     }
 }

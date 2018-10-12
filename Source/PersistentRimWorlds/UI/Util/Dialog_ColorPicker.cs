@@ -9,15 +9,20 @@ namespace PersistentWorlds.UI
 {
     public sealed class Dialog_ColorPicker : Window
     {
+        #region Fields
         private ScrollableListItemColored item;
         private Color color;
         
         private float rValue = 128;
         private float gValue = 128;
         private float bValue = 128;
-
-        public override Vector2 InitialSize => new Vector2(600, 220);
+        #endregion
         
+        #region Properties
+        public override Vector2 InitialSize => new Vector2(600, 220);
+        #endregion
+        
+        #region Constructors
         public Dialog_ColorPicker(ScrollableListItemColored item)
         {
             this.doCloseX = true;
@@ -27,7 +32,9 @@ namespace PersistentWorlds.UI
 
             this.item = item;
         }
+        #endregion
 
+        #region Methods
         public override void DoWindowContents(Rect inRect)
         {
             GUI.BeginGroup(inRect);
@@ -145,5 +152,6 @@ namespace PersistentWorlds.UI
             GUI.DrawTexture(rect, colorWheel);
         }
         */
+        #endregion
     }
 }

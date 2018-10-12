@@ -7,15 +7,20 @@ namespace PersistentWorlds.UI
 {
     public sealed class Dialog_PersistentWorlds_Main : Window
     {
+        #region Properties
+        public override Vector2 InitialSize => new Vector2(600f, 700f);
+        #endregion        
+        
+        #region Constructors
         public Dialog_PersistentWorlds_Main()
         {
             this.doWindowBackground = true;
             this.doCloseButton = true;
             this.doCloseX = true;
         }
+        #endregion
 
-        public override Vector2 InitialSize => new Vector2(600f, 700f);
-
+        #region Methods
         public override void DoWindowContents(Rect inRect)
         {
             GUI.BeginGroup(inRect);
@@ -36,5 +41,6 @@ namespace PersistentWorlds.UI
             
             GUI.EndGroup();
         }
+        #endregion
     }
 }

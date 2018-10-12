@@ -7,6 +7,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(ScribeLoader), "ForceStop")]
     public class ScribeLoader_ForceStop_Patch
     {
+        #region Methods
         static bool Prefix(ScribeLoader __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
@@ -25,5 +26,6 @@ namespace PersistentWorlds.Patches
             
             return false;
         }
+        #endregion
     }
 }

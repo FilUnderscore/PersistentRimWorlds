@@ -7,6 +7,7 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentColonyData : IExposable, ILoadReferenceable
     {
+        #region Fields
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
         public int uniqueID = 0;
@@ -16,7 +17,9 @@ namespace PersistentWorlds.Logic
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
-
+        #endregion
+        
+        #region Methods
         public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
@@ -68,5 +71,6 @@ namespace PersistentWorlds.Logic
         {
             return "Colony_" + this.uniqueID;
         }
+        #endregion
     }
 }

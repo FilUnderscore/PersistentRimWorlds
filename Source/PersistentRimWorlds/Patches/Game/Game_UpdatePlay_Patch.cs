@@ -6,6 +6,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(Game), "UpdatePlay")]
     public class Game_UpdatePlay_Patch
     {
+        #region Methods
         static void Postfix(Game __instance)
         {
             if (!PersistentWorldManager.Active() || PersistentWorldManager.WorldLoadSaver.Status !=
@@ -14,5 +15,6 @@ namespace PersistentWorlds.Patches
             
             PersistentWorldManager.PersistentWorld.UpdateWorld();
         }
+        #endregion
     }
 }

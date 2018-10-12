@@ -11,6 +11,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(Game), "InitNewGame")]
     public class Game_InitNewGame_Patch
     {
+        #region Methods
         static bool Prefix(Game __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
@@ -100,5 +101,6 @@ namespace PersistentWorlds.Patches
     
             return false;
         }       
+        #endregion
     }
 }

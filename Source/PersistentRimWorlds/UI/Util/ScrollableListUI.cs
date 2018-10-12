@@ -9,6 +9,7 @@ namespace PersistentWorlds.UI
 {
     public static class ScrollableListUI
     {
+        #region Methods
         public static void DrawList(ref Rect inRect, ref Vector2 scrollPosition, ref List<ScrollableListItem> items)
         {
             var vector2_1 = new Vector2(inRect.width - 16f, 36f);
@@ -157,5 +158,6 @@ namespace PersistentWorlds.UI
             
             GUI.EndGroup();
         }
+        #endregion
     }
 }

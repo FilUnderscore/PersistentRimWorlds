@@ -8,6 +8,7 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentColonyGameData : IExposable
     {
+        #region Fields
         public sbyte currentMapIndex;
         public int mapSize;
         
@@ -36,7 +37,9 @@ namespace PersistentWorlds.Logic
          */
         public Vector3 camRootPos;
         public float desiredSize;
-
+        #endregion
+        
+        #region Methods
         public void ExposeData()
         {
             if (PersistentWorldManager.PersistentWorld == null)
@@ -157,5 +160,6 @@ namespace PersistentWorlds.Logic
 
             return persistentColonyGameData;
         }
+        #endregion
     }
 }

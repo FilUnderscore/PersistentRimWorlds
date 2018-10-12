@@ -9,11 +9,14 @@ namespace PersistentWorlds.SaveAndLoad
     /// </summary>
     public static class ScribeVars
     {
+        #region Fields
         public static LoadSaveMode mode;
         public static IExposable curParent;
         public static XmlNode curXmlParent;
         public static string curPathRelToParent;
-
+        #endregion
+        
+        #region Methods
         /// <summary>
         /// Set vars in ScribeVars to loader vars.
         /// </summary>
@@ -58,5 +61,6 @@ namespace PersistentWorlds.SaveAndLoad
             Scribe.loader.curParent = null;
             Scribe.loader.curPathRelToParent = null;
         }
+        #endregion
     }
 }

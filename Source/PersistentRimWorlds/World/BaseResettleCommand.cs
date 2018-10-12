@@ -8,6 +8,7 @@ namespace PersistentWorlds.World
 {
     public sealed class BaseResettleCommand : Command_Action
     {
+        #region Constructors
         public BaseResettleCommand(Caravan caravan)
         {
             this.defaultLabel = "BaseResettle".Translate();
@@ -48,5 +49,6 @@ namespace PersistentWorlds.World
                 CaravanEnterMapUtility.Enter(caravan, map, CaravanEnterMode.Edge);
             };
         }
+        #endregion
     }
 }

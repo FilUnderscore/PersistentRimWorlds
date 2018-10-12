@@ -6,6 +6,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(WorldGenStep_Components), "GenerateFromScribe")]
     public class WorldGenStep_Components_Patch
     {
+        #region Methods
         static bool Prefix()
         {
             if (PersistentWorldManager.PersistentWorld == null)
@@ -19,5 +20,6 @@ namespace PersistentWorlds.Patches
             
             return false;
         }
+        #endregion
     }
 }

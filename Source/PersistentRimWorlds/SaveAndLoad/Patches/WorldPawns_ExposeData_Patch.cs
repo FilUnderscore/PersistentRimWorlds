@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
 using Harmony;
@@ -16,6 +17,19 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(WorldPawns), "ExposeData")]
     public class WorldPawns_ExposeData_Patch
     {
+        #region Fields
+        private static readonly FieldInfo WorldLoadSaverField =
+            AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver");
+
+        private static readonly FieldInfo StatusField = AccessTools.Field(typeof(PersistentWorldLoadSaver), "Status");
+
+        private static readonly FieldInfo PawnsForcefullyKeptAsWorldPawnsField =
+            AccessTools.Field(typeof(WorldPawns), "pawnsForcefullyKeptAsWorldPawns");
+
+        private static readonly MethodInfo LoadMethod = AccessTools.Method(typeof(WorldPawns_ExposeData_Patch), "Load");
+        #endregion
+        
+        #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr,
             ILGenerator ilGenerator)
         {
@@ -29,13 +43,10 @@ namespace PersistentWorlds.Patches
 
             var toInsert = new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Ldsfld,
-                    AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver")),
+                new CodeInstruction(OpCodes.Ldsfld, WorldLoadSaverField),
                 new CodeInstruction(OpCodes.Brfalse_S, label1),
-                new CodeInstruction(OpCodes.Ldsfld,
-                    AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver")),
-                new CodeInstruction(OpCodes.Ldfld,
-                    AccessTools.Field(typeof(PersistentWorldLoadSaver), "Status")),
+                new CodeInstruction(OpCodes.Ldsfld, WorldLoadSaverField),
+                new CodeInstruction(OpCodes.Ldfld, StatusField),
                 new CodeInstruction(OpCodes.Ldc_I4_2),
                 new CodeInstruction(OpCodes.Bne_Un_S, label2)
             };
@@ -46,10 +57,8 @@ namespace PersistentWorlds.Patches
             {
                 new CodeInstruction(OpCodes.Br_S, label3),
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldflda,
-                    AccessTools.Field(typeof(WorldPawns), "pawnsForcefullyKeptAsWorldPawns")),
-                new CodeInstruction(OpCodes.Call,
-                    AccessTools.Method(typeof(WorldPawns_ExposeData_Patch), "Load"))
+                new CodeInstruction(OpCodes.Ldflda, PawnsForcefullyKeptAsWorldPawnsField),
+                new CodeInstruction(OpCodes.Call, LoadMethod)
             };
 
             toInsert[1].labels.Add(label2);
@@ -108,5 +117,6 @@ namespace PersistentWorlds.Patches
                 
             Scribe.ExitNode();
         }
+        #endregion
     }
 }

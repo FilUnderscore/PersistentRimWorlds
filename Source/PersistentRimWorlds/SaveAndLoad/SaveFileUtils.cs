@@ -6,6 +6,7 @@ namespace PersistentWorlds
 {
     public static class SaveFileUtils
     {
+        #region Methods
         public static bool HasPossibleSameWorldName(ScrollableListItem[] items, string filePath)
         {
             var names = items.Select(item => item.Text).ToArray();
@@ -34,5 +35,6 @@ namespace PersistentWorlds
             
             return names.Any(name => worldName.EqualsIgnoreCase(name));
         }
+        #endregion
     }
 }

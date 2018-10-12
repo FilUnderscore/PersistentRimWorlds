@@ -7,6 +7,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(Game), "FinalizeInit")]
     public class Game_FinalizeInit_Patch
     {
+        #region Methods
         static void Postfix(Game __instance)
         {
             // Toggle colonies tab.
@@ -18,5 +19,6 @@ namespace PersistentWorlds.Patches
 
             PersistentWorldManager.WorldLoadSaver.Convert(__instance);
         }
+        #endregion
     }
 }

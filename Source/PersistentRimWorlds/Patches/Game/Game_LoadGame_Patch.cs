@@ -7,6 +7,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(Game), "LoadGame")]
     public class Game_LoadGame_Patch
     {
+        #region Methods
         static bool Prefix(Game __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
@@ -16,7 +17,7 @@ namespace PersistentWorlds.Patches
                 
             var persistentWorld = PersistentWorldManager.PersistentWorld;
                 
-            LongEventHandler.SetCurrentEventText("LoadingPersistentWorld".Translate());
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate());
                 
             // Unload.
             MemoryUtility.UnloadUnusedUnityAssets();
@@ -28,5 +29,6 @@ namespace PersistentWorlds.Patches
                 
             return false;
         }
+        #endregion
     }
 }

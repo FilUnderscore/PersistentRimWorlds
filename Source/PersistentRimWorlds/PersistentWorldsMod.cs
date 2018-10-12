@@ -14,9 +14,12 @@ namespace PersistentWorlds
     /// </summary>
     public sealed class PersistentWorldsMod : Mod
     {
+        #region Fields
         // Must be public or IL transpiler throws error of ldsfld NULL.
         public static Delegate MainMenuButtonDelegate = new Action(PatchMainMenu);
+        #endregion
         
+        #region Constructors
         /// <summary>
         /// Main mod constructor that initializes Harmony patches.
         /// </summary>
@@ -31,7 +34,9 @@ namespace PersistentWorlds
 
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Patches the button of "Persistent RimWorlds", more of a delegate called by "MainMenuButtonDelegate".
         /// </summary>
@@ -39,5 +44,6 @@ namespace PersistentWorlds
         {
             Find.WindowStack.Add(new Dialog_PersistentWorlds_Main());
         }
+        #endregion
     }
 }

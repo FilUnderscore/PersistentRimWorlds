@@ -8,6 +8,7 @@ namespace PersistentWorlds.Logic
     /// </summary>
     public class PersistentColony : IExposable
     {
+        #region Fields
         /// <summary>
         /// File info used to fetch information such as last write time.
         /// </summary>
@@ -22,7 +23,9 @@ namespace PersistentWorlds.Logic
         /// Main source of data for colony game information.
         /// </summary>
         public PersistentColonyGameData GameData = new PersistentColonyGameData();
+        #endregion
         
+        #region Methods
         /// <summary>
         /// Saving/loading of colony data.
         /// </summary>
@@ -49,5 +52,6 @@ namespace PersistentWorlds.Logic
 
             return persistentColony;
         }
+        #endregion
     }
 }

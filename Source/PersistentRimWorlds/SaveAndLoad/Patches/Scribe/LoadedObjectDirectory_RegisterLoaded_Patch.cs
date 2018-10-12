@@ -9,14 +9,18 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(LoadedObjectDirectory), "RegisterLoaded")]
     public class LoadedObjectDirectory_RegisterLoaded_Patch
     {
-        private static readonly FieldInfo allObjectsByLoadIDField =
+        #region Fields
+        private static readonly FieldInfo AllObjectsByLoadIdField =
             AccessTools.Field(typeof(LoadedObjectDirectory), "allObjectsByLoadID");
+        #endregion
         
+        #region Methods
         static bool Prefix(LoadedObjectDirectory __instance, ILoadReferenceable reffable)
         {
-            var allObjectsByLoadID = (Dictionary<string, ILoadReferenceable>) allObjectsByLoadIDField.GetValue(__instance);
+            var allObjectsByLoadID = (Dictionary<string, ILoadReferenceable>) AllObjectsByLoadIdField.GetValue(__instance);
 
             return !allObjectsByLoadID.ContainsKey(reffable.GetUniqueLoadID());
         }
+        #endregion
     }
 }

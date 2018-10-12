@@ -10,10 +10,13 @@ namespace PersistentWorlds
     /// </summary>
     public static class PersistentWorldManager
     {
+        #region Fields
         public static PersistentWorld PersistentWorld;
         public static PersistentWorldLoadSaver WorldLoadSaver;
         public static ReferenceTable ReferenceTable = new ReferenceTable();
-
+        #endregion
+        
+        #region Methods
         public static bool Active()
         {
             return PersistentWorld != null && WorldLoadSaver != null && PersistentWorld.Colony != null;
@@ -36,5 +39,6 @@ namespace PersistentWorlds
             
             Scribe.ForceStop();
         }
+        #endregion
     }
 }

@@ -9,6 +9,7 @@ namespace PersistentWorlds.Patches.UI
     [HarmonyPatch(typeof(Page_SelectStartingSite), "PreOpen")]
     public class Page_SelectLandingSite_Patch
     {
+        #region Methods
         static void Prefix(Page_SelectStartingSite __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
@@ -32,5 +33,6 @@ namespace PersistentWorlds.Patches.UI
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_FileList));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_ColonySelection));
         }
+        #endregion
     }
 }

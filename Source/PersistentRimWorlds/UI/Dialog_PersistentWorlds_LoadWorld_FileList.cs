@@ -16,12 +16,17 @@ namespace PersistentWorlds.UI
 {
     public sealed class Dialog_PersistentWorlds_LoadWorld_FileList : Window
     {
+        #region Fields
         private Vector2 scrollPosition = Vector2.zero;
         
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
+        #endregion
         
+        #region Properties
         public override Vector2 InitialSize => new Vector2(600f, 700f);
-
+        #endregion
+        
+        #region Constructors
         public Dialog_PersistentWorlds_LoadWorld_FileList()
         {
             this.LoadWorldsAsItems();
@@ -33,7 +38,9 @@ namespace PersistentWorlds.UI
             this.absorbInputAroundWindow = true;
             this.closeOnAccept = false;
         }
+        #endregion
 
+        #region Methods
         private void LoadWorldsAsItems()
         {
             // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
@@ -115,5 +122,6 @@ namespace PersistentWorlds.UI
         {
             ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, ref this.items);
         }
+        #endregion
     }
 }

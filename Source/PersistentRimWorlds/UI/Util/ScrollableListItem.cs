@@ -6,6 +6,7 @@ namespace PersistentWorlds.UI
 {
     public class ScrollableListItem
     {
+        #region Fields
         public string Text;
         
         public string ActionButtonText;
@@ -17,5 +18,6 @@ namespace PersistentWorlds.UI
         public Texture2D texture;
         
         public readonly List<ScrollableListItemInfo> Info = new List<ScrollableListItemInfo>();
+        #endregion
     }
 }

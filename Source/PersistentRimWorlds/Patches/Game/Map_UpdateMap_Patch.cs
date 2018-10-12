@@ -6,6 +6,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(Map), "MapUpdate")]
     public class Map_MapUpdate_Patch
     {
+        #region Methods
         static bool Prefix(Map __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
@@ -15,5 +16,6 @@ namespace PersistentWorlds.Patches
 
             return PersistentWorldManager.PersistentWorld.Colony == null || PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Contains(__instance.Tile);
         }
+        #endregion
     }
 }

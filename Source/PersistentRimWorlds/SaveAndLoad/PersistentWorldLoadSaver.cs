@@ -13,6 +13,7 @@ namespace PersistentWorlds
 {
     public sealed class PersistentWorldLoadSaver
     {
+        #region Fields
         public static readonly string SaveDir =
             (string) AccessTools.Method(typeof(GenFilePaths), "get_SavedGamesFolderPath", new Type[0]).Invoke(null, new object[0]);
 
@@ -30,7 +31,9 @@ namespace PersistentWorlds
         
         public PersistentWorldLoadStatus Status = PersistentWorldLoadStatus.Uninitialized;
         public FileInfo currentFile;
+        #endregion
         
+        #region Enums
         public enum PersistentWorldLoadStatus
         {
             Uninitialized,
@@ -41,12 +44,16 @@ namespace PersistentWorlds
             Ingame,
             Saving
         }
+        #endregion
         
+        #region Constructors
         public PersistentWorldLoadSaver(string worldFolderPath)
         {
             this.ConfigurePaths(worldFolderPath);
         }
+        #endregion
 
+        #region Methods
         private void ConfigurePaths(string worldFolderPath)
         {
             this.worldFolderPath = worldFolderPath;
@@ -362,5 +369,6 @@ namespace PersistentWorlds
         {
             return this.worldFolderPath;
         }
+        #endregion
     }
 }

@@ -13,13 +13,18 @@ namespace PersistentWorlds.UI
     [StaticConstructorOnStartup]
     public sealed class MainTabWindow_Colonies : MainTabWindow
     {
+        #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
         private Vector2 scrollPosition = Vector2.zero;
         private List<ScrollableListItem> items;
-
+        #endregion
+        
+        #region Properties
         public override Vector2 RequestedTabSize => new Vector2(Verse.UI.screenWidth * 0.5f, Verse.UI.screenHeight / 3.5f);
-
+        #endregion
+        
+        #region Methods
         public override void DoWindowContents(Rect inRect)
         {   
             ScrollableListUI.DrawList(ref inRect, ref scrollPosition, ref this.items);
@@ -135,5 +140,6 @@ namespace PersistentWorlds.UI
             
             Find.ColonistBar.MarkColonistsDirty();
         }
+        #endregion
     }
 }

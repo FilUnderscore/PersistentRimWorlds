@@ -8,6 +8,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(MapInfo), "ExposeData")]
     public class MapInfo_ExposeData_Patch
     {
+        #region Methods
         static bool Prefix(MapInfo __instance)
         {
             /*
@@ -40,5 +41,6 @@ namespace PersistentWorlds.Patches
 
             return true;
         }
+        #endregion
     }
 }

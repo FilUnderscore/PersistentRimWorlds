@@ -9,6 +9,7 @@ namespace PersistentWorlds.SaveAndLoad
 {
     public sealed class ReferenceTable
     {
+        #region Fields
         private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
         
         /// <summary>
@@ -27,9 +28,13 @@ namespace PersistentWorlds.SaveAndLoad
         /// </summary>
         /// <returns></returns>
         private Dictionary<string, ReferenceEntry> referenceEntryDict = new Dictionary<string, ReferenceEntry>();
-
+        #endregion
+        
+        #region Properties
         private static string ReferenceTableFileMapPath => PersistentWorldManager.WorldLoadSaver.GetWorldFolder() + "/references.reftable";
-
+        #endregion
+        
+        #region Methods
         public void ClearReferences()
         {
             referenceEntryDict.Clear();
@@ -143,7 +148,9 @@ namespace PersistentWorlds.SaveAndLoad
             
             return fileName;
         }
+        #endregion
 
+        #region Classes
         private sealed class ReferenceEntry
         {
             public string fileLocation; // E.g. file path
@@ -190,5 +197,6 @@ namespace PersistentWorlds.SaveAndLoad
                 this.uniqueLoadIDRequested = uniqueLoadIdRequested;
             }
         }
+        #endregion
     }
 }

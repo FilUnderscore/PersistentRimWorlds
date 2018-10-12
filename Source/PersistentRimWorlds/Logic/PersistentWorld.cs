@@ -10,6 +10,7 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorld
     {
+        #region Fields
         // Game.World is accessed.
         public Game Game = new Game();
 
@@ -19,13 +20,17 @@ namespace PersistentWorlds.Logic
         // Stores map tile ids.
         public Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
-
+        #endregion
+        
+        #region Constructors
         public PersistentWorld()
         {
             Current.Game = this.Game;
             this.Game.World = new RimWorld.Planet.World();
         }
+        #endregion
 
+        #region Methods
         public void LoadWorld()
         {
             Current.Game = this.Game;
@@ -359,5 +364,6 @@ namespace PersistentWorlds.Logic
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
         }
+        #endregion
     }
 }

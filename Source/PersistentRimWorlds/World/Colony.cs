@@ -12,13 +12,16 @@ namespace PersistentWorlds.World
     /// </summary>
     public sealed class Colony : MapParent
     {
+        #region Fields
         // TODO: Implement commands.
         //public static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
         public string Name;
         public PersistentColonyData PersistentColonyData = new PersistentColonyData();
         private Material cachedMat;
+        #endregion
         
+        #region Properties
         /// <summary>
         /// Material for colonies, such as color properties that are set here depending on colony data.
         /// </summary>
@@ -37,7 +40,9 @@ namespace PersistentWorlds.World
         public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
 
         public override string Label => Name ?? base.Label;
+        #endregion
         
+        #region Methods
         /// <summary>
         /// Saving/loading of colony world object instance.
         /// </summary>
@@ -73,5 +78,6 @@ namespace PersistentWorlds.World
         {
             return base.GetInspectTabs();
         }
+        #endregion
     }
 }

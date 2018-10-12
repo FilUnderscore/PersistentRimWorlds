@@ -7,6 +7,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_GenerateMap_Patch
     {
+        #region Methods
         static void Postfix(Map __result)
         {
             if (!PersistentWorldManager.Active())
@@ -29,5 +30,6 @@ namespace PersistentWorlds.Patches
                 }
             }
         }
+        #endregion
     }
 }

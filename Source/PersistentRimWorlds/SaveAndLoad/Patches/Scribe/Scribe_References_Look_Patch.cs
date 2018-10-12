@@ -15,6 +15,7 @@ namespace PersistentWorlds.Patches
         //private static readonly MethodInfo GetReferenceMethod = AccessTools.Method(typeof(ReferenceSaveLoader),
         //    "GetReference", new[] {typeof(string)});
         
+        #region Methods
         static bool Prefix(ref ILoadReferenceable refee, string label)
         {
             if ((!(refee is Pawn) && !(refee is WorldObject) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
@@ -63,5 +64,6 @@ namespace PersistentWorlds.Patches
             return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod)
                 .MakeGenericMethod(typeof(ILoadReferenceable));
         }
+        #endregion
     }
 }

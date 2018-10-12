@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using RimWorld;
@@ -14,6 +15,14 @@ namespace PersistentWorlds.Patches.UI
     [HarmonyPatch(typeof(Dialog_AdvancedGameConfig), "DoWindowContents")]
     public class Dialog_AdvancedGameConfig_DoWindowContents_Patch
     {
+        #region Fields
+        private static readonly MethodInfo DisposeMethod = AccessTools.Method(typeof(IDisposable), "Dispose");
+
+        private static readonly MethodInfo
+            NotNullMethod = AccessTools.Method(typeof(PersistentWorldManager), "NotNull");
+        #endregion
+        
+        #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
         {
             var codes = new List<CodeInstruction>(instr);
@@ -25,12 +34,12 @@ namespace PersistentWorlds.Patches.UI
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Endfinally || codes[i - 1].opcode != OpCodes.Callvirt ||
-                    codes[i - 1].operand != AccessTools.Method(typeof(IDisposable), "Dispose")) continue;
+                    codes[i - 1].operand != DisposeMethod) continue;
 
                 var codesToInsert = new List<CodeInstruction>
                 {
                     new CodeInstruction(OpCodes.Call,
-                        AccessTools.Method(typeof(PersistentWorldManager), "NotNull")),
+                        NotNullMethod),
                     new CodeInstruction(OpCodes.Brtrue_S, label1)
                 };
 
@@ -41,5 +50,6 @@ namespace PersistentWorlds.Patches.UI
             
             return codes.AsEnumerable();
         }
+        #endregion
     }
 }

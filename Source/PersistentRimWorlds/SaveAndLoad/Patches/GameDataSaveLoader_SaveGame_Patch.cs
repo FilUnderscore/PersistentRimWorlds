@@ -6,6 +6,7 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame")]
     public class GameDataSaveLoader_SaveGame_Patch
     {
+        #region Methods
         // TODO: Disallow saving through normal save menu.
         static bool Prefix(string fileName)
         {
@@ -33,5 +34,6 @@ namespace PersistentWorlds.Patches
                 
             return false;
         }
+        #endregion
     }
 }

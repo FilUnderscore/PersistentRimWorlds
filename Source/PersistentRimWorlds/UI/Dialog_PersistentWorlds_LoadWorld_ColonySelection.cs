@@ -11,14 +11,19 @@ namespace PersistentWorlds.UI
     [StaticConstructorOnStartup]
     public sealed class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
     {        
+        #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
-        
-        public override Vector2 InitialSize => new Vector2(600f, 700f);
 
         private Vector2 scrollPosition = Vector2.zero;
+        #endregion
         
+        #region Properties
+        public override Vector2 InitialSize => new Vector2(600f, 700f);
+        #endregion
+        
+        #region Constructors
         public Dialog_PersistentWorlds_LoadWorld_ColonySelection()
         {   
             this.LoadColoniesAsItems();
@@ -29,7 +34,9 @@ namespace PersistentWorlds.UI
             this.absorbInputAroundWindow = true;
             this.closeOnAccept = false;
         }
-
+        #endregion
+        
+        #region Methods
         public override void PreOpen()
         {
             this.SetInitialSizeAndPosition();
@@ -106,5 +113,6 @@ namespace PersistentWorlds.UI
             
             GUI.EndGroup();
         }
+        #endregion
     }
 }
