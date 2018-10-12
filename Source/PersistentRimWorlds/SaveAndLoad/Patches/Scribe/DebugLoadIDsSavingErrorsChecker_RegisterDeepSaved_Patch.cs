@@ -16,7 +16,7 @@ namespace PersistentWorlds.Patches
             
             if (obj != null && obj is ILoadReferenceable referenceable)
             {
-                PersistentWorldManager.ReferenceTable.AddReference(referenceable);
+                PersistentWorldManager.ReferenceTable.AddReference(referenceable, label);
             }
 
             return true;

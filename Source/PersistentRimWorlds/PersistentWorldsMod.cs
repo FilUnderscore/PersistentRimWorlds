@@ -30,6 +30,8 @@ namespace PersistentWorlds
 
 #if DEBUG
             HarmonyInstance.DEBUG = true;
+            
+            PersistentWorlds.Debug.FileLog.StartLoggingToFile("debug_log.txt");
 #endif
 
             harmony.PatchAll(Assembly.GetExecutingAssembly());

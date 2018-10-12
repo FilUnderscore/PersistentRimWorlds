@@ -66,10 +66,10 @@ namespace PersistentWorlds.SaveAndLoad
             }
         }
 
-        public void AddReference(ILoadReferenceable reference)
+        public void AddReference(ILoadReferenceable reference, string label)
         {
             var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
-            var pathRelToParent = (string) curPathField.GetValue(Scribe.saver);
+            var pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
             
             var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent);
             referenceEntry.LoadReference(reference);
@@ -143,8 +143,6 @@ namespace PersistentWorlds.SaveAndLoad
             // Saves space in reftable file by cropping unneeded file path info.
             fileName = fileName.Substring(fileName.IndexOf(indexString, StringComparison.Ordinal) + indexString.Length);
             fileName = fileName.Substring(fileName.IndexOf("\\", StringComparison.Ordinal) + 1);
-
-            Log.Message("FileName: " + fileName);
             
             return fileName;
         }
