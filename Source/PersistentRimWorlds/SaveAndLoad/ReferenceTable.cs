@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Harmony;
 using Verse;
 
 namespace PersistentWorlds.SaveAndLoad
 {
     public sealed class ReferenceTable
     {
+        private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
+        
         /// <summary>
         /// Stores requested references for cross-references state.
         ///
@@ -26,6 +30,12 @@ namespace PersistentWorlds.SaveAndLoad
 
         private static string ReferenceTableFileMapPath => PersistentWorldManager.WorldLoadSaver.GetWorldFolder() + "/references.reftable";
 
+        public void ClearReferences()
+        {
+            referenceEntryDict.Clear();
+            requestedReferences.Clear();
+        }
+        
         public void LoadReferences()
         {
             using (var reader = new StreamReader(ReferenceTableFileMapPath))
@@ -53,15 +63,15 @@ namespace PersistentWorlds.SaveAndLoad
 
         public void AddReference(ILoadReferenceable reference)
         {
-            var currentFile = PersistentWorldManager.WorldLoadSaver.currentFile.FullName;
-            var pathRelToParent = Scribe.loader.curPathRelToParent;
+            var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
+            var pathRelToParent = (string) curPathField.GetValue(Scribe.saver);
             
             var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent);
             referenceEntry.LoadReference(reference);
 
             if (referenceEntryDict.ContainsKey(referenceEntry.uniqueLoadID))
             {
-                Log.Error("There is already a reference entry with the unique load ID \"" + referenceEntry.uniqueLoadID + "\"!");
+                //Log.Error("There is already a reference entry with the unique load ID \"" + referenceEntry.uniqueLoadID + "\"!");
                 return;
             }
 
@@ -92,7 +102,7 @@ namespace PersistentWorlds.SaveAndLoad
                 return;
             }
             
-            var currentFile = PersistentWorldManager.WorldLoadSaver.currentFile.FullName;
+            var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
             if (requestedReferences.ContainsKey(currentFile))
@@ -107,7 +117,7 @@ namespace PersistentWorlds.SaveAndLoad
 
         public ILoadReferenceable ResolveReference(string label)
         {
-            var currentFile = PersistentWorldManager.WorldLoadSaver.currentFile.FullName;
+            var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
             foreach (var requestedReference in requestedReferences[currentFile])
@@ -119,6 +129,19 @@ namespace PersistentWorlds.SaveAndLoad
             }
 
             throw new NullReferenceException("Could not resolve reference at " + currentFile + ":" + pathRelToParent);
+        }
+
+        private string CropFileName(string fileName)
+        {
+            const string indexString = "Saves\\";
+            
+            // Saves space in reftable file by cropping unneeded file path info.
+            fileName = fileName.Substring(fileName.IndexOf(indexString, StringComparison.Ordinal) + indexString.Length);
+            fileName = fileName.Substring(fileName.IndexOf("\\", StringComparison.Ordinal) + 1);
+
+            Log.Message("FileName: " + fileName);
+            
+            return fileName;
         }
 
         private sealed class ReferenceEntry

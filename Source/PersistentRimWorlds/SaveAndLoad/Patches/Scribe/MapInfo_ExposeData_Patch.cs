@@ -10,6 +10,7 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix(MapInfo __instance)
         {
+            /*
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
             {
@@ -35,6 +36,9 @@ namespace PersistentWorlds.Patches
             }
 
             return false;
+            */
+
+            return true;
         }
     }
 }

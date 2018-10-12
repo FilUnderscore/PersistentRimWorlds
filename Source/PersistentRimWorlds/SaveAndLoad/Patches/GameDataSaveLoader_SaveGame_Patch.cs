@@ -17,7 +17,12 @@ namespace PersistentWorlds.Patches
             {
                 Log.Message((PersistentWorldManager.PersistentWorld == null).ToString());
                 Log.Message((PersistentWorldManager.WorldLoadSaver == null).ToString());
-                Log.Message(PersistentWorldManager.WorldLoadSaver.Status.ToString());
+                
+                if (PersistentWorldManager.WorldLoadSaver != null)
+                {
+                    Log.Message(PersistentWorldManager.WorldLoadSaver.Status.ToString());
+                }
+                
                 Log.Message("Calling true?");
                 return true;
             }

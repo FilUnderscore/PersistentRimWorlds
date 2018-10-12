@@ -12,8 +12,8 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch]
     public class Scribe_References_Look_Patch
     {
-        private static readonly MethodInfo GetReferenceMethod = AccessTools.Method(typeof(ReferenceSaveLoader),
-            "GetReference", new[] {typeof(string)});
+        //private static readonly MethodInfo GetReferenceMethod = AccessTools.Method(typeof(ReferenceSaveLoader),
+        //    "GetReference", new[] {typeof(string)});
         
         static bool Prefix(ref ILoadReferenceable refee, string label)
         {
@@ -27,13 +27,14 @@ namespace PersistentWorlds.Patches
             switch (Scribe.mode)
             {
                 case LoadSaveMode.Saving:
-                    ReferenceSaveLoader.SaveReferenceFile(exposable);
+                    //ReferenceSaveLoader.SaveReferenceFile(exposable);
+                    //PersistentWorldManager.ReferenceTable.AddReference((ILoadReferenceable) exposable);
                     
                     Scribe.saver.WriteElement(label, refee.GetUniqueLoadID());
                     break;
                 case LoadSaveMode.LoadingVars:
                     var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
-                    var targetLoadID = xmlNode == null ? label : xmlNode.InnerText;
+                    var targetLoadID = xmlNode?.InnerText;
                     
 #if DEBUG
                     // Reference Debugging.
@@ -43,10 +44,14 @@ namespace PersistentWorlds.Patches
 #endif
                     
                     // Prevent default(T) being null in generic method.
-                    var originalType = exposable.GetType();
-                    var genericMethod = GetReferenceMethod.MakeGenericMethod(originalType);
-                    refee = (ILoadReferenceable) genericMethod.Invoke(null, new object[] { targetLoadID });
+                    //var originalType = exposable.GetType();
+                    //var genericMethod = GetReferenceMethod.MakeGenericMethod(originalType);
+                    //refee = (ILoadReferenceable) genericMethod.Invoke(null, new object[] { targetLoadID });
+                    PersistentWorldManager.ReferenceTable.RequestReference(label, targetLoadID);
                     
+                    break;
+                case LoadSaveMode.ResolvingCrossRefs:
+                    refee = PersistentWorldManager.ReferenceTable.ResolveReference(label);
                     break;
             }
             

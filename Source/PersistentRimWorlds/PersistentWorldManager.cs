@@ -12,6 +12,7 @@ namespace PersistentWorlds
     {
         public static PersistentWorld PersistentWorld;
         public static PersistentWorldLoadSaver WorldLoadSaver;
+        public static ReferenceTable ReferenceTable = new ReferenceTable();
 
         public static bool Active()
         {
@@ -31,7 +32,7 @@ namespace PersistentWorlds
             
             ScribeVars.Clear();
             ScribeMultiLoader.Clear();
-            ReferenceSaveLoader.ClearReferences();
+            ReferenceTable.ClearReferences();
             
             Scribe.ForceStop();
         }
