@@ -29,6 +29,7 @@ namespace PersistentWorlds.Patches
         private static readonly MethodInfo LoadMethod = AccessTools.Method(typeof(WorldPawns_ExposeData_Patch), "Load");
         #endregion
         
+        /*
         #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr,
             ILGenerator ilGenerator)
@@ -118,5 +119,6 @@ namespace PersistentWorlds.Patches
             Scribe.ExitNode();
         }
         #endregion
+        */
     }
 }

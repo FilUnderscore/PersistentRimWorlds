@@ -14,15 +14,9 @@ namespace PersistentWorlds.Patches
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
                 return true;
 
-            ScribeVars.mode = Scribe.mode;
-            ScribeVars.curParent = Scribe.loader.curParent;
-            ScribeVars.curXmlParent = Scribe.loader.curXmlParent;
-            ScribeVars.curPathRelToParent = Scribe.loader.curPathRelToParent;
+            ScribeVars.Set();
             
-            Scribe.mode = LoadSaveMode.Inactive;
-            Scribe.loader.curParent = null;
-            Scribe.loader.curXmlParent = null;
-            Scribe.loader.curPathRelToParent = null;
+            ScribeVars.TrickScribe();
             
             return false;
         }

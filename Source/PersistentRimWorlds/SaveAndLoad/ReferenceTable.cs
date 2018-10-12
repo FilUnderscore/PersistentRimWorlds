@@ -50,6 +50,7 @@ namespace PersistentWorlds.SaveAndLoad
             requestedReferences.Clear();
         }
         
+        /*
         public void LoadReferences(string filePath)
         {
             // TODO: Check for compression header.
@@ -71,6 +72,26 @@ namespace PersistentWorlds.SaveAndLoad
             else
             {
                 throw new NotImplementedException();
+            }
+        }
+        */
+
+        public void LoadReferences()
+        {
+            if (!compress)
+            {
+                using (var reader = new StreamReader(ReferenceTableFileMapPath))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+
+                        if (line == null) continue;
+                        
+                        var referenceEntry = ReferenceEntry.FromString(line);
+                        
+                    }
+                }
             }
         }
 
@@ -119,17 +140,29 @@ namespace PersistentWorlds.SaveAndLoad
         public void AddReference(ILoadReferenceable reference, string label)
         {
             var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
+            var pathRelToParent = "";
             
-            var pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
 
-            if (label == "li")
-            {
-                pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetIndexInList(pathRelToParent, label) + "]";
+                if (label == "li")
+                {
+                    pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetIndexInList(pathRelToParent, label) + "]";
+                }
+                else if (label == "thing")
+                {
+                    pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetThingIndex() + "]";
+                }
             }
-            else if (label == "thing")
+            else if(Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                // TODO: ...
-                pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetThingIndex() + "]";
+                // TODO: Do same thing with loading like saving.
+                pathRelToParent = Scribe.loader.curPathRelToParent;
+            }
+            else
+            {
+                throw new InvalidProgramException("Invalid state.");
             }
 
             var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent);
