@@ -39,6 +39,12 @@ namespace PersistentWorlds.Patches
                     var targetLoadID = xmlNode?.InnerText;
                     
                     PersistentWorldManager.ReferenceTable.RequestReference(label, targetLoadID);
+
+                    if (refee != null)
+                    {
+                        Scribe.loader.crossRefs.loadIDs.RegisterLoadIDReadFromXml(targetLoadID, refee.GetType(), label);
+                    }
+
                     break;
                 case LoadSaveMode.ResolvingCrossRefs:
                     refee = PersistentWorldManager.ReferenceTable.ResolveReference(label);
