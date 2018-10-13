@@ -74,9 +74,9 @@ namespace PersistentWorlds.UI
                             PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
                             PersistentWorldManager.PersistentWorld.Colonies[index] = colony;
                             
-                            PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
-                            
                             PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+
+                            PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
                             UnloadMapReferences(colony);
                             
