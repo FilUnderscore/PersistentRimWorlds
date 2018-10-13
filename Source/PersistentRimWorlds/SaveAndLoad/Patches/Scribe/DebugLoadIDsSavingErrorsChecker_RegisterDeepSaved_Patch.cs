@@ -22,7 +22,7 @@ namespace PersistentWorlds.Patches
 
             if (obj == null || !(obj is ILoadReferenceable referenceable)) return true;
 
-            if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadID(referenceable.GetUniqueLoadID()))
+            if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
             {
                 PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, label);
             }

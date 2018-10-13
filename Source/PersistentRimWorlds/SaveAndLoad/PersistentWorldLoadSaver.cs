@@ -158,6 +158,7 @@ namespace PersistentWorlds
             Scribe_Deep.Look(ref colony, "colony");
 
             PersistentWorldManager.PersistentWorld.Colony = colony;
+            colony.FileInfo = file;
             
             Log.Message("Loaded colony.");
         }
@@ -306,8 +307,10 @@ namespace PersistentWorlds
                                      sameNames[colony1.ColonyData.ColonyFaction.Name].ToString() +
                                      colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
 
-                currentFile = new FileInfo(colonySaveFile);
-                colony1.FileInfo = currentFile;
+                var colonyFile = new FileInfo(colonySaveFile);
+                
+                currentFile = colonyFile;
+                colony.FileInfo = colonyFile;
                 
                 if (PersistentWorldManager.PersistentWorld.Colony != colony) continue;
 
