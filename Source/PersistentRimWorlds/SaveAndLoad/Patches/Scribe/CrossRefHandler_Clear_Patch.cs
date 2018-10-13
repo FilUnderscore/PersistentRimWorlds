@@ -9,9 +9,9 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix(CrossRefHandler __instance, bool errorIfNotEmpty)
         {
+            // TODO: Check for any refs that are still being used and restore them.
             
-            
-            return false;
+            return true;
         }
     }
 }
