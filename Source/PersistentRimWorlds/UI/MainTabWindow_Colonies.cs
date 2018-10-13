@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Harmony;
 using PersistentWorlds.Logic;
 using PersistentWorlds.World;
@@ -16,6 +17,9 @@ namespace PersistentWorlds.UI
         #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
+        private static readonly FieldInfo reservedDestinationsField =
+            AccessTools.Field(typeof(PawnDestinationReservationManager), "reservedDestinations");
+        
         private Vector2 scrollPosition = Vector2.zero;
         private List<ScrollableListItem> items;
         #endregion
@@ -67,13 +71,24 @@ namespace PersistentWorlds.UI
 
                         LongEventHandler.QueueLongEvent(delegate
                         {
+                            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+
+                            if (colony == null)
+                            {
+                                Log.Error("Colony is null. Be warned.");
+                            }
+                            else
+                            {
+                                Log.Warning("Colony is not null.");
+                            }
+                            
                             PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
                             PersistentWorldManager.PersistentWorld.Colonies[index] = colony;
                             
                             PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
-                            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
-                                
+                            UnloadMapReferences(colony);
+                            
                             LoadMaps(colony);
                             Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
                             UnloadMaps(colony);    
@@ -89,6 +104,16 @@ namespace PersistentWorlds.UI
             }
         }
 
+        private void UnloadMapReferences(PersistentColony colony)
+        {
+            foreach (var map in Current.Game.Maps)
+            {
+                if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(colony) && PersistentWorldManager.PersistentWorld.Maps[colony].Contains(map.Tile)) continue;
+                
+                PersistentWorldManager.ReferenceTable.ClearReferencesFor("\\Saves\\WorldHere\\Maps\\" + map.Tile + ".pwmf");
+            }
+        }
+
         private void LoadMaps(PersistentColony colony)
         {
             Current.ProgramState = ProgramState.MapInitializing;
@@ -98,6 +123,26 @@ namespace PersistentWorlds.UI
             foreach (var map in maps)
             {
                 Current.Game.Maps.Add(map);
+
+                /*
+                 * Register in case as to not cause problems.
+                 */
+                
+                var reservedDestinations =
+                    (Dictionary<Faction, PawnDestinationReservationManager.PawnDestinationSet>)
+                    reservedDestinationsField.GetValue(map.pawnDestinationReservationManager);
+
+                foreach (var faction in Find.FactionManager.AllFactions)
+                {
+                    if (!reservedDestinations.ContainsKey(faction))
+                    {
+                        map.pawnDestinationReservationManager.RegisterFaction(faction);
+                    }
+                }
+                
+                /*
+                 * Regenerate map and load.
+                 */
                 
                 map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();

@@ -44,14 +44,23 @@ namespace PersistentWorlds.Patches
             if (Scribe.mode != LoadSaveMode.LoadingVars || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting) return;
 
             if (s != null && s is ILoadReferenceable referenceable)
-            {                
+            {
+                // Decreases load times.
+                if (referenceable is Thing && !(referenceable is Pawn) && Scribe.loader.curXmlParent.HasChildNodes && Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
+                {
+                    return;
+                }
+                
                 var path = FindParent(Scribe.loader.curXmlParent);
                 Debug.FileLog.Log("Path: " + path);
 
                 var pathToLoad = "";
+                var label = "";
                 
                 if (Scribe.loader.curXmlParent.HasChildNodes)
                 {
+                    label = Scribe.loader.curXmlParent.ChildNodes[0].Name;
+                    
                     var currentListIndex = Regex.Matches(path + "/", "\\/li\\[(\\d+)\\]\\/").Count;
 
                     if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
@@ -94,7 +103,7 @@ namespace PersistentWorlds.Patches
                 
                 Debug.FileLog.Log("Adding reference: " + pathToLoad);
                 Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
-                //PersistentWorldManager.ReferenceTable.AddReference(referenceable, pathToLoad);
+                
                 PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, pathToLoad);
             }
         }

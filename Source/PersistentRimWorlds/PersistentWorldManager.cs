@@ -35,7 +35,7 @@ namespace PersistentWorlds
             
             ScribeVars.Clear();
             ScribeMultiLoader.Clear();
-            //ReferenceTable.ClearReferences();
+            ReferenceTable.ClearReferences();
             
             Scribe.ForceStop();
         }
