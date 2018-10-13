@@ -91,7 +91,7 @@ namespace PersistentWorlds.SaveAndLoad
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
             var request = new ReferenceRequest(uniqueLoadID, label, Scribe.loader.curParent);
-
+            
             requestedReferences.Add(request);
         }
 
@@ -100,12 +100,16 @@ namespace PersistentWorlds.SaveAndLoad
             var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
-            foreach (var requestedReference in requestedReferences)
+            for (var i = 0; i < requestedReferences.Count; i++)
             {
+                var requestedReference = requestedReferences[i];
+                
                 var flag = requestedReference.Label == label &&
                            Equals(requestedReference.Parent, Scribe.loader.curParent);
 
                 if (!flag) continue;
+
+                requestedReferences.Remove(requestedReference);
                 
                 return requestedReference.LoadIDRequested != null && references.ContainsKey(requestedReference.LoadIDRequested) ? references[requestedReference.LoadIDRequested].Referenceable : null;
             }
@@ -117,6 +121,21 @@ namespace PersistentWorlds.SaveAndLoad
         {
             references.Clear();
             requestedReferences.Clear();
+        }
+
+        public void ClearReferencesFor(string filePath)
+        {
+            var file = GetCroppedFileName(filePath);
+            
+            for(var i = 0; i < references.Count; i++)
+            {
+                var reference = references.ElementAt(i);
+                
+                if (reference.Value.PathOfFileContainingReference == file)
+                {
+                    references.Remove(reference.Key);
+                }
+            }
         }
         
 #if DEBUG

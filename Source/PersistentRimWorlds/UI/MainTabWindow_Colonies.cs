@@ -73,7 +73,9 @@ namespace PersistentWorlds.UI
                             PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
                             PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
-                                
+
+                            UnloadMapReferences(colony);
+                            
                             LoadMaps(colony);
                             Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
                             UnloadMaps(colony);    
@@ -86,6 +88,16 @@ namespace PersistentWorlds.UI
                 }
                 
                 this.items.Add(item);
+            }
+        }
+
+        private void UnloadMapReferences(PersistentColony colony)
+        {
+            foreach (var map in Current.Game.Maps)
+            {
+                if (PersistentWorldManager.PersistentWorld.Maps[colony].Contains(map.Tile)) continue;
+                
+                PersistentWorldManager.ReferenceTable.ClearReferencesFor("\\Saves\\WorldHere\\Maps\\" + map.Tile + ".pwmf");
             }
         }
 

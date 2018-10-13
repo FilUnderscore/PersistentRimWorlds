@@ -49,9 +49,12 @@ namespace PersistentWorlds.Patches
                 Debug.FileLog.Log("Path: " + path);
 
                 var pathToLoad = "";
+                var label = "";
                 
                 if (Scribe.loader.curXmlParent.HasChildNodes)
                 {
+                    label = Scribe.loader.curXmlParent.ChildNodes[0].Name;
+                    
                     var currentListIndex = Regex.Matches(path + "/", "\\/li\\[(\\d+)\\]\\/").Count;
 
                     if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
@@ -94,7 +97,7 @@ namespace PersistentWorlds.Patches
                 
                 Debug.FileLog.Log("Adding reference: " + pathToLoad);
                 Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
-                //PersistentWorldManager.ReferenceTable.AddReference(referenceable, pathToLoad);
+                
                 PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, pathToLoad);
             }
         }
