@@ -8,6 +8,7 @@ namespace PersistentWorlds.Logic
 {
     public static class WorldObjectSameIDMaker
     {
+        #region Methods
         public static WorldObject MakeWorldObject(WorldObjectDef def, int id)
         {
             var instance = (WorldObject) Activator.CreateInstance(def.worldObjectClass);
@@ -19,5 +20,6 @@ namespace PersistentWorlds.Logic
             
             return instance;
         }
+        #endregion
     }
 }
