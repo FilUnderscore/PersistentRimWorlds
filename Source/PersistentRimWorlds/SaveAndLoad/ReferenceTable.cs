@@ -12,6 +12,12 @@ namespace PersistentWorlds.SaveAndLoad
     {
         private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
 
+        private static readonly FieldInfo loadedObjectDirectoryField =
+            AccessTools.Field(typeof(CrossRefHandler), "loadedObjectDirectory");
+
+        private static readonly FieldInfo allObjectsByLoadIDField =
+            AccessTools.Field(typeof(LoadedObjectDirectory), "allObjectsByLoadID");
+        
         /// <summary>
         /// Stores requested references for cross-references state.
         ///
@@ -87,9 +93,6 @@ namespace PersistentWorlds.SaveAndLoad
                 throw new InvalidProgramException("RequestReference called when Scribe.mode != LoadingVars.");
             }
 
-            var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
-            var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
-
             var request = new ReferenceRequest(uniqueLoadID, label, Scribe.loader.curParent);
             
             requestedReferences.Add(request);
@@ -97,9 +100,6 @@ namespace PersistentWorlds.SaveAndLoad
 
         public ILoadReferenceable ResolveReference(string label)
         {
-            var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
-            var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
-
             for (var i = 0; i < requestedReferences.Count; i++)
             {
                 var requestedReference = requestedReferences[i];
@@ -117,6 +117,11 @@ namespace PersistentWorlds.SaveAndLoad
             throw new NullReferenceException("Reference could not be resolved. (label=" + label + ", curParent=" + Scribe.loader.curParent + ", curPathRelToParent=" + Scribe.loader.curPathRelToParent + ")");
         }
 
+        public bool ContainsReferenceWithLoadID(string uniqueLoadID)
+        {
+            return references.ContainsKey(uniqueLoadID);
+        }
+
         public void ClearReferences()
         {
             references.Clear();
@@ -125,7 +130,16 @@ namespace PersistentWorlds.SaveAndLoad
 
         public void ClearReferencesFor(string filePath)
         {
+            if (Scribe.mode != LoadSaveMode.LoadingVars)
+            {
+                throw new InvalidProgramException("ClearReferencesFor(string): Invalid program state. Scribe.mode != LoadingVars.");
+            }
+            
             var file = GetCroppedFileName(filePath);
+
+            var loadedObjectDirectory = loadedObjectDirectoryField.GetValue(Scribe.loader.crossRefs);
+            var allObjectsByLoadIDDict =
+                (Dictionary<string, ILoadReferenceable>) allObjectsByLoadIDField.GetValue(loadedObjectDirectory);
             
             for(var i = 0; i < references.Count; i++)
             {
@@ -134,6 +148,11 @@ namespace PersistentWorlds.SaveAndLoad
                 if (reference.Value.PathOfFileContainingReference == file)
                 {
                     references.Remove(reference.Key);
+
+                    if (allObjectsByLoadIDDict.ContainsKey(reference.Key))
+                    {
+                        allObjectsByLoadIDDict.Remove(reference.Key);
+                    }
                 }
             }
         }

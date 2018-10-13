@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Harmony;
 using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
@@ -138,6 +139,11 @@ namespace PersistentWorlds
         {
             var file = colony.FileInfo;
 
+            if (file == null)
+            {
+                Log.Error("Colony fileinfo is null.");
+            }
+            
             if (Scribe.mode == LoadSaveMode.Inactive)
             {
                 this.PreloadWorldColoniesMaps();
@@ -301,7 +307,7 @@ namespace PersistentWorlds
                                      colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
 
                 currentFile = new FileInfo(colonySaveFile);
-                colony.FileInfo = currentFile;
+                colony1.FileInfo = currentFile;
                 
                 if (PersistentWorldManager.PersistentWorld.Colony != colony) continue;
 
