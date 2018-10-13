@@ -295,14 +295,15 @@ namespace PersistentWorlds
                 {
                     sameNames.Add(colony1.ColonyData.ColonyFaction.Name, 1);
                 }
-
-                if (PersistentWorldManager.PersistentWorld.Colony != colony) continue;
                 
                 var colonySaveFile = coloniesDirectory + "/" +
                                      sameNames[colony1.ColonyData.ColonyFaction.Name].ToString() +
                                      colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
 
                 currentFile = new FileInfo(colonySaveFile);
+                colony.FileInfo = currentFile;
+                
+                if (PersistentWorldManager.PersistentWorld.Colony != colony) continue;
 
                 SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony1, "colony"); });
             }
@@ -327,8 +328,6 @@ namespace PersistentWorlds
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
             Log.Message("Saved world.");
-            
-            //PersistentWorldManager.ReferenceTable.SaveReferences();
         }
         
         /**
