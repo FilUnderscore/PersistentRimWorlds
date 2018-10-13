@@ -8,16 +8,37 @@ using Verse;
 
 namespace PersistentWorlds.SaveAndLoad
 {
-    public class ReferenceTable
+    /// <summary>
+    /// Stores information regarding references in dictionaries/lists for loading persistent worlds.
+    /// This is a workaround to the Scribe system that RimWorld uses while not impacting it on normal games.
+    /// </summary>
+    public sealed class ReferenceTable
     {
-        private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
+        #region Static Fields
+        private static readonly FieldInfo CurPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
 
-        private static readonly FieldInfo loadedObjectDirectoryField =
+        private static readonly FieldInfo LoadedObjectDirectoryField =
             AccessTools.Field(typeof(CrossRefHandler), "loadedObjectDirectory");
 
-        private static readonly FieldInfo allObjectsByLoadIDField =
+        private static readonly FieldInfo AllObjectsByLoadIdField =
             AccessTools.Field(typeof(LoadedObjectDirectory), "allObjectsByLoadID");
+        #endregion
         
+        #region Static Constructors
+        /// <summary>
+        /// Static constructor that checks for whether fields exist in a latest RimWorld update, if not then alert
+        /// for debugging purposes.
+        /// </summary>
+        /// <exception cref="NullReferenceException"></exception>
+        static ReferenceTable()
+        {
+            if(CurPathField == null) throw new NullReferenceException(nameof(CurPathField) + " is null.");
+            if(LoadedObjectDirectoryField == null) throw new NullReferenceException(nameof(LoadedObjectDirectoryField) + " is null.");
+            if(AllObjectsByLoadIdField == null) throw new NullReferenceException(nameof(AllObjectsByLoadIdField) + " is null.");
+        }
+        #endregion
+        
+        #region Fields
         /// <summary>
         /// Stores requested references for cross-references state.
         ///
@@ -26,10 +47,7 @@ namespace PersistentWorlds.SaveAndLoad
         ///
         /// Second parameter is the ReferenceRequest itself listed.
         /// </summary>
-        //private Dictionary<string, List<ReferenceRequest>> requestedReferences =
-        //    new Dictionary<string, List<ReferenceRequest>>();
-
-        private List<ReferenceRequest> requestedReferences = new List<ReferenceRequest>();
+        private readonly List<ReferenceRequest> requestedReferences = new List<ReferenceRequest>();
         
         /// <summary>
         /// Stores locations to references in memory for cross-references states.
@@ -37,8 +55,10 @@ namespace PersistentWorlds.SaveAndLoad
         /// First parameter is the unique load ID of the reference.
         /// Second parameter is the ReferenceEntry itself.
         /// </summary>
-        private Dictionary<string, Reference> references = new Dictionary<string, Reference>();
-
+        private readonly Dictionary<string, Reference> references = new Dictionary<string, Reference>();
+        #endregion
+        
+        #region Methods
         /// <summary>
         /// Loads the reference (first parameter) with any add-on label depending on the path relative to the parent.
         /// </summary>
@@ -53,7 +73,7 @@ namespace PersistentWorlds.SaveAndLoad
             switch (Scribe.mode)
             {
                 case LoadSaveMode.Saving:
-                    pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
+                    pathRelToParent = (string) CurPathField.GetValue(Scribe.saver) + "/" + label;
 
                     if (label == "li")
                     {
@@ -75,7 +95,7 @@ namespace PersistentWorlds.SaveAndLoad
                     throw new InvalidProgramException("Invalid program state.");
             }
             
-            var reference = new Reference(currentFile, pathRelToParent, referenceable);
+            var reference = new Reference(currentFile, referenceable);
 
             if (references.ContainsKey(referenceable.GetUniqueLoadID()))
             {
@@ -86,18 +106,31 @@ namespace PersistentWorlds.SaveAndLoad
             references.Add(referenceable.GetUniqueLoadID(), reference);
         }
 
-        public void RequestReference(string label, string uniqueLoadID)
+        /// <summary>
+        /// Called to request a reference from certain label with IExposable parent with request being uniqueLoadID.
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="uniqueLoadId"></param>
+        /// <exception cref="InvalidProgramException"></exception>
+        public void RequestReference(string label, string uniqueLoadId)
         {
             if (Scribe.mode != LoadSaveMode.LoadingVars)
             {
                 throw new InvalidProgramException("RequestReference called when Scribe.mode != LoadingVars.");
             }
 
-            var request = new ReferenceRequest(uniqueLoadID, label, Scribe.loader.curParent);
+            var request = new ReferenceRequest(uniqueLoadId, label, Scribe.loader.curParent);
             
             requestedReferences.Add(request);
         }
 
+        /// <summary>
+        /// Called to resolve the reference to the previously mentioned label as in RequestReference(string, string).
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns>ILoadReferenceable - Resolved reference</returns>
+        /// <exception cref="NullReferenceException">Thrown when the Reference cannot be resolved, because
+        /// it doesn't exist.</exception>
         public ILoadReferenceable ResolveReference(string label)
         {
             for (var i = 0; i < requestedReferences.Count; i++)
@@ -117,17 +150,32 @@ namespace PersistentWorlds.SaveAndLoad
             throw new NullReferenceException("Reference could not be resolved. (label=" + label + ", curParent=" + Scribe.loader.curParent + ", curPathRelToParent=" + Scribe.loader.curPathRelToParent + ")");
         }
 
-        public bool ContainsReferenceWithLoadID(string uniqueLoadID)
+        /// <summary>
+        /// Do a quick check to see whether or not a loaded reference with the specific uniqueLoadID exists or not
+        /// in the dictionary.
+        /// </summary>
+        /// <param name="uniqueLoadId"></param>
+        /// <returns></returns>
+        public bool ContainsReferenceWithLoadId(string uniqueLoadId)
         {
-            return references.ContainsKey(uniqueLoadID);
+            return references.ContainsKey(uniqueLoadId);
         }
 
+        /// <summary>
+        /// Clears the references from memory (stored in the dictionaries/lists.)
+        /// </summary>
         public void ClearReferences()
         {
             references.Clear();
             requestedReferences.Clear();
         }
 
+        /// <summary>
+        /// Clears the references from memory that are loaded from a certain file path.
+        /// </summary>
+        /// <param name="filePath">The file path that references were loaded from that will be cleared.</param>
+        /// <exception cref="InvalidProgramException">Thrown if Scribe.mode is not equal to
+        /// LoadSaveMode.LoadingVars</exception>
         public void ClearReferencesFor(string filePath)
         {
             if (Scribe.mode != LoadSaveMode.LoadingVars)
@@ -137,27 +185,31 @@ namespace PersistentWorlds.SaveAndLoad
             
             var file = GetCroppedFileName(filePath);
 
-            var loadedObjectDirectory = loadedObjectDirectoryField.GetValue(Scribe.loader.crossRefs);
-            var allObjectsByLoadIDDict =
-                (Dictionary<string, ILoadReferenceable>) allObjectsByLoadIDField.GetValue(loadedObjectDirectory);
+            var loadedObjectDirectory = LoadedObjectDirectoryField.GetValue(Scribe.loader.crossRefs);
+            var allObjectsByLoadIdDict =
+                (Dictionary<string, ILoadReferenceable>) AllObjectsByLoadIdField.GetValue(loadedObjectDirectory);
             
             for(var i = 0; i < references.Count; i++)
             {
                 var reference = references.ElementAt(i);
-                
-                if (reference.Value.PathOfFileContainingReference == file)
-                {
-                    references.Remove(reference.Key);
 
-                    if (allObjectsByLoadIDDict.ContainsKey(reference.Key))
-                    {
-                        allObjectsByLoadIDDict.Remove(reference.Key);
-                    }
+                if (reference.Value.PathOfFileContainingReference != file) continue;
+
+                references.Remove(reference.Key);
+
+                if (allObjectsByLoadIdDict.ContainsKey(reference.Key))
+                {
+                    allObjectsByLoadIdDict.Remove(reference.Key);
                 }
             }
         }
         
+        // Debug code here.
+        
 #if DEBUG
+        /// <summary>
+        /// Dumps the contents of the Reference Table in the debug_log.txt file in the RimWorld game folder.
+        /// </summary>
         public void DumpReferenceTable()
         {
             Debug.FileLog.Log("Dumped Reference Table ---");
@@ -170,6 +222,9 @@ namespace PersistentWorlds.SaveAndLoad
             Debug.FileLog.Log("End of Dump ---");
         }
 
+        /// <summary>
+        /// Dumps the contents of the Reference Request Table in the debug_log.txt file in the RimWorld game folder.
+        /// </summary>
         public void DumpReferenceRequestTable()
         {
             Debug.FileLog.Log("Dumped Reference Request Table ---");
@@ -182,9 +237,13 @@ namespace PersistentWorlds.SaveAndLoad
             Debug.FileLog.Log("End of Dump ---");
         }
 #endif
-        // TODO: Unload existing references on loading other colony.
-
-        private string GetCroppedFileName(string fileName)
+        /// <summary>
+        /// Crops the file name to a smaller length so that all the unnecessary information before the world folder name
+        /// are cropped, including the world folder name.
+        /// </summary>
+        /// <param name="fileName">The filename that will be cropped.</param>
+        /// <returns>The cropped filename.</returns>
+        private static string GetCroppedFileName(string fileName)
         {
             const string indexString = "\\Saves\\";
 
@@ -193,61 +252,118 @@ namespace PersistentWorlds.SaveAndLoad
 
             return fileName;
         }
-        
+        #endregion
+
         #region Classes
+        /// <summary>
+        /// Used to be stored in the references dictionary for referencing during loading.
+        /// </summary>
         private sealed class Reference
         {
-            private string pathOfFileContainingReference; // To be used for unloading reference when not needed.
+            #region Fields
+            /// <summary>
+            /// To be used for unloading references when they are no longer needed. This contains the path of the file
+            /// containing this reference.
+            /// </summary>
+            private readonly string pathOfFileContainingReference;
 
-            private string pathRelToParent; // Path relevant to parent. Don't know if this is used yet?
-            private ILoadReferenceable reffable; // Link to reference.
-
+            //private readonly string pathRelToParent; // Path relevant to parent. Don't know if this is used yet?
+            
+            /// <summary>
+            /// Link to the reference in memory.
+            /// </summary>
+            private readonly ILoadReferenceable reffable;
+            #endregion
+            
             #region Properties
             public string PathOfFileContainingReference => pathOfFileContainingReference;
-            public string PathRelToParent => pathRelToParent;
-            
+
             public ILoadReferenceable Referenceable => reffable;
             #endregion
             
-            public Reference(string pathOfFileContainingReference, string pathRelToParent, ILoadReferenceable reffable)
+            #region Constructors
+            /// <summary>
+            /// The main constructor for the Reference class.
+            /// </summary>
+            /// <param name="pathOfFileContainingReference">The path of the file containing this reference.</param>
+            /// <param name="reffable">The link to the loaded reference in memory.</param>
+            public Reference(string pathOfFileContainingReference, ILoadReferenceable reffable)
             {
                 this.pathOfFileContainingReference = pathOfFileContainingReference;
-                this.pathRelToParent = pathRelToParent;
                 this.reffable = reffable;
             }
+            #endregion
 
+            #region Methods
+            /// <summary>
+            /// Converts this class to a string representation.
+            /// </summary>
+            /// <returns>This class in a string representation.</returns>
             public override string ToString()
             {
-                return "(pathOfFileContainingReference=" + pathOfFileContainingReference + ", pathRelToParent=" +
-                       pathRelToParent + ", reffable=" + reffable + ")";
+                return "(pathOfFileContainingReference=" + pathOfFileContainingReference + ", reffable=" + reffable + ")";
             }
+            #endregion
         }
 
+        /// <summary>
+        /// Used for requesting a reference that hasn't been loaded yet but knows the load ID of that reference.
+        /// </summary>
         private sealed class ReferenceRequest
         {
-            private string loadIDRequested;
+            #region Fields
+            /// <summary>
+            /// The requested load ID.
+            /// </summary>
+            private readonly string loadIdRequested;
             
-            private string label; // Label for loading.
-            private IExposable parent; // Used to check Scribe.loader.curParent is the same, then load this request.
-
-            public string LoadIDRequested => loadIDRequested;
+            /// <summary>
+            /// The label from which this request is from. Used for identification further on when loading.
+            /// </summary>
+            private readonly string label;
+            
+            /// <summary>
+            /// Used to track which request this is, by checking it against Scribe.loader.curParent to resolve the
+            /// request.
+            /// </summary>
+            private readonly IExposable parent;
+            #endregion
+            
+            #region Properties
+            public string LoadIDRequested => loadIdRequested;
             public string Label => label;
             
             public IExposable Parent => parent;
+            #endregion
             
+            #region Constructors
+            /// <summary>
+            /// The main constructor for the ReferenceRequest class.
+            /// </summary>
+            /// <param name="loadIdRequested">The load ID that is being requested.</param>
+            /// <param name="label">The label that this request can be identified with.</param>
+            /// <param name="parent">The parent that allows this request to be tracked, comparing
+            /// Scribe.loader.curParent with this parent.</param>
             public ReferenceRequest(string loadIdRequested, string label, IExposable parent)
             {
-                this.loadIDRequested = loadIdRequested;
+                this.loadIdRequested = loadIdRequested;
                 this.label = label;
 
                 this.parent = parent;
             }
+            #endregion
 
+            #region Methods
+            /// <summary>
+            /// Returns a string representation of this class.
+            /// </summary>
+            /// <returns>Returns a string representation of this class.</returns>
             public override string ToString()
             {
-                return "(loadIDRequested=" + loadIDRequested + ", label=" + label + ", parent=" + parent +
+                return "(loadIDRequested=" + loadIdRequested + ", label=" + label + ", parent=" + parent +
                        ")";
             }
+            #endregion
         }
         #endregion
     }

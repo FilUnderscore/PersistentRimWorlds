@@ -73,15 +73,6 @@ namespace PersistentWorlds.UI
                         {
                             PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
 
-                            if (colony == null)
-                            {
-                                Log.Error("Colony is null. Be warned.");
-                            }
-                            else
-                            {
-                                Log.Warning("Colony is not null.");
-                            }
-                            
                             PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
                             PersistentWorldManager.PersistentWorld.Colonies[index] = colony;
                             

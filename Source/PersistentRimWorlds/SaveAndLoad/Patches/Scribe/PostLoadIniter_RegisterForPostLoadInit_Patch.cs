@@ -104,7 +104,7 @@ namespace PersistentWorlds.Patches
                 Debug.FileLog.Log("Adding reference: " + pathToLoad);
                 Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
 
-                if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadID(referenceable.GetUniqueLoadID()))
+                if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
                 {
                     PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, pathToLoad);
                 }
