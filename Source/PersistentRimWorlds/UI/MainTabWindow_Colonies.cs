@@ -95,7 +95,7 @@ namespace PersistentWorlds.UI
         {
             foreach (var map in Current.Game.Maps)
             {
-                if (PersistentWorldManager.PersistentWorld.Maps[colony].Contains(map.Tile)) continue;
+                if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(colony) && PersistentWorldManager.PersistentWorld.Maps[colony].Contains(map.Tile)) continue;
                 
                 PersistentWorldManager.ReferenceTable.ClearReferencesFor("\\Saves\\WorldHere\\Maps\\" + map.Tile + ".pwmf");
             }
