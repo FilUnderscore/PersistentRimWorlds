@@ -7,10 +7,10 @@ using Verse;
 namespace PersistentWorlds.Patches.UI
 {
     [HarmonyPatch(typeof(Page_SelectStartingSite), "PreOpen")]
-    public static class Page_SelectLandingSite_Patch
+    public class Page_SelectLandingSite_Patch
     {
-        [HarmonyPrefix]
-        public static void SelectLandingSite_Prefix(Page_SelectStartingSite __instance)
+        #region Methods
+        static void Prefix(Page_SelectStartingSite __instance)
         {
             if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
                 return;
@@ -18,13 +18,10 @@ namespace PersistentWorlds.Patches.UI
             PersistentWorldManager.PersistentWorld.Game.Scenario = Current.Game.Scenario;
             PersistentWorldManager.PersistentWorld.Game.storyteller = Current.Game.storyteller;
             Current.Game = PersistentWorldManager.PersistentWorld.Game;
-                
+            
             Current.Game.InitData = new GameInitData();
             
             Scribe.loader.FinalizeLoading();
-                
-            // TODO: Review
-            //PersistentWorldManager.WorldLoadSaver.LoadMaps();  
             
             PersistentWorldManager.PersistentWorld.Game.World.pathGrid = new WorldPathGrid();
             Current.Game.Scenario.PostWorldGenerate();
@@ -32,9 +29,13 @@ namespace PersistentWorlds.Patches.UI
             PersistentWorldManager.WorldLoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
 
+            PersistentWorldManager.ReferenceTable.DumpReferenceTable();
+            PersistentWorldManager.ReferenceTable.DumpReferenceRequestTable();
+            
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_FileList));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_ColonySelection));
         }
+        #endregion
     }
 }

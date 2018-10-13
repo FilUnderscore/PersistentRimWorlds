@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Harmony;
-using Ionic.Zlib;
 using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
@@ -10,10 +9,10 @@ using Verse.Profile;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(Game), "InitNewGame")]
-    public static class Game_InitNewGame_Patch
+    public class Game_InitNewGame_Patch
     {
-        [HarmonyPrefix]
-        public static bool InitNewGame_Prefix(Game __instance)
+        #region Methods
+        static bool Prefix(Game __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
                 PersistentWorldManager.WorldLoadSaver.Status !=
@@ -38,12 +37,17 @@ namespace PersistentWorlds.Patches
             if(settlement == null)
                 Log.Error("Could not generate starting map because there is no player faction base.");
     
-                // TODO: Use Map Size from World Info or have custom map sizes depending on colony data.
             var map = MapGenerator.GenerateMap(mapSize, settlement, settlement.MapGeneratorDef,
                 settlement.ExtraGenStepDefs, null);
                 
             Current.Game.CurrentMap = map;
-                
+
+            // TODO: Implement permanent death mode for colonies.
+            if (__instance.InitData.permadeath)
+            {
+                __instance.Info.permadeathMode = true;
+            }
+            
             PawnUtility.GiveAllStartingPlayerPawnsThought(ThoughtDefOf.NewColonyOptimism);
             __instance.FinalizeInit();
                 
@@ -78,7 +82,6 @@ namespace PersistentWorlds.Patches
                 
             GameComponentUtility.StartedNewGame();
 
-            Current.Game.InitData = null;
             PersistentWorldManager.WorldLoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
@@ -86,16 +89,18 @@ namespace PersistentWorlds.Patches
 
             colony.ColonyData.uniqueID = ++PersistentWorldManager.PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
+            
+            colony.GameData.mapSize = __instance.InitData.mapSize;
+            
+            Current.Game.InitData = null;
+            
             PersistentWorldManager.PersistentWorld.Colony = colony;
-            // TODO: FACTIONS.
-            // colony.SetFactionData();
+            
             PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
             PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
-            
-            // TODO: View here
-            //PersistentWorldManager.PersistentWorld.ConvertSettlementsToColonies();
-                
+    
             return false;
         }       
+        #endregion
     }
 }

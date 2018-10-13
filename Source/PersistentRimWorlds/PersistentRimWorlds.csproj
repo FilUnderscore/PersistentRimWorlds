@@ -11,6 +11,7 @@
     <AssemblyName>PersistentWorlds</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,12 +32,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Assemblies\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=1.0.6856.21184, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Assembly-CSharp, Version=1.0.6860.21666, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -48,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debug\FileLog.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
@@ -55,44 +59,47 @@
     <Compile Include="Logic\PersistentWorldData.cs" />
     <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Patches\Game\Debug_Patches.cs" />
-    <Compile Include="Patches\Game\FactionManager_RecacheFactions_Patch.cs" />
-    <Compile Include="Patches\Game\GameDataSaveLoader_SaveGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_InitNewGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_LoadGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_UpdatePlay_Patch.cs" />
     <Compile Include="Patches\Game\LogEntry_Patch.cs" />
     <Compile Include="Patches\Game\MapGenerator_GenerateMap_Patch.cs" />
     <Compile Include="Patches\Game\Map_UpdateMap_Patch.cs" />
-    <Compile Include="Patches\Game\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
     <Compile Include="Patches\Game\UIRoot_Play_UIRootOnGUI_Patch.cs" />
     <Compile Include="Patches\Game\WorldGenStep_Components_Patch.cs" />
-    <Compile Include="Patches\Game\WorldPawns_ExposeData_Patch.cs" />
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
-    <Compile Include="Patches\Scribe\LoadedObjectDirectory_RegisterLoaded_Patch.cs" />
-    <Compile Include="Patches\Scribe\MapInfo_ExposeData_Patch.cs" />
-    <Compile Include="Patches\Scribe\ScribeLoader_ForceStop_Patch.cs" />
-    <Compile Include="Patches\Scribe\Scribe_References_Look_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
     <Compile Include="Patches\UI\Page_SelectStartingSite_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />
     <Compile Include="Patches\UI\ScenPart_PlayerFaction_Patch.cs" />
-    <Compile Include="PersistentWorldLoadSaver.cs" />
     <Compile Include="PersistentWorldManager.cs" />
     <Compile Include="PersistentWorldsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReferenceSaveLoader.cs" />
-    <Compile Include="SaveFileUtils.cs" />
-    <Compile Include="ScribeMultiLoader.cs" />
-    <Compile Include="ScribeVars.cs" />
+    <Compile Include="SaveAndLoad\Patches\GameDataSaveLoader_SaveGame_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\CrossRefHandler_Clear_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\PostLoadIniter_RegisterForPostLoadInit_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\DebugLoadIDsSavingErrorsChecker_RegisterDeepSaved_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\LoadedObjectDirectory_RegisterLoaded_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\ScribeLoader_ForceStop_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\ScribeSaver_EnterNode_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\ScribeSaver_ExitNode_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\Scribe_References_Look_Patch.cs" />
+    <Compile Include="SaveAndLoad\PersistentWorldLoadSaver.cs" />
+    <Compile Include="SaveAndLoad\ReferenceTable.cs" />
+    <Compile Include="SaveAndLoad\SaveFileUtils.cs" />
+    <Compile Include="SaveAndLoad\ScribeMultiLoader.cs" />
+    <Compile Include="SaveAndLoad\ScribeVars.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_ColonySelection.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
     <Compile Include="UI\Util\Dialog_ColorPicker.cs" />
     <Compile Include="UI\Util\ScrollableListItem.cs" />
+    <Compile Include="UI\Util\ScrollableListItemColored.cs" />
     <Compile Include="UI\Util\ScrollableListItemInfo.cs" />
     <Compile Include="UI\Util\ScrollableListUI.cs" />
     <Compile Include="World\BaseResettle.cs" />

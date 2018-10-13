@@ -10,19 +10,21 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public class MainTabWindow_Colonies : MainTabWindow
+    [StaticConstructorOnStartup]
+    public sealed class MainTabWindow_Colonies : MainTabWindow
     {
-        public static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
-        // TODO: Draw.
+        #region Fields
+        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
         private Vector2 scrollPosition = Vector2.zero;
         private List<ScrollableListItem> items;
+        #endregion
         
-        public MainTabWindow_Colonies()
-        {
-            this.forcePause = true;
-        }
-
+        #region Properties
+        public override Vector2 RequestedTabSize => new Vector2(Verse.UI.screenWidth * 0.5f, Verse.UI.screenHeight / 3.5f);
+        #endregion
+        
+        #region Methods
         public override void DoWindowContents(Rect inRect)
         {   
             ScrollableListUI.DrawList(ref inRect, ref scrollPosition, ref this.items);
@@ -45,34 +47,41 @@ namespace PersistentWorlds.UI
         {
             this.items = new List<ScrollableListItem>();
 
-            foreach (var colony in PersistentWorldManager.PersistentWorld.Colonies)
+            for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
-                var item = new ScrollableListItem();
+                var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
 
-                item.Text = colony.ColonyData.ColonyFaction.Name;
+                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name};
 
                 if (colony != PersistentWorldManager.PersistentWorld.Colony)
                 {
+                    item.canChangeColor = true;
+                    item.texture = Town;
+                    
+                    var index = i;
+                    
                     item.ActionButtonText = "Switch To";
                     item.ActionButtonAction = delegate
                     {                         
                         this.Close();
 
                         LongEventHandler.QueueLongEvent(delegate
-                        {       
-                                PersistentWorldManager.PersistentWorld.Colony = colony;
-                                PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
-
-                                PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
-                                
-                                LoadMaps(colony);
-                                Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
-                                UnloadMaps(colony);    
+                        {
+                            PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
+                            PersistentWorldManager.PersistentWorld.Colonies[index] = colony;
                             
-                                PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
+                            PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
-                                //Find.CameraDriver.SetRootPosAndSize(colony.ColonyData.GameData.camRootPos, colony.ColonyData.GameData.desiredSize);
-                            }, "LoadingColony", false, null);
+                            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+                                
+                            LoadMaps(colony);
+                            Current.Game.CurrentMap = Current.Game.FindMap(PersistentWorldManager.PersistentWorld.Maps[colony][0]);
+                            UnloadMaps(colony);    
+                            
+                            PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
+
+                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);
+                        }, "LoadingColony", false, null);
                     };
                 }
                 
@@ -89,9 +98,6 @@ namespace PersistentWorlds.UI
             foreach (var map in maps)
             {
                 Current.Game.Maps.Add(map);
-                
-                foreach(var faction in Find.FactionManager.AllFactions)
-                    map.pawnDestinationReservationManager.RegisterFaction(faction);
                 
                 map.mapDrawer.RegenerateEverythingNow();
                 map.FinalizeLoading();
@@ -131,5 +137,6 @@ namespace PersistentWorlds.UI
             
             Find.ColonistBar.MarkColonistsDirty();
         }
+        #endregion
     }
 }

@@ -5,10 +5,10 @@ using Verse;
 namespace PersistentWorlds.Patches.UI
 {
     [HarmonyPatch(typeof(ScenPart_PlayerFaction), "PostWorldGenerate")]
-    public static class ScenPart_PlayerFaction_Patch
+    public class ScenPart_PlayerFaction_Patch
     {
-        [HarmonyPrefix]
-        public static bool PostWorldGenerate_Prefix(ScenPart_PlayerFaction __instance)
+        #region Methods
+        static bool Prefix(ScenPart_PlayerFaction __instance)
         {
             if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null)
                 return true;
@@ -18,5 +18,6 @@ namespace PersistentWorlds.Patches.UI
             
             return false;
         }
+        #endregion
     }
 }

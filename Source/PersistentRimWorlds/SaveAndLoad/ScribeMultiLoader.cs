@@ -10,9 +10,12 @@ namespace PersistentWorlds
     // Allows the loading of different files by sharing Cross-References of objects/pawns/things in the game.
     public sealed class ScribeMultiLoader
     { 
+        #region Fields
         public static Dictionary<string, XmlNode> xmlParents = new Dictionary<string, XmlNode>();
         public static XmlNode curXmlNode;
-
+        #endregion
+        
+        #region Methods
         public static void InitLoading(string[] filePaths)
         {
             if (Scribe.mode != LoadSaveMode.Inactive)
@@ -27,11 +30,11 @@ namespace PersistentWorlds
                 {
                     if (xmlParents.ContainsKey(filePath)) continue;
                     
-                    using (StreamReader streamReader = new StreamReader(filePath))
+                    using (var streamReader = new StreamReader(filePath))
                     {
-                        using (XmlTextReader xmlTextReader = new XmlTextReader(streamReader))
+                        using (var xmlTextReader = new XmlTextReader(streamReader))
                         {
-                            XmlDocument xmlDocument = new XmlDocument();
+                            var xmlDocument = new XmlDocument();
                             xmlDocument.Load(xmlTextReader);
                             xmlParents.Add(filePath, xmlDocument.DocumentElement);
                         }
@@ -68,5 +71,6 @@ namespace PersistentWorlds
             xmlParents.Clear();
             curXmlNode = null;
         }
+        #endregion
     }
 }

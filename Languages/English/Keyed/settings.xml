@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<!-- Base Resettle Command -->
-	<BaseResettle>Resettle</BaseResettle>
-	<BaseResettleDesc>Resettle into this abandoned colony base, it may be left in ruins after being left unmaintained for some time, or inhabited by pirates. Beware.</BaseResettleDesc>
-	
 	<!-- Persistent Worlds Core -->
-	<PersistentRimWorlds>Persistent RimWorlds</PersistentRimWorlds>
-	<ConfirmConversion-PersistentWorlds>Are you sure you want to convert this world to a persistent world? There is no going back, and may be incompatible with some mods. This action will also overwrite any saves with the same name as the world name, this can be checked through the World tab in the save by clicking a tile and clicking the Planet tab in the bottom-left corner of your screen. You have been warned.</ConfirmConversion-PersistentWorlds>
-	<ConvertingWorld-PersistentWorlds>Converting world to persistent world</ConvertingWorld-PersistentWorlds>
-	<ConversionComplete-PersistentWorlds>Conversion for world {0} is complete. The persistent world will now be saved as {0}.rws and can be loaded through the Persistent Worlds menu.</ConversionComplete-PersistentWorlds>
-	<ErrorLoadWrongMenu-PersistentWorlds>Please load {0} through the Persistent Worlds menu. This is a warning to ensure you do not corrupt your persistent world by improper loading of the world.</ErrorLoadWrongMenu-PersistentWorlds>
-	<Convert>Convert</Convert>
-	<DeleteColony-PersistentWorlds>Delete this colony permanently. It will disappear from the world map without any trace.</DeleteColony-PersistentWorlds>
-	<Delete-PersistentWorlds>Delete persistent world.</Delete-PersistentWorlds>
-	<Load-PersistentWorlds>Load World</Load-PersistentWorlds>
-	<BackToMenu>Back to Menu</BackToMenu>
+	<FilUnderscore.PersistentRimWorlds>Persistent RimWorlds</FilUnderscore.PersistentRimWorlds>
+	<FilUnderscore.PersistentRimWorlds.ConfirmConversion>Are you sure you want to convert this world to a persistent world? There is no going back, and may be incompatible with some mods. This action will also overwrite any saves with the same name as the world name, this can be checked through the World tab in the save by clicking a tile and clicking the Planet tab in the bottom-left corner of your screen. You have been warned.</FilUnderscore.PersistentRimWorlds.ConfirmConversion>
+	<FilUnderscore.PersistentRimWorlds.ConvertingWorld>Converting world to persistent world</FilUnderscore.PersistentRimWorlds.ConvertingWorld>
+	<FilUnderscore.PersistentRimWorlds.ConversionComplete>Conversion for world {0} is complete. The persistent world will now be saved as {0} and can be loaded through the Persistent Worlds menu.</FilUnderscore.PersistentRimWorlds.ConversionComplete>
+	<FilUnderscore.PersistentRimWorlds.ConvertWorld>Convert</FilUnderscore.PersistentRimWorlds.ConvertWorld>
+	<FilUnderscore.PersistentRimWorlds.DeleteColony>Delete this colony permanently. It will disappear from the world map without any trace.</FilUnderscore.PersistentRimWorlds.DeleteColony>
+	<FilUnderscore.PersistentRimWorlds.DeleteWorld>Delete persistent world.</FilUnderscore.PersistentRimWorlds.DeleteWorld>
+	<FilUnderscore.PersistentRimWorlds.LoadWorld>Load World</FilUnderscore.PersistentRimWorlds.LoadWorld>
+	<FilUnderscore.PersistentRimWorlds.BackToMenu>Back to Menu</FilUnderscore.PersistentRimWorlds.BackToMenu>
 	
 	<!-- Persistent Worlds - Loading -->
-	<LoadingPersistentWorld>Loading persistent world</LoadingPersistentWorld>
-	<LoadingColonies>Loading colonies</LoadingColonies>
-	<LoadingColony>Loading colony</LoadingColony>
-	<LoadingMaps>Loading maps</LoadingMaps>
+	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading persistent world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
+	<FilUnderscore.PersistentRimWorlds.LoadingColonies>Loading colonies</FilUnderscore.PersistentRimWorlds.LoadingColonies>
+	<FilUnderscore.PersistentRimWorlds.LoadingColony>Loading colony</FilUnderscore.PersistentRimWorlds.LoadingColony>
+	<FilUnderscore.PersistentRimWorlds.LoadingMaps>Loading maps</FilUnderscore.PersistentRimWorlds.LoadingMaps>
+	
+	<!-- Base Resettle Command -->
+	<FilUnderscore.PersistentRimWorlds.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.BaseResettle>
+	<FilUnderscore.PersistentRimWorlds.BaseResettleDesc>Resettle into this abandoned colony base, it may be left in ruins after being left unmaintained for some time, or inhabited by pirates. Beware.</FilUnderscore.PersistentRimWorlds.BaseResettleDesc>
 </LanguageData>

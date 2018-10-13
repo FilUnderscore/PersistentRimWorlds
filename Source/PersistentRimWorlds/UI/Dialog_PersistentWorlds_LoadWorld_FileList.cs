@@ -14,14 +14,19 @@ using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_PersistentWorlds_LoadWorld_FileList : Window
+    public sealed class Dialog_PersistentWorlds_LoadWorld_FileList : Window
     {
+        #region Fields
         private Vector2 scrollPosition = Vector2.zero;
         
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
+        #endregion
         
+        #region Properties
         public override Vector2 InitialSize => new Vector2(600f, 700f);
-
+        #endregion
+        
+        #region Constructors
         public Dialog_PersistentWorlds_LoadWorld_FileList()
         {
             this.LoadWorldsAsItems();
@@ -33,7 +38,9 @@ namespace PersistentWorlds.UI
             this.absorbInputAroundWindow = true;
             this.closeOnAccept = false;
         }
+        #endregion
 
+        #region Methods
         private void LoadWorldsAsItems()
         {
             // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
@@ -47,14 +54,17 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
-                    var previousGame = Current.Game;
+                    LongEventHandler.QueueLongEvent(delegate
+                    {
+                        var previousGame = Current.Game;
                     
-                    PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
-                    PersistentWorldManager.WorldLoadSaver.LoadWorld();
+                        PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
+                        PersistentWorldManager.WorldLoadSaver.LoadWorld();
 
-                    Current.Game = previousGame;
+                        Current.Game = previousGame;
                     
-                    Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
+                        Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
+                    }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
                 };
 
                 scrollableListItem.DeleteButtonTooltip = "Delete-PersistentWorlds".Translate();
@@ -62,7 +72,10 @@ namespace PersistentWorlds.UI
                 {
                     // TODO: Implement deleting persistent worlds.
                     var dialogBox = new Dialog_MessageBox("DeleteWorld-PersistentWorlds".Translate(), "Delete",
-                        delegate { }, "Cancel", delegate { }, "DeleteWorldTitle-PersistentWorlds".Translate(), true)
+                        delegate
+                        {
+                            // TODO: Delete persistent world.
+                        }, "Cancel", null, "DeleteWorldTitle-PersistentWorlds".Translate(), true)
                     {
                         buttonCText = "Convert",
                         buttonCAction = delegate
@@ -109,5 +122,6 @@ namespace PersistentWorlds.UI
         {
             ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, ref this.items);
         }
+        #endregion
     }
 }

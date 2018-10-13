@@ -1,87 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Xml;
-using Harmony;
-using JetBrains.Annotations;
-using PersistentWorlds.Logic;
+﻿using Harmony;
 using RimWorld;
 using RimWorld.Planet;
-using UnityEngine;
-using UnityEngine.Video;
 using Verse;
 
 namespace PersistentWorlds.Patches
 {
     #if DEBUG
-    public static class Debug_Patches
+    public class Debug_Patches
     {
-        [HarmonyPatch(typeof(ParentRelationUtility), "GetFather")]
-        public static class Patch_1
+        #region Classes
+
+        [HarmonyPatch(typeof(RimWorld.Planet.World), "ConstructComponents")]
+        public static class World_ConstructComponents_Patch
         {
             [HarmonyPrefix]
-            public static void Prefix_Test(Pawn pawn)
+            static bool Prefix(RimWorld.Planet.World __instance)
             {
-                if (pawn == null)
-                {
-                    Log.Error("Pawn null wut");
-                }
-                
-                if (pawn.relations == null)
-                {
-                    Log.Error("Pawn rel null");
-                }
-
-                if (pawn.relations.DirectRelations == null)
-                {
-                    Log.Error("Dir null");
-                }
-
-                foreach (var r in pawn.relations.DirectRelations)
-                {
-                    if (r == null)
-                    {
-                        Log.Error("R null");
-                    }
-
-                    if (r.def == null)
-                    {
-                        Log.Error("R DEF NULL");
-                    }
-
-                    if (r.otherPawn == null)
-                    {
-                        Log.Error("Other pawn null");
-                    }
-                }
+                Log.Message("1");
+                __instance.worldObjects = new WorldObjectsHolder();
+                __instance.factionManager = new FactionManager();
+                __instance.worldPawns = new WorldPawns();
+                __instance.gameConditionManager = new GameConditionManager(__instance);
+                __instance.storyState = new StoryState((IIncidentTarget) __instance);
+                __instance.renderer = new WorldRenderer();
+                __instance.UI = new WorldInterface();
+                __instance.debugDrawer = new WorldDebugDrawer();
+                __instance.dynamicDrawManager = new WorldDynamicDrawManager();
+                __instance.pathFinder = new WorldPathFinder();
+                __instance.pathPool = new WorldPathPool();
+                __instance.reachability = new WorldReachability();
+                __instance.floodFiller = new WorldFloodFiller();
+                __instance.ticksAbsCache = new ConfiguredTicksAbsAtGameStartCache();
+                Log.Message("2");
+                __instance.components.Clear();
+                Log.Message("3");
+                AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents").Invoke(__instance, new object[0]);
+                Log.Message("4");
+                return false;
             }
         }
         
-        [HarmonyPatch(typeof(ParentRelationUtility), "GetMother")]
-        public static class Patch_2
-        {
-            [HarmonyPrefix]
-            public static void Prefix_Test(Pawn pawn)
-            {
-                if (pawn == null)
-                {
-                    Log.Error("Pawn null wut");
-                }
-                
-                if (pawn.relations == null)
-                {
-                    Log.Error("Pawn rel null");
-                }
-
-                if (pawn.relations.DirectRelations == null)
-                {
-                    Log.Error("Dir null");
-                }
-            }
-        }
+        #endregion
     }
     #endif
 }

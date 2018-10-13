@@ -7,15 +7,24 @@ using Verse;
 
 namespace PersistentWorlds.World
 {
-    public class Colony : MapParent
+    /// <summary>
+    /// Colony world object class that handles colonies on the world map.
+    /// </summary>
+    public sealed class Colony : MapParent
     {
+        #region Fields
         // TODO: Implement commands.
         //public static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
         public string Name;
-        public PersistentColonyData PersistentColonyData;
+        public PersistentColonyData PersistentColonyData = new PersistentColonyData();
         private Material cachedMat;
+        #endregion
         
+        #region Properties
+        /// <summary>
+        /// Material for colonies, such as color properties that are set here depending on colony data.
+        /// </summary>
         public override Material Material
         {
             get
@@ -31,13 +40,18 @@ namespace PersistentWorlds.World
         public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
 
         public override string Label => Name ?? base.Label;
+        #endregion
         
+        #region Methods
+        /// <summary>
+        /// Saving/loading of colony world object instance.
+        /// </summary>
         public override void ExposeData()
         {
             base.ExposeData();
             
-            Scribe_Values.Look<string>(ref Name, "name");
-            Scribe_References.Look<PersistentColonyData>(ref PersistentColonyData, "colony");
+            Scribe_Values.Look(ref Name, "name");
+            Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -47,6 +61,10 @@ namespace PersistentWorlds.World
             return base.GetGizmos();
         }
 
+        /// <summary>
+        /// Inspect string that shows up in bottom-left corner of screen when world object is clicked.
+        /// </summary>
+        /// <returns></returns>
         public override string GetInspectString()
         {
             var inspectString = "";
@@ -60,5 +78,6 @@ namespace PersistentWorlds.World
         {
             return base.GetInspectTabs();
         }
+        #endregion
     }
 }

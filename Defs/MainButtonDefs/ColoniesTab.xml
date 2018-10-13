@@ -6,7 +6,5 @@
 		<description>Examine and view information about other created colonies in this world.</description>
 		<tabWindowClass>PersistentWorlds.UI.MainTabWindow_Colonies</tabWindowClass>
 		<order>75</order>
-		<defaultHotKey>F12</defaultHotKey>
-		<buttonVisible>true</buttonVisible>
 	</MainButtonDef>
 </Defs>

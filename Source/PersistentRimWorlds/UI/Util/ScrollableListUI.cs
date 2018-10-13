@@ -9,6 +9,7 @@ namespace PersistentWorlds.UI
 {
     public static class ScrollableListUI
     {
+        #region Methods
         public static void DrawList(ref Rect inRect, ref Vector2 scrollPosition, ref List<ScrollableListItem> items)
         {
             var vector2_1 = new Vector2(inRect.width - 16f, 36f);
@@ -57,7 +58,7 @@ namespace PersistentWorlds.UI
                     if (item.Info != null && item.Info.Count > 0)
                     {                        
                         //var rect3 = new Rect(270f, 0.0f, 200f, position.height);
-                        var rect3 = new Rect(inRect.width * 0.5f, 0.0f, 200f, position.height);
+                        var rect3 = new Rect(inRect.width * 0.45f, 0.0f, 200f, position.height);
                         
                         DrawItemInfo(item, rect3);
                     }
@@ -72,7 +73,7 @@ namespace PersistentWorlds.UI
                     /*
                      * Color changing..
                      */
-                    if (item.canChangeColor)
+                    if (item is ScrollableListItemColored coloredItem && coloredItem.canChangeColor)
                     {
                         var colorBoxX = x - (vector2_2.y + 5);
                         var colorBoxRect = new Rect(colorBoxX, 0.0f, vector2_2.y, vector2_2.y);
@@ -84,14 +85,14 @@ namespace PersistentWorlds.UI
 
                             item.texture = texture;
                         }
-                        
-                        GUI.color = item.color;
+
+                        GUI.color = coloredItem.color;
                         var press = Widgets.ButtonImage(colorBoxRect, item.texture);
                         GUI.color = Color.white;
                         
                         if (press)
                         {
-                            Find.WindowStack.Add(new Dialog_ColorPicker(item));
+                            Find.WindowStack.Add(new Dialog_ColorPicker(coloredItem));
                         }
                     }
                     /*
@@ -139,7 +140,6 @@ namespace PersistentWorlds.UI
 
             var prevRect = new Rect(0.0f, 2f, 0, 0);
             
-            // TODO: Add support for more than two elements by using a List<ScrollableListItemInfo> with a Color, Height/Width proportion value and text.
             foreach (var info in item.Info)
             {
                 var rectInfo = new Rect(0.0f, prevRect.yMax, rect.width, rect.height / item.Info.Count);
@@ -158,5 +158,6 @@ namespace PersistentWorlds.UI
             
             GUI.EndGroup();
         }
+        #endregion
     }
 }

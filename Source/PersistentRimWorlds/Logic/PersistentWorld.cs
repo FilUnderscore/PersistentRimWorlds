@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 using Harmony;
 using PersistentWorlds.World;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
-using Verse.AI.Group;
 
 namespace PersistentWorlds.Logic
 {
     public class PersistentWorld
     {
-        // TODO: Refactor.
-        
+        #region Fields
         // Game.World is accessed.
         public Game Game = new Game();
 
@@ -25,13 +20,17 @@ namespace PersistentWorlds.Logic
         // Stores map tile ids.
         public Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
         public List<PersistentColony> Colonies = new List<PersistentColony>();
-
+        #endregion
+        
+        #region Constructors
         public PersistentWorld()
         {
             Current.Game = this.Game;
             this.Game.World = new RimWorld.Planet.World();
         }
+        #endregion
 
+        #region Methods
         public void LoadWorld()
         {
             Current.Game = this.Game;
@@ -63,7 +62,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            Colony.ColonyData.GameData.SetGame();
+            Colony.GameData.SetGame();
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
             
@@ -93,8 +92,6 @@ namespace PersistentWorlds.Logic
             
             this.ConvertToCurrentGameSettlements();
             
-            // TODO: Load all maps in memory but have maps in Current.Game.Maps depending on active maps. Maps can be shared.
-            
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
                 Log.Warning("Some maps were null after loading.", false);
@@ -102,7 +99,7 @@ namespace PersistentWorlds.Logic
 
             int num = -1;
 
-            num = Colony.ColonyData.GameData.currentMapIndex;
+            num = Colony.GameData.currentMapIndex;
             if (num < 0 && this.Game.Maps.Any<Map>())
             {
                 Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
@@ -154,7 +151,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            Find.CameraDriver.SetRootPosAndSize(this.Colony.ColonyData.GameData.camRootPos, this.Colony.ColonyData.GameData.desiredSize);
+            Find.CameraDriver.SetRootPosAndSize(this.Colony.GameData.camRootPos, this.Colony.GameData.desiredSize);
         }
 
         public void ExposeGameWorldData()
@@ -162,6 +159,12 @@ namespace PersistentWorlds.Logic
             this.Game.World.info = this.WorldData.info;
             this.Game.World.grid = this.WorldData.grid;
 
+            if (this.Game.World.components == null)
+            {
+                Log.Error("Game World Components is null! Please look into this.");
+                this.Game.World.components = new List<WorldComponent>();
+            }
+            
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 if (this.Game.World.grid == null || !this.Game.World.grid.HasWorldData)
@@ -180,7 +183,7 @@ namespace PersistentWorlds.Logic
         }
 
         public void ConstructGameWorldComponentsAndExposeComponents()
-        {
+        {   
             this.Game.World.ConstructComponents();
 
             this.ExposeAndFillGameWorldComponents();
@@ -196,7 +199,12 @@ namespace PersistentWorlds.Logic
             this.Game.World.storyState = this.WorldData.storyState;
             this.Game.World.features = this.WorldData.worldFeatures;
             this.Game.uniqueIDsManager = this.WorldData.uniqueIDsManager;
-            this.Game.World.components = this.WorldData.worldComponents;
+
+            if (this.WorldData.worldComponents != null)
+            {
+                Log.Error("WorldData worldComponents is null. Please look into this.");
+                this.Game.World.components = this.WorldData.worldComponents;
+            }
             
             AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents", new Type[0]).Invoke(this.Game.World, new object[0]);
 
@@ -214,8 +222,11 @@ namespace PersistentWorlds.Logic
             Current.Game = game;
             
             persistentWorld.WorldData = PersistentWorldData.Convert(game);
+
+            var colony = PersistentColony.Convert(game);
+            persistentWorld.Colony = colony;
             
-            persistentWorld.Colonies.Add(PersistentColony.Convert(game));
+            persistentWorld.Colonies.Add(colony);
             
             persistentWorld.ConvertCurrentGameSettlements(game);
             
@@ -276,24 +287,6 @@ namespace PersistentWorlds.Logic
                 var settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
                 settlement.SetFaction(Faction.OfPlayer);
                 
-                // TODO: Unexpected? null colony map for some odd reason.
-                if (colony.Map?.info == null)
-                {
-                    if (colony.Map == null)
-                    {
-                        Log.Error("Colony map is null.");
-                    }
-                    else
-                    {
-                        if (colony.Map.info == null)
-                        {
-                            Log.Error("Colony map info is null.");
-                        }
-                    }
-
-                    continue;
-                }
-                
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 settlement.Name = colony.Name;
@@ -308,37 +301,6 @@ namespace PersistentWorlds.Logic
             toRemove.Do(colony => this.WorldData.worldObjectsHolder.Remove(colony));
             toRemove.Clear();
         }
-
-        /*
-        public void SortMaps(IEnumerable<Map> maps)
-        {            
-            foreach (var map in maps)
-            {
-                foreach (var colony in this.Colonies)
-                { 
-                    if (!colony.ColonyData.ActiveWorldTiles.Contains(map.Tile)) continue;
-                    
-                    if(!this.Maps.ContainsKey(colony))
-                        this.Maps.Add(colony, new List<Map>());
-                    
-                    this.Maps[colony].Add(map);
-                }
-            }
-        }
-
-        public void PreAddMaps()
-        {
-            if (this.Colony == null) return;
-            
-            foreach (var map in this.Maps[this.Colony])
-            {
-                if (!this.Game.Maps.Contains(map))
-                {
-                    this.Game.Maps.Add(map);
-                }
-            }
-        }
-        */
 
         public void UpdateWorld()
         {
@@ -361,20 +323,22 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            // TODO: Change all vars.
+            Log.Message("Patch");
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
+            Log.Message("Ok");
         }
 
         public void ResetPlayerFaction()
         {
-            // TODO: Change all vars.
             SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(FactionDefOf.PlayerColony));
         }
 
         private void SetPlayerFactionVarsOf(Faction newFaction)
         {
             var ofPlayerFaction = this.WorldData.factionManager.OfPlayer;
+            
             ofPlayerFaction.leader = newFaction.leader;
+    
             ofPlayerFaction.def = newFaction.def;
 
             ofPlayerFaction.Name = newFaction.HasName ? newFaction.Name : null;
@@ -413,15 +377,7 @@ namespace PersistentWorlds.Logic
 
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
-            
-            // Remove any relations with other player colonies.
-            // newFaction.RemoveAllRelations() doesn't work because requires Find.FactionManager which can be null depending on when this is called.
         }
-
-        // TODO: Reset player faction to be tribe or colony depending on scenario. Should be called before selecting landing site.
-        public void ResetPlayerFactionScenario()
-        {
-            
-        }
+        #endregion
     }
 }

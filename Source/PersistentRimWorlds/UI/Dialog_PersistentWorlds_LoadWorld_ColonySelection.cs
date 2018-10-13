@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -7,16 +8,22 @@ using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
+    [StaticConstructorOnStartup]
+    public sealed class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
     {        
+        #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
-        
-        public override Vector2 InitialSize => new Vector2(600f, 700f);
 
         private Vector2 scrollPosition = Vector2.zero;
+        #endregion
         
+        #region Properties
+        public override Vector2 InitialSize => new Vector2(600f, 700f);
+        #endregion
+        
+        #region Constructors
         public Dialog_PersistentWorlds_LoadWorld_ColonySelection()
         {   
             this.LoadColoniesAsItems();
@@ -27,46 +34,57 @@ namespace PersistentWorlds.UI
             this.absorbInputAroundWindow = true;
             this.closeOnAccept = false;
         }
-
+        #endregion
+        
+        #region Methods
         public override void PreOpen()
         {
             this.SetInitialSizeAndPosition();
         }
 
+        public override void PostClose()
+        {
+            //PersistentWorldManager.Clear();
+        }
+
         private void LoadColoniesAsItems()
         {
             PersistentWorldManager.WorldLoadSaver.LoadColonies();
-            
+
             for (var i = 0; i < PersistentWorldManager.PersistentWorld.Colonies.Count; i++)
             {
                 var colony = PersistentWorldManager.PersistentWorld.Colonies[i];
-                
-                var scrollableListItem = new ScrollableListItem();
 
-                scrollableListItem.Text = colony.ColonyData.ColonyFaction.Name;
-                scrollableListItem.ActionButtonText = "Load".Translate();
-                scrollableListItem.ActionButtonAction = delegate
+                var i1 = i;
+                var scrollableListItem = new ScrollableListItemColored
+                {
+                    Text = colony.ColonyData.ColonyFaction.Name,
+                    ActionButtonText = "Load".Translate(),
+                    ActionButtonAction = delegate
                     {
-                        PersistentWorldManager.PersistentWorld.Colony = colony;
-                        
+                        PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
+                        PersistentWorldManager.PersistentWorld.Colonies[i1] = colony;
+
                         // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
                         MemoryUtility.ClearAllMapsAndWorld();
 
                         PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
                         PersistentWorldManager.WorldLoadSaver.TransferToPlayScene();
-                    };
-                
-                scrollableListItem.DeleteButtonAction = delegate
-                {
-                    // TODO: Allow colonies to be deleted.   
+                    },
+                    DeleteButtonAction = delegate
+                    {
+                        // TODO: Allow colonies to be deleted.   
+                    },
+                    DeleteButtonTooltip = "DeleteColony-PersistentWorlds".Translate(),
+                    canChangeColor = true,
+                    texture = Town
                 };
-                scrollableListItem.DeleteButtonTooltip =
-                    "DeleteColony-PersistentWorlds".Translate();
 
-                scrollableListItem.canChangeColor = true;
-                scrollableListItem.texture = Town; 
-                
-                // TODO: Show date/time of file save.
+                scrollableListItem.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
+                    color = SaveFileInfo.UnimportantTextColor
+                });
                 
                 items.Add(scrollableListItem);
             }
@@ -82,9 +100,6 @@ namespace PersistentWorlds.UI
 
             optList.Add(new ListableOption("NewColony".Translate(), delegate
             {
-                // TODO: Have normal creation menus without creating world choice however... include scenario and characters and storyteller, as well as world location.
-                // TODO: Have other colonies on same world tiles loaded as a settlement with different color as a whole new worldobject that shows up in Colonies tab on world map.
-                
                 Find.WindowStack.Add((Window) new Page_SelectScenario());
             }));
             
@@ -98,5 +113,6 @@ namespace PersistentWorlds.UI
             
             GUI.EndGroup();
         }
+        #endregion
     }
 }

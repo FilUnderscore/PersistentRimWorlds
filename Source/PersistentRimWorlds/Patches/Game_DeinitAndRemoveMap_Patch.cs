@@ -4,21 +4,15 @@ using Verse;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(Game), "DeinitAndRemoveMap")]
-    public static class Game_DeinitAndRemoveMap_Patch
+    public class Game_DeinitAndRemoveMap_Patch
     {
-        [HarmonyPrefix]
-        public static bool DeinitAndRemoveMap_Prefix(Game __instance, Map map)
+        #region Methods
+        static bool Prefix(Game __instance, Map map)
         {
-            // TODO: Review
+            // TODO: Patch. Can use map.isPlayerHome()
             
-            /*
-            if (map.IsPlayerHome)
-            {
-                return false;
-            }
-            */
-
             return true;
         }
+        #endregion
     }
 }

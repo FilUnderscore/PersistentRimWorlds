@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using RimWorld;
@@ -9,10 +10,24 @@ using Verse;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
-    public static class MainMenuDrawer_DoMainMenuControls_Patch
+    public class MainMenuDrawer_DoMainMenuControls_Patch
     {
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> DoMainMenuControls_Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator il)
+        #region Fields
+        private static readonly MethodInfo TranslateMethod =
+            AccessTools.Method(typeof(Translator), "Translate", new[] {typeof(string)});
+
+        private static readonly FieldInfo MainMenuButtonDelegate =
+            AccessTools.Field(typeof(PersistentWorldsMod), "MainMenuButtonDelegate");
+
+        private static readonly ConstructorInfo ListableOptionConstructor = AccessTools.Constructor(typeof(ListableOption),
+            new[] {typeof(string), typeof(Action), typeof(string)});
+
+        private static readonly MethodInfo AddMethod =
+            AccessTools.Method(typeof(List<ListableOption>), "Add", new[] {typeof(ListableOption)});
+        #endregion
+        
+        #region Methods
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator il)
         {
             var codes = new List<CodeInstruction>(instr);
 
@@ -22,16 +37,18 @@ namespace PersistentWorlds.Patches
                 if (codes[i + 4].opcode != OpCodes.Ldstr) continue;
                 if ((codes[i + 4].operand as string) != "ReviewScenario") continue;
 
-                var insertInstr = new List<CodeInstruction>();
-                insertInstr.Add(new CodeInstruction(OpCodes.Ldstr, "Persistent Worlds"));
-                insertInstr.Add(new CodeInstruction(OpCodes.Ldsfld, typeof(PersistentWorldsMod).GetField("MainMenuButtonDelegate")));
-                    
-                insertInstr.Add(new CodeInstruction(OpCodes.Ldnull));
-                insertInstr.Add(new CodeInstruction(OpCodes.Newobj, AccessTools.Constructor(typeof(Verse.ListableOption), new Type[] { typeof(string), typeof(System.Action), typeof(string) })));
-                insertInstr.Add(new CodeInstruction(OpCodes.Stloc_3));
-                insertInstr.Add(new CodeInstruction(OpCodes.Ldloc_2));
-                insertInstr.Add(new CodeInstruction(OpCodes.Ldloc_3));
-                insertInstr.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<Verse.ListableOption>), "Add", new Type[] { typeof(ListableOption) })));
+                var insertInstr = new List<CodeInstruction>
+                {
+                    new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds"),
+                    new CodeInstruction(OpCodes.Call,TranslateMethod),
+                    new CodeInstruction(OpCodes.Ldsfld, MainMenuButtonDelegate),
+                    new CodeInstruction(OpCodes.Ldnull),
+                    new CodeInstruction(OpCodes.Newobj, ListableOptionConstructor),
+                    new CodeInstruction(OpCodes.Stloc_3),
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Ldloc_3),
+                    new CodeInstruction(OpCodes.Callvirt, AddMethod)
+                };
 
                 codes.InsertRange(i, insertInstr);
                     
@@ -40,5 +57,6 @@ namespace PersistentWorlds.Patches
 
             return codes.AsEnumerable();
         }
+        #endregion
     }
 }

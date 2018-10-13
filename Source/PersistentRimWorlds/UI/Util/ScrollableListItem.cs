@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace PersistentWorlds.UI
 {
-    public sealed class ScrollableListItem
+    public class ScrollableListItem
     {
+        #region Fields
         public string Text;
         
         public string ActionButtonText;
@@ -14,10 +15,9 @@ namespace PersistentWorlds.UI
         public Action DeleteButtonAction;
         public string DeleteButtonTooltip;
 
-        public bool canChangeColor;
-        public Color color = Color.white;
         public Texture2D texture;
         
-        public List<ScrollableListItemInfo> Info = new List<ScrollableListItemInfo>();
+        public readonly List<ScrollableListItemInfo> Info = new List<ScrollableListItemInfo>();
+        #endregion
     }
 }

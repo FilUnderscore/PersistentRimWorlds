@@ -7,17 +7,23 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public class Dialog_ColorPicker : Window
+    public sealed class Dialog_ColorPicker : Window
     {
-        private ScrollableListItem item;
-   
+        #region Fields
+        private ScrollableListItemColored item;
+        private Color color;
+        
         private float rValue = 128;
         private float gValue = 128;
         private float bValue = 128;
+        #endregion
         
+        #region Properties
         public override Vector2 InitialSize => new Vector2(600, 220);
+        #endregion
         
-        public Dialog_ColorPicker(ScrollableListItem item)
+        #region Constructors
+        public Dialog_ColorPicker(ScrollableListItemColored item)
         {
             this.doCloseX = true;
             this.doCloseButton = true;
@@ -26,7 +32,9 @@ namespace PersistentWorlds.UI
 
             this.item = item;
         }
+        #endregion
 
+        #region Methods
         public override void DoWindowContents(Rect inRect)
         {
             GUI.BeginGroup(inRect);
@@ -53,8 +61,9 @@ namespace PersistentWorlds.UI
             Widgets.Label(greenSideRect, ((int) gValue).ToString());
             Widgets.Label(blueSideRect, ((int) bValue).ToString());
             
-            GUI.color = new Color(rValue / 255, gValue / 255, bValue / 255);
-            item.color = GUI.color;
+            color = new Color(rValue / 255, gValue / 255, bValue / 255);
+            
+            GUI.color = color;
             GUI.DrawTexture(textureTestRect, item.texture);
             GUI.color = Color.white;
             
@@ -143,5 +152,6 @@ namespace PersistentWorlds.UI
             GUI.DrawTexture(rect, colorWheel);
         }
         */
+        #endregion
     }
 }

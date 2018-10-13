@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -8,6 +7,7 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorldData : IExposable
     {
+        #region Fields
         public int NextColonyId;
         
         public WorldInfo info = new WorldInfo();
@@ -23,7 +23,9 @@ namespace PersistentWorlds.Logic
         public List<WorldComponent> worldComponents = new List<WorldComponent>();
         
         public TickManager TickManager = new TickManager();
-
+        #endregion
+        
+        #region Methods
         public void ExposeData()
         {
             if (PersistentWorldManager.WorldLoadSaver.Status ==
@@ -124,5 +126,6 @@ namespace PersistentWorlds.Logic
 
             return persistentWorldData;
         }
+        #endregion
     }
 }

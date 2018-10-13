@@ -4,10 +4,10 @@ using RimWorld.Planet;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(WorldGenStep_Components), "GenerateFromScribe")]
-    public static class WorldGenStep_Components_Patch
+    public class WorldGenStep_Components_Patch
     {
-        [HarmonyPrefix]
-        public static bool GenerateFromScribe_Prefix()
+        #region Methods
+        static bool Prefix()
         {
             if (PersistentWorldManager.PersistentWorld == null)
             {
@@ -20,5 +20,6 @@ namespace PersistentWorlds.Patches
             
             return false;
         }
+        #endregion
     }
 }

@@ -8,10 +8,11 @@ using Verse;
 
 namespace PersistentWorlds.Patches
 {
-    [HarmonyPatch(typeof(LogEntry), new Type[] { typeof(LogEntryDef) })]
-    public static class LogEntry_Patch
+    [HarmonyPatch]
+    public class LogEntry_Patch
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
+        #region Methods
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
         {
             var codes = new List<CodeInstruction>(instr);
 
@@ -22,11 +23,6 @@ namespace PersistentWorlds.Patches
             {
                 if (codes[i].opcode != OpCodes.Call) continue;
                 if (codes[i].operand != AccessTools.Method(typeof(Find), "get_TickManager")) continue;
-
-                /*
-                codes[i].opcode = OpCodes.Ldfld;
-                codes[i].operand = AccessTools.Field(typeof(PersistentWorldData), "TickManager");
-                  */
 
                 codes[i].labels.Add(jumpLabel);
                 codes[i + 1].labels.Add(skipLabel);
@@ -58,5 +54,6 @@ namespace PersistentWorlds.Patches
         {
             return AccessTools.Constructor(typeof(LogEntry), new Type[] { typeof(LogEntryDef) });
         }
+        #endregion
     }
 }

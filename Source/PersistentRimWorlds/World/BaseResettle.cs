@@ -2,8 +2,9 @@
 
 namespace PersistentWorlds.World
 {
-    public class BaseResettle : MapParent
+    public sealed class BaseResettle : MapParent
     {
+        #region Methods
         public override void Tick()
         {
             base.Tick();
@@ -13,7 +14,6 @@ namespace PersistentWorlds.World
                 // TODO: ...
             }
         }
-        
-        
+        #endregion
     }
 }

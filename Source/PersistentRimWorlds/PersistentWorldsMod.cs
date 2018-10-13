@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Harmony;
@@ -8,28 +9,43 @@ using PersistentWorlds.UI;
 
 namespace PersistentWorlds
 {
-    public class PersistentWorldsMod : Mod
+    /// <summary>
+    /// The main mod class that interacts with RimWorld when it is loaded.
+    /// </summary>
+    public sealed class PersistentWorldsMod : Mod
     {
+        #region Fields
         // Must be public or IL transpiler throws error of ldsfld NULL.
         public static Delegate MainMenuButtonDelegate = new Action(PatchMainMenu);
+        #endregion
         
+        #region Constructors
+        /// <summary>
+        /// Main mod constructor that initializes Harmony patches.
+        /// </summary>
+        /// <param name="content"></param>
         public PersistentWorldsMod(ModContentPack content) : base(content)
         {
-            var harmony = HarmonyInstance.Create("PersistentWorlds");
+            var harmony = HarmonyInstance.Create("me.filunderscore.persistentrimworlds");
 
 #if DEBUG
             HarmonyInstance.DEBUG = true;
+            
+            PersistentWorlds.Debug.FileLog.StartLoggingToFile("debug_log.txt");
 #endif
 
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            
-            // DynamicGenericPatcher.PatchScribeCollectionsLook(harmony);
         }
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Patches the button of "Persistent RimWorlds", more of a delegate called by "MainMenuButtonDelegate".
+        /// </summary>
         private static void PatchMainMenu()
         {
-            // Close main menu...
-            Find.WindowStack.Add((Window) new Dialog_PersistentWorlds_Main());
+            Find.WindowStack.Add(new Dialog_PersistentWorlds_Main());
         }
+        #endregion
     }
 }

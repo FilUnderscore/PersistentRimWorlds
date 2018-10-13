@@ -8,10 +8,10 @@ using Verse;
 namespace PersistentWorlds.Patches
 {
     [HarmonyPatch(typeof(Caravan), "GetGizmos")]
-    public static class Caravan_GetGizmos_Patch
+    public class Caravan_GetGizmos_Patch
     {
-        [HarmonyPostfix]
-        public static void GetGizmos_Postfix(ref IEnumerable<Gizmo> __result, Caravan __instance)
+        #region Methods
+        static void Postfix(ref IEnumerable<Gizmo> __result, Caravan __instance)
         {
             if (Find.WorldObjects.AnyWorldObjectAt(__instance.Tile, WorldObjectDefOf.AbandonedSettlement))
             {
@@ -23,5 +23,6 @@ namespace PersistentWorlds.Patches
                 __result = gizmos;
             }
         }
+        #endregion
     }
 }
