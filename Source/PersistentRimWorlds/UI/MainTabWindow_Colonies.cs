@@ -71,11 +71,11 @@ namespace PersistentWorlds.UI
 
                         LongEventHandler.QueueLongEvent(delegate
                         {
+                            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
+
                             PersistentWorldManager.WorldLoadSaver.LoadColony(ref colony);
                             PersistentWorldManager.PersistentWorld.Colonies[index] = colony;
                             
-                            PersistentWorldManager.PersistentWorld.ConvertCurrentGameSettlements(PersistentWorldManager.PersistentWorld.Game);
-
                             PersistentWorldManager.PersistentWorld.PatchPlayerFaction();
 
                             UnloadMapReferences(colony);
