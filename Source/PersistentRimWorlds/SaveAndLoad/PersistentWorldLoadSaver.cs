@@ -308,6 +308,12 @@ namespace PersistentWorlds
                                      colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
 
                 var colonyFile = new FileInfo(colonySaveFile);
+
+                // Delete previous colony file.
+                if (PersistentWorldManager.PersistentWorld.Colony == colony && colony.FileInfo != null && colony.FileInfo.FullName != colonyFile.FullName)
+                {
+                    File.Delete(colony.FileInfo.FullName);
+                }
                 
                 currentFile = colonyFile;
                 colony.FileInfo = colonyFile;
