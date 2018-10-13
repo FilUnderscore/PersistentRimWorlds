@@ -115,7 +115,8 @@ namespace PersistentWorlds.SaveAndLoad
 
         public void ClearReferences()
         {
-            // TODO: ...
+            references.Clear();
+            requestedReferences.Clear();
         }
         
 #if DEBUG

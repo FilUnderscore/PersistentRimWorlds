@@ -104,6 +104,9 @@ namespace PersistentWorlds
         
         public void LoadWorld()
         {
+            // Otherwise it's gonna be lots of errors.
+            PersistentWorldManager.ReferenceTable.ClearReferences();
+
             Status = PersistentWorldLoadStatus.Loading;
             
             this.PreloadWorldColoniesMaps();
@@ -249,6 +252,7 @@ namespace PersistentWorlds
         // TODO: Somehow rewrite this...
         public void SaveWorld(PersistentWorld world)
         {
+            // Otherwise it's gonna be lots of errors.
             PersistentWorldManager.ReferenceTable.ClearReferences();
             
             this.CreateDirectoriesIfNotExistant();

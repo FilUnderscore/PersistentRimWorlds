@@ -90,7 +90,6 @@
     <Compile Include="SaveAndLoad\Patches\Scribe\Scribe_References_Look_Patch.cs" />
     <Compile Include="SaveAndLoad\PersistentWorldLoadSaver.cs" />
     <Compile Include="SaveAndLoad\ReferenceTable.cs" />
-    <Compile Include="SaveAndLoad\ReferenceTableOld.cs" />
     <Compile Include="SaveAndLoad\SaveFileUtils.cs" />
     <Compile Include="SaveAndLoad\ScribeMultiLoader.cs" />
     <Compile Include="SaveAndLoad\ScribeVars.cs" />
