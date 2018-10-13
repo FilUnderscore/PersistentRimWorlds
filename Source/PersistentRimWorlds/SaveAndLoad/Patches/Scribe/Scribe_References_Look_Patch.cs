@@ -2,8 +2,6 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Harmony;
-using PersistentWorlds.World;
-using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -12,18 +10,19 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch]
     public class Scribe_References_Look_Patch
     {
-        //private static readonly MethodInfo GetReferenceMethod = AccessTools.Method(typeof(ReferenceSaveLoader),
-        //    "GetReference", new[] {typeof(string)});
-        
-        #region Methods
         static bool Prefix(ref ILoadReferenceable refee, string label)
         {
-            if ((!(refee is Pawn) && !(refee is WorldObject) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            // TODO: Please investigate.
+            //if ((!(refee is Pawn) && !(refee is WorldObject) && !(refee is IExposable)) || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            //{
+            //    return true;
+            //}
+
+            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status ==
+                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
             {
                 return true;
             }
-
-            var exposable = (IExposable) refee;
             
             switch (Scribe.mode)
             {
@@ -38,10 +37,20 @@ namespace PersistentWorlds.Patches
                     var targetLoadID = xmlNode?.InnerText;
                     
 #if DEBUG
+                    /*
                     // Reference Debugging.
                     Log.Message("targetloadid: " + targetLoadID);
                     Log.Message("label: " + label);
-                    Log.Message("Type: " + exposable.GetType());
+
+                    if (refee != null)
+                    {
+                        Log.Message("Type: " + refee.GetType());
+                    }
+                    else
+                    {
+                        Log.Message("Refee is null.");
+                    }
+                    */
 #endif
                     
                     // Prevent default(T) being null in generic method.
@@ -64,6 +73,5 @@ namespace PersistentWorlds.Patches
             return typeof(Scribe_References).GetMethods().First(m => m.Name == "Look" && m.IsGenericMethod)
                 .MakeGenericMethod(typeof(ILoadReferenceable));
         }
-        #endregion
     }
 }

@@ -249,6 +249,7 @@ namespace PersistentWorlds
          * SAVING
          */
 
+        // TODO: Somehow rewrite this...
         public void SaveWorld(PersistentWorld world)
         {
             PersistentWorldManager.ReferenceTable.ClearReferences();
@@ -281,7 +282,7 @@ namespace PersistentWorlds
                 // If colony changed name or data changed..
                 if (PersistentWorldManager.PersistentWorld.Colony == colony)
                 {
-                    colony1 = PersistentColony.Convert(PersistentWorldManager.PersistentWorld.Game, colony.ColonyData);
+                    colony1 = PersistentColony.Convert(PersistentWorldManager.PersistentWorld.Game, colony1.ColonyData);
                 }
 
                 // TODO: Revise this fix one day.
@@ -294,14 +295,15 @@ namespace PersistentWorlds
                     sameNames.Add(colony1.ColonyData.ColonyFaction.Name, 1);
                 }
 
-                var colonySaveFile = coloniesDirectory + "/" + sameNames[colony1.ColonyData.ColonyFaction.Name].ToString() + colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
+                if (PersistentWorldManager.PersistentWorld.Colony != colony) continue;
+                
+                var colonySaveFile = coloniesDirectory + "/" +
+                                     sameNames[colony1.ColonyData.ColonyFaction.Name].ToString() +
+                                     colony1.ColonyData.ColonyFaction.Name + PersistentWorldColonyFile_Extension;
 
                 currentFile = new FileInfo(colonySaveFile);
-                
-                SafeSaver.Save(colonySaveFile, "colonyfile", delegate
-                {
-                    Scribe_Deep.Look(ref colony1, "colony");
-                });
+
+                SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony1, "colony"); });
             }
             
             Log.Message("Saved colony data.");
@@ -323,12 +325,9 @@ namespace PersistentWorlds
             
             PersistentWorldManager.PersistentWorld.ConvertToCurrentGameSettlements();
             
-            //Log.Message("Saving references.");
-            //ReferenceSaveLoader.SaveReferences();
-            
             Log.Message("Saved world.");
             
-            PersistentWorldManager.ReferenceTable.SaveReferences();
+            //PersistentWorldManager.ReferenceTable.SaveReferences();
         }
         
         /**

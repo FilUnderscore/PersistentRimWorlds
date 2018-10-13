@@ -72,8 +72,8 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            //Log.Message("Construct components");
-            //PersistentWorldManager.PersistentWorld.Game.World.ConstructComponents();
+            Log.Message("Construct components");
+            PersistentWorldManager.PersistentWorld.Game.World.ConstructComponents();
             
             Log.Message("Called ExposeComponents in persistentworlddata.");
             

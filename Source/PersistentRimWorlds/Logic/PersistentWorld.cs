@@ -222,8 +222,11 @@ namespace PersistentWorlds.Logic
             Current.Game = game;
             
             persistentWorld.WorldData = PersistentWorldData.Convert(game);
+
+            var colony = PersistentColony.Convert(game);
+            persistentWorld.Colony = colony;
             
-            persistentWorld.Colonies.Add(PersistentColony.Convert(game));
+            persistentWorld.Colonies.Add(colony);
             
             persistentWorld.ConvertCurrentGameSettlements(game);
             

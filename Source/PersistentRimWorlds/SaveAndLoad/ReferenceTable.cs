@@ -1,336 +1,229 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 using Harmony;
-using Ionic.Zlib;
 using PersistentWorlds.Patches;
 using Verse;
 
 namespace PersistentWorlds.SaveAndLoad
 {
-    public sealed class ReferenceTable
+    public class ReferenceTable
     {
-        // TODO: Important! Compression, saves a lot of space. Can be done asynchronously.
-        
-        #region Fields
-
-        private bool compress = false;
-        
         private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
-        
+
         /// <summary>
         /// Stores requested references for cross-references state.
         ///
-        /// First parameter is path of file that requested.
-        /// Second parameter is ReferenceRequest.
-        /// </summary>
-        private Dictionary<string, List<ReferenceRequest>> requestedReferences = new Dictionary<string, List<ReferenceRequest>>();
-            
-        /// <summary>
-        /// Stores locations to references in memory.
+        /// First parameter is path of file that requested. This is so it can be removed from this dictionary
+        /// when no longer needed.
         ///
-        /// First parameter is the unique ID of the reference.
-        /// Second parameter is the ReferenceEntry.
+        /// Second parameter is the ReferenceRequest itself listed.
         /// </summary>
-        /// <returns></returns>
-        private Dictionary<string, ReferenceEntry> referenceEntryDict = new Dictionary<string, ReferenceEntry>();
-        #endregion
+        private Dictionary<string, List<ReferenceRequest>> requestedReferences =
+            new Dictionary<string, List<ReferenceRequest>>();
         
-        #region Properties
-        private static string ReferenceTableFileMapPath => PersistentWorldManager.WorldLoadSaver.GetWorldFolder() + "/references.reftable";
-        #endregion
-        
-        #region Methods
-        public void ClearReferences()
+        /// <summary>
+        /// Stores locations to references in memory for cross-references states.
+        ///
+        /// First parameter is the unique load ID of the reference.
+        /// Second parameter is the ReferenceEntry itself.
+        /// </summary>
+        private Dictionary<string, Reference> references = new Dictionary<string, Reference>();
+
+        /// <summary>
+        /// Loads the reference (first parameter) with any add-on label depending on the path relative to the parent.
+        /// </summary>
+        /// <param name="referenceable"></param>
+        /// <param name="label"></param>
+        public void LoadReferenceIntoMemory(ILoadReferenceable referenceable, string label)
         {
-            referenceEntryDict.Clear();
-            requestedReferences.Clear();
-        }
-        
-        /*
-        public void LoadReferences(string filePath)
-        {
-            // TODO: Check for compression header.
-            if (!compress)
-            {
-                using (var reader = new StreamReader(ReferenceTableFileMapPath))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        var line = reader.ReadLine();
-
-                        if (line == null || !line.Split(':')[1].Contains(filePath)) continue;
-                        
-                        var referenceEntry = ReferenceEntry.FromString(line);
-                        referenceEntryDict.Add(referenceEntry.uniqueLoadID, referenceEntry);
-                    }
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-        */
-
-        public void LoadReferences()
-        {
-            if (!compress)
-            {
-                using (var reader = new StreamReader(ReferenceTableFileMapPath))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        var line = reader.ReadLine();
-
-                        if (line == null) continue;
-                        
-                        var referenceEntry = ReferenceEntry.FromString(line);
-                        
-                    }
-                }
-            }
-        }
-
-        public void SaveReferences()
-        {
-            if (!compress)
-            {
-                using (var writer = new StreamWriter(ReferenceTableFileMapPath, false))
-                {
-                    foreach (var referenceSet in referenceEntryDict)
-                    {
-                        writer.WriteLine(referenceSet.Value.ToString());
-                    }
-                }
-            }
-            else
-            {
-                var sb = new StringBuilder();
-
-                using (var writer = new StringWriter(sb))
-                {
-                    foreach (var referenceSet in referenceEntryDict)
-                    {
-                        writer.WriteLine(referenceSet.Value.ToString());
-                    }
-                }
-
-                Log.Message("Written to stringbuilder.");
-
-                var bytes = Encoding.UTF8.GetBytes(sb.ToString());
-
-                using (var fs = new FileStream(ReferenceTableFileMapPath, FileMode.Create))
-                {
-                    // Level 4 is best time/size ratio for this format.
-                    using (var zipStream =
-                        new GZipStream(fs, CompressionMode.Compress, CompressionLevel.Level4, false))
-                    {
-                        zipStream.Write(bytes, 0, bytes.Length);
-                    }
-                }
-
-                Log.Message("Compressed!");
-            }
-        }
-
-        public void AddReference(ILoadReferenceable reference, string label)
-        {
-            var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
+            // Current file of the reference to be assigned as Reference.pathOfFileContainingReference.
+            var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = "";
+
+            switch (Scribe.mode)
+            {
+                case LoadSaveMode.Saving:
+                    pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
+
+                    if (label == "li")
+                    {
+                        pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetIndexInList(pathRelToParent, label) +
+                                           "]";
+                    }
+                    else if(label == "thing")
+                    {
+                        pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetThingIndex() + "]";
+                    }
+
+                    Debug.FileLog.Log("LoadReferenceIntoMemory SAVING (pathRelToParent=" + pathRelToParent + ")");
+                    break;
+                case LoadSaveMode.LoadingVars:
+                    pathRelToParent = label;
+                    Debug.FileLog.Log("LoadReferenceIntoMemory LOADING (pathRelToParent=" + pathRelToParent + ")");
+                    break;
+                default:
+                    throw new InvalidProgramException("Invalid program state.");
+            }
             
-            if (Scribe.mode == LoadSaveMode.Saving)
-            {
-                pathRelToParent = (string) curPathField.GetValue(Scribe.saver) + "/" + label;
+            var reference = new Reference(currentFile, pathRelToParent, referenceable);
 
-                if (label == "li")
-                {
-                    pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetIndexInList(pathRelToParent, label) + "]";
-                }
-                else if (label == "thing")
-                {
-                    pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetThingIndex() + "]";
-                }
-            }
-            else if(Scribe.mode == LoadSaveMode.LoadingVars)
+            if (references.ContainsKey(referenceable.GetUniqueLoadID()))
             {
-                // TODO: Do same thing with loading like saving.
-                pathRelToParent = label;
-                Debug.FileLog.Log("PathRelToParent RefTable: " + pathRelToParent);
-            }
-            else
-            {
-                throw new InvalidProgramException("Invalid state.");
-            }
-
-            var referenceEntry = new ReferenceEntry(currentFile, pathRelToParent){};
-            referenceEntry.LoadReference(reference);
-
-            if (referenceEntryDict.ContainsKey(referenceEntry.uniqueLoadID))
-            {
-                Log.Error("There is already a reference entry with the unique load ID \"" + referenceEntry.uniqueLoadID + "\"!");
+                Log.Error("There is already a reference entry with the unique load ID of \"" + referenceable.GetUniqueLoadID() + "\"");
                 return;
             }
 
-            referenceEntryDict.Add(referenceEntry.uniqueLoadID, referenceEntry);
-        }
-
-        public void LoadReference(ILoadReferenceable referenceable)
-        {
-            referenceEntryDict[referenceable.GetUniqueLoadID()].LoadReference(referenceable);
-
-            foreach (var referenceRequestSet in requestedReferences)
-            {
-                foreach (var referenceRequest in referenceRequestSet.Value)
-                {
-                    if (referenceRequest.uniqueLoadIDRequested == referenceable.GetUniqueLoadID())
-                    {
-                        referenceRequest.linkToReferenceEntry = referenceEntryDict[referenceable.GetUniqueLoadID()];
-                    }
-                }
-            }
+            references.Add(referenceable.GetUniqueLoadID(), reference);
         }
 
         public void RequestReference(string label, string uniqueLoadID)
         {
             if (Scribe.mode != LoadSaveMode.LoadingVars)
             {
-                Log.Error(nameof(RequestReference) + " called when Scribe.mode != LoadSaveMode.LoadingVars.");
-                return;
+                throw new InvalidProgramException("RequestReference called when Scribe.mode != LoadingVars.");
             }
-            
-            var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
+
+            var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
+            var request = new ReferenceRequest(uniqueLoadID, label, Scribe.loader.curParent);
+            
             if (requestedReferences.ContainsKey(currentFile))
             {
-                requestedReferences[currentFile].Add(new ReferenceRequest(pathRelToParent, uniqueLoadID){parent = Scribe.loader.curParent,label = label});
+                requestedReferences[currentFile].Add(request);
             }
             else
             {
-                requestedReferences.Add(currentFile, new List<ReferenceRequest>() { new ReferenceRequest(pathRelToParent, uniqueLoadID){parent=Scribe.loader.curParent,label=label} });
+                requestedReferences.Add(currentFile, new List<ReferenceRequest>() {request});
             }
         }
 
         public ILoadReferenceable ResolveReference(string label)
         {
-            var currentFile = CropFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
+            var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
-
-            Debug.FileLog.Log("RESOLVE --");
-            Debug.FileLog.Log("CurFile: " + currentFile);
-            Debug.FileLog.Log("PathRelToParent: " + pathRelToParent);
-            Debug.FileLog.Log("Label: " + label);
 
             if (requestedReferences.ContainsKey(currentFile))
             {
                 foreach (var requestedReference in requestedReferences[currentFile])
                 {
-                    if (requestedReference.pathFromParentThatRequested == pathRelToParent ||
-                        Scribe.loader.curParent != null && requestedReference.parent != null &&
-                        Equals(requestedReference.parent, Scribe.loader.curParent) && requestedReference.label == label)
+                    var flag = requestedReference.Label == label &&
+                                Equals(requestedReference.Parent, Scribe.loader.curParent);
+
+                    if (flag)
                     {
-                        if (requestedReference.linkToReferenceEntry?.reference != null)
-                        {
-                            return requestedReference.linkToReferenceEntry.reference;
-                        }
-
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                Debug.FileLog.Log("No key for file: " + currentFile + " when resolving.");
-            }
-
-            Debug.FileLog.Log("Fallback.");
-            
-            // Fallback
-            foreach (var requestedReferenceList in requestedReferences.Values)
-            {
-                foreach (var requestedReference in requestedReferenceList)
-                {
-                    if (requestedReference.pathFromParentThatRequested == pathRelToParent || Equals(requestedReference.parent, Scribe.loader.curParent) && requestedReference.label == label)
-                    {
-                        if (requestedReference.linkToReferenceEntry?.reference != null)
-                        {
-                            return requestedReference.linkToReferenceEntry.reference;
-                        }
-
-                        break;
+                        return references[requestedReference.LoadIDRequested].Referenceable;
                     }
                 }
             }
             
-            Debug.FileLog.Log("Both failed. Triple fallback.");
-
-            throw new NullReferenceException("Could not resolve reference at " + currentFile + ":" + pathRelToParent);
+            throw new InvalidProgramException("Invalid program state.");
         }
 
-        private string CropFileName(string fileName)
+        public void ClearReferences()
         {
-            const string indexString = "Saves\\";
+            // TODO: ...
+        }
+        
+#if DEBUG
+        public void DumpReferenceTable()
+        {
+            Debug.FileLog.Log("Dumped Reference Table ---");
+
+            for (var i = 0; i < references.Count; i++)
+            {
+                Debug.FileLog.Log(i + ": (uniqueLoadID=" + references.ElementAt(i).Key + ") - " + references.ElementAt(i).Value);
+            }
             
-            // Saves space in reftable file by cropping unneeded file path info.
+            Debug.FileLog.Log("End of Dump ---");
+        }
+
+        public void DumpReferenceRequestTable()
+        {
+            Debug.FileLog.Log("Dumped Reference Request Table ---");
+
+            for (var i = 0; i < requestedReferences.Count; i++)
+            {
+                Debug.FileLog.Log(i + ": (fileName=" + requestedReferences.ElementAt(i).Key + ")");
+
+                for (var j = 0; j < requestedReferences[requestedReferences.ElementAt(i).Key].Count; j++)
+                {
+                    Debug.FileLog.Log("    " + i + ": " + requestedReferences[requestedReferences.ElementAt(i).Key][j]);
+                }
+                
+                Debug.FileLog.Log("");
+            }
+            
+            Debug.FileLog.Log("End of Dump ---");
+        }
+#endif
+        // TODO: Unload existing references on loading other colony.
+
+        private string GetCroppedFileName(string fileName)
+        {
+            const string indexString = "\\Saves\\";
+
             fileName = fileName.Substring(fileName.IndexOf(indexString, StringComparison.Ordinal) + indexString.Length);
             fileName = fileName.Substring(fileName.IndexOf("\\", StringComparison.Ordinal) + 1);
-            
+
             return fileName;
         }
-        #endregion
-
+        
         #region Classes
-        private sealed class ReferenceEntry
+        private sealed class Reference
         {
-            public string fileLocation; // E.g. file path
-            public string pathToReference; // E.g. .../world/info/...
+            private string pathOfFileContainingReference; // To be used for unloading reference when not needed.
 
-            public string uniqueLoadID;
-            public ILoadReferenceable reference;
+            private string pathRelToParent; // Path relevant to parent. Don't know if this is used yet?
+            private ILoadReferenceable reffable; // Link to reference.
 
-            public ReferenceEntry(string fileLocation, string pathToReference)
-            {
-                this.fileLocation = fileLocation;
-                this.pathToReference = pathToReference;
-            }
+            #region Properties
+            public string PathOfFileContainingReference => pathOfFileContainingReference;
+            public string PathRelToParent => pathRelToParent;
             
-            public void LoadReference(ILoadReferenceable reference)
+            public ILoadReferenceable Referenceable => reffable;
+            #endregion
+            
+            public Reference(string pathOfFileContainingReference, string pathRelToParent, ILoadReferenceable reffable)
             {
-                uniqueLoadID = reference.GetUniqueLoadID();
-                this.reference = reference;
+                this.pathOfFileContainingReference = pathOfFileContainingReference;
+                this.pathRelToParent = pathRelToParent;
+                this.reffable = reffable;
             }
 
             public override string ToString()
             {
-                return uniqueLoadID + ":" + fileLocation + ":" + pathToReference;
-            }
-
-            public static ReferenceEntry FromString(string str)
-            {
-                var args = str.Split(':');
-                
-                return new ReferenceEntry(args[1], args[2]) { uniqueLoadID = args[0] };
+                return "(pathOfFileContainingReference=" + pathOfFileContainingReference + ", pathRelToParent=" +
+                       pathRelToParent + ", reffable=" + reffable + ")";
             }
         }
 
         private sealed class ReferenceRequest
         {
-            public string pathFromParentThatRequested;
-            public string uniqueLoadIDRequested;
-
-            public IExposable parent;
-            public string label;
+            private string loadIDRequested;
             
-            public ReferenceEntry linkToReferenceEntry;
+            private string label; // Label for loading.
+            private IExposable parent; // Used to check Scribe.loader.curParent is the same, then load this request.
 
-            public ReferenceRequest(string pathFromParentThatRequested, string uniqueLoadIdRequested)
+            public string LoadIDRequested => loadIDRequested;
+            public string Label => label;
+            
+            public IExposable Parent => parent;
+            
+            public ReferenceRequest(string loadIdRequested, string label, IExposable parent)
             {
-                this.pathFromParentThatRequested = pathFromParentThatRequested;
-                this.uniqueLoadIDRequested = uniqueLoadIdRequested;
+                this.loadIDRequested = loadIdRequested;
+                this.label = label;
+
+                this.parent = parent;
+            }
+
+            public override string ToString()
+            {
+                return "(loadIDRequested=" + loadIDRequested + ", label=" + label + ", parent=" + parent +
+                       ")";
             }
         }
         #endregion

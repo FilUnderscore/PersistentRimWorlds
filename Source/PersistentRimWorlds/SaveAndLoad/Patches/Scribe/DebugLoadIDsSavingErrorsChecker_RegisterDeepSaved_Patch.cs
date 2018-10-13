@@ -14,9 +14,17 @@ namespace PersistentWorlds.Patches
         {
             if (Scribe.mode != LoadSaveMode.Saving) return true;
             
+            // TODO: Please look at this spam.
+            if (obj is Thing && !(obj is Pawn))
+            {
+                return true;
+            }
+            
             if (obj != null && obj is ILoadReferenceable referenceable)
             {
-                PersistentWorldManager.ReferenceTable.AddReference(referenceable, label);
+                // TODO: Check if is referenced or not.
+                //PersistentWorldManager.ReferenceTable.AddReference(referenceable, label);
+                PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, label);
             }
 
             return true;

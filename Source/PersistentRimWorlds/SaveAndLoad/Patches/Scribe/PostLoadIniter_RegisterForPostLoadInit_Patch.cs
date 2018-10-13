@@ -41,7 +41,7 @@ namespace PersistentWorlds.Patches
         
         static void Postfix(PostLoadIniter __instance, IExposable s)
         {
-            if (Scribe.mode != LoadSaveMode.LoadingVars) return;
+            if (Scribe.mode != LoadSaveMode.LoadingVars || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting) return;
 
             if (s != null && s is ILoadReferenceable referenceable)
             {                
@@ -94,7 +94,8 @@ namespace PersistentWorlds.Patches
                 
                 Debug.FileLog.Log("Adding reference: " + pathToLoad);
                 Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
-                PersistentWorldManager.ReferenceTable.AddReference(referenceable, pathToLoad);
+                //PersistentWorldManager.ReferenceTable.AddReference(referenceable, pathToLoad);
+                PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, pathToLoad);
             }
         }
 
