@@ -20,8 +20,10 @@ namespace PersistentWorlds.SaveAndLoad
         ///
         /// Second parameter is the ReferenceRequest itself listed.
         /// </summary>
-        private Dictionary<string, List<ReferenceRequest>> requestedReferences =
-            new Dictionary<string, List<ReferenceRequest>>();
+        //private Dictionary<string, List<ReferenceRequest>> requestedReferences =
+        //    new Dictionary<string, List<ReferenceRequest>>();
+
+        private List<ReferenceRequest> requestedReferences = new List<ReferenceRequest>();
         
         /// <summary>
         /// Stores locations to references in memory for cross-references states.
@@ -89,15 +91,8 @@ namespace PersistentWorlds.SaveAndLoad
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
             var request = new ReferenceRequest(uniqueLoadID, label, Scribe.loader.curParent);
-            
-            if (requestedReferences.ContainsKey(currentFile))
-            {
-                requestedReferences[currentFile].Add(request);
-            }
-            else
-            {
-                requestedReferences.Add(currentFile, new List<ReferenceRequest>() {request});
-            }
+
+            requestedReferences.Add(request);
         }
 
         public ILoadReferenceable ResolveReference(string label)
@@ -105,21 +100,17 @@ namespace PersistentWorlds.SaveAndLoad
             var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
             var pathRelToParent = Scribe.loader.curPathRelToParent + "/" + label;
 
-            if (requestedReferences.ContainsKey(currentFile))
+            foreach (var requestedReference in requestedReferences)
             {
-                foreach (var requestedReference in requestedReferences[currentFile])
-                {
-                    var flag = requestedReference.Label == label &&
-                                Equals(requestedReference.Parent, Scribe.loader.curParent);
+                var flag = requestedReference.Label == label &&
+                           Equals(requestedReference.Parent, Scribe.loader.curParent);
 
-                    if (flag)
-                    {
-                        return references[requestedReference.LoadIDRequested].Referenceable;
-                    }
-                }
+                if (!flag) continue;
+                
+                return requestedReference.LoadIDRequested != null && references.ContainsKey(requestedReference.LoadIDRequested) ? references[requestedReference.LoadIDRequested].Referenceable : null;
             }
-            
-            throw new InvalidProgramException("Invalid program state.");
+    
+            throw new NullReferenceException("Reference could not be resolved. (label=" + label + ", curParent=" + Scribe.loader.curParent + ", curPathRelToParent=" + Scribe.loader.curPathRelToParent + ")");
         }
 
         public void ClearReferences()
@@ -146,14 +137,7 @@ namespace PersistentWorlds.SaveAndLoad
 
             for (var i = 0; i < requestedReferences.Count; i++)
             {
-                Debug.FileLog.Log(i + ": (fileName=" + requestedReferences.ElementAt(i).Key + ")");
-
-                for (var j = 0; j < requestedReferences[requestedReferences.ElementAt(i).Key].Count; j++)
-                {
-                    Debug.FileLog.Log("    " + i + ": " + requestedReferences[requestedReferences.ElementAt(i).Key][j]);
-                }
-                
-                Debug.FileLog.Log("");
+                Debug.FileLog.Log(i + ": " + requestedReferences[i]); 
             }
             
             Debug.FileLog.Log("End of Dump ---");
