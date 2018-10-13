@@ -19,12 +19,13 @@ namespace PersistentWorlds.Patches
             {
                 return true;
             }
-            
+
             if (obj != null && obj is ILoadReferenceable referenceable)
             {
-                // TODO: Check if is referenced or not.
-                //PersistentWorldManager.ReferenceTable.AddReference(referenceable, label);
-                PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, label);
+                if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadID(referenceable.GetUniqueLoadID()))
+                {
+                    PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, label);
+                }
             }
 
             return true;
