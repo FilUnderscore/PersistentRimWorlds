@@ -314,32 +314,22 @@ namespace PersistentWorlds.SaveAndLoad
         {
             Log.Message("Saving colonies data...");
 
-            var tempFileList = new List<FileInfo>();
-            
             for (var i = 0; i < this.persistentWorld.Colonies.Count; i++)
             {
                 var colony = this.persistentWorld.Colonies[i];
 
-                var oldColonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name +
-                                        PersistentWorldColonyFileExtension;
+                var oldColonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" +
+                                        colony.ColonyData.uniqueID + PersistentWorldColonyFileExtension;
                 
                 if (Equals(this.persistentWorld.Colony, colony))
                 {
                     colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
                 }
                 
-                var colonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name +
-                                     PersistentWorldColonyFileExtension;
+                var colonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + 
+                                     colony.ColonyData.uniqueID + PersistentWorldColonyFileExtension;
 
                 var colonyFile = new FileInfo(colonySaveFile);
-
-                // Prevents overwriting duplicate colonies with the same name.
-                if (tempFileList.Contains(colonyFile))
-                {
-                    var count = tempFileList.FindAll(fileInfo => fileInfo.FullName.Contains(colonyFile.FullName)).Count;
-
-                    colonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + count + PersistentWorldColonyFileExtension;
-                }
                 
                 if (oldColonySaveFile != colonySaveFile)
                 {
@@ -348,14 +338,10 @@ namespace PersistentWorlds.SaveAndLoad
                 
                 CurrentFile = colonyFile;
 
-                tempFileList.Add(colonyFile);
-
                 if (!Equals(this.persistentWorld.Colony, colony)) continue;
                 
                 SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony, "colony"); });
             }
-            
-            tempFileList.Clear();
             
             Log.Message("Saved colonies data.");
         }
@@ -432,6 +418,20 @@ namespace PersistentWorlds.SaveAndLoad
 
                 Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
             }, "Play", "LoadingLongEvent", true, null);
+        }
+        #endregion
+        
+        #region Structs
+        private struct ColonyNameInfo
+        {
+            public FileInfo OldFileInfo;
+            public FileInfo NewFileInfo;
+            
+            public ColonyNameInfo(FileInfo oldFileInfo, FileInfo newFileInfo)
+            {
+                OldFileInfo = oldFileInfo;
+                NewFileInfo = newFileInfo;
+            }
         }
         #endregion
     }
