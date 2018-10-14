@@ -10,7 +10,7 @@ using Verse;
 using Verse.Profile;
 using Random = UnityEngine.Random;
 
-namespace PersistentWorlds
+namespace PersistentWorlds.SaveAndLoad
 {
     public sealed class PersistentWorldLoadSaver
     {

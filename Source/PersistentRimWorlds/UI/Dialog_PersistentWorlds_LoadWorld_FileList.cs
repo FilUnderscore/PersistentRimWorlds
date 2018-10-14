@@ -9,6 +9,7 @@ using UnityEngine;
 using RimWorld.Planet;
 using Verse;
 using PersistentWorlds.Patches;
+using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using Verse.Profile;
 

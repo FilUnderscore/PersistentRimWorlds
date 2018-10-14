@@ -2,7 +2,7 @@
 using PersistentWorlds.UI;
 using Verse;
 
-namespace PersistentWorlds
+namespace PersistentWorlds.SaveAndLoad
 {
     public static class SaveFileUtils
     {

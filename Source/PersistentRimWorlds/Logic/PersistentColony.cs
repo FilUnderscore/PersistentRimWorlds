@@ -55,10 +55,19 @@ namespace PersistentWorlds.Logic
 
         public override bool Equals(object obj)
         {
-            if(obj is PersistentColony colony)
-                return ColonyData.uniqueID == colony.ColonyData.uniqueID;
+            if (obj is PersistentColony colony)
+                return this.GetHashCode() == colony.GetHashCode();
 
             return false;
+        }
+
+        /// <summary>
+        /// GetHashCode uses colony unique ID as it shouldn't ever change.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return this.ColonyData.uniqueID;
         }
         #endregion
     }

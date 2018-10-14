@@ -5,14 +5,14 @@ using System.Xml;
 using RimWorld;
 using Verse;
 
-namespace PersistentWorlds
+namespace PersistentWorlds.SaveAndLoad
 {
     // Allows the loading of different files by sharing Cross-References of objects/pawns/things in the game.
-    public sealed class ScribeMultiLoader
+    public static class ScribeMultiLoader
     { 
         #region Fields
-        public static Dictionary<string, XmlNode> xmlParents = new Dictionary<string, XmlNode>();
-        public static XmlNode curXmlNode;
+        private static readonly Dictionary<string, XmlNode> xmlParents = new Dictionary<string, XmlNode>();
+        private static XmlNode curXmlNode;
         #endregion
         
         #region Methods
