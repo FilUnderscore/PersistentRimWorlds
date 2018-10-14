@@ -107,7 +107,21 @@ namespace PersistentWorlds.UI
             var optList = new List<ListableOption>
             {
                 new ListableOption("NewColony".Translate(),
-                    delegate { Find.WindowStack.Add((Window) new Page_SelectScenario()); })
+                    delegate
+                    {
+                        PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
+
+                        if (this.persistentWorld == null)
+                        {
+                            Log.Error("NULL WORLD");
+                        }
+                        else
+                        {
+                            Log.Message("NOT NULL WORLD");
+                        }
+                        
+                        Find.WindowStack.Add((Window) new Page_SelectScenario());
+                    })
             };
 
             var num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);

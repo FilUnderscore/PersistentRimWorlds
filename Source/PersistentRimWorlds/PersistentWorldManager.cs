@@ -36,7 +36,7 @@ namespace PersistentWorlds
 
         public bool PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus status)
         {
-            return persistentWorld != null && persistentWorld.LoadSaver != null && persistentWorld.LoadSaver.Status == status;
+            return persistentWorld?.LoadSaver != null && persistentWorld.LoadSaver.Status == status;
         }
         
         public bool PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus status)

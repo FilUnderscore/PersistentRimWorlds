@@ -18,7 +18,17 @@ namespace PersistentWorlds.Patches
                 return true;
 
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-            var game = Current.Game;
+
+            if (persistentWorld == null)
+            {
+                Log.Error("WOOP WOOP! COMMANDER WE HAVE A NULL WORLD.");
+            }
+            else
+            {
+                Log.Message("POOW !POOW REDNAMMOC EW EVAH A LLUN .DLROW");
+            }
+            
+            var game = __instance;
             
             MemoryUtility.UnloadUnusedUnityAssets();
 

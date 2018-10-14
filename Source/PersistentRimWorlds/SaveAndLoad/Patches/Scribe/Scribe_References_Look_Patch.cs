@@ -18,35 +18,6 @@ namespace PersistentWorlds.Patches
             }
 
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-
-            if (persistentWorld == null)
-            {
-                Log.Error("Persistent world is null!");
-
-                return false;
-            }
-            else
-            {
-                if (persistentWorld.LoadSaver == null)
-                {
-                    Log.Error("PersistentWorld Load Saver is null.");
-
-                    return false;
-                }
-                else
-                {
-                    if (persistentWorld.LoadSaver.ReferenceTable == null)
-                    {
-                        Log.Error("PersistentWorld Load Saver Reference Table is null.");
-
-                        return false;
-                    }
-                    else
-                    {
-                        Log.Message("Nothing is null?");
-                    }
-                }
-            }
             
             switch (Scribe.mode)
             {
