@@ -8,9 +8,11 @@ using Verse;
 
 namespace PersistentWorlds.Logic
 {
-    public class PersistentWorld
+    public class PersistentWorld : IDisposable
     {
         #region Fields
+        public PersistentWorldLoadSaver LoadSaver;
+        
         // Game.World is accessed.
         public Game Game = new Game();
 
@@ -18,8 +20,8 @@ namespace PersistentWorlds.Logic
         public PersistentColony Colony;
         
         // Stores map tile ids.
-        public Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
-        public List<PersistentColony> Colonies = new List<PersistentColony>();
+        public readonly Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
+        public readonly List<PersistentColony> Colonies = new List<PersistentColony>();
         #endregion
         
         #region Constructors
@@ -87,7 +89,7 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            var maps = PersistentWorldManager.WorldLoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
+            var maps = this.LoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
             maps.Do(Current.Game.AddMap);
             
             this.ConvertToCurrentGameSettlements();
@@ -156,8 +158,8 @@ namespace PersistentWorlds.Logic
 
         public void ExposeGameWorldData()
         {
-            this.Game.World.info = this.WorldData.info;
-            this.Game.World.grid = this.WorldData.grid;
+            this.Game.World.info = this.WorldData.Info;
+            this.Game.World.grid = this.WorldData.Grid;
 
             if (this.Game.World.components == null)
             {
@@ -192,55 +194,61 @@ namespace PersistentWorlds.Logic
         public void ExposeAndFillGameWorldComponents()
         {
             this.Game.tickManager = this.WorldData.TickManager;
-            this.Game.World.factionManager = this.WorldData.factionManager;
-            this.Game.World.worldPawns = this.WorldData.worldPawns;
-            this.Game.World.worldObjects = this.WorldData.worldObjectsHolder;
-            this.Game.World.gameConditionManager = this.WorldData.gameConditionManager;
-            this.Game.World.storyState = this.WorldData.storyState;
-            this.Game.World.features = this.WorldData.worldFeatures;
-            this.Game.uniqueIDsManager = this.WorldData.uniqueIDsManager;
-
-            if (this.WorldData.worldComponents != null)
-            {
-                Log.Error("WorldData worldComponents is null. Please look into this.");
-                this.Game.World.components = this.WorldData.worldComponents;
-            }
+            this.Game.World.factionManager = this.WorldData.FactionManager;
+            this.Game.World.worldPawns = this.WorldData.WorldPawns;
+            this.Game.World.worldObjects = this.WorldData.WorldObjectsHolder;
+            this.Game.World.gameConditionManager = this.WorldData.GameConditionManager;
+            this.Game.World.storyState = this.WorldData.StoryState;
+            this.Game.World.features = this.WorldData.WorldFeatures;
+            this.Game.uniqueIDsManager = this.WorldData.UniqueIDsManager;
+            this.Game.World.components = this.WorldData.WorldComponents;
             
             AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents", new Type[0]).Invoke(this.Game.World, new object[0]);
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
             
-            if (this.WorldData.uniqueIDsManager != null)
+            if (this.WorldData.UniqueIDsManager != null)
             {
-                this.Game.uniqueIDsManager = this.WorldData.uniqueIDsManager;
+                this.Game.uniqueIDsManager = this.WorldData.UniqueIDsManager;
             }
         }
 
-        public static PersistentWorld Convert(Game game)
+        public void Convert(Game game)
         {
-            var persistentWorld = new PersistentWorld {Game = game};
             Current.Game = game;
+
+            this.Game = game;
             
-            persistentWorld.WorldData = PersistentWorldData.Convert(game);
+            this.WorldData = PersistentWorldData.Convert(game);
 
             var colony = PersistentColony.Convert(game);
-            persistentWorld.Colony = colony;
+            this.Colony = colony;
             
-            persistentWorld.Colonies.Add(colony);
+            this.Colonies.Add(colony);
             
-            persistentWorld.ConvertCurrentGameSettlements(game);
-            
-            return persistentWorld;
+            this.ConvertCurrentGameSettlements();
         }
 
+        /*
+        public void SaveColonies()
+        {
+            this.WorldData.ColonyDataList.Clear();
+
+            foreach (var colony in this.Colonies)
+            {
+                this.WorldData.ColonyDataList.Add(colony.ColonyData);
+            }
+        }
+        */
+
         // Convert Settlements to Colony Bases (this.Colony) for saving
-        public void ConvertCurrentGameSettlements(Game game)
+        public void ConvertCurrentGameSettlements()
         {
             // Concurrency errors :/
             var toAdd = new List<Colony>();
             var toRemove = new List<Settlement>();
             
-            foreach (var settlement in game.World.worldObjects.Settlements)
+            foreach (var settlement in this.Game.World.worldObjects.Settlements)
             {
                 if (settlement.Faction != Faction.OfPlayer)
                 {
@@ -257,16 +265,16 @@ namespace PersistentWorlds.Logic
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.Name;
 
-                colony.PersistentColonyData = PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
+                colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
 
                 toAdd.Add(colony);
                 toRemove.Add(settlement);
             }
             
-            toAdd.Do(colony => game.World.worldObjects.Add(colony));
+            toAdd.Do(colony => this.Game.World.worldObjects.Add(colony));
             toAdd.Clear();
             
-            toRemove.Do(settlement => game.World.worldObjects.Remove(settlement));
+            toRemove.Do(settlement => this.Game.World.worldObjects.Remove(settlement));
             toRemove.Clear();
         }
 
@@ -276,7 +284,7 @@ namespace PersistentWorlds.Logic
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
-            foreach (var mapParent in this.WorldData.worldObjectsHolder.MapParents)
+            foreach (var mapParent in this.WorldData.WorldObjectsHolder.MapParents)
             {
                 if (!(mapParent is Colony)) continue;
                 
@@ -295,10 +303,10 @@ namespace PersistentWorlds.Logic
                 toRemove.Add(colony);
             }
             
-            toAdd.Do(settlement => this.WorldData.worldObjectsHolder.Add(settlement));
+            toAdd.Do(settlement => this.WorldData.WorldObjectsHolder.Add(settlement));
             toAdd.Clear();
             
-            toRemove.Do(colony => this.WorldData.worldObjectsHolder.Remove(colony));
+            toRemove.Do(colony => this.WorldData.WorldObjectsHolder.Remove(colony));
             toRemove.Clear();
         }
 
@@ -307,12 +315,7 @@ namespace PersistentWorlds.Logic
             // Hooks in from Game UpdatePlay()
             
             // Because saving doesn't always work?
-            if (PersistentWorldManager.WorldLoadSaver != null && PersistentWorldManager.WorldLoadSaver.Status !=
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame)
-            {
-                PersistentWorldManager.WorldLoadSaver.Status =
-                    PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
-            }
+            // TODO: Check for in-game stuff.
         }
 
         public void PatchPlayerFaction()
@@ -335,7 +338,7 @@ namespace PersistentWorlds.Logic
 
         private void SetPlayerFactionVarsOf(Faction newFaction)
         {
-            var ofPlayerFaction = this.WorldData.factionManager.OfPlayer;
+            var ofPlayerFaction = this.WorldData.FactionManager.OfPlayer;
             
             ofPlayerFaction.leader = newFaction.leader;
     
@@ -351,7 +354,7 @@ namespace PersistentWorlds.Logic
             var newFactionRelations = (List<FactionRelation>) relationsField.GetValue(newFaction);
 
             // Change all relations.
-            foreach (var faction in this.WorldData.factionManager.AllFactionsListForReading)
+            foreach (var faction in this.WorldData.FactionManager.AllFactionsListForReading)
             {
                 var relations = (List<FactionRelation>) relationsField.GetValue(faction);
 
@@ -379,5 +382,24 @@ namespace PersistentWorlds.Logic
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
         }
         #endregion
+
+        /*
+        public void LoadColonies()
+        {
+            var colonyDataList = this.WorldData.ColonyDataList;
+
+            foreach (var colonyData in colonyDataList)
+            {
+                var colony = new PersistentColony(){ColonyData = colonyData};
+
+                this.Colonies.Add(colony);
+            }
+        }
+        */
+
+        public void Dispose()
+        {
+            this.LoadSaver.ReferenceTable.ClearReferences();
+        }
     }
 }

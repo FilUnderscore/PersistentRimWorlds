@@ -9,12 +9,12 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix()
         {
-            if (PersistentWorldManager.PersistentWorld == null)
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
                 return true;
             }
             
-            var persistentWorld = PersistentWorldManager.PersistentWorld;
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
 
             persistentWorld.ConstructGameWorldComponentsAndExposeComponents();
             

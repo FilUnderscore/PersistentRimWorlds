@@ -17,6 +17,11 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(LoadedObjectDirectory __instance, ILoadReferenceable reffable)
         {
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+            {
+                return true;
+            }
+            
             var allObjectsByLoadID = (Dictionary<string, ILoadReferenceable>) AllObjectsByLoadIdField.GetValue(__instance);
 
             return !allObjectsByLoadID.ContainsKey(reffable.GetUniqueLoadID());

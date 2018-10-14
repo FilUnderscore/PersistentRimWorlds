@@ -11,6 +11,22 @@ namespace PersistentWorlds.Patches
     [HarmonyPatch]
     public class LogEntry_Patch
     {
+        #region Fields
+        private static readonly MethodInfo GetTickManagerMethodFind = AccessTools.Method(typeof(Find), "get_TickManager");
+
+        private static readonly MethodInfo GetTickManagerMethodPersistentWorldData =
+            AccessTools.Method(typeof(PersistentWorldData), "get_TickManager");
+        
+        private static readonly MethodInfo GetInstanceMethod =
+            AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+
+        private static readonly MethodInfo PersistentWorldNotNullMethod =
+            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+        
+        private static readonly MethodInfo GetPersistentWorldMethod =
+            AccessTools.Method(typeof(PersistentWorldManager), "get_PersistentWorld");
+        #endregion
+        
         #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
         {
@@ -22,22 +38,23 @@ namespace PersistentWorlds.Patches
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Call) continue;
-                if (codes[i].operand != AccessTools.Method(typeof(Find), "get_TickManager")) continue;
+                if (codes[i].operand != GetTickManagerMethodFind) continue;
 
                 codes[i].labels.Add(jumpLabel);
                 codes[i + 1].labels.Add(skipLabel);
                 
                 var toInsert = new List<CodeInstruction>
                 {
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PersistentWorldManager), "NotNull")),
+                    new CodeInstruction(OpCodes.Call, GetInstanceMethod),
+                    new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
                     new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
                     
-                    new CodeInstruction(OpCodes.Ldsfld,
-                        AccessTools.Field(typeof(PersistentWorldManager), "PersistentWorld")),
+                    new CodeInstruction(OpCodes.Call, GetInstanceMethod),
+                    new CodeInstruction(OpCodes.Callvirt, GetPersistentWorldMethod),
                     new CodeInstruction(OpCodes.Ldfld,
                         AccessTools.Field(typeof(PersistentWorld), "WorldData")),
                     
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PersistentWorldData), "TickManager")),
+                    new CodeInstruction(OpCodes.Callvirt, GetTickManagerMethodPersistentWorldData),
                     
                     new CodeInstruction(OpCodes.Br, skipLabel)
                 };

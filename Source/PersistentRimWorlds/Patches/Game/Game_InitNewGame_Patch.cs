@@ -14,11 +14,25 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(Game __instance)
         {
-            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
-                PersistentWorldManager.WorldLoadSaver.Status !=
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating)
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+            {
+                Log.Warning("PS IS NULL");
                 return true;
-                
+            }
+            
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+
+            if (persistentWorld == null)
+            {
+                Log.Error("WOOP WOOP! COMMANDER WE HAVE A NULL WORLD.");
+            }
+            else
+            {
+                Log.Message("POOW !POOW REDNAMMOC EW EVAH A LLUN .DLROW");
+            }
+            
+            var game = __instance;
+            
             MemoryUtility.UnloadUnusedUnityAssets();
 
             Current.ProgramState = ProgramState.MapInitializing;
@@ -33,14 +47,20 @@ namespace PersistentWorlds.Patches
                 settlement = t;
                 break;
             }
-                
-            if(settlement == null)
+
+            if (settlement == null)
+            {
                 Log.Error("Could not generate starting map because there is no player faction base.");
-    
+
+                GenScene.GoToMainMenu();
+
+                return false;
+            }
+
             var map = MapGenerator.GenerateMap(mapSize, settlement, settlement.MapGeneratorDef,
                 settlement.ExtraGenStepDefs, null);
                 
-            Current.Game.CurrentMap = map;
+            game.CurrentMap = map;
 
             // TODO: Implement permanent death mode for colonies.
             if (__instance.InitData.permadeath)
@@ -58,8 +78,8 @@ namespace PersistentWorlds.Patches
             {
                 LongEventHandler.ExecuteWhenFinished(delegate
                 {
-                    Current.Game.tickManager.DoSingleTick();
-                    Current.Game.tickManager.CurTimeSpeed = TimeSpeed.Paused;
+                    game.tickManager.DoSingleTick();
+                    game.tickManager.CurTimeSpeed = TimeSpeed.Paused;
                 });
             }
             
@@ -75,29 +95,29 @@ namespace PersistentWorlds.Patches
                     foreach (var allDef in DefDatabase<ResearchProjectDef>.AllDefs)
                     {
                         if(allDef.HasTag(startingResearchTag))
-                            Current.Game.researchManager.FinishProject(allDef, false, null);
+                            game.researchManager.FinishProject(allDef, false, null);
                     }
                 }
             }
                 
             GameComponentUtility.StartedNewGame();
 
-            PersistentWorldManager.WorldLoadSaver.Status =
+            persistentWorld.LoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
             var colony = PersistentColony.Convert(Current.Game);
 
-            colony.ColonyData.uniqueID = ++PersistentWorldManager.PersistentWorld.WorldData.NextColonyId;
+            colony.ColonyData.uniqueID = ++PersistentWorldManager.GetInstance().PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             
             colony.GameData.mapSize = __instance.InitData.mapSize;
             
-            Current.Game.InitData = null;
+            game.InitData = null;
             
-            PersistentWorldManager.PersistentWorld.Colony = colony;
+            persistentWorld.Colony = colony;
             
-            PersistentWorldManager.PersistentWorld.Colonies.Add(colony);
-            PersistentWorldManager.PersistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
+            persistentWorld.Colonies.Add(colony);
+            persistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
     
             return false;
         }       

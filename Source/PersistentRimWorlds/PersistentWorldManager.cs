@@ -5,37 +5,57 @@ using Verse;
 namespace PersistentWorlds
 {
     /// <summary>
-    /// Mainly a static class that keeps track of the current persistent world as well as the loader for the persistent world.
-    /// Also has methods to help with keeping track of current game state.
+    /// A singleton class for keeping track of persistent worlds.
     /// </summary>
-    public static class PersistentWorldManager
+    public sealed class PersistentWorldManager
     {
         #region Fields
-        public static PersistentWorld PersistentWorld;
-        public static PersistentWorldLoadSaver WorldLoadSaver;
-        public static ReferenceTable ReferenceTable = new ReferenceTable();
+        private static PersistentWorldManager instance;
+        
+        private PersistentWorld persistentWorld;
         #endregion
         
-        #region Methods
-        public static bool Active()
+        #region Properties
+        public PersistentWorld PersistentWorld
         {
-            return PersistentWorld != null && WorldLoadSaver != null && PersistentWorld.Colony != null;
+            get => this.persistentWorld;
+            set => this.persistentWorld = value;
+        }
+        #endregion
+
+        public static PersistentWorldManager GetInstance()
+        {
+            return instance ?? (instance = new PersistentWorldManager());
+        }
+        
+        #region Checking Methods
+        public bool PersistentWorldNotNull()
+        {
+            return persistentWorld != null;
         }
 
-        public static bool NotNull()
+        public bool PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus status)
         {
-            return PersistentWorld != null && WorldLoadSaver != null;
+            return persistentWorld?.LoadSaver != null && persistentWorld.LoadSaver.Status == status;
         }
-
-        // TODO: May break current game if Persistent Worlds menu is accessed in game then quit on colony page.
-        public static void Clear()
+        
+        public bool PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus status)
         {
-            PersistentWorld = null;
-            WorldLoadSaver = null;
-            
+            return !PersistentWorldNotNullAndLoadStatusIs(status);
+        }
+        #endregion
+        
+        #region Other Methods
+        public void Clear()
+        {
+            if (persistentWorld != null)
+            {
+                persistentWorld.Dispose();
+                persistentWorld = null;
+            }
+
             ScribeVars.Clear();
             ScribeMultiLoader.Clear();
-            ReferenceTable.ClearReferences();
             
             Scribe.ForceStop();
         }

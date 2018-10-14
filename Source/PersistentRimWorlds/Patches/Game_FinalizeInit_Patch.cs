@@ -10,14 +10,14 @@ namespace PersistentWorlds.Patches
         #region Methods
         static void Postfix(Game __instance)
         {
+            var flag = PersistentWorldManager.GetInstance()
+                .PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus
+                    .Converting);
             // Toggle colonies tab.
-            DefDatabase<MainButtonDef>.GetNamed("Colonies").buttonVisible = PersistentWorldManager.PersistentWorld != null;
-            
-            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
-                return;
+            DefDatabase<MainButtonDef>.GetNamed("Colonies").buttonVisible = flag;
 
-            PersistentWorldManager.WorldLoadSaver.Convert(__instance);
+            if(!flag)
+                PersistentWorldManager.GetInstance().PersistentWorld.LoadSaver.Convert(__instance);
         }
         #endregion
     }

@@ -12,11 +12,12 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix(ref ILoadReferenceable refee, string label, bool saveDestroyedThings)
         {
-            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status ==
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
                 return true;
             }
+
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             
             switch (Scribe.mode)
             {
@@ -38,7 +39,7 @@ namespace PersistentWorlds.Patches
                     var xmlNode = (XmlNode) Scribe.loader.curXmlParent[label];
                     var targetLoadID = xmlNode?.InnerText;
                     
-                    PersistentWorldManager.ReferenceTable.RequestReference(label, targetLoadID);
+                    persistentWorld.LoadSaver.ReferenceTable.RequestReference(label, targetLoadID);
 
                     if (refee != null)
                     {
@@ -46,7 +47,7 @@ namespace PersistentWorlds.Patches
                     }
                     break;
                 case LoadSaveMode.ResolvingCrossRefs:
-                    refee = PersistentWorldManager.ReferenceTable.ResolveReference(label);
+                    refee = persistentWorld.LoadSaver.ReferenceTable.ResolveReference(label);
                     break;
             }
             

@@ -10,27 +10,13 @@ namespace PersistentWorlds.Patches
         // TODO: Disallow saving through normal save menu.
         static bool Prefix(string fileName)
         {
-            // TODO: Possibly checking if status is not convert instead of ingame.
-
-            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null ||
-                PersistentWorldManager.WorldLoadSaver.Status ==
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            if (PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
-                Log.Message((PersistentWorldManager.PersistentWorld == null).ToString());
-                Log.Message((PersistentWorldManager.WorldLoadSaver == null).ToString());
-                
-                if (PersistentWorldManager.WorldLoadSaver != null)
-                {
-                    Log.Message(PersistentWorldManager.WorldLoadSaver.Status.ToString());
-                }
-                
-                Log.Message("Calling true?");
                 return true;
             }
 
-            Log.Message("Calling false?");
-            PersistentWorldManager.WorldLoadSaver.SaveWorld(PersistentWorldManager.PersistentWorld);
-            PersistentWorldManager.WorldLoadSaver.Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
+            PersistentWorldManager.GetInstance().PersistentWorld.LoadSaver.SaveWorld();
+            PersistentWorldManager.GetInstance().PersistentWorld.LoadSaver.Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
                 
             return false;
         }

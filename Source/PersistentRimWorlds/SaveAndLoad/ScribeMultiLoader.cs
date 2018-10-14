@@ -59,6 +59,11 @@ namespace PersistentWorlds
 
         public static void SetScribeCurXmlParentByFilePath(string filePath)
         {
+            if (!xmlParents.ContainsKey(filePath))
+            {
+                throw new NullReferenceException("ScribeMultiLoader.SetScribeCurXmlParentByFilePath(string): XmlParents dictionary doesn't contain file path \"" + filePath + "\".");
+            }
+            
             Scribe.loader.curXmlParent = xmlParents[filePath];
             Scribe.loader.curPathRelToParent = null;
             curXmlNode = Scribe.loader.curXmlParent;
@@ -70,6 +75,11 @@ namespace PersistentWorlds
         {
             xmlParents.Clear();
             curXmlNode = null;
+        }
+
+        public static bool Empty()
+        {
+            return xmlParents.Count == 0;
         }
         #endregion
     }
