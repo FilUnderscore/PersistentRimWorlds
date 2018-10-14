@@ -52,6 +52,14 @@ namespace PersistentWorlds.Logic
 
             return persistentColony;
         }
+
+        public override bool Equals(object obj)
+        {
+            if(obj is PersistentColony colony)
+                return ColonyData.uniqueID == colony.ColonyData.uniqueID;
+
+            return false;
+        }
         #endregion
     }
 }

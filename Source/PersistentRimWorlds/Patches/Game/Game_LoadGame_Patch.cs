@@ -10,12 +10,13 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(Game __instance)
         {
-            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Uninitialized || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)
+            if (!PersistentWorldManager.GetInstance()
+                .PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
                 return true;
             }
                 
-            var persistentWorld = PersistentWorldManager.PersistentWorld;
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
                 
             LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate());
                 

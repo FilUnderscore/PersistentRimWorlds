@@ -10,12 +10,12 @@ namespace PersistentWorlds.Patches
         static bool Prefix(string fileName)
         {
             // Is Persistent World being loaded??
-            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Finalizing)
+            if (PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Finalizing))
             {
                 return true;
             }
             
-            PersistentWorldManager.PersistentWorld.LoadWorld();
+            PersistentWorldManager.GetInstance().PersistentWorld.LoadWorld();
             
             return false;
         }

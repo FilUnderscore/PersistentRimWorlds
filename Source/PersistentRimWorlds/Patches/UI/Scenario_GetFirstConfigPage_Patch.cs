@@ -13,12 +13,12 @@ namespace PersistentWorlds.Patches.UI
         #region Fields
         private static readonly ConstructorInfo PageCreateWorldParamsConstructor =
             AccessTools.Constructor(typeof(Page_CreateWorldParams));
-        
-        private static readonly FieldInfo PersistentWorldField =
-            AccessTools.Field(typeof(PersistentWorldManager), "PersistentWorld");
 
-        private static readonly FieldInfo WorldLoadSaverField =
-            AccessTools.Field(typeof(PersistentWorldManager), "WorldLoadSaver");
+        private static readonly MethodInfo GetInstanceMethod =
+            AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+
+        private static readonly MethodInfo PersistentWorldNotNullMethod =
+            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
         #endregion
 
         #region Methods
@@ -34,21 +34,16 @@ namespace PersistentWorlds.Patches.UI
                 var codesToInsert = new List<CodeInstruction>();
 
                 var skipLabel1 = ilGen.DefineLabel();
-                var skipLabel2 = ilGen.DefineLabel();
 
-                codes[i - 1].labels.Add(skipLabel1);
-                codes[i + 2].labels.Add(skipLabel2);
-                    
-                var toInsert = new List<CodeInstruction>();
+                codes[i + 2].labels.Add(skipLabel1);
 
-                toInsert.Add(new CodeInstruction(OpCodes.Ldsfld,
-                    PersistentWorldField));
-                toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, skipLabel1));
+                var toInsert = new List<CodeInstruction>
+                {
+                    new CodeInstruction(OpCodes.Call, GetInstanceMethod),
+                    new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
+                    new CodeInstruction(OpCodes.Brtrue_S, skipLabel1)
+                };
 
-                toInsert.Add(new CodeInstruction(OpCodes.Ldsfld,
-                    WorldLoadSaverField));
-                toInsert.Add(new CodeInstruction(OpCodes.Brtrue_S, skipLabel2));
-                    
                 codes.InsertRange(i - 1, toInsert);
                     
                 break;

@@ -12,21 +12,23 @@ namespace PersistentWorlds.Patches.UI
         #region Methods
         static void Prefix(Page_SelectStartingSite __instance)
         {
-            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver.Status != PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading))
                 return;
 
-            PersistentWorldManager.PersistentWorld.Game.Scenario = Current.Game.Scenario;
-            PersistentWorldManager.PersistentWorld.Game.storyteller = Current.Game.storyteller;
-            Current.Game = PersistentWorldManager.PersistentWorld.Game;
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            
+            persistentWorld.Game.Scenario = Current.Game.Scenario;
+            persistentWorld.Game.storyteller = Current.Game.storyteller;
+            Current.Game = persistentWorld.Game;
             
             Current.Game.InitData = new GameInitData();
             
             Scribe.loader.FinalizeLoading();
             
-            PersistentWorldManager.PersistentWorld.Game.World.pathGrid = new WorldPathGrid();
+            persistentWorld.Game.World.pathGrid = new WorldPathGrid();
             Current.Game.Scenario.PostWorldGenerate();
 
-            PersistentWorldManager.WorldLoadSaver.Status =
+            persistentWorld.LoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
 
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));

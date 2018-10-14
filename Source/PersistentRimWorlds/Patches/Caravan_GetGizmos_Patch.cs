@@ -13,15 +13,15 @@ namespace PersistentWorlds.Patches
         #region Methods
         static void Postfix(ref IEnumerable<Gizmo> __result, Caravan __instance)
         {
-            if (Find.WorldObjects.AnyWorldObjectAt(__instance.Tile, WorldObjectDefOf.AbandonedSettlement))
-            {
-                var gizmos = new List<Gizmo>(__result);
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() ||
+                !Find.WorldObjects.AnyWorldObjectAt(__instance.Tile, WorldObjectDefOf.AbandonedSettlement)) return;
 
-                gizmos.RemoveAll(g => g.GetType() == typeof(Command_Settle));
-                gizmos.Insert(0, new BaseResettleCommand(__instance));
+            var gizmos = new List<Gizmo>(__result);
+
+            gizmos.RemoveAll(g => g.GetType() == typeof(Command_Settle));
+            gizmos.Insert(0, new BaseResettleCommand(__instance));
                     
-                __result = gizmos;
-            }
+            __result = gizmos;
         }
         #endregion
     }

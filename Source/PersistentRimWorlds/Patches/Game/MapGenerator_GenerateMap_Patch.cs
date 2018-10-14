@@ -10,24 +10,23 @@ namespace PersistentWorlds.Patches
         #region Methods
         static void Postfix(Map __result)
         {
-            if (!PersistentWorldManager.Active())
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
                 return;
 
-            if (PersistentWorldManager.PersistentWorld.Colony != null)
-            {
-                PersistentWorldManager.PersistentWorld.Colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            var colony = persistentWorld.Colony;
+            
+            if (colony == null) return;
 
-                if (PersistentWorldManager.PersistentWorld.Maps.ContainsKey(PersistentWorldManager.PersistentWorld
-                    .Colony))
-                {
-                    PersistentWorldManager.PersistentWorld.Maps[PersistentWorldManager.PersistentWorld.Colony]
-                        .Add(__result.Tile);
-                }
-                else
-                {
-                    PersistentWorldManager.PersistentWorld.Maps.Add(PersistentWorldManager.PersistentWorld.Colony,
-                        new List<int>() {__result.Tile});
-                }
+            colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
+
+            if (persistentWorld.Maps.ContainsKey(colony))
+            {
+                persistentWorld.Maps[colony].Add(__result.Tile);
+            }
+            else
+            {
+                persistentWorld.Maps.Add(colony, new List<int>() {__result.Tile});
             }
         }
         #endregion

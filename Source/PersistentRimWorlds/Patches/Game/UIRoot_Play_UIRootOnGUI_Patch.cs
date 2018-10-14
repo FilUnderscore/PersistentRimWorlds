@@ -10,6 +10,9 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(UIRoot_Play __instance)
         {
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+                return true;
+                
             return Current.Game != null && Find.GameInfo != null && Find.World != null && Find.World.UI != null;
         }
         #endregion

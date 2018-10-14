@@ -19,7 +19,7 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(DebugLoadIDsSavingErrorsChecker __instance, object obj, string label)
         {
-            if (Scribe.mode != LoadSaveMode.Saving) return true;
+            if (Scribe.mode != LoadSaveMode.Saving || !PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return true;
             
             // TODO: Please look at this spam.
             if (obj is Thing && !(obj is Pawn))
@@ -29,9 +29,12 @@ namespace PersistentWorlds.Patches
 
             if (obj == null || !(obj is ILoadReferenceable referenceable)) return true;
 
-            if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            var loadSaver = persistentWorld.LoadSaver;
+            
+            if (!loadSaver.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
             {
-                PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, label);
+                loadSaver.ReferenceTable.LoadReferenceIntoMemory(referenceable, label);
             }
 
             // Fix those warnings.

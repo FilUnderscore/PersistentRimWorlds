@@ -41,77 +41,78 @@ namespace PersistentWorlds.Patches
         
         static void Postfix(PostLoadIniter __instance, IExposable s)
         {
-            if (Scribe.mode != LoadSaveMode.LoadingVars || PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting) return;
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            
+            if (Scribe.mode != LoadSaveMode.LoadingVars || PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)) return;
 
-            if (s != null && s is ILoadReferenceable referenceable)
+            if (s == null || !(s is ILoadReferenceable referenceable)) return;
+
+            // Decreases load times.
+            if (referenceable is Thing && !(referenceable is Pawn) && Scribe.loader.curXmlParent.HasChildNodes && Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
             {
-                // Decreases load times.
-                if (referenceable is Thing && !(referenceable is Pawn) && Scribe.loader.curXmlParent.HasChildNodes && Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
+                return;
+            }
+                
+            var path = FindParent(Scribe.loader.curXmlParent);
+            Debug.FileLog.Log("Path: " + path);
+
+            var pathToLoad = "";
+            var label = "";
+                
+            if (Scribe.loader.curXmlParent.HasChildNodes)
+            {
+                label = Scribe.loader.curXmlParent.ChildNodes[0].Name;
+                    
+                var currentListIndex = Regex.Matches(path + "/", "\\/li\\[(\\d+)\\]\\/").Count;
+
+                if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
                 {
-                    return;
+                    ++currentListIndex;
                 }
-                
-                var path = FindParent(Scribe.loader.curXmlParent);
-                Debug.FileLog.Log("Path: " + path);
-
-                var pathToLoad = "";
-                var label = "";
-                
-                if (Scribe.loader.curXmlParent.HasChildNodes)
+                    
+                if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
                 {
-                    label = Scribe.loader.curXmlParent.ChildNodes[0].Name;
-                    
-                    var currentListIndex = Regex.Matches(path + "/", "\\/li\\[(\\d+)\\]\\/").Count;
-
-                    if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
+                    if (listIndexes.ContainsKey(currentListIndex))
                     {
-                        ++currentListIndex;
-                    }
-                    
-                    if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "li")
-                    {
-                        if (listIndexes.ContainsKey(currentListIndex))
-                        {
-                            listIndexes[currentListIndex] += 1;
-                        }
-                        else
-                        {
-                            listIndexes.Add(currentListIndex, 0);
-                        }
-                        
-                        pathToLoad = path + "/" +
-                                   Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + listIndexes[currentListIndex] + "]";
-                        
-                        Debug.FileLog.Log("Path LI: " + pathToLoad);
-                    }
-                    else if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
-                    {
-                        pathToLoad = path + "/" +
-                                   Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + ++currentThingIndex + "]";
-                        
-                        Debug.FileLog.Log("Path THING: " + pathToLoad);
+                        listIndexes[currentListIndex] += 1;
                     }
                     else
                     {
-                        Debug.FileLog.Log("CurPathRelToParent Child Nodes: " + pathToLoad + "/" + Scribe.loader.curXmlParent.ChildNodes[0].Name);
+                        listIndexes.Add(currentListIndex, 0);
                     }
+                        
+                    pathToLoad = path + "/" +
+                                 Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + listIndexes[currentListIndex] + "]";
+                        
+                    Debug.FileLog.Log("Path LI: " + pathToLoad);
+                }
+                else if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
+                {
+                    pathToLoad = path + "/" +
+                                 Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + ++currentThingIndex + "]";
+                        
+                    Debug.FileLog.Log("Path THING: " + pathToLoad);
                 }
                 else
                 {
-                    Debug.FileLog.Log("CurPathRelToParent: " + path);
+                    Debug.FileLog.Log("CurPathRelToParent Child Nodes: " + pathToLoad + "/" + Scribe.loader.curXmlParent.ChildNodes[0].Name);
                 }
+            }
+            else
+            {
+                Debug.FileLog.Log("CurPathRelToParent: " + path);
+            }
                 
-                Debug.FileLog.Log("Adding reference: " + pathToLoad);
-                Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
+            Debug.FileLog.Log("Adding reference: " + pathToLoad);
+            Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
 
-                if (!PersistentWorldManager.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
-                {
-                    PersistentWorldManager.ReferenceTable.LoadReferenceIntoMemory(referenceable, pathToLoad);
-                }
+            if (!persistentWorld.LoadSaver.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
+            {
+                persistentWorld.LoadSaver.ReferenceTable.LoadReferenceIntoMemory(referenceable, pathToLoad);
             }
         }
 
-        public static string FindParent(XmlNode loaderCurXmlParent)
+        private static string FindParent(XmlNode loaderCurXmlParent)
         {
             var path = loaderCurXmlParent.Name;
 

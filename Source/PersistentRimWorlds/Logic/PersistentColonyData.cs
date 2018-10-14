@@ -49,7 +49,7 @@ namespace PersistentWorlds.Logic
                 ColonyFaction = game.World.factionManager.OfPlayer
             };
 
-            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.PersistentWorld.Colony == null)
+            if (colonyColonyData == null || colonyColonyData.ActiveWorldTiles.Count == 0)
             {
                 foreach (var map in game.Maps)
                 {

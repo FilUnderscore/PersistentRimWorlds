@@ -10,8 +10,7 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(ScribeLoader __instance)
         {
-            if (PersistentWorldManager.WorldLoadSaver == null || PersistentWorldManager.WorldLoadSaver.Status !=
-                PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading)
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading))
                 return true;
 
             ScribeVars.Set();

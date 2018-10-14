@@ -57,13 +57,18 @@ namespace PersistentWorlds.UI
                     LongEventHandler.QueueLongEvent(delegate
                     {
                         var previousGame = Current.Game;
-                    
-                        PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(worldDirInfo.FullName);
-                        PersistentWorldManager.WorldLoadSaver.LoadWorld();
 
+                        var persistentWorld = new PersistentWorld();
+                        persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, worldDirInfo.FullName);
+
+                        // TODO: HMM
+                        PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
+                        
+                        persistentWorld.LoadSaver.LoadWorld();
+                        
                         Current.Game = previousGame;
                     
-                        Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection());
+                        Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld));
                     }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
                 };
 
@@ -107,9 +112,12 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Convert".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
-                    PersistentWorldManager.WorldLoadSaver = new PersistentWorldLoadSaver(allSavedGameFile.FullName);
-                    PersistentWorldManager.WorldLoadSaver.Status =
-                        PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting;
+                    var persistentWorld = new PersistentWorld();
+
+                    persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, allSavedGameFile.FullName)
+                        {Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting};
+                    
+                    PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
                     
                     GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(allSavedGameFile.Name));
                 };

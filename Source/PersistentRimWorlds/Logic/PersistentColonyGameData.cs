@@ -42,15 +42,6 @@ namespace PersistentWorlds.Logic
         #region Methods
         public void ExposeData()
         {
-            if (PersistentWorldManager.PersistentWorld == null)
-            {
-                Log.Error("PersistentWorld is null.");
-
-                GenScene.GoToMainMenu();
-
-                return;
-            }
-
             Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1);
 
             Scribe_Values.Look<int>(ref mapSize, "mapSize");
@@ -91,7 +82,7 @@ namespace PersistentWorlds.Logic
             
             Scribe_Deep.Look(ref this.dateNotifier, "dateNotifier");
             
-            Scribe_Collections.Look(ref this.gameComponents, "components", LookMode.Deep, new object[] { PersistentWorldManager.PersistentWorld.Game });
+            Scribe_Collections.Look(ref this.gameComponents, "components", LookMode.Deep, new object[] { Current.Game });
             
             Scribe_Values.Look(ref this.camRootPos, "camRootPos");
             Scribe_Values.Look(ref this.desiredSize, "desiredSize");
@@ -99,29 +90,29 @@ namespace PersistentWorlds.Logic
 
         public void SetGame()
         {
-            PersistentWorldManager.PersistentWorld.Game.currentMapIndex = this.currentMapIndex;
-            PersistentWorldManager.PersistentWorld.Game.World.info.initialMapSize = new IntVec3(mapSize, 1, mapSize);
+            Current.Game.currentMapIndex = this.currentMapIndex;
+            Current.Game.World.info.initialMapSize = new IntVec3(mapSize, 1, mapSize);
             
-            AccessTools.Field(typeof(Game), "info").SetValue(PersistentWorldManager.PersistentWorld.Game, this.info);
-            AccessTools.Field(typeof(Game), "rules").SetValue(PersistentWorldManager.PersistentWorld.Game, this.rules);
+            AccessTools.Field(typeof(Game), "info").SetValue(Current.Game, this.info);
+            AccessTools.Field(typeof(Game), "rules").SetValue(Current.Game, this.rules);
             
-            PersistentWorldManager.PersistentWorld.Game.Scenario = this.scenario;
-            PersistentWorldManager.PersistentWorld.Game.playSettings = this.playSettings;
-            PersistentWorldManager.PersistentWorld.Game.storyWatcher = this.storyWatcher;
-            PersistentWorldManager.PersistentWorld.Game.gameEnder = this.gameEnder;
-            PersistentWorldManager.PersistentWorld.Game.letterStack = this.letterStack;
-            PersistentWorldManager.PersistentWorld.Game.researchManager = this.researchManager;
-            PersistentWorldManager.PersistentWorld.Game.storyteller = this.storyteller;
-            PersistentWorldManager.PersistentWorld.Game.history = this.history;
-            PersistentWorldManager.PersistentWorld.Game.taleManager = this.taleManager;
-            PersistentWorldManager.PersistentWorld.Game.playLog = this.playLog;
-            PersistentWorldManager.PersistentWorld.Game.battleLog = this.battleLog;
-            PersistentWorldManager.PersistentWorld.Game.outfitDatabase = this.outfitDatabase;
-            PersistentWorldManager.PersistentWorld.Game.drugPolicyDatabase = this.drugPolicyDatabase;
-            PersistentWorldManager.PersistentWorld.Game.foodRestrictionDatabase = this.foodRestrictionDatabase;
-            PersistentWorldManager.PersistentWorld.Game.tutor = this.tutor;
-            PersistentWorldManager.PersistentWorld.Game.dateNotifier = this.dateNotifier;
-            PersistentWorldManager.PersistentWorld.Game.components = this.gameComponents;
+            Current.Game.Scenario = this.scenario;
+            Current.Game.playSettings = this.playSettings;
+            Current.Game.storyWatcher = this.storyWatcher;
+            Current.Game.gameEnder = this.gameEnder;
+            Current.Game.letterStack = this.letterStack;
+            Current.Game.researchManager = this.researchManager;
+            Current.Game.storyteller = this.storyteller;
+            Current.Game.history = this.history;
+            Current.Game.taleManager = this.taleManager;
+            Current.Game.playLog = this.playLog;
+            Current.Game.battleLog = this.battleLog;
+            Current.Game.outfitDatabase = this.outfitDatabase;
+            Current.Game.drugPolicyDatabase = this.drugPolicyDatabase;
+            Current.Game.foodRestrictionDatabase = this.foodRestrictionDatabase;
+            Current.Game.tutor = this.tutor;
+            Current.Game.dateNotifier = this.dateNotifier;
+            Current.Game.components = this.gameComponents;
         }
 
         public static PersistentColonyGameData Convert(Game game)

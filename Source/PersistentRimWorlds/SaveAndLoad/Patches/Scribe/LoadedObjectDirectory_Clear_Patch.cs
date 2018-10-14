@@ -8,9 +8,8 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix()
         {
-            return PersistentWorldManager.ReferenceTable == null || PersistentWorldManager.WorldLoadSaver == null ||
-                   PersistentWorldManager.WorldLoadSaver.Status ==
-                   PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting;
+            return PersistentWorldManager.GetInstance()
+                .PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting);
         }
     }
 }

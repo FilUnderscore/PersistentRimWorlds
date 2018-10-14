@@ -10,11 +10,11 @@ namespace PersistentWorlds.Patches.UI
         #region Methods
         static bool Prefix(ScenPart_PlayerFaction __instance)
         {
-            if (PersistentWorldManager.PersistentWorld == null || PersistentWorldManager.WorldLoadSaver == null)
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
                 return true;
 
             // In order to prevent cloned factions :/
-            Find.GameInitData.playerFaction = PersistentWorldManager.PersistentWorld.WorldData.factionManager.OfPlayer;
+            Find.GameInitData.playerFaction = PersistentWorldManager.GetInstance().PersistentWorld.WorldData.FactionManager.OfPlayer;
             
             return false;
         }

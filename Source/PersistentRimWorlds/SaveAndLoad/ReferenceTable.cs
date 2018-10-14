@@ -56,6 +56,23 @@ namespace PersistentWorlds.SaveAndLoad
         /// Second parameter is the ReferenceEntry itself.
         /// </summary>
         private readonly Dictionary<string, Reference> references = new Dictionary<string, Reference>();
+
+        /// <summary>
+        /// Instance of the PersistentWorldLoadSaver.
+        /// </summary>
+        private PersistentWorldLoadSaver loadSaver;
+        #endregion
+        
+        #region Constructors
+        /// <summary>
+        /// The ReferenceTable class constructor.
+        /// </summary>
+        /// <param name="persistentWorldLoadSaver"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public ReferenceTable(PersistentWorldLoadSaver persistentWorldLoadSaver)
+        {
+            this.loadSaver = persistentWorldLoadSaver;
+        }
         #endregion
         
         #region Methods
@@ -67,7 +84,7 @@ namespace PersistentWorlds.SaveAndLoad
         public void LoadReferenceIntoMemory(ILoadReferenceable referenceable, string label)
         {
             // Current file of the reference to be assigned as Reference.pathOfFileContainingReference.
-            var currentFile = GetCroppedFileName(PersistentWorldManager.WorldLoadSaver.currentFile.FullName);
+            var currentFile = GetCroppedFileName(this.loadSaver.currentFile.FullName);
             var pathRelToParent = "";
 
             switch (Scribe.mode)

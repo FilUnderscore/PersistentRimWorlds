@@ -19,7 +19,10 @@ namespace PersistentWorlds.Patches.UI
         private static readonly MethodInfo DisposeMethod = AccessTools.Method(typeof(IDisposable), "Dispose");
 
         private static readonly MethodInfo
-            NotNullMethod = AccessTools.Method(typeof(PersistentWorldManager), "NotNull");
+            GetInstanceMethod = AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+
+        private static readonly MethodInfo PersistentWorldNotNullMethod =
+            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
         #endregion
         
         #region Methods
@@ -39,7 +42,8 @@ namespace PersistentWorlds.Patches.UI
                 var codesToInsert = new List<CodeInstruction>
                 {
                     new CodeInstruction(OpCodes.Call,
-                        NotNullMethod),
+                        GetInstanceMethod),
+                    new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
                     new CodeInstruction(OpCodes.Brtrue_S, label1)
                 };
 
