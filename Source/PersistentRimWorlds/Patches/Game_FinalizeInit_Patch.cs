@@ -10,6 +10,9 @@ namespace PersistentWorlds.Patches
         #region Methods
         static void Postfix(Game __instance)
         {
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+                return;
+            
             var flag = PersistentWorldManager.GetInstance()
                 .PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus
                     .Converting);

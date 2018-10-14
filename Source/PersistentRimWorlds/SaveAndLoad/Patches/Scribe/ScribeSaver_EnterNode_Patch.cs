@@ -48,6 +48,9 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(ScribeSaver __instance, string nodeName)
         {
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+                return true;
+            
             var writer = WriterField.GetValue(__instance);
             
             if (writer == null) return true;

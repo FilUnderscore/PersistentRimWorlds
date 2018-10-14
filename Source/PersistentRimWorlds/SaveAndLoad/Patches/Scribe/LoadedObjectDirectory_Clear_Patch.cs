@@ -8,7 +8,10 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix()
         {
-            return PersistentWorldManager.GetInstance()
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+                return true;
+            
+            return PersistentWorldManager.GetInstance().PersistentWorldNotNull() && PersistentWorldManager.GetInstance()
                 .PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting);
         }
     }
