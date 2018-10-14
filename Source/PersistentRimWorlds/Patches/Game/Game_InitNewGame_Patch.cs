@@ -14,9 +14,12 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(Game __instance)
         {
-            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating))
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
+            {
+                Log.Warning("PS IS NULL");
                 return true;
-
+            }
+            
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
 
             if (persistentWorld == null)

@@ -48,9 +48,7 @@ namespace PersistentWorlds.UI
 
         public override void PostClose()
         {
-            persistentWorld.Dispose();
             
-            PersistentWorldManager.GetInstance().Clear();
         }
 
         private void LoadColoniesAsItems()
