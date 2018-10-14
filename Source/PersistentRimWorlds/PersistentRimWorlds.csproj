@@ -35,6 +35,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0ColourPicker, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Assemblies\0ColourPicker.dll</HintPath>
+    </Reference>
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Assemblies\0Harmony.dll</HintPath>
     </Reference>
@@ -98,7 +101,6 @@
     <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
-    <Compile Include="UI\Util\Dialog_ColorPicker.cs" />
     <Compile Include="UI\Util\ScrollableListItem.cs" />
     <Compile Include="UI\Util\ScrollableListItemColored.cs" />
     <Compile Include="UI\Util\ScrollableListItemInfo.cs" />

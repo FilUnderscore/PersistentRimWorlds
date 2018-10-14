@@ -109,15 +109,6 @@ namespace PersistentWorlds.UI
                     {
                         PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
 
-                        if (this.persistentWorld == null)
-                        {
-                            Log.Error("NULL WORLD");
-                        }
-                        else
-                        {
-                            Log.Message("NOT NULL WORLD");
-                        }
-                        
                         Find.WindowStack.Add((Window) new Page_SelectScenario());
                     })
             };

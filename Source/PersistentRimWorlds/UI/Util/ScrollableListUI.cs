@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ColourPicker;
 using Harmony;
 using UnityEngine;
 using Verse;
@@ -92,7 +93,8 @@ namespace PersistentWorlds.UI
                         
                         if (press)
                         {
-                            Find.WindowStack.Add(new Dialog_ColorPicker(coloredItem));
+                            Find.WindowStack.Add(new Dialog_ColourPicker(coloredItem.color, color => 
+                                coloredItem.color = color));
                         }
                     }
                     /*
