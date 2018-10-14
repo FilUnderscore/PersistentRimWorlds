@@ -264,7 +264,7 @@ namespace PersistentWorlds.Logic
                 var colony = (Colony) WorldObjectSameIDMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"), settlement.ID);
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
-                colony.Name = settlement.Name;
+                colony.Name = settlement.HasName ? settlement.Name : null;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
 
@@ -298,7 +298,8 @@ namespace PersistentWorlds.Logic
                 settlement.SetFaction(Faction.OfPlayer);
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
-                settlement.Name = colony.Name;
+                
+                settlement.Name = colony.HasName ? colony.Name : null;
                 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
@@ -382,8 +383,12 @@ namespace PersistentWorlds.Logic
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
         }
-        #endregion
-
+        
+        public void Dispose()
+        {
+            this.LoadSaver.ReferenceTable.ClearReferences();
+        }
+        
         /*
         public void LoadColonies()
         {
@@ -397,10 +402,6 @@ namespace PersistentWorlds.Logic
             }
         }
         */
-
-        public void Dispose()
-        {
-            this.LoadSaver.ReferenceTable.ClearReferences();
-        }
+        #endregion
     }
 }

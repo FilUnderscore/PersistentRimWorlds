@@ -84,7 +84,7 @@ namespace PersistentWorlds.SaveAndLoad
         public void LoadReferenceIntoMemory(ILoadReferenceable referenceable, string label)
         {
             // Current file of the reference to be assigned as Reference.pathOfFileContainingReference.
-            var currentFile = GetCroppedFileName(this.loadSaver.currentFile.FullName);
+            var currentFile = GetCroppedFileName(this.loadSaver.CurrentFile.FullName);
             var pathRelToParent = "";
 
             switch (Scribe.mode)
