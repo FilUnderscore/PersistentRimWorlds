@@ -12,13 +12,9 @@ namespace PersistentWorlds.Patches.UI
         #region Methods
         static void Prefix(Page_SelectStartingSite __instance)
         {
-            Log.Message("Call 1");
-            
-            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading))
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || !PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Loading))
                 return;
-
-            Log.Message("Call 2");
-            
+   
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             
             persistentWorld.Game.Scenario = Current.Game.Scenario;
@@ -35,15 +31,6 @@ namespace PersistentWorlds.Patches.UI
             persistentWorld.LoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
 
-            if (persistentWorld == null)
-            {
-                Log.Error("NULL WORLD");
-            }
-            else
-            {
-                Log.Message("NOT NULL WORLD");
-            }
-            
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_FileList));
             Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_ColonySelection));

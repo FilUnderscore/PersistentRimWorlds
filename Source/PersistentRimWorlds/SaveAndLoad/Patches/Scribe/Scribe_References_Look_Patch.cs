@@ -12,7 +12,7 @@ namespace PersistentWorlds.Patches
     {
         static bool Prefix(ref ILoadReferenceable refee, string label, bool saveDestroyedThings)
         {
-            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || !PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
                 return true;
             }

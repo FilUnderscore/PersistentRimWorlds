@@ -10,7 +10,7 @@ namespace PersistentWorlds.Patches
         // TODO: Disallow saving through normal save menu.
         static bool Prefix(string fileName)
         {
-            if (PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
                 return true;
             }

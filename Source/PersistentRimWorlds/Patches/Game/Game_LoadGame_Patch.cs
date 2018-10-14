@@ -10,7 +10,7 @@ namespace PersistentWorlds.Patches
         #region Methods
         static bool Prefix(Game __instance)
         {
-            if (!PersistentWorldManager.GetInstance()
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || !PersistentWorldManager.GetInstance()
                 .PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))
             {
                 return true;
