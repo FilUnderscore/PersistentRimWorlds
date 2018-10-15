@@ -310,33 +310,39 @@ namespace PersistentWorlds.SaveAndLoad
             Log.Message("Saved world data.");
         }
 
+        public string GetColonySaveFilePath(PersistentColony colony)
+        {
+            return coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + colony.ColonyData.uniqueID +
+                   PersistentWorldColonyFileExtension;
+        }
+
         private void SaveColoniesData()
         {
             Log.Message("Saving colonies data...");
 
+            // TODO: Prevent overwriting.
             for (var i = 0; i < this.persistentWorld.Colonies.Count; i++)
             {
                 var colony = this.persistentWorld.Colonies[i];
 
-                var oldColonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" +
-                                        colony.ColonyData.uniqueID + PersistentWorldColonyFileExtension;
-                
+                var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
+
                 if (Equals(this.persistentWorld.Colony, colony))
                 {
                     colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
                 }
                 
-                var colonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + 
-                                     colony.ColonyData.uniqueID + PersistentWorldColonyFileExtension;
+                var colonySaveFile = GetColonySaveFilePath(colony);
 
                 var colonyFile = new FileInfo(colonySaveFile);
                 
-                if (oldColonySaveFile != colonySaveFile)
+                if (!oldColonySaveFile.FullName.EqualsIgnoreCase(colonyFile.FullName))
                 {
-                    File.Delete(oldColonySaveFile);
+                    File.Delete(oldColonySaveFile.FullName);
                 }
                 
-                CurrentFile = colonyFile;
+                this.SetCurrentFile(colonyFile);
+                colony.FileInfo = colonyFile;
 
                 if (!Equals(this.persistentWorld.Colony, colony)) continue;
                 
