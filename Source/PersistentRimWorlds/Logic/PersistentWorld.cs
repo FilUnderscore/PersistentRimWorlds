@@ -79,7 +79,7 @@ namespace PersistentWorlds.Logic
             this.LoadGameWorldAndMaps();
         }
 
-        public void LoadGameWorldAndMaps()
+        private void LoadGameWorldAndMaps()
         {
             this.ExposeGameWorldData();
             
@@ -157,7 +157,7 @@ namespace PersistentWorlds.Logic
             Find.CameraDriver.SetRootPosAndSize(this.Colony.GameData.camRootPos, this.Colony.GameData.desiredSize);
         }
 
-        public void ExposeGameWorldData()
+        private void ExposeGameWorldData()
         {
             this.Game.World.info = this.WorldData.Info;
             this.Game.World.grid = this.WorldData.Grid;
@@ -229,18 +229,6 @@ namespace PersistentWorlds.Logic
             
             this.ConvertCurrentGameSettlements();
         }
-
-        /*
-        public void SaveColonies()
-        {
-            this.WorldData.ColonyDataList.Clear();
-
-            foreach (var colony in this.Colonies)
-            {
-                this.WorldData.ColonyDataList.Add(colony.ColonyData);
-            }
-        }
-        */
 
         // Convert Settlements to Colony Bases (this.Colony) for saving
         public void ConvertCurrentGameSettlements()
@@ -328,9 +316,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            Log.Message("Patch");
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
-            Log.Message("Ok");
         }
 
         public void ResetPlayerFaction()
@@ -388,20 +374,6 @@ namespace PersistentWorlds.Logic
         {
             this.LoadSaver.ReferenceTable.ClearReferences();
         }
-        
-        /*
-        public void LoadColonies()
-        {
-            var colonyDataList = this.WorldData.ColonyDataList;
-
-            foreach (var colonyData in colonyDataList)
-            {
-                var colony = new PersistentColony(){ColonyData = colonyData};
-
-                this.Colonies.Add(colony);
-            }
-        }
-        */
         #endregion
     }
 }
