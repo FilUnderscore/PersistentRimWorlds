@@ -93,8 +93,12 @@ namespace PersistentWorlds.UI
                         
                         if (press)
                         {
-                            Find.WindowStack.Add(new Dialog_ColourPicker(coloredItem.color, color => 
-                                coloredItem.color = color));
+                            Find.WindowStack.Add(new Dialog_ColourPicker(coloredItem.color, color =>
+                            {
+                                coloredItem.color = color;
+                                Log.Message("Color: " + coloredItem.color.ToString());
+                                Log.Message("Col: " + color.ToString());
+                            }));
                         }
                     }
                     /*
