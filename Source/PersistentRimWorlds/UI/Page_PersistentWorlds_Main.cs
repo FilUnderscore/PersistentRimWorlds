@@ -5,14 +5,14 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public sealed class Dialog_PersistentWorlds_Main : Window
+    public sealed class Page_PersistentWorlds_Main : Page
     {
         #region Properties
         public override Vector2 InitialSize => new Vector2(600f, 700f);
         #endregion        
         
         #region Constructors
-        public Dialog_PersistentWorlds_Main()
+        public Page_PersistentWorlds_Main()
         {
             this.doWindowBackground = true;
             this.doCloseButton = true;
@@ -34,7 +34,11 @@ namespace PersistentWorlds.UI
             var optList = new List<ListableOption>
             {
                 new ListableOption("FilUnderscore.PersistentRimWorlds.LoadWorld".Translate(),
-                    delegate { Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_FileList()); }, null),
+                    delegate
+                    {
+                        this.next = new Page_PersistentWorlds_LoadWorld_FileList {prev = this};
+                        this.DoNext();
+                    }, null),
             };
 
             var num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);

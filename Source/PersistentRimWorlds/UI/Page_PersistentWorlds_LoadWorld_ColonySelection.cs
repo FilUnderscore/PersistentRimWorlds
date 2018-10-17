@@ -9,7 +9,7 @@ using Verse.Profile;
 namespace PersistentWorlds.UI
 {
     [StaticConstructorOnStartup]
-    public sealed class Dialog_PersistentWorlds_LoadWorld_ColonySelection : Window
+    public sealed class Page_PersistentWorlds_LoadWorld_ColonySelection : Page
     {        
         #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
@@ -19,6 +19,8 @@ namespace PersistentWorlds.UI
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
 
         private Vector2 scrollPosition = Vector2.zero;
+
+        private bool normalClose = true;
         #endregion
         
         #region Properties
@@ -26,7 +28,7 @@ namespace PersistentWorlds.UI
         #endregion
         
         #region Constructors
-        public Dialog_PersistentWorlds_LoadWorld_ColonySelection(PersistentWorld persistentWorld)
+        public Page_PersistentWorlds_LoadWorld_ColonySelection(PersistentWorld persistentWorld)
         {
             this.persistentWorld = persistentWorld;
             
@@ -48,7 +50,10 @@ namespace PersistentWorlds.UI
 
         public override void PostClose()
         {
-            
+            if (!normalClose) return;
+
+            this.DoBack();
+            PersistentWorldManager.GetInstance().Clear();
         }
 
         private void LoadColoniesAsItems()
@@ -66,6 +71,8 @@ namespace PersistentWorlds.UI
                     ActionButtonText = "Load".Translate(),
                     ActionButtonAction = delegate
                     {
+                        normalClose = false;
+                        
                         PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
                         
                         this.persistentWorld.LoadSaver.LoadColony(ref colony);
@@ -109,9 +116,12 @@ namespace PersistentWorlds.UI
                 new ListableOption("NewColony".Translate(),
                     delegate
                     {
+                        normalClose = false;
+                        
                         PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
 
-                        Find.WindowStack.Add((Window) new Page_SelectScenario());
+                        this.next = new Page_SelectScenario {prev = this};
+                        this.DoNext();
                     })
             };
 
