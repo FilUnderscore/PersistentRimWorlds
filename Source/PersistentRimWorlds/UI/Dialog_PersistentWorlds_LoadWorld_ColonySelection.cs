@@ -82,7 +82,9 @@ namespace PersistentWorlds.UI
                         // TODO: Allow colonies to be deleted.   
                     },
                     DeleteButtonTooltip = "DeleteColony-PersistentWorlds".Translate(),
+                    canSeeColor = true,
                     canChangeColor = true,
+                    Color = colony.ColonyData.color,
                     texture = Town
                 };
 

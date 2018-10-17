@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Harmony;
 using PersistentWorlds.Logic;
 using PersistentWorlds.World;
@@ -57,12 +58,12 @@ namespace PersistentWorlds.UI
             {
                 var colony = persistentWorld.Colonies[i];
 
-                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name};
+                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name, 
+                    canChangeColor = false, canSeeColor = true, Color = colony.ColonyData.color, texture = Town};
 
-                if (colony != persistentWorld.Colony)
+                if (!Equals(colony, persistentWorld.Colony))
                 {
                     item.canChangeColor = true;
-                    item.texture = Town;
                     
                     var index = i;
                     
