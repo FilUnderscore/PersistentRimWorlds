@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using PersistentWorlds.Logic;
 using RimWorld;
 using RimWorld.Planet;
@@ -10,11 +11,12 @@ namespace PersistentWorlds.World
     /// <summary>
     /// Colony world object class that handles colonies on the world map.
     /// </summary>
+    [StaticConstructorOnStartup]
     public sealed class Colony : MapParent
     {
         #region Fields
         // TODO: Implement commands.
-        //public static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
+        private static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
         public string Name;
         public PersistentColonyData PersistentColonyData = new PersistentColonyData();
@@ -58,9 +60,25 @@ namespace PersistentWorlds.World
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            // TODO: Add visit.
-            
-            return base.GetGizmos();
+            foreach (var gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+
+            if (!this.HasMap)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "FilUnderscore.PersistentRimWorlds.VisitColony".Translate(),
+                    defaultDesc = "FilUnderscore.PersistentRimWorlds.VisitColonyDesc".Translate(),
+                    icon = VisitCommand,
+                    hotKey = KeyBindingDefOf.Misc2,
+                    action = delegate
+                    {
+                        
+                    }
+                };
+            }
         }
 
         /// <summary>
