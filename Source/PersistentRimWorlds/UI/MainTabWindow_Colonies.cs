@@ -82,15 +82,18 @@ namespace PersistentWorlds.UI
                             persistentWorld.PatchPlayerFaction();
 
                             UnloadMapReferences(colony);
-                            
+                        }, "LoadingColony", true, null);
+                        
+                        LongEventHandler.QueueLongEvent(delegate
+                        {
                             LoadMaps(colony);
                             Current.Game.CurrentMap = Current.Game.FindMap(persistentWorld.Maps[colony][0]);
                             UnloadMaps(colony);    
                             
                             persistentWorld.ConvertToCurrentGameSettlements();
 
-                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);
-                        }, "LoadingColony", true, null);
+                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
+                        }, "LoadingMaps", false, null);
                     };
                 }
                 

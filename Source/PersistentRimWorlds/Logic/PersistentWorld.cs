@@ -288,6 +288,7 @@ namespace PersistentWorlds.Logic
                 settlement.Tile = colony.Tile;
                 
                 settlement.Name = colony.HasName ? colony.Name : null;
+                settlement.namedByPlayer = colony.HasName; // Prevents non-stop renaming.
                 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
