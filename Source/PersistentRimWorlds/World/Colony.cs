@@ -58,9 +58,9 @@ namespace PersistentWorlds.World
             Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 
-        public override IEnumerable<Gizmo> GetGizmos()
+        public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
-            foreach (var gizmo in base.GetGizmos())
+            foreach (var gizmo in base.GetCaravanGizmos(caravan))
             {
                 yield return gizmo;
             }

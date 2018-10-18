@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Harmony;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
 using UnityEngine;
@@ -86,8 +87,8 @@ namespace PersistentWorlds.UI
                         
                         LongEventHandler.QueueLongEvent(delegate
                         {
-                            LoadMaps(colony);
-                            Current.Game.CurrentMap = Current.Game.FindMap(persistentWorld.Maps[colony][0]);
+                            var maps = DynamicMapLoader.LoadColonyMaps(colony);
+                            Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
                             UnloadMaps(colony);    
                             
                             persistentWorld.ConvertToCurrentGameSettlements();
