@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -73,10 +74,7 @@ namespace PersistentWorlds.World
                     defaultDesc = "FilUnderscore.PersistentRimWorlds.VisitColonyDesc".Translate(),
                     icon = VisitCommand,
                     hotKey = KeyBindingDefOf.Misc2,
-                    action = delegate
-                    {
-                        
-                    }
+                    action = delegate { DynamicMapLoader.LoadMap(this.Tile); }
                 };
             }
         }

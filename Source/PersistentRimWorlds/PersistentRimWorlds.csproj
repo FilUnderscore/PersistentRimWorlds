@@ -74,6 +74,7 @@
     <Compile Include="Patches\Game_DeinitAndRemoveMap_Patch.cs" />
     <Compile Include="Patches\Game_FinalizeInit_Patch.cs" />
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
+    <Compile Include="Patches\PawnNameColorUtility_PawnNameColorOf_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
     <Compile Include="Patches\UI\Page_SelectScenario_PreClose.cs" />

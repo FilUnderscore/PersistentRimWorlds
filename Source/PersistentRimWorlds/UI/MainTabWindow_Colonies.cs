@@ -114,53 +114,6 @@ namespace PersistentWorlds.UI
             }
         }
 
-        private void LoadMaps(PersistentColony colony)
-        {
-            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-            
-            Current.ProgramState = ProgramState.MapInitializing;
-            
-            var maps = persistentWorld.LoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
-
-            foreach (var map in maps)
-            {
-                Current.Game.Maps.Add(map);
-
-                /*
-                 * Register in case as to not cause problems.
-                 */
-                
-                var reservedDestinations =
-                    (Dictionary<Faction, PawnDestinationReservationManager.PawnDestinationSet>)
-                    reservedDestinationsField.GetValue(map.pawnDestinationReservationManager);
-
-                foreach (var faction in Find.FactionManager.AllFactions)
-                {
-                    if (!reservedDestinations.ContainsKey(faction))
-                    {
-                        map.pawnDestinationReservationManager.RegisterFaction(faction);
-                    }
-                }
-                
-                /*
-                 * Regenerate map and load.
-                 */
-                
-                map.mapDrawer.RegenerateEverythingNow();
-                map.FinalizeLoading();
-                map.Parent.FinalizeLoading();
-
-                if (persistentWorld.Maps.ContainsKey(colony))
-                    persistentWorld.Maps[colony].Add(map.Tile);
-                else
-                {
-                    persistentWorld.Maps.Add(colony, new List<int>() {map.Tile});
-                }
-            }
-
-            Current.ProgramState = ProgramState.Playing;
-        }
-
         private void UnloadMaps(PersistentColony colony)
         {
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
@@ -181,7 +134,6 @@ namespace PersistentWorlds.UI
             
             Log.Message("Removed. " + toRemove.Count);
             toRemove.Clear();
-            
             
             Find.ColonistBar.MarkColonistsDirty();
         }
