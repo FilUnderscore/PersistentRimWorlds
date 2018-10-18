@@ -32,6 +32,7 @@ namespace PersistentWorlds.UI
         #region Constructors
         public Page_PersistentWorlds_LoadWorld_FileList()
         {
+            // TODO: HMM
             PersistentWorldManager.GetInstance().Clear();
             
             this.LoadWorldsAsItems();

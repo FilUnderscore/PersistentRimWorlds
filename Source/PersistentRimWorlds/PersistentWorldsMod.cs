@@ -44,7 +44,7 @@ namespace PersistentWorlds
         /// </summary>
         private static void PatchMainMenu()
         {
-            Find.WindowStack.Add(new Dialog_PersistentWorlds_Main());
+            Find.WindowStack.Add(new Page_PersistentWorlds_Main());
         }
         #endregion
     }

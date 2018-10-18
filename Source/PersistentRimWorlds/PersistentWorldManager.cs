@@ -1,5 +1,7 @@
-﻿using PersistentWorlds.Logic;
+﻿using System.Collections.Generic;
+using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds
@@ -13,6 +15,9 @@ namespace PersistentWorlds
         private static PersistentWorldManager instance;
         
         private PersistentWorld persistentWorld;
+
+        // Stores previous pages for new colony.
+        private List<Page> previousPages = new List<Page>();
         #endregion
         
         #region Properties
@@ -21,6 +26,8 @@ namespace PersistentWorlds
             get => this.persistentWorld;
             set => this.persistentWorld = value;
         }
+
+        public List<Page> PreviousPages => previousPages;
         #endregion
 
         public static PersistentWorldManager GetInstance()

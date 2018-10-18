@@ -41,7 +41,7 @@
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Assemblies\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=1.0.6862.40245, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Assembly-CSharp, Version=1.0.6864.30166, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -76,6 +76,7 @@
     <Compile Include="Patches\MainMenuDrawer_DoMainMenuControls_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
+    <Compile Include="Patches\UI\Page_SelectScenario_PreClose.cs" />
     <Compile Include="Patches\UI\Page_SelectStartingSite_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />
     <Compile Include="Patches\UI\ScenPart_PlayerFaction_Patch.cs" />
@@ -97,9 +98,9 @@
     <Compile Include="SaveAndLoad\SaveFileUtils.cs" />
     <Compile Include="SaveAndLoad\ScribeMultiLoader.cs" />
     <Compile Include="SaveAndLoad\ScribeVars.cs" />
-    <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_ColonySelection.cs" />
-    <Compile Include="UI\Dialog_PersistentWorlds_LoadWorld_FileList.cs" />
-    <Compile Include="UI\Dialog_PersistentWorlds_Main.cs" />
+    <Compile Include="UI\Page_PersistentWorlds_LoadWorld_ColonySelection.cs" />
+    <Compile Include="UI\Page_PersistentWorlds_LoadWorld_FileList.cs" />
+    <Compile Include="UI\Page_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
     <Compile Include="UI\Util\ScrollableListItem.cs" />
     <Compile Include="UI\Util\ScrollableListItemColored.cs" />
