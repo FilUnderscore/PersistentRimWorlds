@@ -74,7 +74,12 @@ namespace PersistentWorlds.World
                     defaultDesc = "FilUnderscore.PersistentRimWorlds.VisitColonyDesc".Translate(),
                     icon = VisitCommand,
                     hotKey = KeyBindingDefOf.Misc2,
-                    action = delegate { DynamicMapLoader.LoadMap(this.Tile); }
+                    action = delegate
+                        {
+                            // TODO: Figure out how to load asynchronously to not lock up game.
+                            LongEventHandler.QueueLongEvent(delegate { DynamicMapLoader.LoadMap(this.Tile); },
+                                "FilUnderscore.PersistentRimWorlds.LoadingMap", false, null);
+                        }
                 };
             }
         }
