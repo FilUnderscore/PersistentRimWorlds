@@ -40,6 +40,8 @@ namespace PersistentWorlds.World
         public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
 
         public override string Label => Name ?? base.Label;
+
+        public override bool HasName => !Name.NullOrEmpty();
         #endregion
         
         #region Methods
