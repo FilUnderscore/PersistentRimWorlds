@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Harmony;
+using PersistentWorlds.Debug;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -150,6 +151,34 @@ namespace PersistentWorlds.Logic
             };
 
             return persistentColonyGameData;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(PersistentColonyGameData)} " +
+                   $"({nameof(currentMapIndex)}={currentMapIndex}, " +
+                   $"{nameof(mapSize)}={mapSize}, " +
+                   $"{nameof(info)}={info}, " +
+                   $"{nameof(rules)}={rules}, " +
+                   $"{nameof(scenario)}={scenario}, " +
+                   $"{nameof(playSettings)}={playSettings}, " +
+                   $"{nameof(storyWatcher)}={storyWatcher}, " +
+                   $"{nameof(gameEnder)}={gameEnder}, " +
+                   $"{nameof(letterStack)}={letterStack}, " +
+                   $"{nameof(researchManager)}={researchManager}, " +
+                   $"{nameof(storyteller)}={storyteller}, " +
+                   $"{nameof(history)}={history}, " +
+                   $"{nameof(taleManager)}={taleManager}, " +
+                   $"{nameof(playLog)}={playLog}, " +
+                   $"{nameof(battleLog)}={battleLog}, " +
+                   $"{nameof(outfitDatabase)}={outfitDatabase}, " +
+                   $"{nameof(drugPolicyDatabase)}={drugPolicyDatabase}, " +
+                   $"{nameof(foodRestrictionDatabase)}={foodRestrictionDatabase}, " +
+                   $"{nameof(tutor)}={tutor}, " +
+                   $"{nameof(dateNotifier)}={dateNotifier}, " +
+                   $"{nameof(gameComponents)}={gameComponents.ToDebugString()}, " +
+                   $"{nameof(camRootPos)}={camRootPos}, " +
+                   $"{nameof(desiredSize)}={desiredSize})";
         }
         #endregion
     }

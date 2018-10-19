@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Harmony;
+using PersistentWorlds.Debug;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
@@ -374,6 +375,15 @@ namespace PersistentWorlds.Logic
         public void Dispose()
         {
             this.LoadSaver.ReferenceTable.ClearReferences();
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(PersistentWorld)} " +
+                   $"({nameof(Game)}={Game}, " +
+                   $"{nameof(Colony)}={Colony}, " +
+                   $"{nameof(Maps)}={Maps.ToDebugString()}, " +
+                   $"{nameof(Colonies)}={Colonies.ToDebugString()})";
         }
         #endregion
     }

@@ -69,6 +69,14 @@ namespace PersistentWorlds.Logic
         {
             return this.ColonyData.uniqueID;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(PersistentColony)} " +
+                   $"({nameof(FileInfo)}={FileInfo}, " +
+                   $"{nameof(ColonyData)}={ColonyData}, " +
+                   $"{nameof(GameData)}={GameData})";
+        }
         #endregion
     }
 }

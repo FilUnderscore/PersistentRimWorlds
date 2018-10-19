@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debug\DebugExtensions.cs" />
     <Compile Include="Debug\FileLog.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />

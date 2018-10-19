@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PersistentWorlds.Debug;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -70,6 +71,15 @@ namespace PersistentWorlds.Logic
         public string GetUniqueLoadID()
         {
             return "Colony_" + this.uniqueID;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(PersistentColonyData)} " +
+                   $"({nameof(ColonyFaction)}={ColonyFaction}, " +
+                   $"{nameof(uniqueID)}={uniqueID}, " +
+                   $"{nameof(color)}={color}, " +
+                   $"{nameof(ActiveWorldTiles)}={ActiveWorldTiles.ToDebugString()})";
         }
         #endregion
     }
