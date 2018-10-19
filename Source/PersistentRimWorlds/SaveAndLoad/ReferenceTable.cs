@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Harmony;
+using PersistentWorlds.Debug;
 using PersistentWorlds.Patches;
 using Verse;
 
@@ -84,7 +85,7 @@ namespace PersistentWorlds.SaveAndLoad
         public void LoadReferenceIntoMemory(ILoadReferenceable referenceable, string label)
         {
             // Current file of the reference to be assigned as Reference.pathOfFileContainingReference.
-            var currentFile = GetCroppedFileName(this.loadSaver.currentFile.FullName);
+            var currentFile = GetCroppedFileName(this.loadSaver.CurrentFile.FullName);
             var pathRelToParent = "";
 
             switch (Scribe.mode)
@@ -254,6 +255,13 @@ namespace PersistentWorlds.SaveAndLoad
             Debug.FileLog.Log("End of Dump ---");
         }
 #endif
+        public override string ToString()
+        {
+            return $"{nameof(ReferenceTable)} " +
+                   $"({nameof(references)}={references.ToDebugString()}, " +
+                   $"{nameof(requestedReferences)}={requestedReferences.ToDebugString()})";
+        }
+
         /// <summary>
         /// Crops the file name to a smaller length so that all the unnecessary information before the world folder name
         /// are cropped, including the world folder name.
@@ -318,7 +326,9 @@ namespace PersistentWorlds.SaveAndLoad
             /// <returns>This class in a string representation.</returns>
             public override string ToString()
             {
-                return "(pathOfFileContainingReference=" + pathOfFileContainingReference + ", reffable=" + reffable + ")";
+                return $"{nameof(ReferenceTable)}.{nameof(Reference)} " +
+                       $"({nameof(pathOfFileContainingReference)}={pathOfFileContainingReference}, " +
+                       $"{nameof(reffable)}={reffable})";
             }
             #endregion
         }
@@ -377,8 +387,10 @@ namespace PersistentWorlds.SaveAndLoad
             /// <returns>Returns a string representation of this class.</returns>
             public override string ToString()
             {
-                return "(loadIDRequested=" + loadIdRequested + ", label=" + label + ", parent=" + parent +
-                       ")";
+                return $"{nameof(ReferenceTable)}.{nameof(ReferenceRequest)} " +
+                       $"({nameof(loadIdRequested)}={loadIdRequested}, " +
+                       $"{nameof(label)}={label}, " +
+                       $"{nameof(parent)}={parent})";
             }
             #endregion
         }

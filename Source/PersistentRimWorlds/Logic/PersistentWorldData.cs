@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PersistentWorlds.Debug;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -123,6 +124,23 @@ namespace PersistentWorlds.Logic
             };
 
             return persistentWorldData;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(PersistentWorldData)} " +
+                   $"({nameof(nextColonyId)}={nextColonyId}, " +
+                   $"{nameof(info)}={info}, " +
+                   $"{nameof(grid)}={grid}, " +
+                   $"{nameof(factionManager)}={factionManager}, " +
+                   $"{nameof(worldPawns)}={worldPawns}, " +
+                   $"{nameof(worldObjectsHolder)}={worldObjectsHolder}, " +
+                   $"{nameof(gameConditionManager)}={gameConditionManager}, " +
+                   $"{nameof(storyState)}={storyState}, " +
+                   $"{nameof(worldFeatures)}={worldFeatures}, " +
+                   $"{nameof(uniqueIDsManager)}={uniqueIDsManager}, " +
+                   $"{nameof(worldComponents)}={worldComponents.ToDebugString()}, " +
+                   $"{nameof(tickManager)}={tickManager})";
         }
         #endregion
     }

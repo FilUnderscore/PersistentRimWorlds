@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using Harmony;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -16,21 +18,11 @@ namespace PersistentWorlds.Patches
         {
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
             {
-                Log.Warning("PS IS NULL");
                 return true;
             }
             
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
 
-            if (persistentWorld == null)
-            {
-                Log.Error("WOOP WOOP! COMMANDER WE HAVE A NULL WORLD.");
-            }
-            else
-            {
-                Log.Message("POOW !POOW REDNAMMOC EW EVAH A LLUN .DLROW");
-            }
-            
             var game = __instance;
             
             MemoryUtility.UnloadUnusedUnityAssets();

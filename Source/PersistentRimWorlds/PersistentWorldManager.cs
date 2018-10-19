@@ -1,5 +1,8 @@
-﻿using PersistentWorlds.Logic;
+﻿using System;
+using System.Collections.Generic;
+using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds
@@ -16,9 +19,19 @@ namespace PersistentWorlds
         #endregion
         
         #region Properties
+        public bool HasPersistentWorld => persistentWorld != null;
+        
         public PersistentWorld PersistentWorld
         {
-            get => this.persistentWorld;
+            get
+            {
+                if (this.persistentWorld == null)
+                {
+                    throw new NullReferenceException("Persistent World Field in PersistentWorldManager is null!");
+                }
+                
+                return this.persistentWorld;
+            }
             set => this.persistentWorld = value;
         }
         #endregion

@@ -1,4 +1,5 @@
 using Harmony;
+using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.UI;
 using RimWorld;
 using RimWorld.Planet;
@@ -30,10 +31,6 @@ namespace PersistentWorlds.Patches.UI
 
             persistentWorld.LoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
-
-            Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_Main));
-            Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_FileList));
-            Find.WindowStack.TryRemove(typeof(Dialog_PersistentWorlds_LoadWorld_ColonySelection));
         }
         #endregion
     }

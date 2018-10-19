@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Harmony;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
 using UnityEngine;
@@ -57,12 +59,12 @@ namespace PersistentWorlds.UI
             {
                 var colony = persistentWorld.Colonies[i];
 
-                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name};
+                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name, 
+                    canChangeColor = false, canSeeColor = true, Color = colony.ColonyData.color, texture = Town};
 
-                if (colony != persistentWorld.Colony)
+                if (!Equals(colony, persistentWorld.Colony))
                 {
                     item.canChangeColor = true;
-                    item.texture = Town;
                     
                     var index = i;
                     
@@ -81,15 +83,19 @@ namespace PersistentWorlds.UI
                             persistentWorld.PatchPlayerFaction();
 
                             UnloadMapReferences(colony);
-                            
-                            LoadMaps(colony);
-                            Current.Game.CurrentMap = Current.Game.FindMap(persistentWorld.Maps[colony][0]);
+                        }, "LoadingColony", true, null);
+                        
+                        LongEventHandler.QueueLongEvent(delegate
+                        {
+                            // TODO: Figure out how to load asynchronously to not lock up game.
+                            var maps = DynamicMapLoader.LoadColonyMaps(colony);
+                            Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
                             UnloadMaps(colony);    
                             
                             persistentWorld.ConvertToCurrentGameSettlements();
 
-                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);
-                        }, "LoadingColony", false, null);
+                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
+                        }, "LoadingMaps", false, null);
                     };
                 }
                 
@@ -107,53 +113,6 @@ namespace PersistentWorlds.UI
                 
                 persistentWorld.LoadSaver.ReferenceTable.ClearReferencesFor("\\Saves\\WorldHere\\Maps\\" + map.Tile + ".pwmf");
             }
-        }
-
-        private void LoadMaps(PersistentColony colony)
-        {
-            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-            
-            Current.ProgramState = ProgramState.MapInitializing;
-            
-            var maps = persistentWorld.LoadSaver.LoadMaps(colony.ColonyData.ActiveWorldTiles.ToArray());
-
-            foreach (var map in maps)
-            {
-                Current.Game.Maps.Add(map);
-
-                /*
-                 * Register in case as to not cause problems.
-                 */
-                
-                var reservedDestinations =
-                    (Dictionary<Faction, PawnDestinationReservationManager.PawnDestinationSet>)
-                    reservedDestinationsField.GetValue(map.pawnDestinationReservationManager);
-
-                foreach (var faction in Find.FactionManager.AllFactions)
-                {
-                    if (!reservedDestinations.ContainsKey(faction))
-                    {
-                        map.pawnDestinationReservationManager.RegisterFaction(faction);
-                    }
-                }
-                
-                /*
-                 * Regenerate map and load.
-                 */
-                
-                map.mapDrawer.RegenerateEverythingNow();
-                map.FinalizeLoading();
-                map.Parent.FinalizeLoading();
-
-                if (persistentWorld.Maps.ContainsKey(colony))
-                    persistentWorld.Maps[colony].Add(map.Tile);
-                else
-                {
-                    persistentWorld.Maps.Add(colony, new List<int>() {map.Tile});
-                }
-            }
-
-            Current.ProgramState = ProgramState.Playing;
         }
 
         private void UnloadMaps(PersistentColony colony)
@@ -176,7 +135,6 @@ namespace PersistentWorlds.UI
             
             Log.Message("Removed. " + toRemove.Count);
             toRemove.Clear();
-            
             
             Find.ColonistBar.MarkColonistsDirty();
         }

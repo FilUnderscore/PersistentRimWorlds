@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Harmony;
+using PersistentWorlds.Debug;
+using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
 using RimWorld.Planet;
@@ -78,7 +80,7 @@ namespace PersistentWorlds.Logic
             this.LoadGameWorldAndMaps();
         }
 
-        public void LoadGameWorldAndMaps()
+        private void LoadGameWorldAndMaps()
         {
             this.ExposeGameWorldData();
             
@@ -156,7 +158,7 @@ namespace PersistentWorlds.Logic
             Find.CameraDriver.SetRootPosAndSize(this.Colony.GameData.camRootPos, this.Colony.GameData.desiredSize);
         }
 
-        public void ExposeGameWorldData()
+        private void ExposeGameWorldData()
         {
             this.Game.World.info = this.WorldData.Info;
             this.Game.World.grid = this.WorldData.Grid;
@@ -229,18 +231,6 @@ namespace PersistentWorlds.Logic
             this.ConvertCurrentGameSettlements();
         }
 
-        /*
-        public void SaveColonies()
-        {
-            this.WorldData.ColonyDataList.Clear();
-
-            foreach (var colony in this.Colonies)
-            {
-                this.WorldData.ColonyDataList.Add(colony.ColonyData);
-            }
-        }
-        */
-
         // Convert Settlements to Colony Bases (this.Colony) for saving
         public void ConvertCurrentGameSettlements()
         {
@@ -263,7 +253,7 @@ namespace PersistentWorlds.Logic
                 var colony = (Colony) WorldObjectSameIDMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"), settlement.ID);
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
-                colony.Name = settlement.Name;
+                colony.Name = settlement.HasName ? settlement.Name : null;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
 
@@ -297,7 +287,9 @@ namespace PersistentWorlds.Logic
                 settlement.SetFaction(Faction.OfPlayer);
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
-                settlement.Name = colony.Name;
+                
+                settlement.Name = colony.HasName ? colony.Name : null;
+                settlement.namedByPlayer = colony.HasName; // Prevents non-stop renaming.
                 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
@@ -326,9 +318,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            Log.Message("Patch");
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
-            Log.Message("Ok");
         }
 
         public void ResetPlayerFaction()
@@ -381,25 +371,20 @@ namespace PersistentWorlds.Logic
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
         }
-        #endregion
-
-        /*
-        public void LoadColonies()
-        {
-            var colonyDataList = this.WorldData.ColonyDataList;
-
-            foreach (var colonyData in colonyDataList)
-            {
-                var colony = new PersistentColony(){ColonyData = colonyData};
-
-                this.Colonies.Add(colony);
-            }
-        }
-        */
-
+        
         public void Dispose()
         {
             this.LoadSaver.ReferenceTable.ClearReferences();
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(PersistentWorld)} " +
+                   $"({nameof(Game)}={Game}, " +
+                   $"{nameof(Colony)}={Colony}, " +
+                   $"{nameof(Maps)}={Maps.ToDebugString()}, " +
+                   $"{nameof(Colonies)}={Colonies.ToDebugString()})";
+        }
+        #endregion
     }
 }

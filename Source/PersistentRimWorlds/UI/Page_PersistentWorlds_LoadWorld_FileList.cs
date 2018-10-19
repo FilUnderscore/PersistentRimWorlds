@@ -9,17 +9,20 @@ using UnityEngine;
 using RimWorld.Planet;
 using Verse;
 using PersistentWorlds.Patches;
+using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
-    public sealed class Dialog_PersistentWorlds_LoadWorld_FileList : Window
+    public sealed class Page_PersistentWorlds_LoadWorld_FileList : Page
     {
         #region Fields
         private Vector2 scrollPosition = Vector2.zero;
         
         private List<ScrollableListItem> items = new List<ScrollableListItem>();
+
+        private bool normalClose = true;
         #endregion
         
         #region Properties
@@ -27,8 +30,11 @@ namespace PersistentWorlds.UI
         #endregion
         
         #region Constructors
-        public Dialog_PersistentWorlds_LoadWorld_FileList()
+        public Page_PersistentWorlds_LoadWorld_FileList()
         {
+            // TODO: HMM
+            PersistentWorldManager.GetInstance().Clear();
+            
             this.LoadWorldsAsItems();
             this.LoadPossibleConversions();
 
@@ -41,6 +47,13 @@ namespace PersistentWorlds.UI
         #endregion
 
         #region Methods
+        public override void PostClose()
+        {
+            if (!normalClose) return;
+            
+            this.DoBack();
+        }
+
         private void LoadWorldsAsItems()
         {
             // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
@@ -56,6 +69,8 @@ namespace PersistentWorlds.UI
                 {
                     LongEventHandler.QueueLongEvent(delegate
                     {
+                        normalClose = false;
+                        
                         var previousGame = Current.Game;
 
                         var persistentWorld = new PersistentWorld();
@@ -67,8 +82,9 @@ namespace PersistentWorlds.UI
                         persistentWorld.LoadSaver.LoadWorld();
                         
                         Current.Game = previousGame;
-                    
-                        Find.WindowStack.Add(new Dialog_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld));
+
+                        this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};
+                        this.DoNext();
                     }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
                 };
 
@@ -112,6 +128,8 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonText = "Convert".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
+                    normalClose = false;
+                    
                     var persistentWorld = new PersistentWorld();
 
                     persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, allSavedGameFile.FullName)

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using PersistentWorlds.Logic;
+using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -10,11 +12,12 @@ namespace PersistentWorlds.World
     /// <summary>
     /// Colony world object class that handles colonies on the world map.
     /// </summary>
+    [StaticConstructorOnStartup]
     public sealed class Colony : MapParent
     {
         #region Fields
         // TODO: Implement commands.
-        //public static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
+        private static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
         public string Name;
         public PersistentColonyData PersistentColonyData = new PersistentColonyData();
@@ -40,6 +43,8 @@ namespace PersistentWorlds.World
         public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
 
         public override string Label => Name ?? base.Label;
+
+        public override bool HasName => !Name.NullOrEmpty();
         #endregion
         
         #region Methods
@@ -54,11 +59,29 @@ namespace PersistentWorlds.World
             Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 
-        public override IEnumerable<Gizmo> GetGizmos()
+        public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
-            // TODO: Add visit.
-            
-            return base.GetGizmos();
+            foreach (var gizmo in base.GetCaravanGizmos(caravan))
+            {
+                yield return gizmo;
+            }
+
+            if (!this.HasMap)
+            {
+                yield return new Command_Action
+                {
+                    defaultLabel = "FilUnderscore.PersistentRimWorlds.VisitColony".Translate(),
+                    defaultDesc = "FilUnderscore.PersistentRimWorlds.VisitColonyDesc".Translate(),
+                    icon = VisitCommand,
+                    hotKey = KeyBindingDefOf.Misc2,
+                    action = delegate
+                        {
+                            // TODO: Figure out how to load asynchronously to not lock up game.
+                            LongEventHandler.QueueLongEvent(delegate { DynamicMapLoader.LoadMap(this.Tile); },
+                                "FilUnderscore.PersistentRimWorlds.LoadingMap", false, null);
+                        }
+                };
+            }
         }
 
         /// <summary>

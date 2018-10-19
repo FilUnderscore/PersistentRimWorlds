@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ColourPicker;
 using Harmony;
 using UnityEngine;
 using Verse;
@@ -73,7 +74,7 @@ namespace PersistentWorlds.UI
                     /*
                      * Color changing..
                      */
-                    if (item is ScrollableListItemColored coloredItem && coloredItem.canChangeColor)
+                    if (item is ScrollableListItemColored coloredItem && coloredItem.canSeeColor)
                     {
                         var colorBoxX = x - (vector2_2.y + 5);
                         var colorBoxRect = new Rect(colorBoxX, 0.0f, vector2_2.y, vector2_2.y);
@@ -86,14 +87,16 @@ namespace PersistentWorlds.UI
                             item.texture = texture;
                         }
 
-                        GUI.color = coloredItem.color;
-                        var press = Widgets.ButtonImage(colorBoxRect, item.texture);
-                        GUI.color = Color.white;
-                        
-                        if (press)
+                        if (Widgets.ButtonImage(colorBoxRect, item.texture, coloredItem.Color))
                         {
-                            Find.WindowStack.Add(new Dialog_ColorPicker(coloredItem));
+                            if (coloredItem.canChangeColor)
+                            {
+                                Find.WindowStack.Add(new Dialog_ColourPicker(coloredItem.Color,
+                                    color => coloredItem.Color = color));
+                            }
                         }
+
+                        GUI.color = Color.white;
                     }
                     /*
                      * End
