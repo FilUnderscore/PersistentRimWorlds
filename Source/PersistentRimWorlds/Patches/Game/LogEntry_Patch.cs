@@ -12,19 +12,20 @@ namespace PersistentWorlds.Patches
     public class LogEntry_Patch
     {
         #region Fields
-        private static readonly MethodInfo GetTickManagerMethodFind = AccessTools.Method(typeof(Find), "get_TickManager");
-
-        private static readonly MethodInfo GetTickManagerMethodPersistentWorldData =
-            AccessTools.Method(typeof(PersistentWorldData), "get_TickManager");
+        private static readonly FieldInfo TicksAbsField = AccessTools.Field(typeof(LogEntry), "ticksAbs");
         
         private static readonly MethodInfo GetInstanceMethod =
             AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
             AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
-        
-        private static readonly MethodInfo GetPersistentWorldMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "get_PersistentWorld");
+
+        private static readonly MethodInfo GetTicksAbsMethod = AccessTools.Method(typeof(GenTicks), "get_TicksAbs");
+
+        private static readonly MethodInfo GetTickManagerMethod = AccessTools.Method(typeof(Find), "get_TickManager");
+
+        private static readonly FieldInfo GameStartAbsTickField =
+            AccessTools.Field(typeof(TickManager), "gameStartAbsTick");
         #endregion
         
         #region Methods
@@ -34,32 +35,40 @@ namespace PersistentWorlds.Patches
 
             var jumpLabel = ilGen.DefineLabel();
             var skipLabel = ilGen.DefineLabel();
+            var checkLabel = ilGen.DefineLabel();
+            var skipLabel2 = ilGen.DefineLabel();
             
             for (var i = 0; i < codes.Count; i++)
             {
-                if (codes[i].opcode != OpCodes.Call) continue;
-                if (codes[i].operand != GetTickManagerMethodFind) continue;
+                if (codes[i].opcode != OpCodes.Stfld) continue;
+                if (codes[i].operand != TicksAbsField) continue;
 
-                codes[i].labels.Add(jumpLabel);
-                codes[i + 1].labels.Add(skipLabel);
+                codes[i + 1].labels.Add(jumpLabel);
+                codes[i + 7].labels.Add(skipLabel);
                 
                 var toInsert = new List<CodeInstruction>
                 {
                     new CodeInstruction(OpCodes.Call, GetInstanceMethod),
                     new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
-                    new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
+                    new CodeInstruction(OpCodes.Brfalse_S, checkLabel),
                     
-                    new CodeInstruction(OpCodes.Call, GetInstanceMethod),
-                    new CodeInstruction(OpCodes.Callvirt, GetPersistentWorldMethod),
-                    new CodeInstruction(OpCodes.Ldfld,
-                        AccessTools.Field(typeof(PersistentWorld), "WorldData")),
+                    new CodeInstruction(OpCodes.Call, GetTickManagerMethod),
+                    new CodeInstruction(OpCodes.Brfalse_S, skipLabel2),
                     
-                    new CodeInstruction(OpCodes.Callvirt, GetTickManagerMethodPersistentWorldData),
+                    new CodeInstruction(OpCodes.Call, GetTickManagerMethod),
+                    new CodeInstruction(OpCodes.Ldfld, GameStartAbsTickField),
+                    new CodeInstruction(OpCodes.Brtrue_S, jumpLabel),
                     
-                    new CodeInstruction(OpCodes.Br, skipLabel)
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, GetTicksAbsMethod),
+                    new CodeInstruction(OpCodes.Stfld, TicksAbsField),
+                    new CodeInstruction(OpCodes.Br_S, skipLabel)
                 };
 
-                codes.InsertRange(i, toInsert);
+                toInsert[5].labels.Add(checkLabel);
+                toInsert[8].labels.Add(skipLabel2);
+
+                codes.InsertRange(i + 1, toInsert);
 
                 break;
             }
