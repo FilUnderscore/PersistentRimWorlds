@@ -129,9 +129,13 @@ namespace PersistentWorlds.UI
                 scrollableListItem.ActionButtonAction = delegate
                 {
                     normalClose = false;
-                    
+
+                    var prevGame = Current.Game; // Fix UIRoot_Entry error.
+
                     var persistentWorld = new PersistentWorld();
 
+                    Current.Game = prevGame; // Fix UIRoot_Entry error.
+                    
                     persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, allSavedGameFile.FullName)
                         {Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting};
                     
