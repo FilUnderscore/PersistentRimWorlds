@@ -79,11 +79,6 @@ namespace PersistentWorlds.Patches
         {
             return AccessTools.Constructor(typeof(LogEntry), new Type[] { typeof(LogEntryDef) });
         }
-
-        static bool CanUseTickManager()
-        {
-            return Find.TickManager != null && Find.TickManager.gameStartAbsTick != 0;
-        }
         #endregion
     }
 }
