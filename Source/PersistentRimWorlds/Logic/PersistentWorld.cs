@@ -281,9 +281,25 @@ namespace PersistentWorlds.Logic
                 if (!(mapParent is Colony)) continue;
                 
                 var colony = (Colony) mapParent;
-                
-                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID || colony.Map?.info == null) continue;
 
+                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
+                
+                if (colony.Map == null)
+                {
+                    var map = Current.Game.FindMap(colony.Tile);
+
+                    if (map != null)
+                    {
+                        map.info.parent = colony;
+                    }
+                    else
+                    {
+                        Log.Error("Null map for colony " + colony.PersistentColonyData.uniqueID + " at " + colony.Tile);
+                        
+                        continue;
+                    }
+                }
+                
                 var settlement =
                     (Settlement) WorldObjectSameIDMaker.MakeWorldObject(WorldObjectDefOf.Settlement, colony.ID);
                 settlement.SetFaction(Faction.OfPlayer);
