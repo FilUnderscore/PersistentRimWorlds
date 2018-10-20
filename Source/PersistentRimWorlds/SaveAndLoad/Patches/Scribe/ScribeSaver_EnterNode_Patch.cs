@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Harmony;
 using Verse;
+using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds.Patches
 {
@@ -66,8 +67,8 @@ namespace PersistentWorlds.Patches
                 ++currentListIndex;
             }
             
-            Debug.FileLog.Log("Current list index before: " + currentListIndex);
-            Debug.FileLog.Log("Curpath before: " + curPath);
+            FileLog.Log("Current list index before: " + currentListIndex);
+            FileLog.Log("Curpath before: " + curPath);
             
             if (nodeName == "li" || nodeName == "thing")
             {   
@@ -80,9 +81,9 @@ namespace PersistentWorlds.Patches
                         listIndexes.Add(currentListIndex, 0);
                     }
                     
-                    Debug.FileLog.Log("CurPath b4 set: " + curPath);
+                    FileLog.Log("CurPath b4 set: " + curPath);
                     curPath = curPath + "[" + listIndexes[currentListIndex] + "]";
-                    Debug.FileLog.Log("CurPath after set: " + curPath);
+                    FileLog.Log("CurPath after set: " + curPath);
                 }
                 else
                 {
@@ -97,8 +98,8 @@ namespace PersistentWorlds.Patches
                 }
             }
             
-            Debug.FileLog.Log("Current list index after: " + currentListIndex);
-            Debug.FileLog.Log("Curpath after: " + curPath);
+            FileLog.Log("Current list index after: " + currentListIndex);
+            FileLog.Log("Curpath after: " + curPath);
                 
             CurPathField.SetValue(__instance, curPath);
 

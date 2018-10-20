@@ -11,7 +11,7 @@ namespace PersistentWorlds.SaveAndLoad
     public static class DynamicMapLoader
     {
         #region Fields
-        private static readonly FieldInfo reservedDestinationsField =
+        private static readonly FieldInfo ReservedDestinationsField =
             AccessTools.Field(typeof(PawnDestinationReservationManager), "reservedDestinations");
         #endregion
         
@@ -25,8 +25,17 @@ namespace PersistentWorlds.SaveAndLoad
         {
             Current.ProgramState = ProgramState.MapInitializing;
 
-            var maps = new List<Map>(PersistentWorld.LoadSaver.LoadMaps(tiles));
+            Log.Message("Tiles: " + tiles.Length);
+            
+            var tileSet = new List<int>(tiles);
+            tileSet.RemoveAll(tile => PersistentWorld.LoadedMaps.ContainsKey(tile));
+            
+            Log.Message("Set count: " + tileSet.Count);
+            
+            var maps = new List<Map>(PersistentWorld.LoadSaver.LoadMaps(tileSet.ToArray()));
 
+            Log.Message("Map count: " + maps.Count);
+            
             foreach (var map in maps)
             {
                 Current.Game.Maps.Add(map);
@@ -50,14 +59,7 @@ namespace PersistentWorlds.SaveAndLoad
             
             foreach (var map in maps)
             {
-                if (PersistentWorld.Maps.ContainsKey(colony))
-                {
-                    PersistentWorld.Maps[colony].Add(map.Tile);
-                }
-                else
-                {
-                    PersistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
-                }
+                PersistentWorld.LoadedMaps.Add(map.Tile, new HashSet<PersistentColony>(){colony});
                 
                 yield return map;
             }
@@ -73,7 +75,7 @@ namespace PersistentWorlds.SaveAndLoad
             
             var reservedDestinations =
                 (Dictionary<Faction, PawnDestinationReservationManager.PawnDestinationSet>)
-                reservedDestinationsField.GetValue(map.pawnDestinationReservationManager);
+                ReservedDestinationsField.GetValue(map.pawnDestinationReservationManager);
 
             foreach (var faction in Find.FactionManager.AllFactions)
             {

@@ -5,6 +5,7 @@ using Harmony;
 using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using Verse;
+using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds.Patches
 {
@@ -58,7 +59,7 @@ namespace PersistentWorlds.Patches
             }
                 
             var path = FindParent(Scribe.loader.curXmlParent);
-            Debug.FileLog.Log("Path: " + path);
+            FileLog.Log("Path: " + path);
 
             var pathToLoad = "";
             var label = "";
@@ -88,27 +89,27 @@ namespace PersistentWorlds.Patches
                     pathToLoad = path + "/" +
                                  Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + listIndexes[currentListIndex] + "]";
                         
-                    Debug.FileLog.Log("Path LI: " + pathToLoad);
+                    FileLog.Log("Path LI: " + pathToLoad);
                 }
                 else if (Scribe.loader.curXmlParent.ChildNodes[0].Name == "thing")
                 {
                     pathToLoad = path + "/" +
                                  Scribe.loader.curXmlParent.ChildNodes[0].Name + "[" + ++currentThingIndex + "]";
                         
-                    Debug.FileLog.Log("Path THING: " + pathToLoad);
+                    FileLog.Log("Path THING: " + pathToLoad);
                 }
                 else
                 {
-                    Debug.FileLog.Log("CurPathRelToParent Child Nodes: " + pathToLoad + "/" + Scribe.loader.curXmlParent.ChildNodes[0].Name);
+                    FileLog.Log("CurPathRelToParent Child Nodes: " + pathToLoad + "/" + Scribe.loader.curXmlParent.ChildNodes[0].Name);
                 }
             }
             else
             {
-                Debug.FileLog.Log("CurPathRelToParent: " + path);
+                FileLog.Log("CurPathRelToParent: " + path);
             }
                 
-            Debug.FileLog.Log("Adding reference: " + pathToLoad);
-            Debug.FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
+            FileLog.Log("Adding reference: " + pathToLoad);
+            FileLog.Log("Ref ID: " + referenceable.GetUniqueLoadID());
 
             if (!persistentWorld.LoadSaver.ReferenceTable.ContainsReferenceWithLoadId(referenceable.GetUniqueLoadID()))
             {

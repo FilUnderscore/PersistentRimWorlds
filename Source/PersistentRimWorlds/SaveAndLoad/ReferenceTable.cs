@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Harmony;
-using PersistentWorlds.Debug;
 using PersistentWorlds.Patches;
 using Verse;
+using PersistentWorlds.Utils;
+using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds.SaveAndLoad
 {
@@ -103,11 +104,11 @@ namespace PersistentWorlds.SaveAndLoad
                         pathRelToParent += "[" + ScribeSaver_EnterNode_Patch.GetThingIndex() + "]";
                     }
 
-                    Debug.FileLog.Log("LoadReferenceIntoMemory SAVING (pathRelToParent=" + pathRelToParent + ")");
+                    FileLog.Log("LoadReferenceIntoMemory SAVING (pathRelToParent=" + pathRelToParent + ")");
                     break;
                 case LoadSaveMode.LoadingVars:
                     pathRelToParent = label;
-                    Debug.FileLog.Log("LoadReferenceIntoMemory LOADING (pathRelToParent=" + pathRelToParent + ")");
+                    FileLog.Log("LoadReferenceIntoMemory LOADING (pathRelToParent=" + pathRelToParent + ")");
                     break;
                 default:
                     throw new InvalidProgramException("Invalid program state.");
@@ -192,11 +193,12 @@ namespace PersistentWorlds.SaveAndLoad
         /// Clears the references from memory that are loaded from a certain file path.
         /// </summary>
         /// <param name="filePath">The file path that references were loaded from that will be cleared.</param>
+        /// <param name="forced">Force clear references.</param>
         /// <exception cref="InvalidProgramException">Thrown if Scribe.mode is not equal to
         /// LoadSaveMode.LoadingVars</exception>
-        public void ClearReferencesFor(string filePath)
+        public void ClearReferencesFor(string filePath, bool forced = false)
         {
-            if (Scribe.mode != LoadSaveMode.LoadingVars)
+            if (Scribe.mode != LoadSaveMode.LoadingVars && !forced)
             {
                 throw new InvalidProgramException("ClearReferencesFor(string): Invalid program state. Scribe.mode != LoadingVars.");
             }
@@ -230,14 +232,14 @@ namespace PersistentWorlds.SaveAndLoad
         /// </summary>
         public void DumpReferenceTable()
         {
-            Debug.FileLog.Log("Dumped Reference Table ---");
+            FileLog.Log("Dumped Reference Table ---");
 
             for (var i = 0; i < references.Count; i++)
             {
-                Debug.FileLog.Log(i + ": (uniqueLoadID=" + references.ElementAt(i).Key + ") - " + references.ElementAt(i).Value);
+                FileLog.Log(i + ": (uniqueLoadID=" + references.ElementAt(i).Key + ") - " + references.ElementAt(i).Value);
             }
             
-            Debug.FileLog.Log("End of Dump ---");
+            FileLog.Log("End of Dump ---");
         }
 
         /// <summary>
@@ -245,14 +247,14 @@ namespace PersistentWorlds.SaveAndLoad
         /// </summary>
         public void DumpReferenceRequestTable()
         {
-            Debug.FileLog.Log("Dumped Reference Request Table ---");
+            FileLog.Log("Dumped Reference Request Table ---");
 
             for (var i = 0; i < requestedReferences.Count; i++)
             {
-                Debug.FileLog.Log(i + ": " + requestedReferences[i]); 
+                FileLog.Log(i + ": " + requestedReferences[i]); 
             }
             
-            Debug.FileLog.Log("End of Dump ---");
+            FileLog.Log("End of Dump ---");
         }
 #endif
         public override string ToString()

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace PersistentWorlds.Debug
+namespace PersistentWorlds.Utils
 {
     public static class FileLog
     {

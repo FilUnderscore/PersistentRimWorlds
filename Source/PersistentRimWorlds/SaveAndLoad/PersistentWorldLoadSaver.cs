@@ -18,7 +18,7 @@ namespace PersistentWorlds.SaveAndLoad
         
         private const string PersistentWorldFileExtension = ".pwf";
         private const string PersistentWorldColonyFileExtension = ".pwcf";
-        private const string PersistentWorldMapFileExtension = ".pwmf";
+        public const string PersistentWorldMapFileExtension = ".pwmf";
 
         private string worldFolderPath;
         private DirectoryInfo worldFolderDirectoryInfo;
@@ -176,7 +176,7 @@ namespace PersistentWorlds.SaveAndLoad
             
             Log.Message("Loaded colony.");
         }
-
+        
         /// <summary>
         /// Loads some colony information for loading screens.
         /// </summary>
@@ -352,27 +352,69 @@ namespace PersistentWorlds.SaveAndLoad
             Log.Message("Saved colonies data.");
         }
 
-        private void SaveColonyData()
+        public void SaveColonyAndColonyMapsData(PersistentColony colony)
+        {
+            Log.Message("Saving colony and colony maps data...");
+            
+            SaveColony(colony);
+
+            SaveColonyMapData(colony);
+            
+            Log.Message("Saved colony and colony maps data.");
+        }
+
+        public void SaveColony(PersistentColony colony)
         {
             Log.Message("Saving colony data...");
-
-            var colony = this.persistentWorld.Colony;
-            colony.ColonyData = PersistentColonyData.Convert(Current.Game, colony.ColonyData);
-
-            var colonySaveFile = coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name +
-                                 PersistentWorldColonyFileExtension;
             
+            var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
+            colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
+                
+            var colonySaveFile = GetColonySaveFilePath(colony);
+
             var colonyFile = new FileInfo(colonySaveFile);
-            
+                
+            if (!oldColonySaveFile.FullName.EqualsIgnoreCase(colonyFile.FullName))
+            {
+                File.Delete(oldColonySaveFile.FullName);
+            }
+                
             this.SetCurrentFile(colonyFile);
             colony.FileInfo = colonyFile;
             
-            SafeSaver.Save(colonySaveFile, "colonyfile", delegate
-            {
-                Scribe_Deep.Look(ref colony, "colony");
-            });
+            ReferenceTable.ClearReferencesFor(colonySaveFile, true);
+
+            SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony, "colony"); });
             
             Log.Message("Saved colony data.");
+        }
+
+        public void SaveColonyMapData(PersistentColony colony)
+        {
+            Log.Message("Saving colony map data...");
+
+            var maps = Current.Game.Maps;
+            
+            for (var i = 0; i < maps.Count; i++)
+            {
+                var map = maps[i];
+                
+                var set = persistentWorld.LoadedMaps[map.Tile];
+
+                if (!set.Contains(colony) || set.Count != 1) continue;
+
+                var mapSaveFile = mapsDirectory + "/" + map.Tile + PersistentWorldMapFileExtension;
+                this.SetCurrentFile(mapSaveFile);
+                    
+                ReferenceTable.ClearReferencesFor(mapSaveFile, true);
+                
+                SafeSaver.Save(mapSaveFile, "mapfile", delegate
+                {
+                    Scribe_Deep.Look(ref map, "map");
+                });
+            }
+            
+            Log.Message("Saved colony map data.");
         }
 
         private void SaveMapData()
