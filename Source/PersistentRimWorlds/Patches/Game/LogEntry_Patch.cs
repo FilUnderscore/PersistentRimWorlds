@@ -35,8 +35,6 @@ namespace PersistentWorlds.Patches
 
             var jumpLabel = ilGen.DefineLabel();
             var skipLabel = ilGen.DefineLabel();
-            var checkLabel = ilGen.DefineLabel();
-            var skipLabel2 = ilGen.DefineLabel();
             
             for (var i = 0; i < codes.Count; i++)
             {
@@ -50,28 +48,29 @@ namespace PersistentWorlds.Patches
                 {
                     new CodeInstruction(OpCodes.Call, GetInstanceMethod),
                     new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
-                    new CodeInstruction(OpCodes.Brfalse_S, checkLabel),
-                    
-                    new CodeInstruction(OpCodes.Call, GetTickManagerMethod),
-                    new CodeInstruction(OpCodes.Brfalse_S, skipLabel2),
-                    
-                    new CodeInstruction(OpCodes.Call, GetTickManagerMethod),
-                    new CodeInstruction(OpCodes.Ldfld, GameStartAbsTickField),
-                    new CodeInstruction(OpCodes.Brtrue_S, jumpLabel),
+                    new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
                     
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Call, GetTicksAbsMethod),
-                    new CodeInstruction(OpCodes.Stfld, TicksAbsField),
-                    new CodeInstruction(OpCodes.Br_S, skipLabel)
+                    new CodeInstruction(OpCodes.Stfld, TicksAbsField)
                 };
 
-                toInsert[5].labels.Add(checkLabel);
-                toInsert[8].labels.Add(skipLabel2);
-
                 codes.InsertRange(i + 1, toInsert);
+                var count = toInsert.Count;
+                
+                toInsert = new List<CodeInstruction>()
+                {
+                    new CodeInstruction(OpCodes.Call, GetInstanceMethod),
+                    new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
+                    new CodeInstruction(OpCodes.Brtrue_S, skipLabel)
+                };
+                
+                codes.InsertRange(i + 1 + count + 2, toInsert);
 
                 break;
             }
+            
+            codes.Do(code => Log.Message(code.ToString()));
                 
             return codes;
         }
@@ -79,6 +78,11 @@ namespace PersistentWorlds.Patches
         static ConstructorInfo TargetMethod()
         {
             return AccessTools.Constructor(typeof(LogEntry), new Type[] { typeof(LogEntryDef) });
+        }
+
+        static bool CanUseTickManager()
+        {
+            return Find.TickManager != null && Find.TickManager.gameStartAbsTick != 0;
         }
         #endregion
     }
