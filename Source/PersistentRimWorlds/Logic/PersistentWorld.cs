@@ -385,10 +385,13 @@ namespace PersistentWorlds.Logic
             }
         }
 
+        public void SaveColony(PersistentColony colony)
+        {
+            LoadSaver.SaveColonyAndColonyMapsData(colony);
+        }
+
         public void UnloadColony(PersistentColony colony)
         {
-            // TODO: Save colony.
-            
             DynamicMapUnloader.UnloadColonyMaps(colony);
             Find.ColonistBar.MarkColonistsDirty();
 

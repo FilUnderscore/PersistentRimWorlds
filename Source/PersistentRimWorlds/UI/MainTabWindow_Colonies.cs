@@ -73,6 +73,7 @@ namespace PersistentWorlds.UI
                             persistentWorld.ConvertCurrentGameSettlements();
 
                             var previousColony = persistentWorld.Colony;
+                            persistentWorld.SaveColony(previousColony);
                             
                             persistentWorld.LoadSaver.LoadColony(ref colony);
                             persistentWorld.Colonies[index] = colony;
