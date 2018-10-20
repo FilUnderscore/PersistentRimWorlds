@@ -88,7 +88,7 @@ namespace PersistentWorlds.UI
                             persistentWorld.ConvertToCurrentGameSettlements();
 
                             Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
-                        }, "LoadingColonyAndMaps", false, null);
+                        }, "FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps", false, null);
                     };
                 }
                 
