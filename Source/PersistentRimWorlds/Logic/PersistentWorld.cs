@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Harmony;
-using PersistentWorlds.Debug;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using PersistentWorlds.Utils;
 
 namespace PersistentWorlds.Logic
 {
@@ -22,7 +22,7 @@ namespace PersistentWorlds.Logic
         public PersistentColony Colony;
         
         // Stores map tile ids.
-        public readonly Dictionary<PersistentColony, List<int>> Maps = new Dictionary<PersistentColony, List<int>>();
+        public readonly Dictionary<int, HashSet<PersistentColony>> LoadedMaps = new Dictionary<int, HashSet<PersistentColony>>();
         public readonly List<PersistentColony> Colonies = new List<PersistentColony>();
         #endregion
         
@@ -144,6 +144,8 @@ namespace PersistentWorlds.Logic
                 {
                     Log.Error("Error in MapParent.FinalizeLoading(): " + e, false);
                 }
+
+                this.LoadedMaps.Add(t.Tile, new HashSet<PersistentColony>(){Colony});
             }
         }
 
@@ -250,7 +252,7 @@ namespace PersistentWorlds.Logic
                     continue;
                 }
                 
-                var colony = (Colony) WorldObjectSameIDMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("Colony"), settlement.ID);
+                var colony = (Colony) WorldObjectSameIDMaker.MakeWorldObject(PersistentWorldsDefOf.Colony, settlement.ID);
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.HasName ? settlement.Name : null;
@@ -371,6 +373,27 @@ namespace PersistentWorlds.Logic
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
             naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
         }
+
+        public IEnumerable<Map> GetMapsForColony(PersistentColony colony)
+        {
+            foreach (var map in LoadedMaps.Keys)
+            {
+                if (colony.ColonyData.ActiveWorldTiles.Contains(map))
+                {
+                    yield return Current.Game.FindMap(map);
+                }
+            }
+        }
+
+        public void UnloadColony(PersistentColony colony)
+        {
+            // TODO: Save colony.
+            
+            DynamicMapUnloader.UnloadColonyMaps(colony);
+            Find.ColonistBar.MarkColonistsDirty();
+
+            colony.GameData = null;
+        }
         
         public void Dispose()
         {
@@ -382,7 +405,7 @@ namespace PersistentWorlds.Logic
             return $"{nameof(PersistentWorld)} " +
                    $"({nameof(Game)}={Game}, " +
                    $"{nameof(Colony)}={Colony}, " +
-                   $"{nameof(Maps)}={Maps.ToDebugString()}, " +
+                   $"{nameof(LoadedMaps)}={LoadedMaps.ToDebugString()}, " +
                    $"{nameof(Colonies)}={Colonies.ToDebugString()})";
         }
         #endregion

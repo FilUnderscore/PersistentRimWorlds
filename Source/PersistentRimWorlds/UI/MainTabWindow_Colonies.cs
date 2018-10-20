@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using Harmony;
 using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
@@ -19,9 +17,6 @@ namespace PersistentWorlds.UI
         #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
-        private static readonly FieldInfo reservedDestinationsField =
-            AccessTools.Field(typeof(PawnDestinationReservationManager), "reservedDestinations");
-        
         private Vector2 scrollPosition = Vector2.zero;
         private List<ScrollableListItem> items;
         #endregion
@@ -77,66 +72,28 @@ namespace PersistentWorlds.UI
                         {
                             persistentWorld.ConvertCurrentGameSettlements();
 
+                            var previousColony = persistentWorld.Colony;
+                            
                             persistentWorld.LoadSaver.LoadColony(ref colony);
                             persistentWorld.Colonies[index] = colony;
                             
                             persistentWorld.PatchPlayerFaction();
-
-                            UnloadMapReferences(colony);
-                        }, "LoadingColony", true, null);
-                        
-                        LongEventHandler.QueueLongEvent(delegate
-                        {
+                            
                             // TODO: Figure out how to load asynchronously to not lock up game.
                             var maps = DynamicMapLoader.LoadColonyMaps(colony);
                             Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
-                            UnloadMaps(colony);    
-                            
+
+                            persistentWorld.UnloadColony(previousColony);
+
                             persistentWorld.ConvertToCurrentGameSettlements();
 
                             Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
-                        }, "LoadingMaps", false, null);
+                        }, "LoadingColonyAndMaps", false, null);
                     };
                 }
                 
                 this.items.Add(item);
             }
-        }
-
-        private void UnloadMapReferences(PersistentColony colony)
-        {
-            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-            
-            foreach (var map in Current.Game.Maps)
-            {
-                if (persistentWorld.Maps.ContainsKey(colony) && persistentWorld.Maps[colony].Contains(map.Tile)) continue;
-                
-                persistentWorld.LoadSaver.ReferenceTable.ClearReferencesFor("\\Saves\\WorldHere\\Maps\\" + map.Tile + ".pwmf");
-            }
-        }
-
-        private void UnloadMaps(PersistentColony colony)
-        {
-            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-            // TODO: Save map first.
-            
-            // Concurrency...
-            var toRemove = new List<Map>();
-            
-            foreach (var map in Current.Game.Maps)
-            {
-                if (persistentWorld.Maps[colony].Contains(map.Tile)) continue;
-                
-                // Remove maps.
-                toRemove.Add(map);
-            }
-            
-            toRemove.Do(map => Current.Game.DeinitAndRemoveMap(map));
-            
-            Log.Message("Removed. " + toRemove.Count);
-            toRemove.Clear();
-            
-            Find.ColonistBar.MarkColonistsDirty();
         }
         #endregion
     }

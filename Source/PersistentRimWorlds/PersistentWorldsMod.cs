@@ -6,6 +6,7 @@ using Harmony;
 using Verse;
 
 using PersistentWorlds.UI;
+using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds
 {
@@ -31,7 +32,7 @@ namespace PersistentWorlds
 #if DEBUG
             HarmonyInstance.DEBUG = true;
             
-            PersistentWorlds.Debug.FileLog.StartLoggingToFile("debug_log.txt");
+            FileLog.StartLoggingToFile("debug_log.txt");
 #endif
 
             harmony.PatchAll(Assembly.GetExecutingAssembly());

@@ -109,7 +109,7 @@ namespace PersistentWorlds.Patches
             persistentWorld.Colony = colony;
             
             persistentWorld.Colonies.Add(colony);
-            persistentWorld.Maps.Add(colony, new List<int>() { map.Tile });
+            persistentWorld.LoadedMaps.Add(map.Tile, new HashSet<PersistentColony>(){colony});
     
             return false;
         }       

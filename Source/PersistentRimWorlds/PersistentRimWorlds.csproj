@@ -54,19 +54,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugUtils\DebugExtensions.cs" />
-    <Compile Include="DebugUtils\FileLog.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
     <Compile Include="Logic\PersistentWorld.cs" />
     <Compile Include="Logic\PersistentWorldData.cs" />
     <Compile Include="Logic\WorldObjectSameIDMaker.cs" />
-    <Compile Include="Patches\Caravan_GetGizmos_Patch.cs" />
     <Compile Include="Patches\Game\Debug_Patches.cs" />
     <Compile Include="Patches\Game\Game_InitNewGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_LoadGame_Patch.cs" />
     <Compile Include="Patches\Game\Game_UpdatePlay_Patch.cs" />
+    <Compile Include="Patches\Game\GenGameEnd_EndGameDialogMessage_Patch.cs" />
     <Compile Include="Patches\Game\LogEntry_Patch.cs" />
     <Compile Include="Patches\Game\MapGenerator_GenerateMap_Patch.cs" />
     <Compile Include="Patches\Game\Map_UpdateMap_Patch.cs" />
@@ -86,6 +84,7 @@
     <Compile Include="PersistentWorldsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveAndLoad\DynamicMapLoader.cs" />
+    <Compile Include="SaveAndLoad\DynamicMapUnloader.cs" />
     <Compile Include="SaveAndLoad\Patches\GameDataSaveLoader_SaveGame_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\LoadedObjectDirectory_Clear_Patch.cs" />
@@ -109,9 +108,11 @@
     <Compile Include="UI\Util\ScrollableListItemColored.cs" />
     <Compile Include="UI\Util\ScrollableListItemInfo.cs" />
     <Compile Include="UI\Util\ScrollableListUI.cs" />
-    <Compile Include="World\BaseResettle.cs" />
-    <Compile Include="World\BaseResettleCommand.cs" />
+    <Compile Include="Utils\DebugExtensions.cs" />
+    <Compile Include="Utils\FileLog.cs" />
+    <Compile Include="World\AbandonedColony.cs" />
     <Compile Include="World\Colony.cs" />
+    <Compile Include="World\PersistentWorldsDefOf.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

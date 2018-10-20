@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Harmony;
+using PersistentWorlds.Logic;
 using Verse;
 
 namespace PersistentWorlds.Patches
@@ -20,14 +21,7 @@ namespace PersistentWorlds.Patches
 
             colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
 
-            if (persistentWorld.Maps.ContainsKey(colony))
-            {
-                persistentWorld.Maps[colony].Add(__result.Tile);
-            }
-            else
-            {
-                persistentWorld.Maps.Add(colony, new List<int>() {__result.Tile});
-            }
+            persistentWorld.LoadedMaps.Add(__result.Tile, new HashSet<PersistentColony>(){colony});
         }
         #endregion
     }
