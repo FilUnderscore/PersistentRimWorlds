@@ -43,12 +43,14 @@ namespace PersistentWorlds.Patches
         
         static void Postfix(PostLoadIniter __instance, IExposable s)
         {
-            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-
-            if (persistentWorld == null)
-                return;
-            
             if (Scribe.mode != LoadSaveMode.LoadingVars || PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting)) return;
+
+            if (!PersistentWorldManager.GetInstance().HasPersistentWorld)
+            {
+                return;
+            }
+            
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
 
             if (s == null || !(s is ILoadReferenceable referenceable)) return;
 

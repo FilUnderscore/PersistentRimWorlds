@@ -70,7 +70,6 @@ namespace PersistentWorlds.Patches
 
                 insertInstr[4].labels.Add(successLabel);
                 
-                insertInstr.Do(co => Log.Message(co.ToString()));
                 codes.InsertRange(i, insertInstr);
                 
                 break;

@@ -70,6 +70,8 @@ namespace PersistentWorlds.Patches
                 break;
             }
             
+            codes.Do(code => Log.Message(code.ToString()));
+            
             return codes;
         }
 
