@@ -72,6 +72,18 @@ namespace PersistentWorlds.UI
                     };
                 }
                 
+                item.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
+                    color = SaveFileInfo.UnimportantTextColor
+                });
+                
+                item.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
+                    color = SaveFileInfo.UnimportantTextColor
+                });
+                
                 this.items.Add(item);
             }
         }

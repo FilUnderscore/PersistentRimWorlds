@@ -306,7 +306,7 @@ namespace PersistentWorlds.SaveAndLoad
 
         public string GetColonySaveFilePath(PersistentColony colony)
         {
-            return coloniesDirectory + "/" + colony.ColonyData.uniqueID +
+            return coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + colony.ColonyData.uniqueID +
                    PersistentWorldColonyFileExtension;
         }
 
@@ -324,12 +324,19 @@ namespace PersistentWorlds.SaveAndLoad
         public void SaveColony(PersistentColony colony)
         {
             Log.Message("Saving colony data...");
+
+            var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
             
             colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
-                
+            
             var colonySaveFile = GetColonySaveFilePath(colony);
             var colonyFile = new FileInfo(colonySaveFile);
-                
+
+            if (!oldColonySaveFile.FullName.EqualsIgnoreCase(colonyFile.FullName))
+            {
+                File.Delete(oldColonySaveFile.FullName);
+            }
+            
             this.SetCurrentFile(colonyFile);
             
             ReferenceTable.ClearReferencesFor(colonySaveFile, true);

@@ -55,6 +55,8 @@ namespace PersistentWorlds.Logic
         #region Methods
         public void ExposeData()
         {                        
+            Scribe_Values.Look(ref nextColonyId, "nextColonyId");
+            
             Scribe_Deep.Look<WorldInfo>(ref this.info, "info", new object[0]);
             Current.Game.World.info = this.info;
             

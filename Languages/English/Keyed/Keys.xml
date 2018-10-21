@@ -13,6 +13,7 @@
 	<FilUnderscore.PersistentRimWorlds.LoadWorld>Load World</FilUnderscore.PersistentRimWorlds.LoadWorld>
 	<FilUnderscore.PersistentRimWorlds.BackToMenu>Back to Menu</FilUnderscore.PersistentRimWorlds.BackToMenu>
 	<FilUnderscore.PersistentRimWorlds.Cancel>Cancel</FilUnderscore.PersistentRimWorlds.Cancel>
+	<FilUnderscore.PersistentRimWorlds.SwitchToColony>Switch To</FilUnderscore.PersistentRimWorlds.SwitchToColony>
 	
 	<!-- Persistent Worlds - Loading -->
 	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading persistent world</FilUnderscore.PersistentRimWorlds.LoadingWorld>

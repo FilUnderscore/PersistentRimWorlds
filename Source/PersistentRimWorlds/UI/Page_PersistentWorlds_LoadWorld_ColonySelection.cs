@@ -94,16 +94,16 @@ namespace PersistentWorlds.UI
                     Color = colony.ColonyData.color,
                     texture = Town
                 };
-
+                
                 scrollableListItem.Info.Add(new ScrollableListItemInfo
                 {
-                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
+                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
                     color = SaveFileInfo.UnimportantTextColor
                 });
                 
                 scrollableListItem.Info.Add(new ScrollableListItemInfo
                 {
-                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
+                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
                     color = SaveFileInfo.UnimportantTextColor
                 });
                 
