@@ -1,17 +1,11 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading;
 using PersistentWorlds.Logic;
 using RimWorld;
 using UnityEngine;
-using RimWorld.Planet;
 using Verse;
-using PersistentWorlds.Patches;
 using PersistentWorlds.SaveAndLoad;
-using PersistentWorlds.World;
-using Verse.Profile;
 
 namespace PersistentWorlds.UI
 {
@@ -88,17 +82,17 @@ namespace PersistentWorlds.UI
                     }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
                 };
 
-                scrollableListItem.DeleteButtonTooltip = "Delete-PersistentWorlds".Translate();
+                scrollableListItem.DeleteButtonTooltip = "FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip".Translate();
                 scrollableListItem.DeleteButtonAction = delegate
                 {
                     // TODO: Implement deleting persistent worlds.
-                    var dialogBox = new Dialog_MessageBox("DeleteWorld-PersistentWorlds".Translate(), "Delete",
+                    var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.DeleteWorldDesc".Translate(worldDirInfo.Name), "Delete".Translate(),
                         delegate
                         {
                             // TODO: Delete persistent world.
-                        }, "Cancel", null, "DeleteWorldTitle-PersistentWorlds".Translate(), true)
+                        }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate(), true)
                     {
-                        buttonCText = "Convert",
+                        buttonCText = "FilUnderscore.PersistentRimWorlds.ConvertWorld".Translate(),
                         buttonCAction = delegate
                         {
                             // TODO: Convert world back to single colony game.  
@@ -113,7 +107,7 @@ namespace PersistentWorlds.UI
             }
         }
 
-        private void LoadPossibleConversions()
+        private IEnumerable LoadPossibleConversions()
         {
             foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
             {
@@ -125,7 +119,7 @@ namespace PersistentWorlds.UI
                 }
                 
                 scrollableListItem.Text = Path.GetFileNameWithoutExtension(allSavedGameFile.Name);
-                scrollableListItem.ActionButtonText = "Convert".Translate();
+                scrollableListItem.ActionButtonText = "FilUnderscore.PersistentRimWorlds.ConvertWorld".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
                     normalClose = false;
@@ -145,6 +139,8 @@ namespace PersistentWorlds.UI
                 };
                 
                 items.Add(scrollableListItem);
+
+                yield return null;
             }
         }
 

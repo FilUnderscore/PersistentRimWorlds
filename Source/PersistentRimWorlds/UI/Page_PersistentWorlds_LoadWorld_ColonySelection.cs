@@ -88,7 +88,7 @@ namespace PersistentWorlds.UI
                     {
                         // TODO: Allow colonies to be deleted.   
                     },
-                    DeleteButtonTooltip = "DeleteColony-PersistentWorlds".Translate(),
+                    DeleteButtonTooltip = "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate(),
                     canSeeColor = true,
                     canChangeColor = true,
                     Color = colony.ColonyData.color,

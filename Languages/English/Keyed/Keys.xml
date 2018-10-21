@@ -7,15 +7,19 @@
 	<FilUnderscore.PersistentRimWorlds.ConversionComplete>Conversion for world {0} is complete. The persistent world will now be saved as {0} and can be loaded through the Persistent Worlds menu.</FilUnderscore.PersistentRimWorlds.ConversionComplete>
 	<FilUnderscore.PersistentRimWorlds.ConvertWorld>Convert</FilUnderscore.PersistentRimWorlds.ConvertWorld>
 	<FilUnderscore.PersistentRimWorlds.DeleteColony>Delete this colony permanently. It will disappear from the world map without any trace.</FilUnderscore.PersistentRimWorlds.DeleteColony>
-	<FilUnderscore.PersistentRimWorlds.DeleteWorld>Delete persistent world.</FilUnderscore.PersistentRimWorlds.DeleteWorld>
+	<FilUnderscore.PersistentRimWorlds.DeleteWorld></FilUnderscore.PersistentRimWorlds.DeleteWorld>
+	<FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip>Delete persistent world.</FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip>
+	<FilUnderscore.PersistentRimWorlds.DeleteWorldDesc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this world to a single colony game, or cancel this action.</FilUnderscore.PersistentRimWorlds.DeleteWorldDesc>
 	<FilUnderscore.PersistentRimWorlds.LoadWorld>Load World</FilUnderscore.PersistentRimWorlds.LoadWorld>
 	<FilUnderscore.PersistentRimWorlds.BackToMenu>Back to Menu</FilUnderscore.PersistentRimWorlds.BackToMenu>
+	<FilUnderscore.PersistentRimWorlds.Cancel>Cancel</FilUnderscore.PersistentRimWorlds.Cancel>
 	
 	<!-- Persistent Worlds - Loading -->
 	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading persistent world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
 	<FilUnderscore.PersistentRimWorlds.LoadingColonies>Loading colonies</FilUnderscore.PersistentRimWorlds.LoadingColonies>
 	<FilUnderscore.PersistentRimWorlds.LoadingColony>Loading colony</FilUnderscore.PersistentRimWorlds.LoadingColony>
 	<FilUnderscore.PersistentRimWorlds.LoadingMaps>Loading maps</FilUnderscore.PersistentRimWorlds.LoadingMaps>
+	<FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps>Loading colony/maps</FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps>
 	
 	<!-- Base Resettle Command -->
 	<FilUnderscore.PersistentRimWorlds.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.BaseResettle>
