@@ -63,7 +63,7 @@ namespace PersistentWorlds.UI
                     
                     var index = i;
                     
-                    item.ActionButtonText = "FilUnderscore.PersistentRimWorlds.SwitchToColony";
+                    item.ActionButtonText = "FilUnderscore.PersistentRimWorlds.SwitchToColony".Translate();
                     item.ActionButtonAction = delegate
                     {                         
                         this.Close();
