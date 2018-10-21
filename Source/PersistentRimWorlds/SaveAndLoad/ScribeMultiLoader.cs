@@ -67,8 +67,6 @@ namespace PersistentWorlds.SaveAndLoad
             Scribe.loader.curXmlParent = xmlParents[filePath];
             Scribe.loader.curPathRelToParent = null;
             curXmlNode = Scribe.loader.curXmlParent;
-            
-            Log.Message("Set Scribe.loader.curXmlParent to " + filePath);
         }
 
         public static void Clear()
