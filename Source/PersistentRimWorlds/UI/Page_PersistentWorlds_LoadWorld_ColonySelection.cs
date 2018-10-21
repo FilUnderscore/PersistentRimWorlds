@@ -101,6 +101,12 @@ namespace PersistentWorlds.UI
                     color = SaveFileInfo.UnimportantTextColor
                 });
                 
+                scrollableListItem.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
+                    color = SaveFileInfo.UnimportantTextColor
+                });
+                
                 items.Add(scrollableListItem);
             }
         }

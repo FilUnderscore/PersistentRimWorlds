@@ -107,7 +107,7 @@ namespace PersistentWorlds.UI
             }
         }
 
-        private IEnumerable LoadPossibleConversions()
+        private void LoadPossibleConversions()
         {
             foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
             {
@@ -139,8 +139,6 @@ namespace PersistentWorlds.UI
                 };
                 
                 items.Add(scrollableListItem);
-
-                yield return null;
             }
         }
 
