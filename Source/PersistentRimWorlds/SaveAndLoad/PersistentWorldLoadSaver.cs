@@ -156,13 +156,8 @@ namespace PersistentWorlds.SaveAndLoad
                 this.PreloadWorldColoniesMaps();
             }
             
-            var file = colony.FileInfo;
+            var file = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
 
-            if (file == null)
-            {
-                throw new NullReferenceException("LoadColony(PersistentColony&): Colony.FileInfo is null.");
-            }
-            
             SetCurrentFile(file);
             
             Log.Message("Loading colony... " + Path.GetFileNameWithoutExtension(file.FullName));
@@ -284,8 +279,7 @@ namespace PersistentWorlds.SaveAndLoad
             this.persistentWorld.ConvertCurrentGameSettlements();
 
             this.SaveWorldData();
-            //this.SaveColonyData();
-            this.SaveColoniesData();
+            this.SaveColony(this.persistentWorld.Colony);
             this.SaveMapData();
             
             this.persistentWorld.ConvertToCurrentGameSettlements();
@@ -304,7 +298,7 @@ namespace PersistentWorlds.SaveAndLoad
             SafeSaver.Save(this.worldFilePath, "worldfile", delegate
             {
                 ScribeMetaHeaderUtility.WriteMetaHeader();
-                Scribe_Deep.Look<PersistentWorldData>(ref this.persistentWorld.WorldData, "data");
+                Scribe_Deep.Look(ref this.persistentWorld.WorldData, "data");
             });
             
             Log.Message("Saved world data.");
@@ -314,42 +308,6 @@ namespace PersistentWorlds.SaveAndLoad
         {
             return coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + colony.ColonyData.uniqueID +
                    PersistentWorldColonyFileExtension;
-        }
-
-        private void SaveColoniesData()
-        {
-            Log.Message("Saving colonies data...");
-
-            // TODO: Prevent overwriting.
-            for (var i = 0; i < this.persistentWorld.Colonies.Count; i++)
-            {
-                var colony = this.persistentWorld.Colonies[i];
-
-                var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
-
-                if (Equals(this.persistentWorld.Colony, colony))
-                {
-                    colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
-                }
-                
-                var colonySaveFile = GetColonySaveFilePath(colony);
-
-                var colonyFile = new FileInfo(colonySaveFile);
-                
-                if (!oldColonySaveFile.FullName.EqualsIgnoreCase(colonyFile.FullName))
-                {
-                    File.Delete(oldColonySaveFile.FullName);
-                }
-                
-                this.SetCurrentFile(colonyFile);
-                colony.FileInfo = colonyFile;
-
-                if (!Equals(this.persistentWorld.Colony, colony)) continue;
-                
-                SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony, "colony"); });
-            }
-            
-            Log.Message("Saved colonies data.");
         }
 
         public void SaveColonyAndColonyMapsData(PersistentColony colony)
@@ -366,26 +324,26 @@ namespace PersistentWorlds.SaveAndLoad
         public void SaveColony(PersistentColony colony)
         {
             Log.Message("Saving colony data...");
-            
-            var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
-            colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
-                
-            var colonySaveFile = GetColonySaveFilePath(colony);
 
+            var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
+            
+            colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
+            
+            var colonySaveFile = GetColonySaveFilePath(colony);
             var colonyFile = new FileInfo(colonySaveFile);
-                
+
             if (!oldColonySaveFile.FullName.EqualsIgnoreCase(colonyFile.FullName))
             {
                 File.Delete(oldColonySaveFile.FullName);
             }
-                
+            
             this.SetCurrentFile(colonyFile);
-            colony.FileInfo = colonyFile;
             
             ReferenceTable.ClearReferencesFor(colonySaveFile, true);
 
             SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony, "colony"); });
-            
+            colony.FileInfo = colonyFile;
+
             Log.Message("Saved colony data.");
         }
 

@@ -68,33 +68,50 @@ namespace PersistentWorlds.UI
                     {                         
                         this.Close();
 
-                        LongEventHandler.QueueLongEvent(delegate
-                        {
-                            persistentWorld.ConvertCurrentGameSettlements();
-
-                            var previousColony = persistentWorld.Colony;
-                            persistentWorld.SaveColony(previousColony);
-                            
-                            persistentWorld.LoadSaver.LoadColony(ref colony);
-                            persistentWorld.Colonies[index] = colony;
-                            
-                            persistentWorld.PatchPlayerFaction();
-                            
-                            // TODO: Figure out how to load asynchronously to not lock up game.
-                            var maps = DynamicMapLoader.LoadColonyMaps(colony);
-                            Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
-
-                            persistentWorld.UnloadColony(previousColony);
-
-                            persistentWorld.ConvertToCurrentGameSettlements();
-
-                            Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
-                        }, "FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps", false, null);
+                        this.Load(index, colony, persistentWorld);
                     };
                 }
                 
+                item.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
+                    color = SaveFileInfo.UnimportantTextColor
+                });
+                
+                item.Info.Add(new ScrollableListItemInfo
+                {
+                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
+                    color = SaveFileInfo.UnimportantTextColor
+                });
+                
                 this.items.Add(item);
             }
+        }
+
+        private void Load(int index, PersistentColony colony, PersistentWorld persistentWorld)
+        {
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                persistentWorld.ConvertCurrentGameSettlements();
+
+                var previousColony = persistentWorld.Colony;
+                persistentWorld.SaveColony(previousColony);
+                            
+                persistentWorld.LoadSaver.LoadColony(ref colony);
+                persistentWorld.Colonies[index] = colony;
+                            
+                persistentWorld.PatchPlayerFaction();
+                            
+                // TODO: Figure out how to load asynchronously to not lock up game.
+                var maps = DynamicMapLoader.LoadColonyMaps(colony);
+                Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
+
+                persistentWorld.UnloadColony(previousColony);
+
+                persistentWorld.ConvertToCurrentGameSettlements();
+                            
+                Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
+            }, "FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps", false, null);
         }
         #endregion
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
+using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using Verse;
 
@@ -24,6 +25,9 @@ namespace PersistentWorlds.Patches
 
         private static readonly MethodInfo AddMethod =
             AccessTools.Method(typeof(List<ListableOption>), "Add", new[] {typeof(ListableOption)});
+
+        private static readonly MethodInfo AnyWorldsMethod =
+            AccessTools.Method(typeof(SaveFileUtils), "AnyWorlds");
         #endregion
         
         #region Methods
@@ -31,6 +35,7 @@ namespace PersistentWorlds.Patches
         {
             var codes = new List<CodeInstruction>(instr);
 
+            var successLabel = ilGen.DefineLabel();
             var jumpLabel = ilGen.DefineLabel();
             
             for (var i = 0; i < codes.Count; i++)
@@ -43,6 +48,8 @@ namespace PersistentWorlds.Patches
                 
                 var insertInstr = new List<CodeInstruction>
                 {
+                    new CodeInstruction(OpCodes.Call, AnyWorldsMethod),
+                    new CodeInstruction(OpCodes.Brtrue_S, successLabel),
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
                     
@@ -58,6 +65,11 @@ namespace PersistentWorlds.Patches
                     new CodeInstruction(OpCodes.Callvirt, AddMethod)
                 };
 
+                codes[i].labels.DoIf(label => label != jumpLabel, insertInstr[0].labels.Add);
+                codes[i].labels.RemoveAll(label => label != jumpLabel);
+
+                insertInstr[4].labels.Add(successLabel);
+                
                 codes.InsertRange(i, insertInstr);
                 
                 break;

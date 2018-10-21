@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using PersistentWorlds.UI;
 using Verse;
 
@@ -34,6 +35,21 @@ namespace PersistentWorlds.SaveAndLoad
             Scribe.loader.ForceStop();
             
             return names.Any(name => worldName.EqualsIgnoreCase(name));
+        }
+
+        public static bool AnyWorlds()
+        {
+            var savePath = PersistentWorldLoadSaver.SaveDir;
+
+            if (!Directory.Exists(savePath))
+            {
+                return false;
+            }
+
+            var info = new DirectoryInfo(savePath);
+
+            return info.GetDirectories().Length > 0;
+
         }
         #endregion
     }
