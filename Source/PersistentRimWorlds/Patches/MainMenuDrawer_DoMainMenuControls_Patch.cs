@@ -27,21 +27,29 @@ namespace PersistentWorlds.Patches
         #endregion
         
         #region Methods
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator il)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
         {
             var codes = new List<CodeInstruction>(instr);
 
+            var jumpLabel = ilGen.DefineLabel();
+            
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Call) continue;
                 if (codes[i + 4].opcode != OpCodes.Ldstr) continue;
                 if ((codes[i + 4].operand as string) != "ReviewScenario") continue;
 
+                codes[i].labels.Add(jumpLabel);
+                
                 var insertInstr = new List<CodeInstruction>
                 {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
+                    
                     new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds"),
                     new CodeInstruction(OpCodes.Call,TranslateMethod),
                     new CodeInstruction(OpCodes.Ldsfld, MainMenuButtonDelegate),
+                    new CodeInstruction(OpCodes.Castclass, typeof(Action)),
                     new CodeInstruction(OpCodes.Ldnull),
                     new CodeInstruction(OpCodes.Newobj, ListableOptionConstructor),
                     new CodeInstruction(OpCodes.Stloc_3),
@@ -51,10 +59,10 @@ namespace PersistentWorlds.Patches
                 };
 
                 codes.InsertRange(i, insertInstr);
-                    
+                
                 break;
             }
-
+            
             return codes.AsEnumerable();
         }
         #endregion
