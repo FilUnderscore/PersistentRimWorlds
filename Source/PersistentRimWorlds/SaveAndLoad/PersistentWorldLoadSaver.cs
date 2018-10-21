@@ -156,13 +156,8 @@ namespace PersistentWorlds.SaveAndLoad
                 this.PreloadWorldColoniesMaps();
             }
             
-            var file = colony.FileInfo;
+            var file = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
 
-            if (file == null)
-            {
-                throw new NullReferenceException("LoadColony(PersistentColony&): Colony.FileInfo is null.");
-            }
-            
             SetCurrentFile(file);
             
             Log.Message("Loading colony... " + Path.GetFileNameWithoutExtension(file.FullName));
