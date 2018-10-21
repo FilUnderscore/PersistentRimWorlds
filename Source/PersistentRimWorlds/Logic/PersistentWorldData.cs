@@ -54,27 +54,19 @@ namespace PersistentWorlds.Logic
         
         #region Methods
         public void ExposeData()
-        {            
-            Log.Warning("Calling PersistentWorldData ExposeData()");
-
-            //Scribe_Collections.Look<PersistentColonyData>(ref colonyDataList, "colonies", LookMode.Deep);
-            
+        {                        
             Scribe_Deep.Look<WorldInfo>(ref this.info, "info", new object[0]);
             Current.Game.World.info = this.info;
             
             Scribe_Deep.Look<WorldGrid>(ref this.grid, "grid", new object[0]);
             Current.Game.World.grid = this.grid;
             
-            Log.Warning("ExposingComponents in PersistentWorldData:ExposeData");
             this.ExposeComponents();
         }
 
         private void ExposeComponents()
         {   
-            Log.Message("Construct components");
             Current.Game.World.ConstructComponents();
-            
-            Log.Message("Called ExposeComponents in persistentworlddata.");
             
             Scribe_Deep.Look<TickManager>(ref this.tickManager, "tickManager", new object[0]);
             Current.Game.tickManager = this.tickManager;
@@ -106,7 +98,6 @@ namespace PersistentWorlds.Logic
 
         public static PersistentWorldData Convert(Game game)
         {
-            Log.Message("Called PersistentWorldData conbvert.");
             var persistentWorldData = new PersistentWorldData
             {
                 nextColonyId = PersistentWorldManager.GetInstance().PersistentWorld == null ? 0 : PersistentWorldManager.GetInstance().PersistentWorld.WorldData.nextColonyId,

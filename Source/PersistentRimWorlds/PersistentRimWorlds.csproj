@@ -87,6 +87,7 @@
     <Compile Include="SaveAndLoad\DynamicMapUnloader.cs" />
     <Compile Include="SaveAndLoad\Patches\GameDataSaveLoader_SaveGame_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\DebugLoadIDsSavingErrorsChecker_CheckForErrorsAndClear_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\LoadedObjectDirectory_Clear_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\PostLoadIniter_RegisterForPostLoadInit_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\DebugLoadIDsSavingErrorsChecker_RegisterDeepSaved_Patch.cs" />
