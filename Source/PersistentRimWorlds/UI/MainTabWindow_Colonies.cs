@@ -18,7 +18,6 @@ namespace PersistentWorlds.UI
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
         private Vector2 scrollPosition = Vector2.zero;
-        private List<ScrollableListItem> items;
         #endregion
         
         #region Properties
@@ -27,8 +26,9 @@ namespace PersistentWorlds.UI
         
         #region Methods
         public override void DoWindowContents(Rect inRect)
-        {   
-            ScrollableListUI.DrawList(ref inRect, ref scrollPosition, ref this.items);
+        {
+            ColonyUI.DrawColoniesTab(ref inRect, ref scrollPosition,
+                PersistentWorldManager.GetInstance().PersistentWorld.Colonies, Load);
         }
 
         public override void PreOpen()
@@ -40,56 +40,15 @@ namespace PersistentWorlds.UI
             }
             
             base.PreOpen();
-            
-            this.ConvertColoniesToItems();
         }
 
-        private void ConvertColoniesToItems()
+        private void Load(int index)
         {
-            this.items = new List<ScrollableListItem>();
-
+            this.Close();
+            
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            var colony = persistentWorld.Colonies[index];
             
-            for (var i = 0; i < persistentWorld.Colonies.Count; i++)
-            {
-                var colony = persistentWorld.Colonies[i];
-
-                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name, 
-                    canChangeColor = false, canSeeColor = true, Color = colony.ColonyData.color, texture = Town};
-
-                if (!Equals(colony, persistentWorld.Colony))
-                {
-                    item.canChangeColor = true;
-                    
-                    var index = i;
-                    
-                    item.ActionButtonText = "FilUnderscore.PersistentRimWorlds.SwitchToColony".Translate();
-                    item.ActionButtonAction = delegate
-                    {                         
-                        this.Close();
-
-                        this.Load(index, colony, persistentWorld);
-                    };
-                }
-                
-                item.Info.Add(new ScrollableListItemInfo
-                {
-                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
-                    color = SaveFileInfo.UnimportantTextColor
-                });
-                
-                item.Info.Add(new ScrollableListItemInfo
-                {
-                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
-                    color = SaveFileInfo.UnimportantTextColor
-                });
-                
-                this.items.Add(item);
-            }
-        }
-
-        private void Load(int index, PersistentColony colony, PersistentWorld persistentWorld)
-        {
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.ConvertCurrentGameSettlements();

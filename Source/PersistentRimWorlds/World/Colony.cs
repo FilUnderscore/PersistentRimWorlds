@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PersistentWorlds.Logic;
+using PersistentWorlds.Logic.Comps;
 using PersistentWorlds.SaveAndLoad;
 using RimWorld;
 using RimWorld.Planet;
@@ -76,8 +78,13 @@ namespace PersistentWorlds.World
                     hotKey = KeyBindingDefOf.Misc2,
                     action = delegate
                         {
+                            // TODO: Settings to limit/unlimited how many colonies can be visited at one time.
+                            
                             // TODO: Figure out how to load asynchronously to not lock up game.
-                            LongEventHandler.QueueLongEvent(delegate { DynamicMapLoader.LoadMap(this.Tile); },
+                            LongEventHandler.QueueLongEvent(delegate
+                                {
+                                    Visit(caravan);
+                                }, 
                                 "FilUnderscore.PersistentRimWorlds.LoadingMap", false, null);
                         }
                 };
@@ -100,6 +107,24 @@ namespace PersistentWorlds.World
         public override IEnumerable<InspectTabBase> GetInspectTabs()
         {
             return base.GetInspectTabs();
+        }
+
+        private void Visit(Caravan caravan)
+        {
+            DynamicMapLoader.LoadMap(this.Tile);
+
+            foreach (var pawn in this.Map.mapPawns.AllPawns)
+            {
+                if (!pawn.IsColonist) continue;
+
+                var comp = pawn.GetComp<HumanColonyThingComp>();
+
+                if (comp == null) continue;
+
+                comp.ColonyData = this.PersistentColonyData;
+            }
+            
+            CaravanEnterMapUtility.Enter(caravan, this.Map, x => CellFinder.RandomEdgeCell(this.Map));
         }
         #endregion
     }

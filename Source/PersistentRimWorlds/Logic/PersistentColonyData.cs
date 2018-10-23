@@ -14,7 +14,7 @@ namespace PersistentWorlds.Logic
         public int uniqueID = 0;
 
         // TODO: Allow color picking colonies.
-        public Color color;
+        public Color color = Color.white;
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
@@ -24,6 +24,7 @@ namespace PersistentWorlds.Logic
         public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
+            Scribe_Values.Look(ref color, "color");
             
             switch (Scribe.mode)
             {
