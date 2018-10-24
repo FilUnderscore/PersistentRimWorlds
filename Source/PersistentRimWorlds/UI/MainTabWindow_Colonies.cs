@@ -16,8 +16,6 @@ namespace PersistentWorlds.UI
     {
         #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
-
-        private Vector2 scrollPosition = Vector2.zero;
         #endregion
         
         #region Properties
@@ -27,7 +25,7 @@ namespace PersistentWorlds.UI
         #region Methods
         public override void DoWindowContents(Rect inRect)
         {
-            ColonyUI.DrawColoniesTab(ref inRect, ref scrollPosition,
+            ColonyUI.DrawColoniesTab(ref inRect,
                 PersistentWorldManager.GetInstance().PersistentWorld.Colonies, Load);
         }
 
@@ -40,6 +38,13 @@ namespace PersistentWorlds.UI
             }
             
             base.PreOpen();
+        }
+
+        public override void PostClose()
+        {
+            base.PreClose();
+            
+            ColonyUI.Reset();
         }
 
         private void Load(int index)

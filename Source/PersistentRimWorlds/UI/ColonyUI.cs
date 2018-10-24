@@ -13,13 +13,18 @@ namespace PersistentWorlds.UI
     {
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
-        public static void DrawColoniesList(ref Rect inRect, ref Vector2 scrollPosition, 
+        private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
+            new Dictionary<PersistentColony, Vector2>();
+
+        private static Vector2 scrollPosition;
+        
+        public static void DrawColoniesList(ref Rect inRect, 
             ref List<PersistentColony> colonies)
         {
             
         }
 
-        public static void DrawColoniesTab(ref Rect inRect, ref Vector2 scrollPosition,
+        public static void DrawColoniesTab(ref Rect inRect,
             List<PersistentColony> colonies, Action<int> load)
         {
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
@@ -112,12 +117,28 @@ namespace PersistentWorlds.UI
 
 
                 Text.Font = GameFont.Small;
-                Widgets.Label(colonyNameRect, colony.ColonyData.ColonyFaction.Name);
+
+                if (!ScrollPositions.ContainsKey(colony))
+                {
+                    ScrollPositions.Add(colony, new Vector2());
+                }
+
+                var scrollPosition = ScrollPositions[colony];
+                
+                Widgets.LabelScrollable(colonyNameRect, colony.ColonyData.ColonyFaction.Name, ref scrollPosition);
+
+                ScrollPositions[colony] = scrollPosition;
             }
             
             Widgets.EndScrollView();
             
             GUI.EndGroup();
+        }
+
+        public static void Reset()
+        {
+            scrollPosition = new Vector2();
+            ScrollPositions.Clear();
         }
 
         private static void SortColonies(ref List<PersistentColony> colonies)
