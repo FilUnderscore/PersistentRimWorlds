@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -26,7 +27,7 @@ namespace PersistentWorlds.Logic
         public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
-            Scribe_Values.Look(ref color, "color", Color.white, true);
+            Scribe_Values.Look(ref color, "color", Color.white);
             
             switch (Scribe.mode)
             {
@@ -68,6 +69,9 @@ namespace PersistentWorlds.Logic
             {
                 persistentColonyData.uniqueID = colonyColonyData.uniqueID;
                 persistentColonyData.ActiveWorldTiles = colonyColonyData.ActiveWorldTiles;
+
+                persistentColonyData.color = colonyColonyData.color;
+                persistentColonyData.Leader = colonyColonyData.Leader;
             }
 
             return persistentColonyData;
