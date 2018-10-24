@@ -12,9 +12,11 @@ namespace PersistentWorlds.Logic
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
         public int uniqueID = 0;
-
+        
         // TODO: Allow color picking colonies.
         public Color color = Color.white;
+
+        public Pawn Leader;
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
@@ -24,7 +26,7 @@ namespace PersistentWorlds.Logic
         public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
-            Scribe_Values.Look(ref color, "color");
+            Scribe_Values.Look(ref color, "color", Color.white);
             
             switch (Scribe.mode)
             {
@@ -40,6 +42,8 @@ namespace PersistentWorlds.Logic
                     Scribe_Deep.Look<Faction>(ref ColonyFaction, "faction");
                     break;
             }
+            
+            Scribe_References.Look(ref Leader, "leader");
             
             Scribe_Collections.Look(ref ActiveWorldTiles, "activeWorldTiles");
         }

@@ -107,6 +107,8 @@ namespace PersistentWorlds.Patches
             game.InitData = null;
             
             persistentWorld.Colony = colony;
+
+            persistentWorld.CheckAndSetColonyData();
             
             persistentWorld.Colonies.Add(colony);
             persistentWorld.LoadedMaps.Add(map.Tile, new HashSet<PersistentColony>(){colony});
