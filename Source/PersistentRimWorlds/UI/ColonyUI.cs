@@ -127,7 +127,7 @@ namespace PersistentWorlds.UI
                         ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor".Translate()
                         : "FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo".Translate());
                 
-                var colonyNameRect = new Rect(boxRect.x, textureRect.yMax, boxRect.width - leaderRect.width,
+                var colonyNameRect = new Rect(boxRect.x + 4f, textureRect.yMax, boxRect.width - leaderRect.width,
                     boxRect.height - textureRect.yMax);
 
                 Text.Font = GameFont.Small;
