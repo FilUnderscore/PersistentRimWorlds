@@ -90,6 +90,11 @@ namespace PersistentWorlds.UI
                     {
                         GUI.DrawTexture(leaderRect, leaderPortrait);
                     }
+
+                    TooltipHandler.TipRegion(leaderRect,
+                        Equals(colony, persistentWorld.Colony)
+                            ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader".Translate()
+                            : "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name.ToStringFull));
                 }
                 else
                 {
@@ -115,6 +120,13 @@ namespace PersistentWorlds.UI
                     }
                 }
 
+                GUI.color = Color.white;
+
+                TooltipHandler.TipRegion(textureRect,
+                    Equals(colony, persistentWorld.Colony)
+                        ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor".Translate()
+                        : "FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo".Translate());
+                
                 var colonyNameRect = new Rect(boxRect.x, textureRect.yMax, boxRect.width - leaderRect.width,
                     boxRect.height - textureRect.yMax);
 
