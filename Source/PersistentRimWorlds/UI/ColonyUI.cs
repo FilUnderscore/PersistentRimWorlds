@@ -90,7 +90,8 @@ namespace PersistentWorlds.UI
                     leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y,
                         boxRect.width - boxRect.width * 0.68f,
                         boxRect.height);
-                    
+
+                    Text.Font = GameFont.Tiny;
                     Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
                 }
 
@@ -108,7 +109,9 @@ namespace PersistentWorlds.UI
 
                 var colonyNameRect = new Rect(boxRect.x, textureRect.yMax, boxRect.width - leaderRect.width,
                     boxRect.height - textureRect.yMax);
-                
+
+
+                Text.Font = GameFont.Small;
                 Widgets.Label(colonyNameRect, colony.ColonyData.ColonyFaction.Name);
             }
             
