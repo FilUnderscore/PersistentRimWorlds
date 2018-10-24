@@ -19,7 +19,7 @@
 	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>Click to change this colony's color.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>
 	<FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo>Click to switch to this colony.</FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo>
 	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader>Click to change this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader>
-	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony Leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
+	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
 	
 	<!-- Persistent Worlds - Loading -->
 	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading persistent world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
