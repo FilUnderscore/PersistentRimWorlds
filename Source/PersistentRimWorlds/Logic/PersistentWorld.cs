@@ -439,6 +439,7 @@ namespace PersistentWorlds.Logic
         private void CheckAndSetColonyLeader()
         {
             // TODO: Check for Fluffy's Relations Tab / Psychology.   
+            // TODO: Come up with a good algorithm for choosing colony leader.
 
             if (this.Colony?.ColonyData == null)
             {

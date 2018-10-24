@@ -113,6 +113,7 @@
     <Compile Include="UI\Util\ScrollableListUI.cs" />
     <Compile Include="Utils\DebugExtensions.cs" />
     <Compile Include="Utils\FileLog.cs" />
+    <Compile Include="Utils\WidgetExtensions.cs" />
     <Compile Include="World\AbandonedColony.cs" />
     <Compile Include="World\Colony.cs" />
     <Compile Include="World\PersistentWorldsDefOf.cs" />
