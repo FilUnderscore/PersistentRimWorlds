@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ColourPicker;
 using PersistentWorlds.Logic;
 using PersistentWorlds.Utils;
 using RimWorld;
@@ -104,7 +105,9 @@ namespace PersistentWorlds.UI
                 {
                     if (Equals(colony, persistentWorld.Colony))
                     {
-                        // TODO: Open color picker.   
+                        var callback = new Action<Color>(delegate(Color color) { colony.ColonyData.color = color; });
+                        
+                        Find.WindowStack.Add(new Dialog_ColourPicker(colony.ColonyData.color, callback));
                     }
                     else
                     {
@@ -114,7 +117,6 @@ namespace PersistentWorlds.UI
 
                 var colonyNameRect = new Rect(boxRect.x, textureRect.yMax, boxRect.width - leaderRect.width,
                     boxRect.height - textureRect.yMax);
-
 
                 Text.Font = GameFont.Small;
 
