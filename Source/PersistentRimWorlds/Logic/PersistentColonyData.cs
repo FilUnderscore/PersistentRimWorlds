@@ -26,7 +26,7 @@ namespace PersistentWorlds.Logic
         public void ExposeData()
         {
             Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
-            Scribe_Values.Look(ref color, "color", Color.white);
+            Scribe_Values.Look(ref color, "color", Color.white, true);
             
             switch (Scribe.mode)
             {
