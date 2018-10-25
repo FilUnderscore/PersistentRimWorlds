@@ -406,7 +406,7 @@ namespace PersistentWorlds.Logic
 
         public void SaveColony(PersistentColony colony)
         {
-            LoadSaver.SaveColonyAndColonyMapsData(colony);
+            LoadSaver.SaveColonyAndColonyMapsData(ref colony);
         }
 
         public void UnloadColony(PersistentColony colony)

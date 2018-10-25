@@ -279,7 +279,7 @@ namespace PersistentWorlds.SaveAndLoad
             this.persistentWorld.ConvertCurrentGameSettlements();
 
             this.SaveWorldData();
-            this.SaveColony(this.persistentWorld.Colony);
+            this.SaveColony(ref this.persistentWorld.Colony);
             this.SaveMapData();
             
             this.persistentWorld.ConvertToCurrentGameSettlements();
@@ -310,18 +310,18 @@ namespace PersistentWorlds.SaveAndLoad
                    PersistentWorldColonyFileExtension;
         }
 
-        public void SaveColonyAndColonyMapsData(PersistentColony colony)
+        public void SaveColonyAndColonyMapsData(ref PersistentColony colony)
         {
             Log.Message("Saving colony and colony maps data...");
             
-            SaveColony(colony);
+            SaveColony(ref colony);
 
             SaveColonyMapData(colony);
             
             Log.Message("Saved colony and colony maps data.");
         }
 
-        public void SaveColony(PersistentColony colony)
+        public void SaveColony(ref PersistentColony colony)
         {
             Log.Message("Saving colony data...");
 
@@ -341,8 +341,12 @@ namespace PersistentWorlds.SaveAndLoad
             
             ReferenceTable.ClearReferencesFor(colonySaveFile, true);
 
-            SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref colony, "colony"); });
+            var @ref = colony;
+
+            SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref @ref, "colony"); });
             colony.FileInfo = colonyFile;
+
+            colony = @ref;
 
             Log.Message("Saved colony data.");
         }
