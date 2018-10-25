@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Harmony;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
@@ -39,7 +40,7 @@ namespace PersistentWorlds.Logic
         {
             Current.Game = this.Game;
             
-            LongEventHandler.SetCurrentEventText("LoadingPersistentWorld".Translate());
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate());
             
             this.Game.LoadGame();
             
@@ -49,6 +50,8 @@ namespace PersistentWorlds.Logic
             this.LoadCameraDriver();
             
             GameComponentUtility.LoadedGame();
+            
+            this.CheckAndSetColonyData();
         }
         
         // Called from Patched Game.LoadGame().
@@ -282,7 +285,7 @@ namespace PersistentWorlds.Logic
                 
                 var colony = (Colony) mapParent;
 
-                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.uniqueID != this.Colony.ColonyData.uniqueID) continue;
+                if (this.Colony == null || colony.PersistentColonyData == null || this.Colony.ColonyData == null || colony.PersistentColonyData.UniqueId != this.Colony.ColonyData.UniqueId) continue;
                 
                 if (colony.Map == null)
                 {
@@ -294,7 +297,7 @@ namespace PersistentWorlds.Logic
                     }
                     else
                     {
-                        Log.Error("Null map for colony " + colony.PersistentColonyData.uniqueID + " at " + colony.Tile);
+                        Log.Error("Null map for colony " + colony.PersistentColonyData.UniqueId + " at " + colony.Tile);
                         
                         continue;
                     }
@@ -403,6 +406,14 @@ namespace PersistentWorlds.Logic
 
         public void SaveColony(PersistentColony colony)
         {
+            if (colony.ColonyData.Leader != null && GetMapsForColony(colony).Any())
+            {
+                Find.Maps.Do(map =>
+                    map.mapPawns.AllPawns.DoIf(
+                        pawn => pawn.GetUniqueLoadID() == colony.ColonyData.Leader.UniqueId,
+                        pawn => colony.ColonyData.Leader = new PersistentColonyLeader(pawn)));
+            }
+            
             LoadSaver.SaveColonyAndColonyMapsData(colony);
         }
 
@@ -426,6 +437,56 @@ namespace PersistentWorlds.Logic
                    $"{nameof(Colony)}={Colony}, " +
                    $"{nameof(LoadedMaps)}={LoadedMaps.ToDebugString()}, " +
                    $"{nameof(Colonies)}={Colonies.ToDebugString()})";
+        }
+        
+        public void CheckAndSetColonyData()
+        {
+            this.CheckAndSetColonyLeader();
+        }
+
+        private void CheckAndSetColonyLeader()
+        {
+            // TODO: Check for Fluffy's Relations Tab / Psychology.   
+            // TODO: Come up with a good algorithm for choosing colony leader.
+
+            if (this.Colony?.ColonyData == null)
+            {
+                throw new NullReferenceException($"{nameof(CheckAndSetColonyLeader)}: Something is null! {nameof(this.Colony)}: {this.Colony == null} and {nameof(this.Colony.ColonyData)}: {this.Colony?.ColonyData == null}");
+            }
+
+            if (this.Colony.ColonyData.Leader != null && this.Colony.ColonyData.Leader.Set)
+            {
+                if (this.Colony.ColonyData.Leader.Reference == null)
+                {
+                    this.Colony.ColonyData.Leader.Reference = FindPawn(this.Colony.ColonyData.Leader.UniqueId);
+                }
+
+                return;
+            }
+
+            foreach (var pawn in Find.CurrentMap.mapPawns.AllPawns)
+            {
+                if (!pawn.IsColonist) continue;
+
+                this.Colony.ColonyData.Leader = new PersistentColonyLeader(pawn);
+                break;
+            }
+        }
+
+        public Pawn FindPawn(string uniqueID)
+        {
+            foreach (var map in Find.Maps)
+            {
+                foreach (var pawn in map.mapPawns.AllPawns)
+                {
+                    if (pawn.GetUniqueLoadID().EqualsIgnoreCase(uniqueID))
+                    {
+                        return pawn;
+                    }
+                }
+            }
+
+            return null;
         }
         #endregion
     }

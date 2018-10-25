@@ -16,9 +16,6 @@ namespace PersistentWorlds.UI
     {
         #region Fields
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
-
-        private Vector2 scrollPosition = Vector2.zero;
-        private List<ScrollableListItem> items;
         #endregion
         
         #region Properties
@@ -27,8 +24,9 @@ namespace PersistentWorlds.UI
         
         #region Methods
         public override void DoWindowContents(Rect inRect)
-        {   
-            ScrollableListUI.DrawList(ref inRect, ref scrollPosition, ref this.items);
+        {
+            ColonyUI.DrawColoniesTab(ref inRect,
+                PersistentWorldManager.GetInstance().PersistentWorld.Colonies, Load);
         }
 
         public override void PreOpen()
@@ -40,56 +38,22 @@ namespace PersistentWorlds.UI
             }
             
             base.PreOpen();
-            
-            this.ConvertColoniesToItems();
         }
 
-        private void ConvertColoniesToItems()
+        public override void PostClose()
         {
-            this.items = new List<ScrollableListItem>();
+            base.PreClose();
+            
+            ColonyUI.Reset();
+        }
 
+        private void Load(int index)
+        {
+            this.Close();
+            
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            var colony = persistentWorld.Colonies[index];
             
-            for (var i = 0; i < persistentWorld.Colonies.Count; i++)
-            {
-                var colony = persistentWorld.Colonies[i];
-
-                var item = new ScrollableListItemColored {Text = colony.ColonyData.ColonyFaction.Name, 
-                    canChangeColor = false, canSeeColor = true, Color = colony.ColonyData.color, texture = Town};
-
-                if (!Equals(colony, persistentWorld.Colony))
-                {
-                    item.canChangeColor = true;
-                    
-                    var index = i;
-                    
-                    item.ActionButtonText = "FilUnderscore.PersistentRimWorlds.SwitchToColony";
-                    item.ActionButtonAction = delegate
-                    {                         
-                        this.Close();
-
-                        this.Load(index, colony, persistentWorld);
-                    };
-                }
-                
-                item.Info.Add(new ScrollableListItemInfo
-                {
-                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
-                    color = SaveFileInfo.UnimportantTextColor
-                });
-                
-                item.Info.Add(new ScrollableListItemInfo
-                {
-                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
-                    color = SaveFileInfo.UnimportantTextColor
-                });
-                
-                this.items.Add(item);
-            }
-        }
-
-        private void Load(int index, PersistentColony colony, PersistentWorld persistentWorld)
-        {
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.ConvertCurrentGameSettlements();
@@ -109,6 +73,8 @@ namespace PersistentWorlds.UI
                 persistentWorld.UnloadColony(previousColony);
 
                 persistentWorld.ConvertToCurrentGameSettlements();
+                
+                persistentWorld.CheckAndSetColonyData();
                             
                 Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
             }, "FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps", false, null);

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -11,10 +13,12 @@ namespace PersistentWorlds.Logic
         #region Fields
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
-        public int uniqueID = 0;
-
+        public int UniqueId = 0;
+        
         // TODO: Allow color picking colonies.
-        public Color color;
+        public Color Color = Color.white;
+
+        public PersistentColonyLeader Leader;
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public List<int> ActiveWorldTiles = new List<int>();
@@ -23,7 +27,8 @@ namespace PersistentWorlds.Logic
         #region Methods
         public void ExposeData()
         {
-            Scribe_Values.Look(ref uniqueID, "uniqueID", -1);
+            Scribe_Values.Look(ref UniqueId, "uniqueID", -1);
+            Scribe_Values.Look(ref Color, "color", Color.white);
             
             switch (Scribe.mode)
             {
@@ -40,6 +45,8 @@ namespace PersistentWorlds.Logic
                     break;
             }
             
+            Scribe_Deep.Look(ref Leader, "leader");
+
             Scribe_Collections.Look(ref ActiveWorldTiles, "activeWorldTiles");
         }
 
@@ -61,8 +68,11 @@ namespace PersistentWorlds.Logic
             }
             else
             {
-                persistentColonyData.uniqueID = colonyColonyData.uniqueID;
+                persistentColonyData.UniqueId = colonyColonyData.UniqueId;
                 persistentColonyData.ActiveWorldTiles = colonyColonyData.ActiveWorldTiles;
+
+                persistentColonyData.Color = colonyColonyData.Color;
+                persistentColonyData.Leader = colonyColonyData.Leader;
             }
 
             return persistentColonyData;
@@ -70,15 +80,16 @@ namespace PersistentWorlds.Logic
         
         public string GetUniqueLoadID()
         {
-            return "Colony_" + this.uniqueID;
+            return "Colony_" + this.UniqueId;
         }
 
         public override string ToString()
         {
             return $"{nameof(PersistentColonyData)} " +
                    $"({nameof(ColonyFaction)}={ColonyFaction}, " +
-                   $"{nameof(uniqueID)}={uniqueID}, " +
-                   $"{nameof(color)}={color}, " +
+                   $"{nameof(UniqueId)}={UniqueId}, " +
+                   $"{nameof(Color)}={Color}, " +
+                   $"{nameof(Leader)}={Leader}, " +
                    $"{nameof(ActiveWorldTiles)}={ActiveWorldTiles.ToDebugString()})";
         }
         #endregion

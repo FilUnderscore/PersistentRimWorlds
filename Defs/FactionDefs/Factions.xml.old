@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<FactionDef ParentName="OutlanderFactionBase">
+		<defName>Colony</defName>
+		<label>colony</label>
+		<hidden>true</hidden>
+		<description>Another colony that exists on the same world.</description>
+		<colorSpectrum>
+		  <li>(0.35, 0.30, 0.60)</li>
+		  <li>(0.45, 0.40, 0.90)</li>
+		</colorSpectrum>
+		<startingGoodwill>
+		  <min>0</min>
+		  <max>0</max>
+		</startingGoodwill>
+		<naturalColonyGoodwill>
+		  <min>-50</min>
+		  <max>50</max>
+		</naturalColonyGoodwill>
+	</FactionDef>
+</Defs>
