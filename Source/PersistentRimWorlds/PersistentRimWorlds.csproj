@@ -54,9 +54,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\Comps\HumanColonyThingComp.cs" />
     <Compile Include="Logic\PersistentColony.cs" />
     <Compile Include="Logic\PersistentColonyData.cs" />
     <Compile Include="Logic\PersistentColonyGameData.cs" />
+    <Compile Include="Logic\PersistentColonyLeader.cs" />
     <Compile Include="Logic\PersistentWorld.cs" />
     <Compile Include="Logic\PersistentWorldData.cs" />
     <Compile Include="Logic\WorldObjectSameIDMaker.cs" />
@@ -101,6 +103,8 @@
     <Compile Include="SaveAndLoad\SaveFileUtils.cs" />
     <Compile Include="SaveAndLoad\ScribeMultiLoader.cs" />
     <Compile Include="SaveAndLoad\ScribeVars.cs" />
+    <Compile Include="UI\ColonyUI.cs" />
+    <Compile Include="UI\Dialog_PersistentWorlds_LeaderPawnSelection.cs" />
     <Compile Include="UI\Page_PersistentWorlds_LoadWorld_ColonySelection.cs" />
     <Compile Include="UI\Page_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Page_PersistentWorlds_Main.cs" />
@@ -111,6 +115,7 @@
     <Compile Include="UI\Util\ScrollableListUI.cs" />
     <Compile Include="Utils\DebugExtensions.cs" />
     <Compile Include="Utils\FileLog.cs" />
+    <Compile Include="Utils\WidgetExtensions.cs" />
     <Compile Include="World\AbandonedColony.cs" />
     <Compile Include="World\Colony.cs" />
     <Compile Include="World\PersistentWorldsDefOf.cs" />

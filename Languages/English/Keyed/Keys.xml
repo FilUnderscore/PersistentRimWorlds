@@ -15,6 +15,12 @@
 	<FilUnderscore.PersistentRimWorlds.Cancel>Cancel</FilUnderscore.PersistentRimWorlds.Cancel>
 	<FilUnderscore.PersistentRimWorlds.SwitchToColony>Switch To</FilUnderscore.PersistentRimWorlds.SwitchToColony>
 	
+	<FilUnderscore.PersistentRimWorlds.Colony.NoLeader>This colony doesn't have a leader.</FilUnderscore.PersistentRimWorlds.Colony.NoLeader>
+	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>Click to change this colony's color.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>
+	<FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo>Click to switch to this colony.</FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo>
+	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader>Click to change this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader>
+	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
+	
 	<!-- Persistent Worlds - Loading -->
 	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading persistent world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
 	<FilUnderscore.PersistentRimWorlds.LoadingColonies>Loading colonies</FilUnderscore.PersistentRimWorlds.LoadingColonies>

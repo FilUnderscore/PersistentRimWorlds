@@ -91,13 +91,13 @@ namespace PersistentWorlds.UI
                     DeleteButtonTooltip = "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate(),
                     canSeeColor = true,
                     canChangeColor = true,
-                    Color = colony.ColonyData.color,
+                    Color = colony.ColonyData.Color,
                     texture = Town
                 };
                 
                 scrollableListItem.Info.Add(new ScrollableListItemInfo
                 {
-                    Text = "Colony ID: " + colony.ColonyData.uniqueID,
+                    Text = "Colony ID: " + colony.ColonyData.UniqueId,
                     color = SaveFileInfo.UnimportantTextColor
                 });
                 

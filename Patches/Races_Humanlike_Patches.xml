@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<!-- Comps already exists. -->
+	
+	<Operation Class="PatchOperationSequence">
+		<success>Always</success>
+		<operations>
+			<li Class="PatchOperationTest">
+				<xpath>*/ThingDef[thingClass = "Pawn"]/comps</xpath>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>*/ThingDef[thingClass = "Pawn"]/comps</xpath>
+				<value>
+					<li>
+						<compClass>PersistentWorlds.Logic.Comps.HumanColonyThingComp</compClass>
+					</li>
+				</value>
+			</li>
+		</operations>
+	</Operation>
+	
+	<!-- Comps doesn't already exist. -->
+	<Operation Class="PatchOperationSequence">
+		<success>Always</success>
+		<operations>
+			<li Class="PatchOperationTest">
+				<xpath>*/ThingDef[thingClass = "Pawn"]/comps</xpath>
+				<success>Invert</success>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>*/ThingDef[thingClass = "Pawn"]</xpath>
+				<value>
+					<comps>
+						<li>
+							<compClass>PersistentWorlds.Logic.Comps.HumanColonyThingComp</compClass>
+						</li>
+					</comps>
+				</value>
+			</li>
+		</operations>
+	</Operation>
+</Patch>

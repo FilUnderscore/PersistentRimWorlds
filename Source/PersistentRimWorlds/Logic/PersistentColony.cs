@@ -67,7 +67,7 @@ namespace PersistentWorlds.Logic
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return this.ColonyData.uniqueID;
+            return this.ColonyData.UniqueId;
         }
 
         public override string ToString()
