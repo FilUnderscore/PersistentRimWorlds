@@ -42,7 +42,7 @@ namespace PersistentWorlds.Logic
 
         private void ExposeTextureData()
         {
-            if (Scribe.mode == LoadSaveMode.Saving && Texture != null)
+            if (Scribe.mode == LoadSaveMode.Saving && (object) Texture != null)
             {
                 switch (Texture)
                 {
@@ -72,7 +72,7 @@ namespace PersistentWorlds.Logic
             Scribe_Values.Look(ref TextureSize, "textureSize");
             Scribe_Values.Look(ref TextureBase64, "texture");
             
-            if (Scribe.mode != LoadSaveMode.LoadingVars || TextureBase64 == null || TextureBase64.NullOrEmpty()) return;
+            if (Scribe.mode != LoadSaveMode.LoadingVars || TextureBase64.NullOrEmpty()) return;
 
             {
                 LongEventHandler.QueueLongEvent(delegate
