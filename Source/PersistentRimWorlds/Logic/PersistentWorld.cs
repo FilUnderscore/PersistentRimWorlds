@@ -406,14 +406,6 @@ namespace PersistentWorlds.Logic
 
         public void SaveColony(PersistentColony colony)
         {
-            if (colony.ColonyData.Leader != null && GetMapsForColony(colony).Any())
-            {
-                Find.Maps.Do(map =>
-                    map.mapPawns.AllPawns.DoIf(
-                        pawn => pawn.GetUniqueLoadID() == colony.ColonyData.Leader.UniqueId,
-                        pawn => colony.ColonyData.Leader = new PersistentColonyLeader(pawn)));
-            }
-            
             LoadSaver.SaveColonyAndColonyMapsData(colony);
         }
 
@@ -473,13 +465,13 @@ namespace PersistentWorlds.Logic
             }
         }
 
-        public Pawn FindPawn(string uniqueID)
+        public Pawn FindPawn(string uniqueId)
         {
             foreach (var map in Find.Maps)
             {
                 foreach (var pawn in map.mapPawns.AllPawns)
                 {
-                    if (pawn.GetUniqueLoadID().EqualsIgnoreCase(uniqueID))
+                    if (pawn.GetUniqueLoadID().EqualsIgnoreCase(uniqueId))
                     {
                         return pawn;
                     }
