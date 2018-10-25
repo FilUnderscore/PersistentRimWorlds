@@ -35,7 +35,7 @@ namespace PersistentWorlds.World
             get
             {
                 if (this.cachedMat == null)
-                    this.cachedMat = MaterialPool.MatFrom("World/WorldObjects/DefaultSettlement", ShaderDatabase.WorldOverlayTransparentLit, Color.green,
+                    this.cachedMat = MaterialPool.MatFrom("World/WorldObjects/DefaultSettlement", ShaderDatabase.WorldOverlayTransparentLit, this.PersistentColonyData?.Color ?? Color.green,
                         WorldMaterials.WorldObjectRenderQueue);
 
                 return this.cachedMat;
