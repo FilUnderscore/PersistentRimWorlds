@@ -65,7 +65,7 @@ namespace PersistentWorlds.UI
                     Widgets.DrawAltRect(boxRect);
                     faction = colony.ColonyData.ColonyFaction;
                 }
-
+                
                 var size = boxRect.width * 0.65f;
 
                 if (size >= Town.width)
