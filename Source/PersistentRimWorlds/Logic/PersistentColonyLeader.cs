@@ -79,7 +79,8 @@ namespace PersistentWorlds.Logic
                 {
                     var texture2D = new Texture2D((int) TextureSize.x, (int) TextureSize.y);
                     texture2D.LoadRawTextureData(Convert.FromBase64String(TextureBase64));
-
+                    texture2D.Apply();
+                    
                     this.Texture = texture2D;
                 }, "", false, null);
             }
