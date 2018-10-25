@@ -35,7 +35,7 @@ namespace PersistentWorlds.UI
             const int gap = 25;
             var colonyBoxWidth = (inRect.width - gap * perRow) / perRow;
             
-            var viewRect = new Rect(0, 0, inRect.width, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth);
+            var viewRect = new Rect(0, 0, inRect.width, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth + (colonies.Count / perRow) * gap);
             var outRect = new Rect(inRect.AtZero());
             
             GUI.BeginGroup(inRect);
@@ -46,7 +46,7 @@ namespace PersistentWorlds.UI
             
             for (var i = 0; i < colonies.Count; i++)
             {
-                var y = colonyBoxWidth * Mathf.Floor((float) i / perRow);
+                var y = colonyBoxWidth * Mathf.Floor((float) i / perRow) + (i / perRow) * gap;
                 
                 var colony = colonies[i];
              
