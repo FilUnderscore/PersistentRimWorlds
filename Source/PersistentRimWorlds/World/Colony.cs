@@ -112,17 +112,6 @@ namespace PersistentWorlds.World
         private void Visit(Caravan caravan)
         {
             DynamicMapLoader.LoadMap(this.Tile);
-
-            foreach (var pawn in this.Map.mapPawns.AllPawns)
-            {
-                if (!pawn.IsColonist) continue;
-
-                var comp = pawn.GetComp<HumanColonyThingComp>();
-
-                if (comp == null) continue;
-
-                comp.ColonyData = this.PersistentColonyData;
-            }
             
             CaravanEnterMapUtility.Enter(caravan, this.Map, x => CellFinder.RandomEdgeCell(this.Map));
         }

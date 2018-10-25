@@ -49,17 +49,21 @@ namespace PersistentWorlds.UI
                 var y = colonyBoxWidth * Mathf.Floor((float) i / perRow);
                 
                 var colony = colonies[i];
-                
+             
                 var boxRect = new Rect((colonyBoxWidth * (i % perRow)) + (i % perRow) * gap, y, colonyBoxWidth,
                     colonyBoxWidth);
 
+                Faction faction;
+                
                 if (Equals(colony, persistentWorld.Colony))
                 {
                     Widgets.DrawHighlight(boxRect);
+                    faction = Find.FactionManager.OfPlayer;
                 }
                 else
                 {
                     Widgets.DrawAltRect(boxRect);
+                    faction = colony.ColonyData.ColonyFaction;
                 }
 
                 var size = boxRect.width * 0.65f;
@@ -74,8 +78,16 @@ namespace PersistentWorlds.UI
                 if (colony.ColonyData.Leader != null)
                 {
                     var portraitSize = new Vector2(boxRect.width / 4, boxRect.height);
-                    var leaderPortrait = PortraitsCache.Get(colony.ColonyData.Leader, portraitSize);
 
+                    // Always get a new portrait, if things such as screen size changes or outfit.
+                    if (colony.ColonyData.Leader.Reference != null)
+                    {
+                        colony.ColonyData.Leader.Texture =
+                            PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize);
+                    }
+                    
+                    var leaderPortrait = colony.ColonyData.Leader.Texture;
+                    
                     leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y, leaderPortrait.width,
                         leaderPortrait.height);
                     
@@ -84,6 +96,7 @@ namespace PersistentWorlds.UI
                         if (WidgetExtensions.ButtonImage(leaderRect, leaderPortrait, Color.white, GenUI.MouseoverColor))
                         {
                             // TODO: Open leader selection dialog if no leader altering mods such as Relations Tab or Psychology is found.
+                            Find.WindowStack.Add(new Dialog_PersistentWorlds_LeaderPawnSelection(colony));
                         }
                     }
                     else
@@ -106,13 +119,13 @@ namespace PersistentWorlds.UI
                     Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
                 }
 
-                if (Widgets.ButtonImage(textureRect, Town, colony.ColonyData.color))
+                if (Widgets.ButtonImage(textureRect, Town, colony.ColonyData.Color))
                 {
                     if (Equals(colony, persistentWorld.Colony))
                     {
-                        var callback = new Action<Color>(delegate(Color color) { colony.ColonyData.color = color; });
+                        var callback = new Action<Color>(delegate(Color color) { colony.ColonyData.Color = color; });
                         
-                        Find.WindowStack.Add(new Dialog_ColourPicker(colony.ColonyData.color, callback));
+                        Find.WindowStack.Add(new Dialog_ColourPicker(colony.ColonyData.Color, callback));
                     }
                     else
                     {
@@ -139,7 +152,7 @@ namespace PersistentWorlds.UI
 
                 var scrollPosition = ScrollPositions[colony];
                 
-                Widgets.LabelScrollable(colonyNameRect, colony.ColonyData.ColonyFaction.Name, ref scrollPosition);
+                Widgets.LabelScrollable(colonyNameRect, faction.Name, ref scrollPosition);
 
                 ScrollPositions[colony] = scrollPosition;
             }

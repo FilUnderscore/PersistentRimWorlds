@@ -16,7 +16,7 @@ namespace PersistentWorlds.Patches
 
             if (comp?.ColonyData == null || Equals(comp.ColonyData, PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData)) return true;
 
-            __result = comp.ColonyData.color;
+            __result = comp.ColonyData.Color;
                 
             return false;
 

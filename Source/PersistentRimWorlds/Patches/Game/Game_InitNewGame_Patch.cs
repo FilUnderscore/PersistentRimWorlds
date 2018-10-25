@@ -99,7 +99,7 @@ namespace PersistentWorlds.Patches
 
             var colony = PersistentColony.Convert(Current.Game);
 
-            colony.ColonyData.uniqueID = ++PersistentWorldManager.GetInstance().PersistentWorld.WorldData.NextColonyId;
+            colony.ColonyData.UniqueId = ++PersistentWorldManager.GetInstance().PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             
             colony.GameData.mapSize = __instance.InitData.mapSize;

@@ -306,7 +306,7 @@ namespace PersistentWorlds.SaveAndLoad
 
         public string GetColonySaveFilePath(PersistentColony colony)
         {
-            return coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + colony.ColonyData.uniqueID +
+            return coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + colony.ColonyData.UniqueId +
                    PersistentWorldColonyFileExtension;
         }
 
