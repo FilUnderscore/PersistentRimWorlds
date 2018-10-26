@@ -26,7 +26,7 @@ namespace PersistentWorlds.UI
         /// <param name="margin"></param>
         /// <param name="colonies"></param>
         /// <param name="load"></param>
-        public static void DrawColoniesList(ref Rect inRect, float margin,
+        public static void DrawColoniesList(ref Rect inRect, float margin, Vector2 closeButtonSize,
             List<PersistentColony> colonies, Action<int> load, Action newColony)
         {
             const int perRow = 3;
@@ -38,6 +38,7 @@ namespace PersistentWorlds.UI
             
             var viewRect = new Rect(0, 0, inRect.width - gap, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth + (colonies.Count / perRow) * gap);
             var outRect = new Rect(inRect.AtZero());
+            outRect.height -= closeButtonSize.y + margin;
             
             GUI.BeginGroup(inRect);
             

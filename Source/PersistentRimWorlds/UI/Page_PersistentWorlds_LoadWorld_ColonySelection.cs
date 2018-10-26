@@ -55,7 +55,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.persistentWorld.Colonies, this.Load, this.NewColony);
+            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.CloseButSize, this.persistentWorld.Colonies, this.Load, this.NewColony);
         }
 
         private void Load(int index)
