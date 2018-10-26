@@ -60,10 +60,11 @@ namespace PersistentWorlds.UI
 
         private void Load(int index)
         {
-            var colony = this.persistentWorld.Colonies[index];
-            
             normalClose = false;
-                        
+            this.Close();
+            
+            var colony = this.persistentWorld.Colonies[index];
+             
             PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
                         
             this.persistentWorld.LoadSaver.LoadColony(ref colony);

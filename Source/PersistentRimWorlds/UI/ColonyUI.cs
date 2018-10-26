@@ -197,7 +197,7 @@ namespace PersistentWorlds.UI
                 
                 if (colony.ColonyData.Leader != null)
                 {
-                    var portraitSize = new Vector2(boxRect.width / 3, boxRect.height);
+                    var portraitSize = new Vector2(boxRect.width / 2, boxRect.height);
 
                     // Always get a new portrait, if things such as screen size changes or outfit.
                     if (colony.ColonyData.Leader.Reference != null)
@@ -208,7 +208,7 @@ namespace PersistentWorlds.UI
                     
                     var leaderPortrait = colony.ColonyData.Leader.Texture;
                     
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.65f, boxRect.y, leaderPortrait.width,
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.5f, boxRect.y, leaderPortrait.width,
                         leaderPortrait.height);
                     
                     if (Equals(colony, persistentWorld.Colony))
@@ -270,7 +270,7 @@ namespace PersistentWorlds.UI
                         : "FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo".Translate());
                 
                 var colonyNameRect = new Rect(boxRect.x + 4f, textureRect.yMax, boxRect.width - leaderRect.width,
-                    boxRect.height - textureRect.yMax);
+                    boxRect.yMax - textureRect.yMax);
 
                 Text.Font = GameFont.Small;
 
@@ -281,7 +281,7 @@ namespace PersistentWorlds.UI
 
                 var colonyScrollPosition = ScrollPositions[colony];
                 
-                Widgets.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition);
+                WidgetExtensions.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition, false);
 
                 ScrollPositions[colony] = colonyScrollPosition;
             }
