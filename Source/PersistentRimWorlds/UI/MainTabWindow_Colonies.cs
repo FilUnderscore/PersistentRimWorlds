@@ -25,7 +25,7 @@ namespace PersistentWorlds.UI
         #region Methods
         public override void DoWindowContents(Rect inRect)
         {
-            ColonyUI.DrawColoniesTab(ref inRect,
+            ColonyUI.DrawColoniesTab(ref inRect, this.Margin,
                 PersistentWorldManager.GetInstance().PersistentWorld.Colonies, Load);
         }
 
@@ -42,7 +42,7 @@ namespace PersistentWorlds.UI
 
         public override void PostClose()
         {
-            base.PreClose();
+            base.PostClose();
             
             ColonyUI.Reset();
         }
