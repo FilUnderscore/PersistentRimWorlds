@@ -90,7 +90,7 @@ namespace PersistentWorlds.UI
                 }
                 else
                 {
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y,
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.65f, boxRect.y + boxRect.height / 2,
                         boxRect.width - boxRect.width * 0.68f,
                         boxRect.height);
 
