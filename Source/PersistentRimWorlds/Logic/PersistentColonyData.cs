@@ -14,8 +14,7 @@ namespace PersistentWorlds.Logic
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
         public int UniqueId = 0;
-        
-        // TODO: Allow color picking colonies.
+
         public Color Color = Color.white;
 
         public PersistentColonyLeader Leader;
@@ -54,7 +53,8 @@ namespace PersistentWorlds.Logic
         {
             var persistentColonyData = new PersistentColonyData
             {
-                ColonyFaction = game.World.factionManager.OfPlayer
+                ColonyFaction = game.World.factionManager.OfPlayer,
+                Color = Random.ColorHSV(0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f)
             };
 
             if (colonyColonyData == null || colonyColonyData.ActiveWorldTiles.Count == 0)

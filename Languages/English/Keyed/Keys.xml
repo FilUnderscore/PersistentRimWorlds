@@ -14,6 +14,7 @@
 	<FilUnderscore.PersistentRimWorlds.BackToMenu>Back to Menu</FilUnderscore.PersistentRimWorlds.BackToMenu>
 	<FilUnderscore.PersistentRimWorlds.Cancel>Cancel</FilUnderscore.PersistentRimWorlds.Cancel>
 	<FilUnderscore.PersistentRimWorlds.SwitchToColony>Switch To</FilUnderscore.PersistentRimWorlds.SwitchToColony>
+	<FilUnderscore.PersistentRimWorlds.CreateANewColony>Click to create a new colony.</FilUnderscore.PersistentRimWorlds.CreateANewColony>
 	
 	<FilUnderscore.PersistentRimWorlds.Colony.NoLeader>This colony doesn't have a leader.</FilUnderscore.PersistentRimWorlds.Colony.NoLeader>
 	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>Click to change this colony's color.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>
