@@ -78,7 +78,7 @@ namespace PersistentWorlds.UI
                 {
                     var leaderPortrait = colony.ColonyData.Leader.Texture;
 
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.56f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
                         leaderPortrait.height);
                     
                     GUI.DrawTexture(leaderRect, leaderPortrait);
@@ -280,9 +280,11 @@ namespace PersistentWorlds.UI
                 }
 
                 var colonyScrollPosition = ScrollPositions[colony];
-                
-                WidgetExtensions.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition, false);
 
+                Text.Font = GameFont.Tiny;
+                WidgetExtensions.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition, false);
+                Text.Font = GameFont.Small;
+                
                 ScrollPositions[colony] = colonyScrollPosition;
             }
             
