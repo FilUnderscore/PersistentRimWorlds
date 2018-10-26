@@ -15,10 +15,6 @@ namespace PersistentWorlds.UI
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
         private readonly PersistentWorld persistentWorld;
-        
-        private List<ScrollableListItem> items = new List<ScrollableListItem>();
-
-        private Vector2 scrollPosition = Vector2.zero;
 
         private bool normalClose = true;
         #endregion
@@ -31,9 +27,8 @@ namespace PersistentWorlds.UI
         public Page_PersistentWorlds_LoadWorld_ColonySelection(PersistentWorld persistentWorld)
         {
             this.persistentWorld = persistentWorld;
+            persistentWorld.LoadSaver.LoadColonies();
             
-            this.LoadColoniesAsItems();
-
             this.doCloseButton = true;
             this.doCloseX = true;
             this.forcePause = true;
@@ -43,76 +38,21 @@ namespace PersistentWorlds.UI
         #endregion
         
         #region Methods
-        public override void PreOpen()
-        {
-            this.SetInitialSizeAndPosition();
-        }
-
         public override void PostClose()
         {
+            base.PostClose();
+            
+            ColonyUI.Reset();
+            
             if (!normalClose) return;
 
             this.DoBack();
             PersistentWorldManager.GetInstance().Clear();
         }
 
-        private void LoadColoniesAsItems()
-        {
-            this.persistentWorld.LoadSaver.LoadColonies();
-            
-            for (var i = 0; i < this.persistentWorld.Colonies.Count; i++)
-            {
-                var colony = this.persistentWorld.Colonies[i];
-
-                var i1 = i;
-                var scrollableListItem = new ScrollableListItemColored
-                {
-                    Text = colony.ColonyData.ColonyFaction.Name,
-                    ActionButtonText = "Load".Translate(),
-                    ActionButtonAction = delegate
-                    {
-                        normalClose = false;
-                        
-                        PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
-                        
-                        this.persistentWorld.LoadSaver.LoadColony(ref colony);
-                        this.persistentWorld.Colonies[i1] = colony;
-
-                        // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
-                        MemoryUtility.ClearAllMapsAndWorld();
-
-                        this.persistentWorld.PatchPlayerFaction();
-                        this.persistentWorld.LoadSaver.TransferToPlayScene();
-                    },
-                    DeleteButtonAction = delegate
-                    {
-                        // TODO: Allow colonies to be deleted.   
-                    },
-                    DeleteButtonTooltip = "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate(),
-                    canSeeColor = true,
-                    canChangeColor = true,
-                    Color = colony.ColonyData.Color,
-                    texture = Town
-                };
-                
-                scrollableListItem.Info.Add(new ScrollableListItemInfo
-                {
-                    Text = "Colony ID: " + colony.ColonyData.UniqueId,
-                    color = SaveFileInfo.UnimportantTextColor
-                });
-                
-                scrollableListItem.Info.Add(new ScrollableListItemInfo
-                {
-                    Text = colony.FileInfo.LastWriteTime.ToString("g"),
-                    color = SaveFileInfo.UnimportantTextColor
-                });
-                
-                items.Add(scrollableListItem);
-            }
-        }
-
         public override void DoWindowContents(Rect inRect)
         {
+            /*
             GUI.BeginGroup(inRect);
 
             var rect1 = new Rect((inRect.width - 170f) / 2, 0.0f, 170f, inRect.height);
@@ -136,10 +76,30 @@ namespace PersistentWorlds.UI
             var rect2 = new Rect(0, (float) num1, inRect.width, inRect.height);
             
             GUI.BeginGroup(rect2);
-            ScrollableListUI.DrawList(ref rect2, ref this.scrollPosition, ref this.items);
             GUI.EndGroup();
             
             GUI.EndGroup();
+            */
+            
+            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.persistentWorld.Colonies, this.Load);
+        }
+
+        private void Load(int index)
+        {
+            var colony = this.persistentWorld.Colonies[index];
+            
+            normalClose = false;
+                        
+            PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
+                        
+            this.persistentWorld.LoadSaver.LoadColony(ref colony);
+            this.persistentWorld.Colonies[index] = colony;
+
+            // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
+            MemoryUtility.ClearAllMapsAndWorld();
+
+            this.persistentWorld.PatchPlayerFaction();
+            this.persistentWorld.LoadSaver.TransferToPlayScene();
         }
         #endregion
     }

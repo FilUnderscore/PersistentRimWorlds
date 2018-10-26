@@ -14,28 +14,75 @@ namespace PersistentWorlds.UI
     {
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
+        // TODO: Scale depending on screen size?
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
 
         private static Vector2 scrollPosition;
-        
-        public static void DrawColoniesList(ref Rect inRect, 
-            ref List<PersistentColony> colonies)
-        {
-            
-        }
 
-        public static void DrawColoniesTab(ref Rect inRect,
+        /// <summary>
+        /// Draw colonies list on Persistent RimWorlds.
+        /// </summary>
+        /// <param name="inRect"></param>
+        /// <param name="colonies"></param>
+        public static void DrawColoniesList(ref Rect inRect, float margin,
             List<PersistentColony> colonies, Action<int> load)
         {
-            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-         
-            // TODO: Scale depending on screen size?   
-            const int perRow = 6;
-            const int gap = 25;
+            const int perRow = 3;
+            var gap = (int) margin;
+
+            inRect.width += gap;
+            
             var colonyBoxWidth = (inRect.width - gap * perRow) / perRow;
             
-            var viewRect = new Rect(0, 0, inRect.width, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth + (colonies.Count / perRow) * gap);
+            var viewRect = new Rect(0, 0, inRect.width - gap, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth + (colonies.Count / perRow) * gap);
+            var outRect = new Rect(inRect.AtZero());
+            
+            GUI.BeginGroup(inRect);
+            
+            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+
+            for (var i = 0; i < colonies.Count; i++)
+            {
+                var y = colonyBoxWidth * Mathf.Floor((float) i / perRow) + (i / perRow) * gap;
+                
+                var colony = colonies[i];
+             
+                var boxRect = new Rect((colonyBoxWidth * (i % perRow)) + (i % perRow) * gap, y, colonyBoxWidth,
+                    colonyBoxWidth);
+                
+                Widgets.DrawHighlightIfMouseover(boxRect);
+                
+                Widgets.DrawAltRect(boxRect);
+                
+                if (Widgets.ButtonInvisible(boxRect))
+                {
+                    load(i);
+                }
+            }
+            
+            Widgets.EndScrollView();
+            
+            GUI.EndGroup();
+        }
+
+        /// <summary>
+        /// Draw in-game colonies tab.
+        /// </summary>
+        /// <param name="inRect"></param>
+        /// <param name="colonies"></param>
+        /// <param name="load"></param>
+        public static void DrawColoniesTab(ref Rect inRect, float margin,
+            List<PersistentColony> colonies, Action<int> load)
+        {
+            const int perRow = 6;
+            var gap = (int) margin;
+            
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+         
+            var colonyBoxWidth = (inRect.width - gap * perRow) / perRow;
+            
+            var viewRect = new Rect(0, 0, inRect.width - gap, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth + (colonies.Count / perRow) * gap);
             var outRect = new Rect(inRect.AtZero());
             
             GUI.BeginGroup(inRect);
@@ -119,15 +166,24 @@ namespace PersistentWorlds.UI
                     Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
                 }
 
-                if (Widgets.ButtonImage(textureRect, Town, colony.ColonyData.Color))
+                if (Equals(colony, persistentWorld.Colony))
                 {
-                    if (Equals(colony, persistentWorld.Colony))
+                    if (Widgets.ButtonImage(textureRect, Town, colony.ColonyData.Color))
                     {
                         var callback = new Action<Color>(delegate(Color color) { colony.ColonyData.Color = color; });
                         
                         Find.WindowStack.Add(new Dialog_ColourPicker(colony.ColonyData.Color, callback));
                     }
-                    else
+                }
+                else
+                {
+                    GUI.color = colony.ColonyData.Color;
+                    GUI.DrawTexture(textureRect, Town);
+                    GUI.color = Color.white;
+                    
+                    Widgets.DrawHighlightIfMouseover(boxRect);
+
+                    if (Widgets.ButtonInvisible(boxRect))
                     {
                         load(i);
                     }
@@ -150,11 +206,11 @@ namespace PersistentWorlds.UI
                     ScrollPositions.Add(colony, new Vector2());
                 }
 
-                var scrollPosition = ScrollPositions[colony];
+                var colonyScrollPosition = ScrollPositions[colony];
                 
-                Widgets.LabelScrollable(colonyNameRect, faction.Name, ref scrollPosition);
+                Widgets.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition);
 
-                ScrollPositions[colony] = scrollPosition;
+                ScrollPositions[colony] = colonyScrollPosition;
             }
             
             Widgets.EndScrollView();
