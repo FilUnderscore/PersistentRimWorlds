@@ -36,7 +36,7 @@ namespace PersistentWorlds.UI
             
             var colonyBoxWidth = (inRect.width - gap * perRow) / perRow;
             
-            var viewRect = new Rect(0, 0, inRect.width - gap, Mathf.Ceil((float) colonies.Count / perRow) * colonyBoxWidth + (colonies.Count / perRow) * gap);
+            var viewRect = new Rect(0, 0, inRect.width - gap, (Mathf.Ceil((float) colonies.Count / perRow) + 1) * colonyBoxWidth + (colonies.Count / perRow) * gap);
             var outRect = new Rect(inRect.AtZero());
             outRect.height -= closeButtonSize.y + margin;
             
@@ -111,12 +111,12 @@ namespace PersistentWorlds.UI
 
             {
                 var y = colonyBoxWidth * Mathf.Floor((float) colonies.Count / perRow) +
-                           (colonies.Count / perRow) * gap;
+                         (colonies.Count / perRow) * gap;
 
                 var boxRect = new Rect((colonyBoxWidth * (colonies.Count % perRow)) + (colonies.Count % perRow) * gap,
                     y, colonyBoxWidth,
                     colonyBoxWidth);
-                
+
                 Widgets.DrawHighlightIfMouseover(boxRect);
                 Widgets.DrawAltRect(boxRect);
 
@@ -124,16 +124,18 @@ namespace PersistentWorlds.UI
                 {
                     newColony();
                 }
-                
+
                 TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
 
                 Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
-                    new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white, 1f);
+                    new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white,
+                    1f);
 
                 Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
-                    new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white, 1f);
+                    new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white,
+                    1f);
             }
-            
+
             Widgets.EndScrollView();
             
             GUI.EndGroup();
