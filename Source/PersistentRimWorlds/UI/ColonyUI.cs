@@ -60,6 +60,42 @@ namespace PersistentWorlds.UI
                 {
                     load(i);
                 }
+                
+                var size = boxRect.width * 0.65f;
+
+                if (size >= Town.width)
+                    size = Town.width;
+                
+                var textureRect = new Rect(boxRect.x + margin, boxRect.y + boxRect.height / 2 - size / 2, size, size);
+
+                Rect leaderRect;
+                
+                if (colony.ColonyData.Leader != null)
+                {
+                    var leaderPortrait = colony.ColonyData.Leader.Texture;
+                    
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
+                        leaderPortrait.height);
+                    
+                    GUI.DrawTexture(leaderRect, leaderPortrait);
+
+                    TooltipHandler.TipRegion(leaderRect,
+                        "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name
+                            .ToStringFull));
+                }
+                else
+                {
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y,
+                        boxRect.width - boxRect.width * 0.68f,
+                        boxRect.height);
+
+                    Text.Font = GameFont.Tiny;
+                    Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
+                }
+
+                GUI.color = colony.ColonyData.Color;
+                GUI.DrawTexture(textureRect, Town);
+                GUI.color = Color.white;
             }
             
             Widgets.EndScrollView();
