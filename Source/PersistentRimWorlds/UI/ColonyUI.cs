@@ -27,7 +27,7 @@ namespace PersistentWorlds.UI
         /// <param name="colonies"></param>
         /// <param name="load"></param>
         public static void DrawColoniesList(ref Rect inRect, float margin,
-            List<PersistentColony> colonies, Action<int> load)
+            List<PersistentColony> colonies, Action<int> load, Action newColony)
         {
             const int perRow = 3;
             var gap = (int) margin;
@@ -43,12 +43,16 @@ namespace PersistentWorlds.UI
             
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
 
-            for (var i = 0; i < colonies.Count; i++)
+            var i = 0;
+            
+            for (var j = 0; j < colonies.Count; j++)
             {
+                var colony = colonies[j];
+                
+                if (colony?.ColonyData == null || (colony.ColonyData.Leader != null && colony.ColonyData.Leader.LoadingTexture)) continue;
+
                 var y = colonyBoxWidth * Mathf.Floor((float) i / perRow) + (i / perRow) * gap;
                 
-                var colony = colonies[i];
-             
                 var boxRect = new Rect((colonyBoxWidth * (i % perRow)) + (i % perRow) * gap, y, colonyBoxWidth,
                     colonyBoxWidth);
                 
@@ -58,7 +62,7 @@ namespace PersistentWorlds.UI
                 
                 if (Widgets.ButtonInvisible(boxRect))
                 {
-                    load(i);
+                    load(j);
                 }
                 
                 var size = boxRect.width * 0.65f;
@@ -70,10 +74,10 @@ namespace PersistentWorlds.UI
 
                 Rect leaderRect;
                 
-                if (colony.ColonyData.Leader != null)
+                if ((object) colony.ColonyData.Leader?.Texture != null)
                 {
                     var leaderPortrait = colony.ColonyData.Leader.Texture;
-                    
+
                     leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
                         leaderPortrait.height);
                     
@@ -96,6 +100,37 @@ namespace PersistentWorlds.UI
                 GUI.color = colony.ColonyData.Color;
                 GUI.DrawTexture(textureRect, Town);
                 GUI.color = Color.white;
+
+                i++;
+            }
+
+            /*
+             * New Colony Button
+             */
+
+            {
+                var y = colonyBoxWidth * Mathf.Floor((float) colonies.Count / perRow) +
+                           (colonies.Count / perRow) * gap;
+
+                var boxRect = new Rect((colonyBoxWidth * (colonies.Count % perRow)) + (colonies.Count % perRow) * gap,
+                    y, colonyBoxWidth,
+                    colonyBoxWidth);
+                
+                Widgets.DrawHighlightIfMouseover(boxRect);
+                Widgets.DrawAltRect(boxRect);
+
+                if (Widgets.ButtonInvisible(boxRect))
+                {
+                    newColony();
+                }
+                
+                TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
+
+                Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
+                    new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white, 1f);
+
+                Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
+                    new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white, 1f);
             }
             
             Widgets.EndScrollView();
@@ -162,7 +197,7 @@ namespace PersistentWorlds.UI
                 
                 if (colony.ColonyData.Leader != null)
                 {
-                    var portraitSize = new Vector2(boxRect.width / 4, boxRect.height);
+                    var portraitSize = new Vector2(boxRect.width * 0.32f, boxRect.height);
 
                     // Always get a new portrait, if things such as screen size changes or outfit.
                     if (colony.ColonyData.Leader.Reference != null)

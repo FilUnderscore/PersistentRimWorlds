@@ -55,36 +55,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            /*
-            GUI.BeginGroup(inRect);
-
-            var rect1 = new Rect((inRect.width - 170f) / 2, 0.0f, 170f, inRect.height);
-
-            var optList = new List<ListableOption>
-            {
-                new ListableOption("NewColony".Translate(),
-                    delegate
-                    {
-                        normalClose = false;
-                        
-                        PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
-
-                        this.next = new Page_SelectScenario {prev = this};
-                        this.DoNext();
-                    })
-            };
-
-            var num1 = (double) OptionListingUtility.DrawOptionListing(rect1, optList);
-            
-            var rect2 = new Rect(0, (float) num1, inRect.width, inRect.height);
-            
-            GUI.BeginGroup(rect2);
-            GUI.EndGroup();
-            
-            GUI.EndGroup();
-            */
-            
-            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.persistentWorld.Colonies, this.Load);
+            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.persistentWorld.Colonies, this.Load, this.NewColony);
         }
 
         private void Load(int index)
@@ -103,6 +74,16 @@ namespace PersistentWorlds.UI
 
             this.persistentWorld.PatchPlayerFaction();
             this.persistentWorld.LoadSaver.TransferToPlayScene();
+        }
+
+        private void NewColony()
+        {
+            normalClose = false;
+
+            PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
+
+            this.next = new Page_SelectScenario {prev = this};
+            this.DoNext();
         }
         #endregion
     }

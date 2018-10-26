@@ -16,6 +16,7 @@ namespace PersistentWorlds.Logic
         private string TextureBase64;
         
         public Texture Texture;
+        public bool LoadingTexture;
 
         public bool Set => !UniqueId.NullOrEmpty() && Name != null;
 
@@ -75,6 +76,8 @@ namespace PersistentWorlds.Logic
             if (Scribe.mode != LoadSaveMode.LoadingVars || TextureBase64.NullOrEmpty()) return;
 
             {
+                LoadingTexture = true;
+                
                 LongEventHandler.QueueLongEvent(delegate
                 {
                     var texture2D = new Texture2D((int) TextureSize.x, (int) TextureSize.y);
@@ -82,6 +85,8 @@ namespace PersistentWorlds.Logic
                     texture2D.Apply();
                     
                     this.Texture = texture2D;
+
+                    LoadingTexture = false;
                 }, "", false, null);
             }
         }
