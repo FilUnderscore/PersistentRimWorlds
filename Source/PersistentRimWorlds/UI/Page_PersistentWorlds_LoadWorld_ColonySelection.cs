@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
 using RimWorld;
@@ -27,7 +28,9 @@ namespace PersistentWorlds.UI
         public Page_PersistentWorlds_LoadWorld_ColonySelection(PersistentWorld persistentWorld)
         {
             this.persistentWorld = persistentWorld;
-            persistentWorld.LoadSaver.LoadColonies();
+            
+            // Load colonies in a separate thread.
+            new Thread(() => { persistentWorld.LoadSaver.LoadColonies(); }).Start();
             
             this.doCloseButton = true;
             this.doCloseX = true;

@@ -14,7 +14,6 @@ namespace PersistentWorlds.UI
     {
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
-        // TODO: Scale depending on screen size?
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
 
@@ -24,7 +23,9 @@ namespace PersistentWorlds.UI
         /// Draw colonies list on Persistent RimWorlds.
         /// </summary>
         /// <param name="inRect"></param>
+        /// <param name="margin"></param>
         /// <param name="colonies"></param>
+        /// <param name="load"></param>
         public static void DrawColoniesList(ref Rect inRect, float margin,
             List<PersistentColony> colonies, Action<int> load)
         {
@@ -70,6 +71,7 @@ namespace PersistentWorlds.UI
         /// Draw in-game colonies tab.
         /// </summary>
         /// <param name="inRect"></param>
+        /// <param name="margin"></param>
         /// <param name="colonies"></param>
         /// <param name="load"></param>
         public static void DrawColoniesTab(ref Rect inRect, float margin,
