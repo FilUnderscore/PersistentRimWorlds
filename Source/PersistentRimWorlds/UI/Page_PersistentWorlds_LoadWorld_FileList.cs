@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using PersistentWorlds.Logic;
 using RimWorld;
@@ -76,7 +75,7 @@ namespace PersistentWorlds.UI
                         persistentWorld.LoadSaver.LoadWorld();
                         
                         Current.Game = previousGame;
-
+                        
                         this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};
                         this.DoNext();
                     }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
