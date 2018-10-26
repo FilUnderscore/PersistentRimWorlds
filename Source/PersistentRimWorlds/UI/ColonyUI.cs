@@ -18,7 +18,7 @@ namespace PersistentWorlds.UI
             new Dictionary<PersistentColony, Vector2>();
 
         private static Vector2 scrollPosition;
-
+        
         /// <summary>
         /// Draw colonies list on Persistent RimWorlds.
         /// </summary>
@@ -197,7 +197,7 @@ namespace PersistentWorlds.UI
                 
                 if (colony.ColonyData.Leader != null)
                 {
-                    var portraitSize = new Vector2(boxRect.width * 0.32f, boxRect.height);
+                    var portraitSize = new Vector2(boxRect.width / 3, boxRect.height);
 
                     // Always get a new portrait, if things such as screen size changes or outfit.
                     if (colony.ColonyData.Leader.Reference != null)
@@ -208,7 +208,7 @@ namespace PersistentWorlds.UI
                     
                     var leaderPortrait = colony.ColonyData.Leader.Texture;
                     
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y, leaderPortrait.width,
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.65f, boxRect.y, leaderPortrait.width,
                         leaderPortrait.height);
                     
                     if (Equals(colony, persistentWorld.Colony))
