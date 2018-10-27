@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Harmony;
 using PersistentWorlds.Logic;
+using RimWorld;
 using Verse;
 
 namespace PersistentWorlds.SaveAndLoad
@@ -139,8 +140,7 @@ namespace PersistentWorlds.SaveAndLoad
             // Load data.
             Scribe_Deep.Look<PersistentWorldData>(ref this.persistentWorld.WorldData, "data");
 
-            //this.PersistentWorld.LoadColonies();
-            this.persistentWorld.ResetPlayerFaction();
+            this.persistentWorld.ResetPlayerFaction(FactionDefOf.PlayerColony);
             
             Log.Message("Loaded world data...");
         }

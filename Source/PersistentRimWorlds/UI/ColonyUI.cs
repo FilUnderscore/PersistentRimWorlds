@@ -12,8 +12,6 @@ namespace PersistentWorlds.UI
     [StaticConstructorOnStartup]
     public static class ColonyUI
     {
-        private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
-
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
         
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
@@ -82,9 +80,10 @@ namespace PersistentWorlds.UI
                 }
                 
                 var size = boxRect.width * 0.65f;
-
-                if (size >= Town.width)
-                    size = Town.width;
+                var texture = GetTexture(colony.ColonyData.ColonyFaction);
+                
+                if (size >= texture.width)
+                    size = texture.width;
                 
                 var textureRect = new Rect(boxRect.x + margin, boxRect.y + boxRect.height / 2 - size / 2, size, size);
 
@@ -114,7 +113,7 @@ namespace PersistentWorlds.UI
                 }
 
                 GUI.color = colony.ColonyData.Color;
-                GUI.DrawTexture(textureRect, Town);
+                GUI.DrawTexture(textureRect, texture);
                 GUI.color = Color.white;
 
                 const float nameMargin = 4f;
@@ -228,9 +227,10 @@ namespace PersistentWorlds.UI
                 }
                 
                 var size = boxRect.width * 0.65f;
-
-                if (size >= Town.width)
-                    size = Town.width;
+                var texture = GetTexture(faction);
+                
+                if (size >= texture.width)
+                    size = texture.width;
                 
                 var textureRect = new Rect(boxRect.x, boxRect.y, size, size);
 
@@ -282,7 +282,7 @@ namespace PersistentWorlds.UI
 
                 if (Equals(colony, persistentWorld.Colony))
                 {
-                    if (Widgets.ButtonImage(textureRect, Town, colony.ColonyData.Color))
+                    if (Widgets.ButtonImage(textureRect, texture, colony.ColonyData.Color))
                     {
                         var callback = new Action<Color>(delegate(Color color) { colony.ColonyData.Color = color; });
                         
@@ -292,7 +292,7 @@ namespace PersistentWorlds.UI
                 else
                 {
                     GUI.color = colony.ColonyData.Color;
-                    GUI.DrawTexture(textureRect, Town);
+                    GUI.DrawTexture(textureRect, texture);
                     GUI.color = Color.white;
                     
                     Widgets.DrawHighlightIfMouseover(boxRect);
@@ -362,6 +362,11 @@ namespace PersistentWorlds.UI
 
                 break;
             }
+        }
+
+        private static Texture2D GetTexture(Faction faction)
+        {
+            return faction.def.ExpandingIconTexture;
         }
     }
 }

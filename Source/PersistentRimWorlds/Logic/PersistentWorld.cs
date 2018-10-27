@@ -342,9 +342,9 @@ namespace PersistentWorlds.Logic
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
         }
 
-        public void ResetPlayerFaction()
+        public void ResetPlayerFaction(FactionDef def)
         {
-            SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(FactionDefOf.PlayerColony));
+            SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(def));
         }
 
         private void SetPlayerFactionVarsOf(Faction newFaction)
