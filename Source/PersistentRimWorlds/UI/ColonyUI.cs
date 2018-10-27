@@ -105,7 +105,7 @@ namespace PersistentWorlds.UI
                 }
                 else
                 {
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.65f, boxRect.y + margin,
+                    leaderRect = new Rect(boxRect.x + boxRect.width / 2 + margin, boxRect.y + margin,
                         boxRect.width - boxRect.width * 0.68f,
                         boxRect.height);
 
@@ -249,7 +249,7 @@ namespace PersistentWorlds.UI
                     
                     var leaderPortrait = colony.ColonyData.Leader.Texture;
                     
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.47f, boxRect.y, portraitSize.x,
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.485f, boxRect.y, portraitSize.x,
                         portraitSize.y);
                     
                     if (Equals(colony, persistentWorld.Colony))
