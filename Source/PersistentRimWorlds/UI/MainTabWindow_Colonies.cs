@@ -6,6 +6,7 @@ using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -54,13 +55,17 @@ namespace PersistentWorlds.UI
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             var colony = persistentWorld.Colonies[index];
             
+            Find.World.renderer.wantedMode = WorldRenderMode.None;
+            
             LongEventHandler.QueueLongEvent(delegate
             {
-                persistentWorld.ConvertCurrentGameSettlements();
+                persistentWorld.LoadSaver.SaveWorld();
+                
+                persistentWorld.ConvertCurrentGameWorldObjects();
 
                 var previousColony = persistentWorld.Colony;
                 persistentWorld.SaveColony(previousColony);
-                            
+                
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
                             
@@ -72,7 +77,7 @@ namespace PersistentWorlds.UI
 
                 persistentWorld.UnloadColony(previousColony);
 
-                persistentWorld.ConvertToCurrentGameSettlements();
+                persistentWorld.ConvertToCurrentGameWorldObjects();
                 
                 persistentWorld.CheckAndSetColonyData();
                             

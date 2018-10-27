@@ -97,7 +97,7 @@ namespace PersistentWorlds.Logic
             var maps = this.LoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
             maps.Do(Current.Game.AddMap);
             
-            this.ConvertToCurrentGameSettlements();
+            this.ConvertToCurrentGameWorldObjects();
             
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
@@ -226,18 +226,26 @@ namespace PersistentWorlds.Logic
 
             this.Game = game;
             
-            this.WorldData = PersistentWorldData.Convert(game);
+            this.WorldData = PersistentWorldData.Convert(game, this.WorldData);
 
             var colony = PersistentColony.Convert(game);
             this.Colony = colony;
             
             this.Colonies.Add(colony);
             
+            this.ConvertCurrentGameWorldObjects();
+        }
+
+        // Convert world objects to colony owned world objects for saving
+        public void ConvertCurrentGameWorldObjects()
+        {
             this.ConvertCurrentGameSettlements();
+
+            this.ConvertCurrentGameCaravans();
         }
 
         // Convert Settlements to Colony Bases (this.Colony) for saving
-        public void ConvertCurrentGameSettlements()
+        private void ConvertCurrentGameSettlements()
         {
             // Concurrency errors :/
             var toAdd = new List<Colony>();
@@ -273,9 +281,41 @@ namespace PersistentWorlds.Logic
             toRemove.Clear();
         }
 
+        private void ConvertCurrentGameCaravans()
+        {
+            // TODO.
+            var toRemove = new List<Caravan>();
+
+            foreach (var caravan in this.Game.World.worldObjects.Caravans)
+            {
+                if (caravan.Faction != Faction.OfPlayer)
+                {
+                    continue;
+                }
+
+                if (!this.WorldData.ColonyCaravans.ContainsKey(this.Colony.ColonyData.UniqueId))
+                    this.WorldData.ColonyCaravans.Add(this.Colony.ColonyData.UniqueId, new ExposableList<Caravan>());
+                
+                this.WorldData.ColonyCaravans[this.Colony.ColonyData.UniqueId].GetList().Add(caravan);
+                
+                toRemove.Add(caravan);
+            }
+            
+            toRemove.Do(caravan => this.Game.World.worldObjects.Remove(caravan));
+            toRemove.Clear();
+        }
+
+        // Convert colony owned world objects to world objects for loading
+        public void ConvertToCurrentGameWorldObjects()
+        {
+            this.ConvertToCurrentGameSettlements();
+            
+            this.ConvertToCurrentGameCaravans();
+        }
+
         // Convert Colony Bases to Settlements (this.Colony) for loading
-        public void ConvertToCurrentGameSettlements()
-        {   
+        private void ConvertToCurrentGameSettlements()
+        {
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
@@ -323,12 +363,25 @@ namespace PersistentWorlds.Logic
             toRemove.Clear();
         }
 
+        private void ConvertToCurrentGameCaravans()
+        {
+            // TODO.
+            if (!this.WorldData.ColonyCaravans.ContainsKey(this.Colony.ColonyData.UniqueId))
+            {
+                return;
+            }
+            
+            foreach (var caravan in this.WorldData.ColonyCaravans[this.Colony.ColonyData.UniqueId].GetList())
+            {
+                this.WorldData.WorldObjectsHolder.Add(caravan);
+            }
+
+            this.WorldData.ColonyCaravans.Remove(this.Colony.ColonyData.UniqueId);
+        }
+
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
-            
-            // Because saving doesn't always work?
-            // TODO: Check for in-game stuff.
         }
 
         public void PatchPlayerFaction()
@@ -406,7 +459,11 @@ namespace PersistentWorlds.Logic
 
         public void SaveColony(PersistentColony colony)
         {
+            var index = this.Colonies.IndexOf(colony);
+            
             LoadSaver.SaveColonyAndColonyMapsData(ref colony);
+
+            Colonies[index] = colony;
         }
 
         public void UnloadColony(PersistentColony colony)

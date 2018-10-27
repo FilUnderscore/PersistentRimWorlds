@@ -5,6 +5,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using PersistentWorlds.Utils;
+using RimWorld.Planet;
 
 namespace PersistentWorlds.Logic
 {

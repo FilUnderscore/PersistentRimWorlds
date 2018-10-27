@@ -276,20 +276,20 @@ namespace PersistentWorlds.SaveAndLoad
 
             Status = PersistentWorldLoadStatus.Saving;
             
-            this.persistentWorld.ConvertCurrentGameSettlements();
+            this.persistentWorld.ConvertCurrentGameWorldObjects();
 
             this.SaveWorldData();
             this.SaveColony(ref this.persistentWorld.Colony);
             this.SaveMapData();
             
-            this.persistentWorld.ConvertToCurrentGameSettlements();
+            this.persistentWorld.ConvertToCurrentGameWorldObjects();
         }
 
         private void SaveWorldData()
         {
             Log.Message("Saving world data...");
             
-            this.persistentWorld.WorldData = PersistentWorldData.Convert(Current.Game);
+            this.persistentWorld.WorldData = PersistentWorldData.Convert(Current.Game, this.persistentWorld.WorldData);
 
             //this.PersistentWorld.SaveColonies();
             
@@ -344,10 +344,10 @@ namespace PersistentWorlds.SaveAndLoad
             var @ref = colony;
 
             SafeSaver.Save(colonySaveFile, "colonyfile", delegate { Scribe_Deep.Look(ref @ref, "colony"); });
-            colony.FileInfo = colonyFile;
-
+            
             colony = @ref;
-
+            colony.FileInfo = colonyFile;
+            
             Log.Message("Saved colony data.");
         }
 
