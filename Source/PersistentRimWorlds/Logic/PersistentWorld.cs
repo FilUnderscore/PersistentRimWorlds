@@ -352,9 +352,6 @@ namespace PersistentWorlds.Logic
         public void UpdateWorld()
         {
             // Hooks in from Game UpdatePlay()
-            
-            // Because saving doesn't always work?
-            // TODO: Check for in-game stuff.
         }
 
         public void PatchPlayerFaction()
