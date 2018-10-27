@@ -342,9 +342,9 @@ namespace PersistentWorlds.Logic
             SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
         }
 
-        public void ResetPlayerFaction()
+        public void ResetPlayerFaction(FactionDef def)
         {
-            SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(FactionDefOf.PlayerColony));
+            SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(def));
         }
 
         private void SetPlayerFactionVarsOf(Faction newFaction)
@@ -475,6 +475,19 @@ namespace PersistentWorlds.Logic
                     {
                         return pawn;
                     }
+                }
+            }
+
+            return null;
+        }
+
+        public PersistentColony GetColonyById(int uniqueId)
+        {
+            foreach (var colony in Colonies)
+            {
+                if (colony.ColonyData?.UniqueId == uniqueId)
+                {
+                    return colony;
                 }
             }
 
