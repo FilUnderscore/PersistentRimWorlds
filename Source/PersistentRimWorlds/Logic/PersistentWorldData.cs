@@ -26,6 +26,12 @@ namespace PersistentWorlds.Logic
         private List<WorldComponent> worldComponents = new List<WorldComponent>();
         
         private TickManager tickManager = new TickManager();
+
+        /// <summary>
+        /// First type - int - is for colony unique ID.
+        /// Second type - List of Caravan - list of caravans for the colony.
+        /// </summary>
+        private Dictionary<int, ExposableList<Caravan>> colonyCaravans = new Dictionary<int, ExposableList<Caravan>>();
         #endregion
         
         #region Properties
@@ -50,6 +56,8 @@ namespace PersistentWorlds.Logic
         public List<WorldComponent> WorldComponents => worldComponents;
 
         public TickManager TickManager => tickManager;
+
+        public Dictionary<int, ExposableList<Caravan>> ColonyCaravans => colonyCaravans;
         #endregion
         
         #region Methods
@@ -96,13 +104,20 @@ namespace PersistentWorlds.Logic
             
             Scribe_Collections.Look<WorldComponent>(ref this.worldComponents, "worldComponents", LookMode.Deep, new object[] { Current.Game.World });
             Current.Game.World.components = this.worldComponents;
+            
+            Scribe_Collections.Look(ref colonyCaravans, "caravans", LookMode.Value, LookMode.Deep);
         }
 
-        public static PersistentWorldData Convert(Game game)
+        public static PersistentWorldData Convert(Game game, PersistentWorldData worldData)
         {
+            PersistentWorld persistentWorld = null;
+            
+            if(PersistentWorldManager.GetInstance().HasPersistentWorld)
+                persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            
             var persistentWorldData = new PersistentWorldData
             {
-                nextColonyId = PersistentWorldManager.GetInstance().PersistentWorld == null ? 0 : PersistentWorldManager.GetInstance().PersistentWorld.WorldData.nextColonyId,
+                nextColonyId = persistentWorld?.WorldData.nextColonyId ?? 0,
                 info = game.World.info,
                 grid = game.World.grid,
                 tickManager = game.tickManager,
@@ -113,7 +128,8 @@ namespace PersistentWorlds.Logic
                 storyState = game.World.storyState,
                 worldFeatures = game.World.features,
                 uniqueIDsManager = game.uniqueIDsManager,
-                worldComponents = game.World.components
+                worldComponents = game.World.components,
+                colonyCaravans = worldData?.colonyCaravans ?? new Dictionary<int, ExposableList<Caravan>>()
             };
 
             return persistentWorldData;

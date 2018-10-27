@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using PersistentWorlds;
 using PersistentWorlds.Logic;
 using RimWorld;
 using UnityEngine;
 using Verse;
 using PersistentWorlds.SaveAndLoad;
+using PersistentWorlds.UI;
 
 namespace PersistentWorlds.UI
 {
@@ -27,10 +30,15 @@ namespace PersistentWorlds.UI
         {
             // TODO: HMM
             PersistentWorldManager.GetInstance().Clear();
-            
-            this.LoadWorldsAsItems();
-            this.LoadPossibleConversions();
 
+            // Multi thread to decrease loading times.
+            new Thread(() =>
+            {
+                this.LoadWorldsAsItems();
+
+                this.LoadPossibleConversions();
+            }).Start();
+            
             this.doCloseButton = true;
             this.doCloseX = true;
             this.forcePause = true;

@@ -112,7 +112,7 @@ namespace PersistentWorlds.Patches
             
             persistentWorld.Colonies.Add(colony);
             persistentWorld.LoadedMaps.Add(map.Tile, new HashSet<PersistentColony>(){colony});
-    
+            
             return false;
         }       
         #endregion

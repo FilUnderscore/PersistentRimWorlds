@@ -6,6 +6,7 @@ using PersistentWorlds.Logic;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -54,8 +55,12 @@ namespace PersistentWorlds.UI
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             var colony = persistentWorld.Colonies[index];
             
+            Find.World.renderer.wantedMode = WorldRenderMode.None;
+            
             LongEventHandler.QueueLongEvent(delegate
             {
+                persistentWorld.LoadSaver.SaveWorld();
+                
                 persistentWorld.ConvertCurrentGameWorldObjects();
 
                 var previousColony = persistentWorld.Colony;
