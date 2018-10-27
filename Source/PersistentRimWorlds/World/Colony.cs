@@ -21,7 +21,8 @@ namespace PersistentWorlds.World
         // TODO: Implement commands.
         private static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
-        public string Name;
+        private string nameInt;
+        
         public PersistentColonyData PersistentColonyData = new PersistentColonyData();
         private Material cachedMat;
         #endregion
@@ -51,9 +52,15 @@ namespace PersistentWorlds.World
                 ? FactionDefOf.PlayerColony.expandingIconTexture
                 : this.PersistentColonyData.ColonyFaction.def.expandingIconTexture);
 
-        public override string Label => Name ?? base.Label;
+        public string Name 
+        { 
+            get => nameInt;
+            set => nameInt = value;
+        }
 
-        public override bool HasName => !Name.NullOrEmpty();
+        public override string Label => nameInt ?? base.Label;
+
+        public override bool HasName => !nameInt.NullOrEmpty();
         #endregion
         
         #region Methods
@@ -64,7 +71,7 @@ namespace PersistentWorlds.World
         {
             base.ExposeData();
             
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref nameInt, "name");
             Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 
