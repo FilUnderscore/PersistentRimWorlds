@@ -56,7 +56,7 @@ namespace PersistentWorlds.UI
             
             LongEventHandler.QueueLongEvent(delegate
             {
-                persistentWorld.ConvertCurrentGameSettlements();
+                persistentWorld.ConvertCurrentGameWorldObjects();
 
                 var previousColony = persistentWorld.Colony;
                 persistentWorld.SaveColony(previousColony);
@@ -72,7 +72,7 @@ namespace PersistentWorlds.UI
 
                 persistentWorld.UnloadColony(previousColony);
 
-                persistentWorld.ConvertToCurrentGameSettlements();
+                persistentWorld.ConvertToCurrentGameWorldObjects();
                 
                 persistentWorld.CheckAndSetColonyData();
                             
