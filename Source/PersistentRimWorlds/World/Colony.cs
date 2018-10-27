@@ -21,7 +21,8 @@ namespace PersistentWorlds.World
         // TODO: Implement commands.
         private static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
-        public string Name;
+        private string nameInt;
+        
         public PersistentColonyData PersistentColonyData = new PersistentColonyData();
         private Material cachedMat;
         #endregion
@@ -35,18 +36,31 @@ namespace PersistentWorlds.World
             get
             {
                 if (this.cachedMat == null)
-                    this.cachedMat = MaterialPool.MatFrom("World/WorldObjects/DefaultSettlement", ShaderDatabase.WorldOverlayTransparentLit, this.PersistentColonyData?.Color ?? Color.green,
+                    this.cachedMat = MaterialPool.MatFrom(
+                        this.PersistentColonyData?.ColonyFaction == null
+                            ? FactionDefOf.PlayerColony.homeIconPath
+                            : this.PersistentColonyData.ColonyFaction.def.homeIconPath,
+                        ShaderDatabase.WorldOverlayTransparentLit, this.PersistentColonyData?.Color ?? Color.green,
                         WorldMaterials.WorldObjectRenderQueue);
 
                 return this.cachedMat;
             }
         }
 
-        public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town", true);
+        public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get(
+            this.PersistentColonyData?.ColonyFaction == null
+                ? FactionDefOf.PlayerColony.expandingIconTexture
+                : this.PersistentColonyData.ColonyFaction.def.expandingIconTexture);
 
-        public override string Label => Name ?? base.Label;
+        public string Name 
+        { 
+            get => nameInt;
+            set => nameInt = value;
+        }
 
-        public override bool HasName => !Name.NullOrEmpty();
+        public override string Label => nameInt ?? base.Label;
+
+        public override bool HasName => !nameInt.NullOrEmpty();
         #endregion
         
         #region Methods
@@ -57,7 +71,7 @@ namespace PersistentWorlds.World
         {
             base.ExposeData();
             
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref nameInt, "name");
             Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 

@@ -6,7 +6,7 @@
 	<FilUnderscore.PersistentRimWorlds.ConvertingWorld>Converting world to persistent world</FilUnderscore.PersistentRimWorlds.ConvertingWorld>
 	<FilUnderscore.PersistentRimWorlds.ConversionComplete>Conversion for world {0} is complete. The persistent world will now be saved as {0} and can be loaded through the Persistent Worlds menu.</FilUnderscore.PersistentRimWorlds.ConversionComplete>
 	<FilUnderscore.PersistentRimWorlds.ConvertWorld>Convert</FilUnderscore.PersistentRimWorlds.ConvertWorld>
-	<FilUnderscore.PersistentRimWorlds.DeleteColony>Delete this colony permanently. It will disappear from the world map without any trace.</FilUnderscore.PersistentRimWorlds.DeleteColony>
+	<FilUnderscore.PersistentRimWorlds.DeleteColony>Click to delete this colony.</FilUnderscore.PersistentRimWorlds.DeleteColony>
 	<FilUnderscore.PersistentRimWorlds.DeleteWorld></FilUnderscore.PersistentRimWorlds.DeleteWorld>
 	<FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip>Delete persistent world.</FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip>
 	<FilUnderscore.PersistentRimWorlds.DeleteWorldDesc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this world to a single colony game, or cancel this action.</FilUnderscore.PersistentRimWorlds.DeleteWorldDesc>
