@@ -57,10 +57,12 @@ namespace PersistentWorlds.UI
             
             LongEventHandler.QueueLongEvent(delegate
             {
+                persistentWorld.LoadSaver.SaveWorldData();
+                
                 persistentWorld.ConvertCurrentGameWorldObjects();
 
                 var previousColony = persistentWorld.Colony;
-                persistentWorld.SaveColony(ref previousColony);
+                persistentWorld.SaveColony(previousColony);
                 
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;

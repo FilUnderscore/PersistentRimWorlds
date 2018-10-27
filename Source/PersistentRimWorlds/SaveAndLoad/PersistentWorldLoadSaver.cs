@@ -285,14 +285,12 @@ namespace PersistentWorlds.SaveAndLoad
             this.persistentWorld.ConvertToCurrentGameWorldObjects();
         }
 
-        private void SaveWorldData()
+        public void SaveWorldData()
         {
             Log.Message("Saving world data...");
             
             this.persistentWorld.WorldData = PersistentWorldData.Convert(Current.Game, this.persistentWorld.WorldData);
 
-            //this.PersistentWorld.SaveColonies();
-            
             this.SetCurrentFile(new FileInfo(worldFilePath));
             
             SafeSaver.Save(this.worldFilePath, "worldfile", delegate
