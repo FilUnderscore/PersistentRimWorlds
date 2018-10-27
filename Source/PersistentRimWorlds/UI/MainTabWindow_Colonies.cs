@@ -60,7 +60,7 @@ namespace PersistentWorlds.UI
 
                 var previousColony = persistentWorld.Colony;
                 persistentWorld.SaveColony(previousColony);
-                            
+                
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
                             
