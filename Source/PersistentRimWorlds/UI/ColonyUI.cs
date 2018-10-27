@@ -36,7 +36,7 @@ namespace PersistentWorlds.UI
             
             var colonyBoxWidth = (inRect.width - gap * perRow) / perRow;
             
-            var viewRect = new Rect(0, 0, inRect.width - gap, (Mathf.Ceil((float) colonies.Count + 1 / perRow)) * colonyBoxWidth + (colonies.Count / perRow) * gap);
+            var viewRect = new Rect(0, 0, inRect.width - gap, (Mathf.Ceil((float) (colonies.Count + 1) / perRow)) * colonyBoxWidth + (colonies.Count / perRow) * gap);
             var outRect = new Rect(inRect.AtZero());
             outRect.height -= closeButtonSize.y + margin;
             
