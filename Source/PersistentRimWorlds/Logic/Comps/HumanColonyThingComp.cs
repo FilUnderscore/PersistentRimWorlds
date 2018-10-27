@@ -29,7 +29,7 @@ namespace PersistentWorlds.Logic.Comps
 
             var colony = GetColony();
 
-            this.ColonyId = colony?.PersistentColonyData.UniqueId ??
+            this.ColonyId = colony?.PersistentColonyData?.UniqueId ??
                             PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData.UniqueId;
         }
 
