@@ -9,6 +9,10 @@ namespace PersistentWorlds.SaveAndLoad
     {
         #region Properties
         private static PersistentWorld PersistentWorld => PersistentWorldManager.GetInstance().PersistentWorld;
+
+#pragma warning disable 414
+        private static bool Unloading = false;
+#pragma warning restore 414
         #endregion
         
         public static void UnloadReferences(Map map, bool forced = false)
@@ -18,7 +22,11 @@ namespace PersistentWorlds.SaveAndLoad
 
         public static void UnloadMap(Map map)
         {
+            Unloading = true; // Set state so MapDeiniter.Deinit(Map) patch knows.
+            
             Current.Game.DeinitAndRemoveMap(map);
+
+            Unloading = false;
         }
 
         public static void UnloadColonyMaps(PersistentColony colony)
@@ -42,6 +50,17 @@ namespace PersistentWorlds.SaveAndLoad
             
             tilesToRemove.Do(tile => PersistentWorld.LoadedMaps.Remove(tile));
             tilesToRemove.Clear();
+        }
+
+        private static void UnloadPawnsFromWorld(Map map)
+        {
+            foreach (var pawn in map.mapPawns.AllPawns)
+            {
+                if (pawn.Spawned)
+                {
+                    pawn.DeSpawn();
+                }
+            }
         }
     }
 }

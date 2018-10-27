@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Harmony;
 using JetBrains.Annotations;
 using RimWorld;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace PersistentWorlds.Logic
         public PersistentColonyLeader Leader;
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
-        public List<int> ActiveWorldTiles = new List<int>();
+        public HashSet<int> ActiveWorldTiles = new HashSet<int>();
         #endregion
         
         #region Methods

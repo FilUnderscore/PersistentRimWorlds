@@ -68,6 +68,7 @@
     <Compile Include="Patches\Game\Game_UpdatePlay_Patch.cs" />
     <Compile Include="Patches\Game\GenGameEnd_EndGameDialogMessage_Patch.cs" />
     <Compile Include="Patches\Game\LogEntry_Patch.cs" />
+    <Compile Include="Patches\Game\MapDeiniter_Deinit_Patch.cs" />
     <Compile Include="Patches\Game\MapGenerator_GenerateMap_Patch.cs" />
     <Compile Include="Patches\Game\Map_UpdateMap_Patch.cs" />
     <Compile Include="Patches\Game\UIRoot_Play_UIRootOnGUI_Patch.cs" />
