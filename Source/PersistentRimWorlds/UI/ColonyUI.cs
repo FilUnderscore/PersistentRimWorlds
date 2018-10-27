@@ -219,13 +219,11 @@ namespace PersistentWorlds.UI
                 {
                     Widgets.DrawHighlight(boxRect);
                     faction = Find.FactionManager.OfPlayer;
-                    Log.Message("Showing OfPlayer " + faction.Name + colony.ColonyData.UniqueId);
                 }
                 else
                 {
                     Widgets.DrawAltRect(boxRect);
                     faction = colony.ColonyData.ColonyFaction;
-                    Log.Message("Showing ColonyFaction: " + faction.Name + colony.ColonyData.UniqueId);
                 }
                 
                 var size = boxRect.width * 0.65f;

@@ -54,7 +54,9 @@ namespace PersistentWorlds.UI
             
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             var colony = persistentWorld.Colonies[index];
-            
+
+            persistentWorld.Game.World.renderer.wantedMode = WorldRenderMode.None;
+
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.LoadSaver.SaveWorldData();
