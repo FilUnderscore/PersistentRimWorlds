@@ -19,7 +19,9 @@ namespace PersistentWorlds.Patches
             
             if (colony == null) return;
 
-            colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
+            // Prevent duplicates.
+            if(!colony.ColonyData.ActiveWorldTiles.Contains(__result.Tile))
+                colony.ColonyData.ActiveWorldTiles.Add(__result.Tile);
 
             persistentWorld.LoadedMaps.Add(__result.Tile, new HashSet<PersistentColony>(){colony});
         }
