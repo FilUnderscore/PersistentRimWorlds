@@ -374,6 +374,7 @@ namespace PersistentWorlds.Logic
             foreach (var caravan in this.WorldData.ColonyCaravans[this.Colony.ColonyData.UniqueId].GetList())
             {
                 this.WorldData.WorldObjectsHolder.Add(caravan);
+                caravan.pather.StartPath(caravan.pather.Destination, caravan.pather.ArrivalAction, true, false);
             }
 
             this.WorldData.ColonyCaravans.Remove(this.Colony.ColonyData.UniqueId);
