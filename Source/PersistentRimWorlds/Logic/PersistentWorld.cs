@@ -480,6 +480,19 @@ namespace PersistentWorlds.Logic
 
             return null;
         }
+
+        public PersistentColony GetColonyById(int uniqueId)
+        {
+            foreach (var colony in Colonies)
+            {
+                if (colony.ColonyData?.UniqueId == uniqueId)
+                {
+                    return colony;
+                }
+            }
+
+            return null;
+        }
         #endregion
     }
 }

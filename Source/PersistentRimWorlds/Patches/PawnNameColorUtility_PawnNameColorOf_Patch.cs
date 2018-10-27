@@ -14,9 +14,11 @@ namespace PersistentWorlds.Patches
 
             var comp = pawn.GetComp<HumanColonyThingComp>();
 
-            if (comp?.ColonyData == null || Equals(comp.ColonyData, PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData)) return true;
+            if (Equals(comp.ColonyId,
+                PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData.UniqueId)) return true;
 
-            __result = comp.ColonyData.Color;
+            __result = PersistentWorldManager.GetInstance().PersistentWorld.GetColonyById(comp.ColonyId).ColonyData
+                .Color;
                 
             return false;
 

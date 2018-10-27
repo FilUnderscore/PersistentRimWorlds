@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
@@ -7,7 +8,7 @@ namespace PersistentWorlds.Logic.Comps
 {
     public sealed class HumanColonyThingComp : ThingComp
     {
-        public PersistentColonyData ColonyData;
+        public int ColonyId = -1;
 
         public override void Initialize(CompProperties props)
         {
@@ -15,7 +16,7 @@ namespace PersistentWorlds.Logic.Comps
             
             this.SetColonyData();
         }
-
+        
         private void SetColonyData()
         {
             if (!PersistentWorldManager.GetInstance().HasPersistentWorld)
@@ -28,7 +29,8 @@ namespace PersistentWorlds.Logic.Comps
 
             var colony = GetColony();
 
-            this.ColonyData = colony != null ? colony.PersistentColonyData : PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData;
+            this.ColonyId = colony?.PersistentColonyData.UniqueId ??
+                            PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData.UniqueId;
         }
 
         private Colony GetColony()

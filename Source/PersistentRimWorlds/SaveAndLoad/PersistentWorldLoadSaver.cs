@@ -304,7 +304,7 @@ namespace PersistentWorlds.SaveAndLoad
             Log.Message("Saved world data.");
         }
 
-        public string GetColonySaveFilePath(PersistentColony colony)
+        private string GetColonySaveFilePath(PersistentColony colony)
         {
             return coloniesDirectory + "/" + colony.ColonyData.ColonyFaction.Name + "_" + colony.ColonyData.UniqueId +
                    PersistentWorldColonyFileExtension;
@@ -321,7 +321,7 @@ namespace PersistentWorlds.SaveAndLoad
             Log.Message("Saved colony and colony maps data.");
         }
 
-        public void SaveColony(ref PersistentColony colony)
+        private void SaveColony(ref PersistentColony colony)
         {
             Log.Message("Saving colony data...");
 
@@ -351,7 +351,7 @@ namespace PersistentWorlds.SaveAndLoad
             Log.Message("Saved colony data.");
         }
 
-        public void SaveColonyMapData(PersistentColony colony)
+        private void SaveColonyMapData(PersistentColony colony)
         {
             Log.Message("Saving colony map data...");
 
