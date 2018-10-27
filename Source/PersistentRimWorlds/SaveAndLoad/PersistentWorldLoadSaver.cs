@@ -276,13 +276,13 @@ namespace PersistentWorlds.SaveAndLoad
 
             Status = PersistentWorldLoadStatus.Saving;
             
-            this.persistentWorld.ConvertCurrentGameSettlements();
+            this.persistentWorld.ConvertCurrentGameWorldObjects();
 
             this.SaveWorldData();
             this.SaveColony(ref this.persistentWorld.Colony);
             this.SaveMapData();
             
-            this.persistentWorld.ConvertToCurrentGameSettlements();
+            this.persistentWorld.ConvertToCurrentGameWorldObjects();
         }
 
         private void SaveWorldData()

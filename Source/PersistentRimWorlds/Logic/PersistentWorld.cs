@@ -97,7 +97,7 @@ namespace PersistentWorlds.Logic
             var maps = this.LoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
             maps.Do(Current.Game.AddMap);
             
-            this.ConvertToCurrentGameSettlements();
+            this.ConvertToCurrentGameWorldObjects();
             
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
@@ -233,11 +233,19 @@ namespace PersistentWorlds.Logic
             
             this.Colonies.Add(colony);
             
+            this.ConvertCurrentGameWorldObjects();
+        }
+
+        // Convert world objects to colony owned world objects for saving
+        public void ConvertCurrentGameWorldObjects()
+        {
             this.ConvertCurrentGameSettlements();
+
+            this.ConvertCurrentGameCaravans();
         }
 
         // Convert Settlements to Colony Bases (this.Colony) for saving
-        public void ConvertCurrentGameSettlements()
+        private void ConvertCurrentGameSettlements()
         {
             // Concurrency errors :/
             var toAdd = new List<Colony>();
@@ -273,9 +281,22 @@ namespace PersistentWorlds.Logic
             toRemove.Clear();
         }
 
+        private void ConvertCurrentGameCaravans()
+        {
+            // TODO.
+        }
+
+        // Convert colony owned world objects to world objects for loading
+        public void ConvertToCurrentGameWorldObjects()
+        {
+            this.ConvertToCurrentGameSettlements();
+            
+            this.ConvertToCurrentGameCaravans();
+        }
+
         // Convert Colony Bases to Settlements (this.Colony) for loading
-        public void ConvertToCurrentGameSettlements()
-        {   
+        private void ConvertToCurrentGameSettlements()
+        {
             var toAdd = new List<Settlement>();
             var toRemove = new List<Colony>();
             
@@ -321,6 +342,11 @@ namespace PersistentWorlds.Logic
             
             toRemove.Do(colony => this.WorldData.WorldObjectsHolder.Remove(colony));
             toRemove.Clear();
+        }
+
+        private void ConvertToCurrentGameCaravans()
+        {
+            // TODO.
         }
 
         public void UpdateWorld()
