@@ -458,7 +458,7 @@ namespace PersistentWorlds.Logic
             }
         }
 
-        public void SaveColony(PersistentColony colony)
+        public void SaveColony(ref PersistentColony colony)
         {
             var index = this.Colonies.IndexOf(colony);
             

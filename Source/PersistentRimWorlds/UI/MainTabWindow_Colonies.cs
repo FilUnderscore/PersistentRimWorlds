@@ -55,16 +55,12 @@ namespace PersistentWorlds.UI
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             var colony = persistentWorld.Colonies[index];
             
-            Find.World.renderer.wantedMode = WorldRenderMode.None;
-            
             LongEventHandler.QueueLongEvent(delegate
             {
-                persistentWorld.LoadSaver.SaveWorld();
-                
                 persistentWorld.ConvertCurrentGameWorldObjects();
 
                 var previousColony = persistentWorld.Colony;
-                persistentWorld.SaveColony(previousColony);
+                persistentWorld.SaveColony(ref previousColony);
                 
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
