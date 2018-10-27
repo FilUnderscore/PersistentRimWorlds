@@ -55,7 +55,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.CloseButSize, this.persistentWorld.Colonies, this.Load, this.NewColony);
+            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.CloseButSize, this.persistentWorld.Colonies, this.Load, this.NewColony, this.Delete);
         }
 
         private void Load(int index)
@@ -85,6 +85,11 @@ namespace PersistentWorlds.UI
 
             this.next = new Page_SelectScenario {prev = this};
             this.DoNext();
+        }
+
+        private void Delete(int index)
+        {
+            
         }
         #endregion
     }

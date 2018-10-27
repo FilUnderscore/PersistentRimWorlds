@@ -14,6 +14,8 @@ namespace PersistentWorlds.UI
     {
         private static readonly Texture2D Town = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/Town");
 
+        private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
+        
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
 
@@ -27,7 +29,7 @@ namespace PersistentWorlds.UI
         /// <param name="colonies"></param>
         /// <param name="load"></param>
         public static void DrawColoniesList(ref Rect inRect, float margin, Vector2 closeButtonSize,
-            List<PersistentColony> colonies, Action<int> load, Action newColony)
+            List<PersistentColony> colonies, Action<int> load, Action newColony, Action<int> delete)
         {
             const int perRow = 3;
             var gap = (int) margin;
@@ -57,10 +59,23 @@ namespace PersistentWorlds.UI
                 var boxRect = new Rect((colonyBoxWidth * (i % perRow)) + (i % perRow) * gap, y, colonyBoxWidth,
                     colonyBoxWidth);
                 
-                Widgets.DrawHighlightIfMouseover(boxRect);
-                
                 Widgets.DrawAltRect(boxRect);
                 
+                // Delete button.
+                var deleteSize = boxRect.width / 8;
+                var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize, deleteSize);
+
+                // Draw delete button first.
+                if (Widgets.ButtonImage(deleteRect, DeleteX))
+                {
+                    delete(i);
+                }
+                
+                TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
+
+                Widgets.DrawHighlightIfMouseover(boxRect);
+
+                // Draw whole box button second.
                 if (Widgets.ButtonInvisible(boxRect))
                 {
                     load(j);
@@ -102,6 +117,29 @@ namespace PersistentWorlds.UI
                 GUI.DrawTexture(textureRect, Town);
                 GUI.color = Color.white;
 
+                const float nameMargin = 4f;
+
+                var colonyNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
+                    boxRect.width - nameMargin - deleteSize,
+                    textureRect.y - boxRect.y);
+
+                Text.Font = GameFont.Small;
+
+                if (!ScrollPositions.ContainsKey(colony))
+                {
+                    ScrollPositions.Add(colony, new Vector2());
+                }
+
+                var colonyScrollPosition = ScrollPositions[colony];
+
+                Text.Font = GameFont.Tiny;
+
+                WidgetExtensions.LabelScrollable(colonyNameRect, colony.ColonyData.ColonyFaction.Name,
+                    ref colonyScrollPosition, false, true, false);
+                Text.Font = GameFont.Small;
+                
+                ScrollPositions[colony] = colonyScrollPosition;
+                
                 i++;
             }
 
@@ -198,7 +236,7 @@ namespace PersistentWorlds.UI
 
                 Rect leaderRect;
                 
-                if (colony.ColonyData.Leader != null)
+                if (colony.ColonyData.Leader != null && colony.ColonyData.Leader.Set && (object) colony.ColonyData.Leader.Texture != null || colony.ColonyData.Leader?.Reference != null)
                 {
                     var portraitSize = new Vector2(boxRect.width / 2, boxRect.height);
 
@@ -211,8 +249,8 @@ namespace PersistentWorlds.UI
                     
                     var leaderPortrait = colony.ColonyData.Leader.Texture;
                     
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.5f, boxRect.y, leaderPortrait.width,
-                        leaderPortrait.height);
+                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.47f, boxRect.y, portraitSize.x,
+                        portraitSize.y);
                     
                     if (Equals(colony, persistentWorld.Colony))
                     {
@@ -285,7 +323,9 @@ namespace PersistentWorlds.UI
                 var colonyScrollPosition = ScrollPositions[colony];
 
                 Text.Font = GameFont.Tiny;
-                WidgetExtensions.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition, false);
+
+                WidgetExtensions.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition, false, true,
+                    false);
                 Text.Font = GameFont.Small;
                 
                 ScrollPositions[colony] = colonyScrollPosition;
