@@ -73,7 +73,6 @@ namespace PersistentWorlds.UI
             // This line cause UIRoot_Play to throw one error due to null world/maps, can be patched to check if null before running.
             MemoryUtility.ClearAllMapsAndWorld();
 
-            this.persistentWorld.PatchPlayerFaction();
             this.persistentWorld.LoadSaver.TransferToPlayScene();
         }
 

@@ -90,7 +90,6 @@
     <Compile Include="SaveAndLoad\DynamicMapUnloader.cs" />
     <Compile Include="SaveAndLoad\Patches\GameDataSaveLoader_SaveGame_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\SavedGameLoaderNow_LoadGameFromSaveFileNow_Patch.cs" />
-    <Compile Include="SaveAndLoad\Patches\Scribe\DebugLoadIDsSavingErrorsChecker_CheckForErrorsAndClear_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\LoadedObjectDirectory_Clear_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\PostLoadIniter_RegisterForPostLoadInit_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\DebugLoadIDsSavingErrorsChecker_RegisterDeepSaved_Patch.cs" />
@@ -98,6 +97,7 @@
     <Compile Include="SaveAndLoad\Patches\Scribe\ScribeLoader_ForceStop_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\ScribeSaver_EnterNode_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\ScribeSaver_ExitNode_Patch.cs" />
+    <Compile Include="SaveAndLoad\Patches\Scribe\ScribeSaver_FinalizeSaving_Patch.cs" />
     <Compile Include="SaveAndLoad\Patches\Scribe\Scribe_References_Look_Patch.cs" />
     <Compile Include="SaveAndLoad\PersistentWorldLoadSaver.cs" />
     <Compile Include="SaveAndLoad\ReferenceTable.cs" />

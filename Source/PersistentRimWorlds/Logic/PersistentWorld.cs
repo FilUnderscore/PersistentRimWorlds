@@ -81,6 +81,9 @@ namespace PersistentWorlds.Logic
              */
             
             this.LoadGameWorldAndMaps();
+            
+            // Patch player faction after world has been loaded.
+            this.PatchPlayerFaction();
         }
 
         private void LoadGameWorldAndMaps()
@@ -374,6 +377,7 @@ namespace PersistentWorlds.Logic
             foreach (var caravan in this.WorldData.ColonyCaravans[this.Colony.ColonyData.UniqueId].GetList())
             {
                 this.WorldData.WorldObjectsHolder.Add(caravan);
+                caravan.pather.StartPath(caravan.pather.Destination, caravan.pather.ArrivalAction, true, false);
             }
 
             this.WorldData.ColonyCaravans.Remove(this.Colony.ColonyData.UniqueId);
@@ -392,18 +396,20 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
+            SetFactionVarsOf(this.WorldData.FactionManager.OfPlayer, this.Colony.ColonyData.ColonyFaction);
         }
 
         public void ResetPlayerFaction(FactionDef def)
         {
-            SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(def));
+            SetFactionVarsOf(this.WorldData.FactionManager.OfPlayer, FactionGenerator.NewGeneratedFaction(def));
         }
 
-        private void SetPlayerFactionVarsOf(Faction newFaction)
+        public void SetFactionVarsOf(Faction targetFaction, Faction newFaction)
         {
-            var ofPlayerFaction = this.WorldData.FactionManager.OfPlayer;
+            Log.Message("Patching relations");
             
+            var ofPlayerFaction = targetFaction;
+
             ofPlayerFaction.leader = newFaction.leader;
     
             ofPlayerFaction.def = newFaction.def;
@@ -420,14 +426,31 @@ namespace PersistentWorlds.Logic
             // Change all relations.
             foreach (var faction in this.WorldData.FactionManager.AllFactionsListForReading)
             {
+                if (faction.IsPlayer)
+                    continue;
+                
                 var relations = (List<FactionRelation>) relationsField.GetValue(faction);
-
-                foreach (var relation in relations)
+                
+                FactionRelation relation = null;
+                
+                if ((relation = newFaction.RelationWith(faction, true)) != null)
                 {
-                    if (relation.other == newFaction)
+                    relations.Remove(relation);
+                    
+                    relations.Add(new FactionRelation
                     {
-                        relation.other = ofPlayerFaction;
-                    }
+                        other = ofPlayerFaction,
+                        goodwill = relation.goodwill,
+                        kind = relation.kind
+                    });
+                    
+                    Log.Message("Setting relation.");
+                }
+                else if(ofPlayerFaction.RelationWith(faction, true) == null)
+                {
+                    ofPlayerFaction.TryMakeInitialRelationsWith(faction);
+                    
+                    Log.Message("Making initial relations.");
                 }
             }
             

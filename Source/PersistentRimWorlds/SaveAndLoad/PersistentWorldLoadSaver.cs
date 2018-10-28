@@ -282,17 +282,18 @@ namespace PersistentWorlds.SaveAndLoad
             this.SaveColony(ref this.persistentWorld.Colony);
             this.SaveMapData();
             
+            // ScribeSaver.FinalizeSaving() stops this from calling when Persistent World is present.
+            Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
+            
             this.persistentWorld.ConvertToCurrentGameWorldObjects();
         }
 
-        private void SaveWorldData()
+        public void SaveWorldData()
         {
             Log.Message("Saving world data...");
             
             this.persistentWorld.WorldData = PersistentWorldData.Convert(Current.Game, this.persistentWorld.WorldData);
 
-            //this.PersistentWorld.SaveColonies();
-            
             this.SetCurrentFile(new FileInfo(worldFilePath));
             
             SafeSaver.Save(this.worldFilePath, "worldfile", delegate
@@ -317,6 +318,9 @@ namespace PersistentWorlds.SaveAndLoad
             SaveColony(ref colony);
 
             SaveColonyMapData(colony);
+            
+            // ScribeSaver.FinalizeSaving() stops this from calling when Persistent World is present.
+            Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
             
             Log.Message("Saved colony and colony maps data.");
         }

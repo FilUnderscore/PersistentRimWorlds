@@ -251,8 +251,10 @@ namespace PersistentWorlds.UI
                     
                     leaderRect = new Rect(boxRect.x + boxRect.width * 0.485f, boxRect.y, portraitSize.x,
                         portraitSize.y);
+
+                    var canChangeLeader = Equals(colony, persistentWorld.Colony);
                     
-                    if (Equals(colony, persistentWorld.Colony))
+                    if (canChangeLeader)
                     {
                         if (WidgetExtensions.ButtonImage(leaderRect, leaderPortrait, Color.white, GenUI.MouseoverColor))
                         {
@@ -266,7 +268,7 @@ namespace PersistentWorlds.UI
                     }
 
                     TooltipHandler.TipRegion(leaderRect,
-                        Equals(colony, persistentWorld.Colony)
+                        canChangeLeader
                             ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader".Translate()
                             : "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name.ToStringFull));
                 }
