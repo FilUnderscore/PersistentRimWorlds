@@ -451,7 +451,6 @@ namespace PersistentWorlds.Logic
 
         private void SetFactionRelationsVars(Faction sourceFaction, Faction targetFaction, FactionMode mode)
         {
-            // TODO: ...
             var relationsField = AccessTools.Field(typeof(Faction), "relations");
 
             var sourceFactionRelations = (List<FactionRelation>) relationsField.GetValue(sourceFaction);
