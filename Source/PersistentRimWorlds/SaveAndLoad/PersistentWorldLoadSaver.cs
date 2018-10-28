@@ -282,6 +282,9 @@ namespace PersistentWorlds.SaveAndLoad
             this.SaveColony(ref this.persistentWorld.Colony);
             this.SaveMapData();
             
+            // ScribeSaver.FinalizeSaving() stops this from calling when Persistent World is present.
+            Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
+            
             this.persistentWorld.ConvertToCurrentGameWorldObjects();
         }
 
@@ -315,6 +318,9 @@ namespace PersistentWorlds.SaveAndLoad
             SaveColony(ref colony);
 
             SaveColonyMapData(colony);
+            
+            // ScribeSaver.FinalizeSaving() stops this from calling when Persistent World is present.
+            Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
             
             Log.Message("Saved colony and colony maps data.");
         }

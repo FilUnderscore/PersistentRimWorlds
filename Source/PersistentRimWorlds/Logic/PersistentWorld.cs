@@ -81,6 +81,9 @@ namespace PersistentWorlds.Logic
              */
             
             this.LoadGameWorldAndMaps();
+            
+            // Patch player faction after world has been loaded.
+            this.PatchPlayerFaction();
         }
 
         private void LoadGameWorldAndMaps()
@@ -403,6 +406,8 @@ namespace PersistentWorlds.Logic
 
         public void SetFactionVarsOf(Faction targetFaction, Faction newFaction)
         {
+            Log.Message("Patching relations");
+            
             var ofPlayerFaction = targetFaction;
 
             ofPlayerFaction.leader = newFaction.leader;
@@ -421,14 +426,31 @@ namespace PersistentWorlds.Logic
             // Change all relations.
             foreach (var faction in this.WorldData.FactionManager.AllFactionsListForReading)
             {
+                if (faction.IsPlayer)
+                    continue;
+                
                 var relations = (List<FactionRelation>) relationsField.GetValue(faction);
-
-                foreach (var relation in relations)
+                
+                FactionRelation relation = null;
+                
+                if ((relation = newFaction.RelationWith(faction, true)) != null)
                 {
-                    if (relation.other != null && relation.other.IsPlayer)
+                    relations.Remove(relation);
+                    
+                    relations.Add(new FactionRelation
                     {
-                        relation.other = ofPlayerFaction;
-                    }
+                        other = ofPlayerFaction,
+                        goodwill = relation.goodwill,
+                        kind = relation.kind
+                    });
+                    
+                    Log.Message("Setting relation.");
+                }
+                else if(ofPlayerFaction.RelationWith(faction, true) == null)
+                {
+                    ofPlayerFaction.TryMakeInitialRelationsWith(faction);
+                    
+                    Log.Message("Making initial relations.");
                 }
             }
             
