@@ -374,6 +374,7 @@ namespace PersistentWorlds.Logic
             foreach (var caravan in this.WorldData.ColonyCaravans[this.Colony.ColonyData.UniqueId].GetList())
             {
                 this.WorldData.WorldObjectsHolder.Add(caravan);
+                caravan.pather.StartPath(caravan.pather.Destination, caravan.pather.ArrivalAction, true, false);
             }
 
             this.WorldData.ColonyCaravans.Remove(this.Colony.ColonyData.UniqueId);
@@ -392,18 +393,18 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            SetPlayerFactionVarsOf(this.Colony.ColonyData.ColonyFaction);
+            SetFactionVarsOf(this.WorldData.FactionManager.OfPlayer, this.Colony.ColonyData.ColonyFaction);
         }
 
         public void ResetPlayerFaction(FactionDef def)
         {
-            SetPlayerFactionVarsOf(FactionGenerator.NewGeneratedFaction(def));
+            SetFactionVarsOf(this.WorldData.FactionManager.OfPlayer, FactionGenerator.NewGeneratedFaction(def));
         }
 
-        private void SetPlayerFactionVarsOf(Faction newFaction)
+        public void SetFactionVarsOf(Faction targetFaction, Faction newFaction)
         {
-            var ofPlayerFaction = this.WorldData.FactionManager.OfPlayer;
-            
+            var ofPlayerFaction = targetFaction;
+
             ofPlayerFaction.leader = newFaction.leader;
     
             ofPlayerFaction.def = newFaction.def;
@@ -424,7 +425,7 @@ namespace PersistentWorlds.Logic
 
                 foreach (var relation in relations)
                 {
-                    if (relation.other == newFaction)
+                    if (relation.other != null && relation.other.IsPlayer)
                     {
                         relation.other = ofPlayerFaction;
                     }

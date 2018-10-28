@@ -54,10 +54,14 @@ namespace PersistentWorlds.Logic
         {
             var persistentColonyData = new PersistentColonyData
             {
-                ColonyFaction = game.World.factionManager.OfPlayer,
+                //ColonyFaction = game.World.factionManager.OfPlayer,
+                ColonyFaction = PersistentWorldManager.GetInstance().HasPersistentWorld ? new Faction() : game.World.factionManager.OfPlayer,
                 Color = Random.ColorHSV(0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f)
             };
-
+            
+            if(PersistentWorldManager.GetInstance().HasPersistentWorld)
+                PersistentWorldManager.GetInstance().PersistentWorld.SetFactionVarsOf(persistentColonyData.ColonyFaction, game.World.factionManager.OfPlayer);
+            
             if (colonyColonyData == null || colonyColonyData.ActiveWorldTiles.Count == 0)
             {
                 foreach (var map in game.Maps)
