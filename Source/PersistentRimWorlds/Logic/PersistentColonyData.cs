@@ -14,6 +14,7 @@ namespace PersistentWorlds.Logic
         #region Fields
         // TODO: Also implement enemy raids for colonies and trading colony inventories.
         public Faction ColonyFaction;
+        
         public int UniqueId = 0;
 
         public Color Color = Color.white;
@@ -60,7 +61,7 @@ namespace PersistentWorlds.Logic
             };
             
             if(PersistentWorldManager.GetInstance().HasPersistentWorld)
-                PersistentWorldManager.GetInstance().PersistentWorld.SetFactionVarsOf(persistentColonyData.ColonyFaction, game.World.factionManager.OfPlayer);
+                PersistentWorldManager.GetInstance().PersistentWorld.SetColonyFactionVarsToPlayerFaction(persistentColonyData);
             
             if (colonyColonyData == null || colonyColonyData.ActiveWorldTiles.Count == 0)
             {

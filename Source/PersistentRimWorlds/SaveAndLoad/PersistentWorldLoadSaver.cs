@@ -140,7 +140,7 @@ namespace PersistentWorlds.SaveAndLoad
             // Load data.
             Scribe_Deep.Look<PersistentWorldData>(ref this.persistentWorld.WorldData, "data");
 
-            this.persistentWorld.ResetPlayerFaction(FactionDefOf.PlayerColony);
+            //this.persistentWorld.ResetPlayerFaction(FactionDefOf.PlayerColony);
             
             Log.Message("Loaded world data...");
         }

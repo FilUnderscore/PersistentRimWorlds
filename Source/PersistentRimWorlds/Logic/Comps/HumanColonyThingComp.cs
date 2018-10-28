@@ -10,13 +10,13 @@ namespace PersistentWorlds.Logic.Comps
     {
         public int ColonyId = -1;
 
-        public override void Initialize(CompProperties props)
+        public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            base.Initialize(props);
+            base.PostSpawnSetup(respawningAfterLoad);
             
             this.SetColonyData();
         }
-        
+
         private void SetColonyData()
         {
             if (!PersistentWorldManager.GetInstance().HasPersistentWorld)
@@ -28,7 +28,7 @@ namespace PersistentWorlds.Logic.Comps
                 return;
 
             var colony = GetColony();
-
+            
             this.ColonyId = colony?.PersistentColonyData?.UniqueId ??
                             PersistentWorldManager.GetInstance().PersistentWorld.Colony.ColonyData.UniqueId;
         }

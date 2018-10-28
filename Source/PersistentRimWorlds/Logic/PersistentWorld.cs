@@ -52,6 +52,16 @@ namespace PersistentWorlds.Logic
             GameComponentUtility.LoadedGame();
             
             this.CheckAndSetColonyData();
+            
+            Log.Message("Faction count: " + Current.Game.World.factionManager.AllFactions.Count());
+            
+            Current.Game.World.factionManager.AllFactions.Do((faction) =>
+            {
+                Log.Message("Faction Name: " + faction.Name);
+                Log.Message("Faction ID: " + faction.loadID);
+                Log.Message("Type: " + faction.def.defName);
+                Log.Message("Relations: " + ((List<FactionRelation>) AccessTools.Field(typeof(Faction), "relations").GetValue(faction)).ToDebugString());
+            });
         }
         
         // Called from Patched Game.LoadGame().
@@ -81,9 +91,6 @@ namespace PersistentWorlds.Logic
              */
             
             this.LoadGameWorldAndMaps();
-            
-            // Patch player faction after world has been loaded.
-            this.PatchPlayerFaction();
         }
 
         private void LoadGameWorldAndMaps()
@@ -92,6 +99,8 @@ namespace PersistentWorlds.Logic
             
             this.Game.World.FinalizeInit();
 
+            this.SetPlayerFactionVarsToColonyFaction();
+            
             this.LoadMaps();
         }
 
@@ -286,7 +295,6 @@ namespace PersistentWorlds.Logic
 
         private void ConvertCurrentGameCaravans()
         {
-            // TODO.
             var toRemove = new List<Caravan>();
 
             foreach (var caravan in this.Game.World.worldObjects.Caravans)
@@ -368,7 +376,6 @@ namespace PersistentWorlds.Logic
 
         private void ConvertToCurrentGameCaravans()
         {
-            // TODO.
             if (!this.WorldData.ColonyCaravans.ContainsKey(this.Colony.ColonyData.UniqueId))
             {
                 return;
@@ -388,85 +395,202 @@ namespace PersistentWorlds.Logic
             // Hooks in from Game UpdatePlay()
         }
 
-        public void PatchPlayerFaction()
+        public void SetPlayerFactionVarsToColonyFaction()
         {
-            if (this.Colony == null)
-            {
-                Log.Error("Colony is null. Not patching.");
-                return;
-            }
-
-            SetFactionVarsOf(this.WorldData.FactionManager.OfPlayer, this.Colony.ColonyData.ColonyFaction);
+            SetFactionVars(this.Colony.ColonyData.ColonyFaction, this.WorldData.FactionManager.OfPlayer, FactionMode.Load, true);
         }
 
-        public void ResetPlayerFaction(FactionDef def)
+        public void SetPlayerFactionVarsToNewGeneratedFaction(FactionDef def)
         {
-            SetFactionVarsOf(this.WorldData.FactionManager.OfPlayer, FactionGenerator.NewGeneratedFaction(def));
-        }
-
-        public void SetFactionVarsOf(Faction targetFaction, Faction newFaction)
-        {
-            Log.Message("Patching relations");
+            var generatedFaction = FactionGenerator.NewGeneratedFaction(def);
+            generatedFaction.loadID = this.WorldData.FactionManager.OfPlayer.loadID;
             
-            var ofPlayerFaction = targetFaction;
+            SetFactionVars(generatedFaction, this.WorldData.FactionManager.OfPlayer, FactionMode.Reset, true);
+        }
 
-            ofPlayerFaction.leader = newFaction.leader;
+        public void SetColonyFactionVarsToPlayerFaction(PersistentColonyData data)
+        {
+            SetFactionVars(this.WorldData.FactionManager.OfPlayer, data.ColonyFaction, FactionMode.Save, false);
+        }
+
+        private void SetFactionVars(Faction sourceFaction, Faction targetFaction, FactionMode mode, bool lateExecute)
+        {
+            targetFaction.leader = sourceFaction.leader;
     
-            ofPlayerFaction.def = newFaction.def;
+            targetFaction.def = sourceFaction.def;
 
-            ofPlayerFaction.Name = newFaction.HasName ? newFaction.Name : null;
+            targetFaction.loadID = sourceFaction.loadID;
             
-            ofPlayerFaction.randomKey = newFaction.randomKey;
-            ofPlayerFaction.colorFromSpectrum = newFaction.colorFromSpectrum;
-            ofPlayerFaction.centralMelanin = newFaction.centralMelanin;
+            targetFaction.Name = sourceFaction.HasName ? sourceFaction.Name : null;
+            
+            targetFaction.randomKey = sourceFaction.randomKey;
+            targetFaction.colorFromSpectrum = sourceFaction.colorFromSpectrum;
+            targetFaction.centralMelanin = sourceFaction.centralMelanin;
 
-            var relationsField = AccessTools.Field(typeof(Faction), "relations");
-            var newFactionRelations = (List<FactionRelation>) relationsField.GetValue(newFaction);
-
-            // Change all relations.
-            foreach (var faction in this.WorldData.FactionManager.AllFactionsListForReading)
-            {
-                if (faction.IsPlayer)
-                    continue;
-                
-                var relations = (List<FactionRelation>) relationsField.GetValue(faction);
-                
-                FactionRelation relation = null;
-                
-                if ((relation = newFaction.RelationWith(faction, true)) != null)
-                {
-                    relations.Remove(relation);
-                    
-                    relations.Add(new FactionRelation
-                    {
-                        other = ofPlayerFaction,
-                        goodwill = relation.goodwill,
-                        kind = relation.kind
-                    });
-                    
-                    Log.Message("Setting relation.");
-                }
-                else if(ofPlayerFaction.RelationWith(faction, true) == null)
-                {
-                    ofPlayerFaction.TryMakeInitialRelationsWith(faction);
-                    
-                    Log.Message("Making initial relations.");
-                }
-            }
-            
-            relationsField.SetValue(ofPlayerFaction, newFactionRelations);
-            
-            ofPlayerFaction.kidnapped = newFaction.kidnapped;
+            targetFaction.kidnapped = sourceFaction.kidnapped;
             
             var predatorThreatsField = AccessTools.Field(typeof(Faction), "predatorThreats");
-            predatorThreatsField.SetValue(ofPlayerFaction, predatorThreatsField.GetValue(newFaction));
+            predatorThreatsField.SetValue(targetFaction, predatorThreatsField.GetValue(sourceFaction));
             
-            ofPlayerFaction.defeated = newFaction.defeated;
-            ofPlayerFaction.lastTraderRequestTick = newFaction.lastTraderRequestTick;
-            ofPlayerFaction.lastMilitaryAidRequestTick = newFaction.lastMilitaryAidRequestTick;
+            targetFaction.defeated = sourceFaction.defeated;
+            targetFaction.lastTraderRequestTick = sourceFaction.lastTraderRequestTick;
+            targetFaction.lastMilitaryAidRequestTick = sourceFaction.lastMilitaryAidRequestTick;
 
             var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
-            naturalGoodwillTimerField.SetValue(ofPlayerFaction, naturalGoodwillTimerField.GetValue(newFaction));
+            naturalGoodwillTimerField.SetValue(targetFaction, naturalGoodwillTimerField.GetValue(sourceFaction));
+
+            if (lateExecute)
+            {
+                LongEventHandler.ExecuteWhenFinished(() => SetFactionRelationsVars(sourceFaction, targetFaction, mode));
+            }
+            else
+            {
+                SetFactionRelationsVars(sourceFaction, targetFaction, mode);
+            }
+        }
+
+        private void SetFactionRelationsVars(Faction sourceFaction, Faction targetFaction, FactionMode mode)
+        {
+            var relationsField = AccessTools.Field(typeof(Faction), "relations");
+
+            var sourceFactionRelations = (List<FactionRelation>) relationsField.GetValue(sourceFaction);
+            var targetFactionRelations = (List<FactionRelation>) relationsField.GetValue(targetFaction);
+
+            var allFactions = this.WorldData.FactionManager.AllFactionsListForReading;
+            
+            switch (mode)
+            {
+                case FactionMode.Load:
+
+                    targetFactionRelations.Clear();
+                    
+                    foreach (var faction in allFactions)
+                    {
+                        if (faction.IsPlayer) continue;
+                        
+                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
+
+                        // Clear any previous relations that are player factions.
+                        for (var i = 0; i < factionRelations.Count; i++)
+                        {
+                            var relation = factionRelations[i];
+                            
+                            if (relation.other == null || relation.other.IsPlayer)
+                            {
+                                factionRelations.Remove(relation);
+                            }
+                        }
+                        
+                        // Set relations.
+                        var sourceRelation = sourceFaction.RelationWith(faction, true);
+                        
+                        if (sourceRelation != null)
+                        {
+                            var goodwill = sourceRelation.goodwill;
+                            var kind = sourceRelation.kind;
+
+                            targetFactionRelations.Add(new FactionRelation
+                            {
+                                other = faction,
+                                goodwill = goodwill,
+                                kind = kind
+                            });
+
+                            factionRelations.Add(new FactionRelation
+                            {
+                                other = targetFaction,
+                                goodwill = goodwill,
+                                kind = kind
+                            });
+
+                            sourceFactionRelations.Remove(sourceRelation);
+                        }
+                        else
+                        {
+                            targetFaction.TryMakeInitialRelationsWith(faction);
+                        }
+                    }
+                    
+                    break;
+                case FactionMode.Save:
+
+                    targetFactionRelations.Clear();
+
+                    foreach (var faction in allFactions)
+                    {   
+                        if (faction.IsPlayer) continue;
+
+                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
+
+                        for(var i = 0; i < factionRelations.Count; i++)
+                        {
+                            var relation = factionRelations[i];
+                            
+                            if (relation.other != null && relation.other.IsPlayer && relation.other != sourceFaction)
+                            {
+                                factionRelations.Remove(relation);
+                            }
+                        }
+                        
+                        var sourceRelation = sourceFaction.RelationWith(faction, true);
+                        
+                        if (sourceRelation != null)
+                        {
+                            var goodwill = sourceRelation.goodwill;
+                            var kind = sourceRelation.kind;
+
+                            targetFactionRelations.Add(new FactionRelation
+                            {
+                                other = faction,
+                                goodwill = goodwill,
+                                kind = kind
+                            });
+                        }
+                        else
+                        {
+                            targetFaction.TryMakeInitialRelationsWith(faction);
+                        }
+                    }
+                    
+                    break;
+                case FactionMode.Reset:
+                    
+                    relationsField.SetValue(targetFaction, sourceFactionRelations);
+
+                    foreach (var faction in allFactions)
+                    {
+                        if (faction.IsPlayer) continue;
+                        
+                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
+
+                        for (var i = 0; i < factionRelations.Count; i++)
+                        {
+                            var relation = factionRelations[i];
+                            
+                            if (relation.other != null && relation.other.IsPlayer)
+                            {
+                                factionRelations.Remove(relation);
+                            }
+                        }
+
+                        var factionRelation = sourceFaction.RelationWith(faction, true);
+
+                        if (factionRelation == null)
+                        {
+                            faction.TryMakeInitialRelationsWith(targetFaction);
+                            continue;
+                        }
+                        
+                        factionRelations.Add(new FactionRelation
+                        {
+                            other = targetFaction,
+                            goodwill = factionRelation.goodwill,
+                            kind = factionRelation.kind
+                        });
+                    }
+                    
+                    break;
+            }
         }
 
         public IEnumerable<Map> GetMapsForColony(PersistentColony colony)
@@ -572,6 +696,15 @@ namespace PersistentWorlds.Logic
             }
 
             return null;
+        }
+        #endregion
+        
+        #region Enums
+        private enum FactionMode
+        {
+            Save,
+            Load,
+            Reset
         }
         #endregion
     }
