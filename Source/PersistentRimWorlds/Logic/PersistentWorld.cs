@@ -397,17 +397,20 @@ namespace PersistentWorlds.Logic
 
         public void SetPlayerFactionVarsToColonyFaction()
         {
-            SetFactionVars(this.Colony.ColonyData.ColonyFaction, Current.Game.World.factionManager.OfPlayer, FactionMode.Load, true);
+            SetFactionVars(this.Colony.ColonyData.ColonyFaction, this.WorldData.FactionManager.OfPlayer, FactionMode.Load, true);
         }
 
         public void SetPlayerFactionVarsToNewGeneratedFaction(FactionDef def)
         {
-            SetFactionVars(FactionGenerator.NewGeneratedFaction(def), this.WorldData.FactionManager.OfPlayer, FactionMode.Reset, true);
+            var generatedFaction = FactionGenerator.NewGeneratedFaction(def);
+            generatedFaction.loadID = this.WorldData.FactionManager.OfPlayer.loadID;
+            
+            SetFactionVars(generatedFaction, this.WorldData.FactionManager.OfPlayer, FactionMode.Reset, true);
         }
 
         public void SetColonyFactionVarsToPlayerFaction(PersistentColonyData data)
         {
-            SetFactionVars(Current.Game.World.factionManager.OfPlayer, data.ColonyFaction, FactionMode.Save, false);
+            SetFactionVars(this.WorldData.FactionManager.OfPlayer, data.ColonyFaction, FactionMode.Save, false);
         }
 
         private void SetFactionVars(Faction sourceFaction, Faction targetFaction, FactionMode mode, bool lateExecute)
@@ -416,8 +419,7 @@ namespace PersistentWorlds.Logic
     
             targetFaction.def = sourceFaction.def;
 
-            if (targetFaction.loadID == -1)
-                targetFaction.loadID = sourceFaction.loadID;
+            targetFaction.loadID = sourceFaction.loadID;
             
             targetFaction.Name = sourceFaction.HasName ? sourceFaction.Name : null;
             
@@ -455,7 +457,7 @@ namespace PersistentWorlds.Logic
             var sourceFactionRelations = (List<FactionRelation>) relationsField.GetValue(sourceFaction);
             var targetFactionRelations = (List<FactionRelation>) relationsField.GetValue(targetFaction);
 
-            var allFactions = Current.Game?.World?.factionManager?.AllFactionsListForReading != null ? Current.Game.World.factionManager.AllFactionsListForReading : this.WorldData.FactionManager.AllFactionsListForReading;
+            var allFactions = this.WorldData.FactionManager.AllFactionsListForReading;
             
             switch (mode)
             {
@@ -501,6 +503,8 @@ namespace PersistentWorlds.Logic
                                 goodwill = goodwill,
                                 kind = kind
                             });
+
+                            sourceFactionRelations.Remove(sourceRelation);
                         }
                         else
                         {
@@ -517,12 +521,24 @@ namespace PersistentWorlds.Logic
                     {   
                         if (faction.IsPlayer) continue;
 
-                        var relation = sourceFaction.RelationWith(faction, true);
+                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
 
-                        if (relation != null)
+                        for(var i = 0; i < factionRelations.Count; i++)
                         {
-                            var goodwill = relation.goodwill;
-                            var kind = relation.kind;
+                            var relation = factionRelations[i];
+                            
+                            if (relation.other != null && relation.other.IsPlayer && relation.other != sourceFaction)
+                            {
+                                factionRelations.Remove(relation);
+                            }
+                        }
+                        
+                        var sourceRelation = sourceFaction.RelationWith(faction, true);
+                        
+                        if (sourceRelation != null)
+                        {
+                            var goodwill = sourceRelation.goodwill;
+                            var kind = sourceRelation.kind;
 
                             targetFactionRelations.Add(new FactionRelation
                             {
