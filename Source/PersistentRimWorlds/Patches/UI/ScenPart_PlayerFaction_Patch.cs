@@ -21,8 +21,10 @@ namespace PersistentWorlds.Patches.UI
 
             // In order to prevent cloned factions :/
             PersistentWorldManager.GetInstance().PersistentWorld
-                .ResetPlayerFaction((FactionDef) FactionDefField.GetValue(__instance));
+                .SetPlayerFactionVarsToNewGeneratedFaction((FactionDef) FactionDefField.GetValue(__instance));
+            
             Find.GameInitData.playerFaction = PersistentWorldManager.GetInstance().PersistentWorld.WorldData.FactionManager.OfPlayer;
+            FactionGenerator.EnsureRequiredEnemies(Find.GameInitData.playerFaction);
             
             return false;
         }

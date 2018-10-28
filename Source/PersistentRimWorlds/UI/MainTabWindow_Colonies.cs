@@ -69,8 +69,9 @@ namespace PersistentWorlds.UI
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
                             
-                persistentWorld.PatchPlayerFaction();
-                            
+                //persistentWorld.PatchPlayerFaction();  
+                persistentWorld.SetPlayerFactionVarsToColonyFaction();
+
                 // TODO: Figure out how to load asynchronously to not lock up game.
                 var maps = DynamicMapLoader.LoadColonyMaps(colony);
                 Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
