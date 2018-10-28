@@ -81,9 +81,6 @@ namespace PersistentWorlds.Logic
              */
             
             this.LoadGameWorldAndMaps();
-            
-            // Patch player faction after world has been loaded.
-            this.PatchPlayerFaction();
         }
 
         private void LoadGameWorldAndMaps()
@@ -92,6 +89,9 @@ namespace PersistentWorlds.Logic
             
             this.Game.World.FinalizeInit();
 
+            // Patch player faction after world has been loaded.
+            this.PatchPlayerFaction();
+            
             this.LoadMaps();
         }
 
@@ -406,13 +406,13 @@ namespace PersistentWorlds.Logic
 
         public void SetFactionVarsOf(Faction targetFaction, Faction newFaction)
         {
-            Log.Message("Patching relations");
-            
             var ofPlayerFaction = targetFaction;
 
             ofPlayerFaction.leader = newFaction.leader;
     
             ofPlayerFaction.def = newFaction.def;
+
+            ofPlayerFaction.loadID = newFaction.loadID;
 
             ofPlayerFaction.Name = newFaction.HasName ? newFaction.Name : null;
             
@@ -430,27 +430,13 @@ namespace PersistentWorlds.Logic
                     continue;
                 
                 var relations = (List<FactionRelation>) relationsField.GetValue(faction);
-                
-                FactionRelation relation = null;
-                
-                if ((relation = newFaction.RelationWith(faction, true)) != null)
+
+                foreach (var relation in relations)
                 {
-                    relations.Remove(relation);
-                    
-                    relations.Add(new FactionRelation
+                    if (relation.other != null && relation.other.IsPlayer)
                     {
-                        other = ofPlayerFaction,
-                        goodwill = relation.goodwill,
-                        kind = relation.kind
-                    });
-                    
-                    Log.Message("Setting relation.");
-                }
-                else if(ofPlayerFaction.RelationWith(faction, true) == null)
-                {
-                    ofPlayerFaction.TryMakeInitialRelationsWith(faction);
-                    
-                    Log.Message("Making initial relations.");
+                        relation.other = ofPlayerFaction;
+                    }
                 }
             }
             
