@@ -14,6 +14,8 @@ namespace PersistentWorlds.UI
     internal static class PersistentWorldMenuUI
     {
         private static readonly Texture2D OpenFolder = ContentFinder<Texture2D>.Get("UI/OpenFolder");
+        private static readonly Texture2D ConvertFile = ContentFinder<Texture2D>.Get("UI/ConvertFile");
+        
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
 
         private static readonly Dictionary<UIEntry, Vector2> ScrollPositions = new Dictionary<UIEntry, Vector2>();
@@ -47,15 +49,9 @@ namespace PersistentWorlds.UI
                         
                         TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate());
 
-                        var sizeWidth = boxRect.width * 0.3f;
-                        var sizeHeight = boxRect.height * 0.2f;
+                        var sizeWidth = Mathf.Clamp(boxRect.width * 0.3f, 0, OpenFolder.width);
+                        var sizeHeight = Mathf.Clamp(boxRect.height * 0.2f, 0, OpenFolder.height);
 
-                        if (sizeWidth >= OpenFolder.width)
-                            sizeHeight = OpenFolder.width;
-
-                        if (sizeHeight >= OpenFolder.height)
-                            sizeHeight = OpenFolder.height;
-                        
                         var textureRect = new Rect(boxRect.x + boxRect.width / 2 - sizeWidth / 2, boxRect.y + boxRect.height / 2 - sizeHeight / 2, sizeWidth,
                             sizeHeight);
 
@@ -78,6 +74,16 @@ namespace PersistentWorlds.UI
                         Text.Font = GameFont.Small;
 
                         ScrollPositions[selectedList[i]] = worldScrollPosition;
+                    }
+                    else
+                    {
+                        var sizeWidth = Mathf.Clamp(boxRect.width * 0.3f, 0, ConvertFile.width);
+                        var sizeHeight = Mathf.Clamp(boxRect.height * 0.25f, 0, ConvertFile.height);
+
+                        var textureRect = new Rect(boxRect.x + boxRect.width / 2 - sizeWidth / 2,
+                            boxRect.y + boxRect.height / 2 - sizeHeight / 2, sizeWidth, sizeHeight);
+                        
+                        GUI.DrawTexture(textureRect, ConvertFile);
                     }
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
