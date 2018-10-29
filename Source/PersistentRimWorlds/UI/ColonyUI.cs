@@ -34,7 +34,9 @@ namespace PersistentWorlds.UI
             const int perRow = 3;
             var gap = (int) margin;
 
-            UITools.DrawBoxGridView(out var viewRect, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
+            inRect.width += gap;
+            
+            UITools.DrawBoxGridView(out _, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
                 {
                     if (i >= colonies.Count) return;
@@ -159,7 +161,6 @@ namespace PersistentWorlds.UI
                         1f);
                 });
 
-            inRect.width += gap;
             outRect.height -= closeButtonSize.y + margin;
         }
         
@@ -181,7 +182,7 @@ namespace PersistentWorlds.UI
             
             SortColonies(ref colonies);
          
-            UITools.DrawBoxGridView(out var viewRect, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
+            UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
                 {
                    var colony = colonies[i];
