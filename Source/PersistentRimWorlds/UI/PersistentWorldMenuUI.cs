@@ -47,12 +47,6 @@ namespace PersistentWorlds.UI
                         
                         TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate());
 
-                        var aspectRatio = OpenFolder.width / OpenFolder.height;
-                        //var size = boxRect.width * 0.3f;
-
-                        //if (size >= OpenFolder.width)
-                        //    size = OpenFolder.width;
-
                         var sizeWidth = boxRect.width * 0.3f;
                         var sizeHeight = boxRect.height * 0.2f;
 
