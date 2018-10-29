@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Harmony;
 using PersistentWorlds.SaveAndLoad;
+using PersistentWorlds.Utils;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -14,6 +16,8 @@ namespace PersistentWorlds.UI
         private static readonly Texture2D OpenFolder = ContentFinder<Texture2D>.Get("UI/OpenFolder");
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
 
+        private static readonly Dictionary<UIEntry, Vector2> ScrollPositions = new Dictionary<UIEntry, Vector2>();
+        
         private static Vector2 scrollPosition;
         
         public static void DrawWorldList(ref Rect inRect, float margin, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
@@ -42,6 +46,44 @@ namespace PersistentWorlds.UI
                         }
                         
                         TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate());
+
+                        var aspectRatio = OpenFolder.width / OpenFolder.height;
+                        //var size = boxRect.width * 0.3f;
+
+                        //if (size >= OpenFolder.width)
+                        //    size = OpenFolder.width;
+
+                        var sizeWidth = boxRect.width * 0.3f;
+                        var sizeHeight = boxRect.height * 0.2f;
+
+                        if (sizeWidth >= OpenFolder.width)
+                            sizeHeight = OpenFolder.width;
+
+                        if (sizeHeight >= OpenFolder.height)
+                            sizeHeight = OpenFolder.height;
+                        
+                        var textureRect = new Rect(boxRect.x + boxRect.width / 2 - sizeWidth / 2, boxRect.y + boxRect.height / 2 - sizeHeight / 2, sizeWidth,
+                            sizeHeight);
+
+                        GUI.DrawTexture(textureRect, OpenFolder);
+                        
+                        const float nameMargin = 4f;
+                        var worldNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin, boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
+
+                        if (!ScrollPositions.ContainsKey(selectedList[i]))
+                        {
+                            ScrollPositions.Add(selectedList[i], new Vector2());
+                        }
+
+                        var worldScrollPosition = ScrollPositions[selectedList[i]];
+                        
+                        Text.Font = GameFont.Small;
+                        
+                        WidgetExtensions.LabelScrollable(worldNameRect, ((PersistentWorldUIEntry)selectedList[i]).Name, ref worldScrollPosition, false, true, false);
+
+                        Text.Font = GameFont.Small;
+
+                        ScrollPositions[selectedList[i]] = worldScrollPosition;
                     }
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
@@ -58,16 +100,6 @@ namespace PersistentWorlds.UI
                         }
                     }
 
-                    var size = boxRect.width * 0.65f;
-
-                    if (selectedList == worldEntries)
-                    {
-                        if (size >= OpenFolder.width)
-                            size = OpenFolder.width;
-
-                        GUI.DrawTexture(boxRect, OpenFolder);
-                    }
-
                     return true;
                 }, worldEntries.Count + saveGameEntries.Count, null);
         }
@@ -75,6 +107,7 @@ namespace PersistentWorlds.UI
         public static void Reset()
         {
             scrollPosition = new Vector2();
+            ScrollPositions.Clear();
         }
 
         internal abstract class UIEntry

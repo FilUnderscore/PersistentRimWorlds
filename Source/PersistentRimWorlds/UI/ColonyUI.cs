@@ -116,8 +116,6 @@ namespace PersistentWorlds.UI
                         boxRect.width - nameMargin - deleteSize,
                         textureRect.y - boxRect.y);
     
-                    Text.Font = GameFont.Small;
-    
                     if (!ScrollPositions.ContainsKey(colony))
                     {
                         ScrollPositions.Add(colony, new Vector2());
@@ -351,7 +349,8 @@ namespace PersistentWorlds.UI
             if (sorted)
                 return;
             
-            colonies.Sort((x, y) => y.FileInfo.LastWriteTime.CompareTo(x.FileInfo.LastWriteTime));
+            //colonies.Sort((x, y) => y.FileInfo.LastWriteTime.CompareTo(x.FileInfo.LastWriteTime));
+            colonies.Sort((x, y) => x.ColonyData.UniqueId.CompareTo(y.ColonyData.UniqueId));
             
             sorted = true;
         }
