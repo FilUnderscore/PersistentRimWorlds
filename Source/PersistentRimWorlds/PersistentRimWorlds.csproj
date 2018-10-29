@@ -111,10 +111,8 @@
     <Compile Include="UI\Page_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Page_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
-    <Compile Include="UI\Util\ScrollableListItem.cs" />
-    <Compile Include="UI\Util\ScrollableListItemColored.cs" />
-    <Compile Include="UI\Util\ScrollableListItemInfo.cs" />
-    <Compile Include="UI\Util\ScrollableListUI.cs" />
+    <Compile Include="UI\PersistentWorldMenuUI.cs" />
+    <Compile Include="UI\UITools.cs" />
     <Compile Include="Utils\DebugExtensions.cs" />
     <Compile Include="Utils\ExposableList.cs" />
     <Compile Include="Utils\FileLog.cs" />

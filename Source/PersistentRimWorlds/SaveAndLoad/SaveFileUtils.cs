@@ -8,13 +8,6 @@ namespace PersistentWorlds.SaveAndLoad
     public static class SaveFileUtils
     {
         #region Methods
-        public static bool HasPossibleSameWorldName(ScrollableListItem[] items, string filePath)
-        {
-            var names = items.Select(item => item.Text).ToArray();
-
-            return HasPossibleSameWorldName(names, filePath);
-        }
-        
         public static bool HasPossibleSameWorldName(string[] names, string filePath)
         {
             var worldName = "";
