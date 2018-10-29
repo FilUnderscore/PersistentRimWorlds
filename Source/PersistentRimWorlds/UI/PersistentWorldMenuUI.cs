@@ -75,15 +75,35 @@ namespace PersistentWorlds.UI
 
                         ScrollPositions[selectedList[i]] = worldScrollPosition;
                     }
-                    else
+                    else if(selectedList == saveGameEntries)
                     {
-                        var sizeWidth = Mathf.Clamp(boxRect.width * 0.3f, 0, ConvertFile.width);
-                        var sizeHeight = Mathf.Clamp(boxRect.height * 0.25f, 0, ConvertFile.height);
+                        var sizeWidth = Mathf.Clamp(boxRect.width * 0.48f, 0, ConvertFile.width);
+                        var sizeHeight = Mathf.Clamp(boxRect.height * 0.42f, 0, ConvertFile.height);
 
                         var textureRect = new Rect(boxRect.x + boxRect.width / 2 - sizeWidth / 2,
                             boxRect.y + boxRect.height / 2 - sizeHeight / 2, sizeWidth, sizeHeight);
                         
                         GUI.DrawTexture(textureRect, ConvertFile);
+
+                        const float nameMargin = 4f;
+
+                        var saveNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
+                            boxRect.width - nameMargin, textureRect.y - boxRect.y);
+
+                        if (!ScrollPositions.ContainsKey(selectedList[i]))
+                        {
+                            ScrollPositions.Add(selectedList[i], new Vector2());
+                        }
+
+                        var saveScrollPosition = ScrollPositions[selectedList[i]];
+
+                        Text.Font = GameFont.Small;
+                        
+                        WidgetExtensions.LabelScrollable(saveNameRect, Path.GetFileNameWithoutExtension(((SaveGameUIEntry) selectedList[i]).Path), ref saveScrollPosition, false, true, false);
+
+                        Text.Font = GameFont.Small;
+
+                        ScrollPositions[selectedList[i]] = saveScrollPosition;
                     }
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
