@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColourPicker;
 using PersistentWorlds.Logic;
 using PersistentWorlds.Utils;
@@ -18,6 +19,8 @@ namespace PersistentWorlds.UI
             new Dictionary<PersistentColony, Vector2>();
 
         private static Vector2 scrollPosition;
+
+        private static bool sorted = false;
         
         /// <summary>
         /// Draw colonies list on Persistent RimWorlds.
@@ -35,6 +38,8 @@ namespace PersistentWorlds.UI
             var gap = (int) margin;
 
             inRect.width += gap;
+
+            SortColoniesOneTime(ref colonies);
             
             UITools.DrawBoxGridView(out _, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
@@ -180,6 +185,7 @@ namespace PersistentWorlds.UI
             
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             
+            SortColoniesOneTime(ref colonies);
             SortColonies(ref colonies);
          
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
@@ -314,6 +320,8 @@ namespace PersistentWorlds.UI
         {
             scrollPosition = new Vector2();
             ScrollPositions.Clear();
+
+            sorted = false;
         }
 
         private static void SortColonies(ref List<PersistentColony> colonies)
@@ -336,6 +344,16 @@ namespace PersistentWorlds.UI
 
                 break;
             }
+        }
+
+        private static void SortColoniesOneTime(ref List<PersistentColony> colonies)
+        {
+            if (sorted)
+                return;
+            
+            colonies.Sort((x, y) => y.FileInfo.LastWriteTime.CompareTo(x.FileInfo.LastWriteTime));
+            
+            sorted = true;
         }
 
         private static Texture2D GetTexture(Faction faction)
