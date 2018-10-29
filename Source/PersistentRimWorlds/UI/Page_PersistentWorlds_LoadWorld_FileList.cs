@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Harmony;
 using PersistentWorlds;
 using PersistentWorlds.Logic;
 using RimWorld;
@@ -12,13 +13,12 @@ using PersistentWorlds.UI;
 namespace PersistentWorlds.UI
 {
     public sealed class Page_PersistentWorlds_LoadWorld_FileList : Page
-    {
+    {   
         #region Fields
-        private Vector2 scrollPosition = Vector2.zero;
-        
-        private List<ScrollableListItem> items = new List<ScrollableListItem>();
-
         private bool normalClose = true;
+
+        private List<PersistentWorldMenuUI.UIEntry> worldEntries = new List<PersistentWorldMenuUI.UIEntry>();
+        private List<PersistentWorldMenuUI.UIEntry> saveGameEntries = new List<PersistentWorldMenuUI.UIEntry>();
         #endregion
         
         #region Properties
@@ -50,6 +50,10 @@ namespace PersistentWorlds.UI
         #region Methods
         public override void PostClose()
         {
+            base.PostClose();
+
+            PersistentWorldMenuUI.Reset();
+            
             if (!normalClose) return;
             
             this.DoBack();
@@ -62,31 +66,14 @@ namespace PersistentWorlds.UI
             {
                 var worldDirInfo = new DirectoryInfo(worldDir);
 
+                /*
                 var scrollableListItem = new ScrollableListItem();
 
                 scrollableListItem.Text = worldDirInfo.Name;
                 scrollableListItem.ActionButtonText = "Load".Translate();
                 scrollableListItem.ActionButtonAction = delegate
                 {
-                    LongEventHandler.QueueLongEvent(delegate
-                    {
-                        normalClose = false;
-                        
-                        var previousGame = Current.Game;
-
-                        var persistentWorld = new PersistentWorld();
-                        persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, worldDirInfo.FullName);
-
-                        // TODO: HMM
-                        PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
-                        
-                        persistentWorld.LoadSaver.LoadWorld();
-                        
-                        Current.Game = previousGame;
-                        
-                        this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};
-                        this.DoNext();
-                    }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
+                    
                 };
 
                 scrollableListItem.DeleteButtonTooltip = "FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip".Translate();
@@ -111,11 +98,19 @@ namespace PersistentWorlds.UI
                 };
                 
                 items.Add(scrollableListItem);
+                */
+                
+                //LoadWorld(worldDirInfo);
+
+                //break;
+                
+                worldEntries.Add(new PersistentWorldMenuUI.PersistentWorldUIEntry(worldDirInfo));
             }
         }
 
         private void LoadPossibleConversions()
         {
+            /*
             foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
             {
                 var scrollableListItem = new ScrollableListItem();
@@ -147,11 +142,72 @@ namespace PersistentWorlds.UI
                 
                 items.Add(scrollableListItem);
             }
+            */
+
+            var names = new List<string>();
+            worldEntries.Do(entry => names.Add(((PersistentWorldMenuUI.PersistentWorldUIEntry) entry).Name));
+            var namesArray = names.ToArray();
+            
+            foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
+            {
+                if (SaveFileUtils.HasPossibleSameWorldName(namesArray, allSavedGameFile.FullName))
+                    continue;
+                
+                saveGameEntries.Add(new PersistentWorldMenuUI.SaveGameUIEntry(allSavedGameFile.FullName));
+            }
+            
+            names.Clear();
         }
 
         public override void DoWindowContents(Rect inRect)
         {
-            ScrollableListUI.DrawList(ref inRect, ref this.scrollPosition, ref this.items);
+            PersistentWorldMenuUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
+        }
+
+        private void LoadWorld(string worldDir)
+        {
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                normalClose = false;
+                        
+                var previousGame = Current.Game;
+
+                var persistentWorld = new PersistentWorld();
+                persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, worldDir);
+
+                // TODO: HMM
+                PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
+                        
+                persistentWorld.LoadSaver.LoadWorld();
+                        
+                Current.Game = previousGame;
+                        
+                this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};
+                this.DoNext();
+            }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
+        }
+        
+        private void DeleteWorld(string worldDir)
+        {
+            
+        }
+        
+        private void ConvertWorld(string filePath)
+        {
+            normalClose = false;
+
+            var prevGame = Current.Game; // Fix UIRoot_Entry error.
+
+            var persistentWorld = new PersistentWorld();
+
+            Current.Game = prevGame; // Fix UIRoot_Entry error.
+                    
+            persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, filePath)
+                {Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting};
+                    
+            PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
+                    
+            GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(filePath));
         }
         #endregion
     }
