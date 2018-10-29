@@ -26,158 +26,144 @@ namespace PersistentWorlds.UI
         /// <param name="margin"></param>
         /// <param name="colonies"></param>
         /// <param name="load"></param>
+        
+        // 2.0
         public static void DrawColoniesList(ref Rect inRect, float margin, Vector2 closeButtonSize,
             List<PersistentColony> colonies, Action<int> load, Action newColony, Action<int> delete)
         {
             const int perRow = 3;
             var gap = (int) margin;
 
-            inRect.width += gap;
-            
-            var colonyBoxWidth = (inRect.width - gap * perRow) / perRow;
-            
-            var viewRect = new Rect(0, 0, inRect.width - gap, (Mathf.Ceil((float) (colonies.Count + 1) / perRow)) * colonyBoxWidth + (colonies.Count / perRow) * gap);
-            var outRect = new Rect(inRect.AtZero());
-            outRect.height -= closeButtonSize.y + margin;
-            
-            GUI.BeginGroup(inRect);
-            
-            Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-
-            var i = 0;
-            
-            for (var j = 0; j < colonies.Count; j++)
-            {
-                var colony = colonies[j];
-                
-                if (colony?.ColonyData == null || (colony.ColonyData.Leader != null && colony.ColonyData.Leader.LoadingTexture)) continue;
-
-                var y = colonyBoxWidth * Mathf.Floor((float) i / perRow) + (i / perRow) * gap;
-                
-                var boxRect = new Rect((colonyBoxWidth * (i % perRow)) + (i % perRow) * gap, y, colonyBoxWidth,
-                    colonyBoxWidth);
-                
-                Widgets.DrawAltRect(boxRect);
-                
-                // Delete button.
-                var deleteSize = boxRect.width / 8;
-                var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize, deleteSize);
-
-                // Draw delete button first.
-                if (Widgets.ButtonImage(deleteRect, DeleteX))
+            UITools.DrawBoxGridView(out var viewRect, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
+                (i, boxRect) =>
                 {
-                    delete(i);
-                }
+                    if (i >= colonies.Count) return;
+
+                    var colony = colonies[i];
+
+                    if (colony?.ColonyData == null ||
+                        (colony.ColonyData.Leader != null && colony.ColonyData.Leader.LoadingTexture)) return;
+
+                    Widgets.DrawAltRect(boxRect);
                 
-                TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
+                    // Delete button.
+                    var deleteSize = boxRect.width / 8;
+                    var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize, deleteSize);
 
-                Widgets.DrawHighlightIfMouseover(boxRect);
-
-                // Draw whole box button second.
-                if (Widgets.ButtonInvisible(boxRect))
-                {
-                    load(j);
-                }
+                    // Draw delete button first.
+                    if (Widgets.ButtonImage(deleteRect, DeleteX))
+                    {
+                        delete(i);
+                    }
                 
-                var size = boxRect.width * 0.65f;
-                var texture = GetTexture(colony.ColonyData.ColonyFaction);
+                    TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
+
+                    Widgets.DrawHighlightIfMouseover(boxRect);
+
+                    // Draw whole box button second.
+                    if (Widgets.ButtonInvisible(boxRect))
+                    {
+                        load(i);
+                    }
                 
-                if (size >= texture.width)
-                    size = texture.width;
-                
-                var textureRect = new Rect(boxRect.x + margin, boxRect.y + boxRect.height / 2 - size / 2, size, size);
-
-                Rect leaderRect;
-                
-                if ((object) colony.ColonyData.Leader?.Texture != null)
-                {
-                    var leaderPortrait = colony.ColonyData.Leader.Texture;
-
-                    leaderRect = new Rect(boxRect.x + boxRect.width * 0.56f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
-                        leaderPortrait.height);
-                    
-                    GUI.DrawTexture(leaderRect, leaderPortrait);
-
-                    TooltipHandler.TipRegion(leaderRect,
-                        "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name
-                            .ToStringFull));
-                }
-                else
-                {
-                    leaderRect = new Rect(boxRect.x + boxRect.width / 2 + margin, boxRect.y + margin,
-                        boxRect.width - boxRect.width * 0.68f,
-                        boxRect.height);
-
+                    var size = boxRect.width * 0.65f;
+                    var texture = GetTexture(colony.ColonyData.ColonyFaction);
+                        
+                    if (size >= texture.width)
+                        size = texture.width;
+                        
+                    var textureRect = new Rect(boxRect.x + margin, boxRect.y + boxRect.height / 2 - size / 2, size, size);
+        
+                    Rect leaderRect;
+                        
+                    if ((object) colony.ColonyData.Leader?.Texture != null)
+                    {
+                        var leaderPortrait = colony.ColonyData.Leader.Texture;
+        
+                        leaderRect = new Rect(boxRect.x + boxRect.width * 0.56f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
+                            leaderPortrait.height);
+                            
+                        GUI.DrawTexture(leaderRect, leaderPortrait);
+        
+                        TooltipHandler.TipRegion(leaderRect,
+                            "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name
+                                .ToStringFull));
+                    }
+                    else
+                    {
+                        leaderRect = new Rect(boxRect.x + boxRect.width / 2 + margin, boxRect.y + margin,
+                            boxRect.width - boxRect.width * 0.68f,
+                            boxRect.height);
+        
+                        Text.Font = GameFont.Tiny;
+                        Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
+                    }
+    
+                    GUI.color = colony.ColonyData.Color;
+                    GUI.DrawTexture(textureRect, texture);
+                    GUI.color = Color.white;
+    
+                    const float nameMargin = 4f;
+    
+                    var colonyNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
+                        boxRect.width - nameMargin - deleteSize,
+                        textureRect.y - boxRect.y);
+    
+                    Text.Font = GameFont.Small;
+    
+                    if (!ScrollPositions.ContainsKey(colony))
+                    {
+                        ScrollPositions.Add(colony, new Vector2());
+                    }
+    
+                    var colonyScrollPosition = ScrollPositions[colony];
+    
                     Text.Font = GameFont.Tiny;
-                    Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
-                }
-
-                GUI.color = colony.ColonyData.Color;
-                GUI.DrawTexture(textureRect, texture);
-                GUI.color = Color.white;
-
-                const float nameMargin = 4f;
-
-                var colonyNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
-                    boxRect.width - nameMargin - deleteSize,
-                    textureRect.y - boxRect.y);
-
-                Text.Font = GameFont.Small;
-
-                if (!ScrollPositions.ContainsKey(colony))
-                {
-                    ScrollPositions.Add(colony, new Vector2());
-                }
-
-                var colonyScrollPosition = ScrollPositions[colony];
-
-                Text.Font = GameFont.Tiny;
-
-                WidgetExtensions.LabelScrollable(colonyNameRect, colony.ColonyData.ColonyFaction.Name,
-                    ref colonyScrollPosition, false, true, false);
-                Text.Font = GameFont.Small;
+    
+                    WidgetExtensions.LabelScrollable(colonyNameRect, colony.ColonyData.ColonyFaction.Name,
+                        ref colonyScrollPosition, false, true, false);
+                    Text.Font = GameFont.Small;
+                    
+                    ScrollPositions[colony] = colonyScrollPosition;
                 
-                ScrollPositions[colony] = colonyScrollPosition;
-                
-                i++;
-            }
-
-            /*
-             * New Colony Button
-             */
-
-            {
-                var y = colonyBoxWidth * Mathf.Floor((float) colonies.Count / perRow) +
-                         (colonies.Count / perRow) * gap;
-
-                var boxRect = new Rect((colonyBoxWidth * (colonies.Count % perRow)) + (colonies.Count % perRow) * gap,
-                    y, colonyBoxWidth,
-                    colonyBoxWidth);
-
-                Widgets.DrawHighlightIfMouseover(boxRect);
-                Widgets.DrawAltRect(boxRect);
-
-                if (Widgets.ButtonInvisible(boxRect))
+                    //i++;
+                }, colonies.Count + 1, (width, height) =>
                 {
-                    newColony();
-                }
+                    /*
+                     * New Colony Button
+                     */
+                    
+                    var y = width * Mathf.Floor((float) colonies.Count / perRow) +
+                            (colonies.Count / perRow) * gap;
 
-                TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
+                    var boxRect = new Rect((width * (colonies.Count % perRow)) + (colonies.Count % perRow) * gap,
+                        y, width,
+                        width);
 
-                Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
-                    new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white,
-                    1f);
+                    Widgets.DrawHighlightIfMouseover(boxRect);
+                    Widgets.DrawAltRect(boxRect);
 
-                Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
-                    new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white,
-                    1f);
-            }
+                    if (Widgets.ButtonInvisible(boxRect))
+                    {
+                        newColony();
+                    }
 
-            Widgets.EndScrollView();
-            
-            GUI.EndGroup();
+                    TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
+
+                    Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
+                        new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white,
+                        1f);
+
+                    Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
+                        new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white,
+                        1f);
+                });
+
+            inRect.width += gap;
+            outRect.height -= closeButtonSize.y + margin;
         }
-
+        
+        
         /// <summary>
         /// Draw in-game colonies tab.
         /// </summary>
