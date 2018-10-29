@@ -6,7 +6,7 @@ namespace PersistentWorlds.UI
 {
     public static class UITools
     {
-        public static void DrawBoxGridView(out Rect viewRect, out Rect outRect, ref Rect inRect, ref Vector2 scrollPosition, int perRow, int gap, Action<int, Rect> iterateAction, int iteratorSize, Action<float, float> endAction = null, int boxHeightDivisor = 1)
+        public static void DrawBoxGridView(out Rect viewRect, out Rect outRect, ref Rect inRect, ref Vector2 scrollPosition, int perRow, int gap, Func<int, Rect, bool> iterateFunction, int iteratorSize, Action<float, float> endAction = null, int boxHeightDivisor = 1)
         {
             var boxWidth = (inRect.width - gap * perRow) / perRow;
             var boxHeight = boxWidth;
@@ -23,13 +23,18 @@ namespace PersistentWorlds.UI
             
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
 
-            for (var i = 0; i < iteratorSize; i++)
+            var i = 0;
+            
+            for (var j = 0; j < iteratorSize; j++)
             {
                 var y = boxHeight * Mathf.Floor((float) i / perRow) + (i / perRow) * gap;
                 
                 var boxRect = new Rect((boxWidth * (i % perRow)) + (i % perRow) * gap, y, boxWidth, boxHeight);
 
-                iterateAction?.Invoke(i, boxRect);
+                var result = iterateFunction?.Invoke(j, boxRect);
+
+                if(result != null && result.Value)
+                    i++;
             }
 
             endAction?.Invoke(boxWidth, boxHeight);

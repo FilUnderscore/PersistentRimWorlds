@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Harmony;
 using PersistentWorlds;
 using PersistentWorlds.Logic;
 using RimWorld;
@@ -143,15 +144,24 @@ namespace PersistentWorlds.UI
             }
             */
 
+            var names = new List<string>();
+            worldEntries.Do(entry => names.Add(((PersistentWorldMenuUI.PersistentWorldUIEntry) entry).Name));
+            var namesArray = names.ToArray();
+            
             foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
             {
+                if (SaveFileUtils.HasPossibleSameWorldName(namesArray, allSavedGameFile.FullName))
+                    continue;
+                
                 saveGameEntries.Add(new PersistentWorldMenuUI.SaveGameUIEntry(allSavedGameFile.FullName));
             }
+            
+            names.Clear();
         }
 
         public override void DoWindowContents(Rect inRect)
         {
-            PersistentWorldMenuUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.ConvertWorld);
+            PersistentWorldMenuUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
         }
 
         private void LoadWorld(string worldDir)
@@ -176,7 +186,12 @@ namespace PersistentWorlds.UI
                 this.DoNext();
             }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
         }
-
+        
+        private void DeleteWorld(string worldDir)
+        {
+            
+        }
+        
         private void ConvertWorld(string filePath)
         {
             normalClose = false;

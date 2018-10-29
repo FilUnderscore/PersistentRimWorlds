@@ -39,12 +39,12 @@ namespace PersistentWorlds.UI
             UITools.DrawBoxGridView(out _, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
                 {
-                    if (i >= colonies.Count) return;
+                    if (i >= colonies.Count) return false;
 
                     var colony = colonies[i];
 
                     if (colony?.ColonyData == null ||
-                        (colony.ColonyData.Leader != null && colony.ColonyData.Leader.LoadingTexture)) return;
+                        (colony.ColonyData.Leader != null && colony.ColonyData.Leader.LoadingTexture)) return false;
 
                     Widgets.DrawAltRect(boxRect);
                 
@@ -128,7 +128,7 @@ namespace PersistentWorlds.UI
                     
                     ScrollPositions[colony] = colonyScrollPosition;
                 
-                    //i++;
+                    return true;
                 }, colonies.Count + 1, (width, height) =>
                 {
                     /*
@@ -304,7 +304,9 @@ namespace PersistentWorlds.UI
                         false);
                     Text.Font = GameFont.Small;
                     
-                    ScrollPositions[colony] = colonyScrollPosition; 
+                    ScrollPositions[colony] = colonyScrollPosition;
+
+                    return true;
                 }, colonies.Count);
         }
 
