@@ -6,7 +6,7 @@ namespace PersistentWorlds.UI
 {
     public static class UITools
     {
-        public static void DrawBoxGridView(out Rect viewRect, out Rect outRect, ref Rect inRect, ref Vector2 scrollPosition, int perRow, int gap, Action<int, Rect> iterateAction, int iteratorSize, Action<float, float> endAction, int boxHeightDivisor = 1)
+        public static void DrawBoxGridView(out Rect viewRect, out Rect outRect, ref Rect inRect, ref Vector2 scrollPosition, int perRow, int gap, Action<int, Rect> iterateAction, int iteratorSize, Action<float, float> endAction = null, int boxHeightDivisor = 1)
         {
             var boxWidth = (inRect.width - gap * perRow) / perRow;
             var boxHeight = boxWidth;
