@@ -44,6 +44,8 @@ namespace PersistentWorlds.Logic
             
             this.Game.LoadGame();
             
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.FinalizingGame".Translate());
+            
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
             
@@ -79,6 +81,8 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingGame".Translate());
+            
             Colony.GameData.SetGame();
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
@@ -106,6 +110,8 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingMaps".Translate());
+            
             var maps = this.LoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
             maps.Do(Current.Game.AddMap);
             
@@ -118,7 +124,7 @@ namespace PersistentWorlds.Logic
 
             int num = -1;
 
-            num = Colony.GameData.currentMapIndex;
+            num = Colony.GameData.CurrentMapIndex;
             if (num < 0 && this.Game.Maps.Any<Map>())
             {
                 Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
@@ -172,7 +178,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            Find.CameraDriver.SetRootPosAndSize(this.Colony.GameData.camRootPos, this.Colony.GameData.desiredSize);
+            Find.CameraDriver.SetRootPosAndSize(this.Colony.GameData.CamRootPos, this.Colony.GameData.DesiredSize);
         }
 
         private void ExposeGameWorldData()

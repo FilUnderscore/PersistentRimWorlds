@@ -13,6 +13,7 @@ namespace PersistentWorlds.UI
     [StaticConstructorOnStartup]
     internal static class PersistentWorldMenuUI
     {
+        #region Fields
         private static readonly Texture2D OpenFolder = ContentFinder<Texture2D>.Get("UI/OpenFolder");
         private static readonly Texture2D ConvertFile = ContentFinder<Texture2D>.Get("UI/ConvertFile");
         
@@ -21,7 +22,9 @@ namespace PersistentWorlds.UI
         private static readonly Dictionary<UIEntry, Vector2> ScrollPositions = new Dictionary<UIEntry, Vector2>();
         
         private static Vector2 scrollPosition;
-        
+        #endregion
+            
+        #region Methods
         public static void DrawWorldList(ref Rect inRect, float margin, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
         {
             const int perRow = 3;
@@ -121,7 +124,7 @@ namespace PersistentWorlds.UI
                     }
 
                     return true;
-                }, worldEntries.Count + saveGameEntries.Count, null);
+                }, worldEntries.Count + saveGameEntries.Count);
         }
 
         public static void Reset()
@@ -129,28 +132,26 @@ namespace PersistentWorlds.UI
             scrollPosition = new Vector2();
             ScrollPositions.Clear();
         }
+        #endregion
 
+        #region Classes
         internal abstract class UIEntry
         {
-            private string path;
+            public string Path { get; }
 
-            public string Path => path;
-            
             protected UIEntry(string path)
             {
-                this.path = path;
+                this.Path = path;
             }
         }
 
         internal class PersistentWorldUIEntry : UIEntry
         {
-            private string name;
+            public string Name { get; }
 
-            public string Name => name;
-
-            public PersistentWorldUIEntry(string path, string name) : base(path)
+            private PersistentWorldUIEntry(string path, string name) : base(path)
             {
-                this.name = name;
+                this.Name = name;
             }
 
             public PersistentWorldUIEntry(DirectoryInfo directoryInfo) : this(directoryInfo.FullName, directoryInfo.Name)
@@ -168,5 +169,6 @@ namespace PersistentWorlds.UI
             {
             }
         }
+        #endregion
     }
 }

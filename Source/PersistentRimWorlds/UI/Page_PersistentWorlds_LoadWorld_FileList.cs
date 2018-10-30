@@ -184,7 +184,7 @@ namespace PersistentWorlds.UI
                         
                 this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};
                 this.DoNext();
-            }, "FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate(), true, null);
+            }, "FilUnderscore.PersistentRimWorlds.LoadingWorld", true, null);
         }
         
         private void DeleteWorld(string worldDir)

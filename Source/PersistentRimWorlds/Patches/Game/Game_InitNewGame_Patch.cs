@@ -102,7 +102,7 @@ namespace PersistentWorlds.Patches
             colony.ColonyData.UniqueId = ++PersistentWorldManager.GetInstance().PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);
             
-            colony.GameData.mapSize = __instance.InitData.mapSize;
+            colony.GameData.MapSize = __instance.InitData.mapSize;
             
             game.InitData = null;
             

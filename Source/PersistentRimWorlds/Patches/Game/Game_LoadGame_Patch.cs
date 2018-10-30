@@ -19,8 +19,6 @@ namespace PersistentWorlds.Patches
                 
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
                 
-            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate());
-                
             // Unload.
             MemoryUtility.UnloadUnusedUnityAssets();
             Current.ProgramState = ProgramState.MapInitializing;

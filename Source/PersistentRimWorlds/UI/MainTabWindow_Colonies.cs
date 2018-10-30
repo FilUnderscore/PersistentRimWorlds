@@ -57,20 +57,30 @@ namespace PersistentWorlds.UI
 
             persistentWorld.Game.World.renderer.wantedMode = WorldRenderMode.None;
 
+            var previousColony = persistentWorld.Colony;
+            
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.LoadSaver.SaveWorldData();
                 
                 persistentWorld.ConvertCurrentGameWorldObjects();
-
-                var previousColony = persistentWorld.Colony;
+            }, "FilUnderscore.PersistentRimWorlds.SavingWorld", false, null);
+            
+            LongEventHandler.QueueLongEvent(delegate
+            {
                 persistentWorld.SaveColony(previousColony);
-                
+            }, "FilUnderscore.PersistentRimWorlds.SavingColony", false, null);
+            
+            LongEventHandler.QueueLongEvent(delegate
+            {
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
                             
                 persistentWorld.SetPlayerFactionVarsToColonyFaction();
-
+            }, "FilUnderscore.PersistentRimWorlds.LoadingColony", true, null);
+            
+            LongEventHandler.QueueLongEvent(delegate
+            {
                 // TODO: Figure out how to load asynchronously to not lock up game.
                 var maps = DynamicMapLoader.LoadColonyMaps(colony);
                 Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
@@ -81,8 +91,8 @@ namespace PersistentWorlds.UI
                 
                 persistentWorld.CheckAndSetColonyData();
                             
-                Find.CameraDriver.SetRootPosAndSize(colony.GameData.camRootPos, colony.GameData.desiredSize);   
-            }, "FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps", false, null);
+                Find.CameraDriver.SetRootPosAndSize(colony.GameData.CamRootPos, colony.GameData.DesiredSize);   
+            }, "FilUnderscore.PersistentRimWorlds.LoadingMaps", false, null);
         }
         #endregion
     }

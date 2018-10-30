@@ -12,8 +12,8 @@ namespace PersistentWorlds.Logic
     public class PersistentColonyGameData : IExposable
     {
         #region Fields
-        public sbyte currentMapIndex;
-        public int mapSize;
+        public sbyte CurrentMapIndex;
+        public int MapSize;
         
         private GameInfo info = new GameInfo();
         private GameRules rules = new GameRules();
@@ -38,16 +38,16 @@ namespace PersistentWorlds.Logic
         /*
          * Camera Driver.
          */
-        public Vector3 camRootPos;
-        public float desiredSize;
+        public Vector3 CamRootPos;
+        public float DesiredSize;
         #endregion
         
         #region Methods
         public void ExposeData()
         {
-            Scribe_Values.Look<sbyte>(ref currentMapIndex, "currentMapIndex", -1);
+            Scribe_Values.Look<sbyte>(ref CurrentMapIndex, "currentMapIndex", -1);
 
-            Scribe_Values.Look<int>(ref mapSize, "mapSize");
+            Scribe_Values.Look<int>(ref MapSize, "mapSize");
             
             Scribe_Deep.Look(ref info, "info");
 
@@ -87,14 +87,14 @@ namespace PersistentWorlds.Logic
             
             Scribe_Collections.Look(ref this.gameComponents, "components", LookMode.Deep, new object[] { Current.Game });
             
-            Scribe_Values.Look(ref this.camRootPos, "camRootPos");
-            Scribe_Values.Look(ref this.desiredSize, "desiredSize");
+            Scribe_Values.Look(ref this.CamRootPos, "camRootPos");
+            Scribe_Values.Look(ref this.DesiredSize, "desiredSize");
         }
 
         public void SetGame()
         {
-            Current.Game.currentMapIndex = this.currentMapIndex;
-            Current.Game.World.info.initialMapSize = new IntVec3(mapSize, 1, mapSize);
+            Current.Game.currentMapIndex = this.CurrentMapIndex;
+            Current.Game.World.info.initialMapSize = new IntVec3(MapSize, 1, MapSize);
             
             AccessTools.Field(typeof(Game), "info").SetValue(Current.Game, this.info);
             AccessTools.Field(typeof(Game), "rules").SetValue(Current.Game, this.rules);
@@ -128,8 +128,8 @@ namespace PersistentWorlds.Logic
             
             var persistentColonyGameData = new PersistentColonyGameData
             {
-                currentMapIndex = game.currentMapIndex,
-                mapSize = game.World.info.initialMapSize.x,
+                CurrentMapIndex = game.currentMapIndex,
+                MapSize = game.World.info.initialMapSize.x,
                 info = game.Info,
                 scenario = game.Scenario,
                 playSettings = game.playSettings,
@@ -148,8 +148,8 @@ namespace PersistentWorlds.Logic
                 tutor = game.tutor,
                 dateNotifier = game.dateNotifier,
                 gameComponents = game.components,
-                camRootPos = cameraDriverRootPos,
-                desiredSize = cameraDriverDesiredSize
+                CamRootPos = cameraDriverRootPos,
+                DesiredSize = cameraDriverDesiredSize
             };
 
             return persistentColonyGameData;
@@ -158,8 +158,8 @@ namespace PersistentWorlds.Logic
         public override string ToString()
         {
             return $"{nameof(PersistentColonyGameData)} " +
-                   $"({nameof(currentMapIndex)}={currentMapIndex}, " +
-                   $"{nameof(mapSize)}={mapSize}, " +
+                   $"({nameof(CurrentMapIndex)}={CurrentMapIndex}, " +
+                   $"{nameof(MapSize)}={MapSize}, " +
                    $"{nameof(info)}={info}, " +
                    $"{nameof(rules)}={rules}, " +
                    $"{nameof(scenario)}={scenario}, " +
@@ -179,8 +179,8 @@ namespace PersistentWorlds.Logic
                    $"{nameof(tutor)}={tutor}, " +
                    $"{nameof(dateNotifier)}={dateNotifier}, " +
                    $"{nameof(gameComponents)}={gameComponents.ToDebugString()}, " +
-                   $"{nameof(camRootPos)}={camRootPos}, " +
-                   $"{nameof(desiredSize)}={desiredSize})";
+                   $"{nameof(CamRootPos)}={CamRootPos}, " +
+                   $"{nameof(DesiredSize)}={DesiredSize})";
         }
         #endregion
     }
