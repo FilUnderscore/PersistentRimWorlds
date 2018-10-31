@@ -271,7 +271,7 @@ namespace PersistentWorlds.Logic
             
             foreach (var settlement in this.Game.World.worldObjects.Settlements)
             {
-                if (!settlement.Faction.IsPlayer)
+                if (settlement.Faction != Faction.OfPlayer)
                 {
                     continue;
                 }
