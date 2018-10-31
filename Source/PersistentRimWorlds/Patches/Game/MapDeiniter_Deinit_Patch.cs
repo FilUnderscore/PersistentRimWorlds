@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,21 @@ namespace PersistentWorlds.Patches
             AccessTools.Method(typeof(DynamicMapUnloader), "UnloadPawnsFromWorld");
         #endregion
         
+        #region Constructors
+        static MapDeiniter_Deinit_Patch()
+        {
+            if(PassPawnsToWorldMethod == null)
+                throw new NullReferenceException($"{nameof(PassPawnsToWorldMethod)} is null.");
+            
+            if(UnloadingField == null)
+                throw new NullReferenceException($"{nameof(UnloadingField)} is null.");
+            
+            if(UnloadPawnsFromWorld == null)
+                throw new NullReferenceException($"{nameof(UnloadPawnsFromWorld)} is null.");
+        }
+        #endregion
+        
+        #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)
         {
             var codes = new List<CodeInstruction>(instr);
@@ -55,5 +71,6 @@ namespace PersistentWorlds.Patches
             
             return codes.AsEnumerable();
         }
+        #endregion
     }
 }

@@ -13,6 +13,7 @@ namespace PersistentWorlds.UI
     [StaticConstructorOnStartup]
     internal static class PersistentWorldMenuUI
     {
+        #region Fields
         private static readonly Texture2D OpenFolder = ContentFinder<Texture2D>.Get("UI/OpenFolder");
         private static readonly Texture2D ConvertFile = ContentFinder<Texture2D>.Get("UI/ConvertFile");
         
@@ -21,21 +22,28 @@ namespace PersistentWorlds.UI
         private static readonly Dictionary<UIEntry, Vector2> ScrollPositions = new Dictionary<UIEntry, Vector2>();
         
         private static Vector2 scrollPosition;
-        
+        #endregion
+            
+        #region Methods
         public static void DrawWorldList(ref Rect inRect, float margin, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
             
-            UITools.DrawBoxGridView(out var viewRect, out var outRect, ref inRect, ref scrollPosition, perRow, gap,
+            UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
                 {
                     var selectedList = i >= worldEntries.Count ? saveGameEntries : worldEntries;
                     i = i >= worldEntries.Count ? i - worldEntries.Count : i;
+
+                    var isWorldEntries = selectedList == worldEntries;
+                    var isSaveGameEntries = selectedList == saveGameEntries;
+
+                    var currentItem = selectedList[i];
                     
                     Widgets.DrawAltRect(boxRect);
 
-                    if (selectedList == worldEntries)
+                    if (isWorldEntries)
                     {
                         var deleteSize = boxRect.width / 8;
 
@@ -44,84 +52,49 @@ namespace PersistentWorlds.UI
 
                         if (Widgets.ButtonImage(deleteRect, DeleteX))
                         {
-                            deleteWorld(selectedList[i].Path);
+                            deleteWorld(currentItem.Path);
                         }
-                        
-                        TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate());
 
-                        var sizeWidth = Mathf.Clamp(boxRect.width * 0.3f, 0, OpenFolder.width);
-                        var sizeHeight = Mathf.Clamp(boxRect.height * 0.2f, 0, OpenFolder.height);
+                        TooltipHandler.TipRegion(deleteRect,
+                            "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate());
 
-                        var textureRect = new Rect(boxRect.x + boxRect.width / 2 - sizeWidth / 2, boxRect.y + boxRect.height / 2 - sizeHeight / 2, sizeWidth,
-                            sizeHeight);
-
-                        GUI.DrawTexture(textureRect, OpenFolder);
+                        DrawTexture(boxRect, OpenFolder, out var textureRect, 0.3f, 0.2f);
                         
                         const float nameMargin = 4f;
-                        var worldNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin, boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
 
-                        if (!ScrollPositions.ContainsKey(selectedList[i]))
-                        {
-                            ScrollPositions.Add(selectedList[i], new Vector2());
-                        }
+                        var worldNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
+                            boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
 
-                        var worldScrollPosition = ScrollPositions[selectedList[i]];
-                        
-                        Text.Font = GameFont.Small;
-                        
-                        WidgetExtensions.LabelScrollable(worldNameRect, ((PersistentWorldUIEntry)selectedList[i]).Name, ref worldScrollPosition, false, true, false);
-
-                        Text.Font = GameFont.Small;
-
-                        ScrollPositions[selectedList[i]] = worldScrollPosition;
+                        DrawLabel(worldNameRect, ((PersistentWorldUIEntry) currentItem).Name, currentItem);
                     }
-                    else if(selectedList == saveGameEntries)
+                    else if(isSaveGameEntries)
                     {
-                        var sizeWidth = Mathf.Clamp(boxRect.width * 0.48f, 0, ConvertFile.width);
-                        var sizeHeight = Mathf.Clamp(boxRect.height * 0.42f, 0, ConvertFile.height);
-
-                        var textureRect = new Rect(boxRect.x + boxRect.width / 2 - sizeWidth / 2,
-                            boxRect.y + boxRect.height / 2 - sizeHeight / 2, sizeWidth, sizeHeight);
-                        
-                        GUI.DrawTexture(textureRect, ConvertFile);
+                        DrawTexture(boxRect, ConvertFile, out var textureRect, 0.48f, 0.42f);
 
                         const float nameMargin = 4f;
 
                         var saveNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
                             boxRect.width - nameMargin, textureRect.y - boxRect.y);
 
-                        if (!ScrollPositions.ContainsKey(selectedList[i]))
-                        {
-                            ScrollPositions.Add(selectedList[i], new Vector2());
-                        }
-
-                        var saveScrollPosition = ScrollPositions[selectedList[i]];
-
-                        Text.Font = GameFont.Small;
-                        
-                        WidgetExtensions.LabelScrollable(saveNameRect, Path.GetFileNameWithoutExtension(((SaveGameUIEntry) selectedList[i]).Path), ref saveScrollPosition, false, true, false);
-
-                        Text.Font = GameFont.Small;
-
-                        ScrollPositions[selectedList[i]] = saveScrollPosition;
+                        DrawLabel(saveNameRect, Path.GetFileNameWithoutExtension(((SaveGameUIEntry) currentItem).Path),
+                            currentItem);
                     }
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
-                    if (Widgets.ButtonInvisible(boxRect))
+                    if (!Widgets.ButtonInvisible(boxRect)) return true;
+
+                    if (isWorldEntries)
                     {
-                        if (selectedList == worldEntries)
-                        {
-                            loadWorld(selectedList[i].Path);
-                        }
-                        else if(selectedList == saveGameEntries)
-                        {
-                            convertWorld(selectedList[i].Path);
-                        }
+                        loadWorld(selectedList[i].Path);
+                    }
+                    else if(isSaveGameEntries)
+                    {
+                        convertWorld(selectedList[i].Path);
                     }
 
                     return true;
-                }, worldEntries.Count + saveGameEntries.Count, null);
+                }, worldEntries.Count + saveGameEntries.Count);
         }
 
         public static void Reset()
@@ -130,27 +103,54 @@ namespace PersistentWorlds.UI
             ScrollPositions.Clear();
         }
 
+        private static void DrawLabel(Rect rect, string label, UIEntry item)
+        {
+            if (!ScrollPositions.ContainsKey(item))
+            {
+                ScrollPositions.Add(item, new Vector2());
+            }
+
+            var itemScrollPosition = ScrollPositions[item];
+
+            Text.Font = GameFont.Small;
+            
+            WidgetExtensions.LabelScrollable(rect, label, ref itemScrollPosition, false, true, false);
+
+            Text.Font = GameFont.Small;
+
+            ScrollPositions[item] = scrollPosition;
+        }
+
+        private static void DrawTexture(Rect rect, Texture texture, out Rect textureRect, float widthMultiplier, float heightMultiplier)
+        {
+            var sizeWidth = Mathf.Clamp(rect.width * widthMultiplier, 0, texture.width);
+            var sizeHeight = Mathf.Clamp(rect.height * heightMultiplier, 0, texture.height);
+
+            textureRect = new Rect(rect.x + rect.width / 2 - sizeWidth / 2,
+                rect.y + rect.height / 2 - sizeHeight / 2, sizeWidth, sizeHeight);
+                        
+            GUI.DrawTexture(textureRect, texture);
+        }
+        #endregion
+
+        #region Classes
         internal abstract class UIEntry
         {
-            private string path;
+            public string Path { get; }
 
-            public string Path => path;
-            
             protected UIEntry(string path)
             {
-                this.path = path;
+                this.Path = path;
             }
         }
 
         internal class PersistentWorldUIEntry : UIEntry
         {
-            private string name;
+            public string Name { get; }
 
-            public string Name => name;
-
-            public PersistentWorldUIEntry(string path, string name) : base(path)
+            private PersistentWorldUIEntry(string path, string name) : base(path)
             {
-                this.name = name;
+                this.Name = name;
             }
 
             public PersistentWorldUIEntry(DirectoryInfo directoryInfo) : this(directoryInfo.FullName, directoryInfo.Name)
@@ -168,5 +168,6 @@ namespace PersistentWorlds.UI
             {
             }
         }
+        #endregion
     }
 }

@@ -80,8 +80,7 @@
     <Compile Include="Patches\PawnNameColorUtility_PawnNameColorOf_Patch.cs" />
     <Compile Include="Patches\Root_Entry_Start_Patch.cs" />
     <Compile Include="Patches\UI\Dialog_AdvancedGameConfig_DoWindowContents_Patch.cs" />
-    <Compile Include="Patches\UI\Page_SelectScenario_PreClose.cs" />
-    <Compile Include="Patches\UI\Page_SelectStartingSite_Patch.cs" />
+    <Compile Include="Patches\UI\Page_SelectStartingSite_PreOpen_Patch.cs" />
     <Compile Include="Patches\UI\Scenario_GetFirstConfigPage_Patch.cs" />
     <Compile Include="Patches\UI\ScenPart_PlayerFaction_Patch.cs" />
     <Compile Include="PersistentWorldManager.cs" />

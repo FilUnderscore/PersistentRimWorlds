@@ -12,8 +12,8 @@ namespace PersistentWorlds.Logic
         public string UniqueId;
         public Name Name;
 
-        private Vector2 TextureSize;
-        private string TextureBase64;
+        private Vector2 textureSize;
+        private string textureBase64;
         
         public Texture Texture;
         public bool LoadingTexture;
@@ -48,7 +48,7 @@ namespace PersistentWorlds.Logic
                 switch (Texture)
                 {
                     case Texture2D texture2D:
-                        TextureBase64 = Convert.ToBase64String(texture2D.GetRawTextureData());
+                        textureBase64 = Convert.ToBase64String(texture2D.GetRawTextureData());
 
                         break;
                     case RenderTexture renderTexture:
@@ -58,7 +58,7 @@ namespace PersistentWorlds.Logic
                         texture2DRender.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
                         texture2DRender.Apply();
                         
-                        TextureBase64 = Convert.ToBase64String(texture2DRender.GetRawTextureData());
+                        textureBase64 = Convert.ToBase64String(texture2DRender.GetRawTextureData());
                         
                         break;
                     default:
@@ -67,21 +67,21 @@ namespace PersistentWorlds.Logic
                         break;
                 }
                 
-                TextureSize = new Vector2(Texture.width, Texture.height);
+                textureSize = new Vector2(Texture.width, Texture.height);
             }
             
-            Scribe_Values.Look(ref TextureSize, "textureSize");
-            Scribe_Values.Look(ref TextureBase64, "texture");
+            Scribe_Values.Look(ref textureSize, "textureSize");
+            Scribe_Values.Look(ref textureBase64, "texture");
             
-            if (Scribe.mode != LoadSaveMode.LoadingVars || TextureBase64.NullOrEmpty()) return;
+            if (Scribe.mode != LoadSaveMode.LoadingVars || textureBase64.NullOrEmpty()) return;
 
             {
                 LoadingTexture = true;
                 
                 LongEventHandler.QueueLongEvent(delegate
                 {
-                    var texture2D = new Texture2D((int) TextureSize.x, (int) TextureSize.y);
-                    texture2D.LoadRawTextureData(Convert.FromBase64String(TextureBase64));
+                    var texture2D = new Texture2D((int) textureSize.x, (int) textureSize.y);
+                    texture2D.LoadRawTextureData(Convert.FromBase64String(textureBase64));
                     texture2D.Apply();
                     
                     this.Texture = texture2D;

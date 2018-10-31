@@ -30,7 +30,6 @@ namespace PersistentWorlds.UI
         /// <param name="colonies"></param>
         /// <param name="load"></param>
         
-        // 2.0
         public static void DrawColoniesList(ref Rect inRect, float margin, Vector2 closeButtonSize,
             List<PersistentColony> colonies, Action<int> load, Action newColony, Action<int> delete)
         {
@@ -73,63 +72,22 @@ namespace PersistentWorlds.UI
                         load(i);
                     }
                 
-                    var size = boxRect.width * 0.65f;
                     var texture = GetTexture(colony.ColonyData.ColonyFaction);
-                        
-                    if (size >= texture.width)
-                        size = texture.width;
+                    var size = Mathf.Clamp(boxRect.width * 0.65f, 0, texture.width);
                         
                     var textureRect = new Rect(boxRect.x + margin, boxRect.y + boxRect.height / 2 - size / 2, size, size);
-        
-                    Rect leaderRect;
-                        
-                    if ((object) colony.ColonyData.Leader?.Texture != null)
-                    {
-                        var leaderPortrait = colony.ColonyData.Leader.Texture;
-        
-                        leaderRect = new Rect(boxRect.x + boxRect.width * 0.56f, boxRect.y + boxRect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width,
-                            leaderPortrait.height);
-                            
-                        GUI.DrawTexture(leaderRect, leaderPortrait);
-        
-                        TooltipHandler.TipRegion(leaderRect,
-                            "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name
-                                .ToStringFull));
-                    }
-                    else
-                    {
-                        leaderRect = new Rect(boxRect.x + boxRect.width / 2 + margin, boxRect.y + margin,
-                            boxRect.width - boxRect.width * 0.68f,
-                            boxRect.height);
-        
-                        Text.Font = GameFont.Tiny;
-                        Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
-                    }
+                    
+                    DrawTexture(textureRect, texture, colony.ColonyData.Color);
     
-                    GUI.color = colony.ColonyData.Color;
-                    GUI.DrawTexture(textureRect, texture);
-                    GUI.color = Color.white;
-    
+                    DrawLeader(boxRect, colony, margin, 0.56f);
+
                     const float nameMargin = 4f;
     
                     var colonyNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
                         boxRect.width - nameMargin - deleteSize,
                         textureRect.y - boxRect.y);
     
-                    if (!ScrollPositions.ContainsKey(colony))
-                    {
-                        ScrollPositions.Add(colony, new Vector2());
-                    }
-    
-                    var colonyScrollPosition = ScrollPositions[colony];
-    
-                    Text.Font = GameFont.Tiny;
-    
-                    WidgetExtensions.LabelScrollable(colonyNameRect, colony.ColonyData.ColonyFaction.Name,
-                        ref colonyScrollPosition, false, true, false);
-                    Text.Font = GameFont.Small;
-                    
-                    ScrollPositions[colony] = colonyScrollPosition;
+                    DrawNameLabel(colonyNameRect, colony);
                 
                     return true;
                 }, colonies.Count + 1, (width, height) =>
@@ -204,61 +162,10 @@ namespace PersistentWorlds.UI
                         faction = colony.ColonyData.ColonyFaction;
                     }
                     
-                    var size = boxRect.width * 0.65f;
                     var texture = GetTexture(faction);
-                    
-                    if (size >= texture.width)
-                        size = texture.width;
+                    var size = Mathf.Clamp(boxRect.width * 0.65f, 0, texture.width);
                     
                     var textureRect = new Rect(boxRect.x, boxRect.y, size, size);
-    
-                    Rect leaderRect;
-                    
-                    if (colony.ColonyData.Leader != null && colony.ColonyData.Leader.Set && (object) colony.ColonyData.Leader.Texture != null || colony.ColonyData.Leader?.Reference != null)
-                    {
-                        var portraitSize = new Vector2(boxRect.width / 2, boxRect.height);
-    
-                        // Always get a new portrait, if things such as screen size changes or outfit.
-                        if (colony.ColonyData.Leader.Reference != null)
-                        {
-                            colony.ColonyData.Leader.Texture =
-                                PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize);
-                        }
-                        
-                        var leaderPortrait = colony.ColonyData.Leader.Texture;
-                        
-                        leaderRect = new Rect(boxRect.x + boxRect.width * 0.485f, boxRect.y, portraitSize.x,
-                            portraitSize.y);
-    
-                        var canChangeLeader = Equals(colony, persistentWorld.Colony);
-                        
-                        if (canChangeLeader)
-                        {
-                            if (WidgetExtensions.ButtonImage(leaderRect, leaderPortrait, Color.white, GenUI.MouseoverColor))
-                            {
-                                // TODO: Open leader selection dialog if no leader altering mods such as Relations Tab or Psychology is found.
-                                Find.WindowStack.Add(new Dialog_PersistentWorlds_LeaderPawnSelection(colony));
-                            }
-                        }
-                        else
-                        {
-                            GUI.DrawTexture(leaderRect, leaderPortrait);
-                        }
-    
-                        TooltipHandler.TipRegion(leaderRect,
-                            canChangeLeader
-                                ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader".Translate()
-                                : "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name.ToStringFull));
-                    }
-                    else
-                    {
-                        leaderRect = new Rect(boxRect.x + boxRect.width * 0.68f, boxRect.y,
-                            boxRect.width - boxRect.width * 0.68f,
-                            boxRect.height);
-    
-                        Text.Font = GameFont.Tiny;
-                        Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
-                    }
     
                     if (Equals(colony, persistentWorld.Colony))
                     {
@@ -271,9 +178,7 @@ namespace PersistentWorlds.UI
                     }
                     else
                     {
-                        GUI.color = colony.ColonyData.Color;
-                        GUI.DrawTexture(textureRect, texture);
-                        GUI.color = Color.white;
+                        DrawTexture(textureRect, texture, colony.ColonyData.Color);
                         
                         Widgets.DrawHighlightIfMouseover(boxRect);
     
@@ -282,6 +187,8 @@ namespace PersistentWorlds.UI
                             load(i);
                         }
                     }
+                    
+                    DrawDynamicLeader(boxRect, out var leaderRect, colony, persistentWorld, 0.485f);
     
                     GUI.color = Color.white;
     
@@ -292,23 +199,8 @@ namespace PersistentWorlds.UI
                     
                     var colonyNameRect = new Rect(boxRect.x + 4f, textureRect.yMax, boxRect.width - leaderRect.width,
                         boxRect.yMax - textureRect.yMax);
-    
-                    Text.Font = GameFont.Small;
-    
-                    if (!ScrollPositions.ContainsKey(colony))
-                    {
-                        ScrollPositions.Add(colony, new Vector2());
-                    }
-    
-                    var colonyScrollPosition = ScrollPositions[colony];
-    
-                    Text.Font = GameFont.Tiny;
-    
-                    WidgetExtensions.LabelScrollable(colonyNameRect, faction.Name, ref colonyScrollPosition, false, true,
-                        false);
-                    Text.Font = GameFont.Small;
                     
-                    ScrollPositions[colony] = colonyScrollPosition;
+                    DrawNameLabel(colonyNameRect, colony);
 
                     return true;
                 }, colonies.Count);
@@ -358,6 +250,114 @@ namespace PersistentWorlds.UI
         private static Texture2D GetTexture(Faction faction)
         {
             return faction.def.ExpandingIconTexture;
+        }
+
+        private static void DrawNameLabel(Rect rect, PersistentColony colony)
+        {
+            if(!ScrollPositions.ContainsKey(colony))
+                ScrollPositions.Add(colony, new Vector2());
+
+            var labelScrollPosition = ScrollPositions[colony];
+
+            Text.Font = GameFont.Tiny;
+
+            WidgetExtensions.LabelScrollable(rect, colony.ColonyData.ColonyFaction.Name, ref labelScrollPosition, false,
+                true, false);
+            
+            Text.Font = GameFont.Small;
+
+            ScrollPositions[colony] = labelScrollPosition;
+        }
+        
+        private static void DrawLeader(Rect rect, PersistentColony colony, float margin, float widthMultiplier)
+        {
+            Rect leaderRect;
+            
+            if ((object) colony.ColonyData.Leader?.Texture != null)
+            {
+                var leaderPortrait = colony.ColonyData.Leader.Texture;
+
+                leaderRect = new Rect(rect.x + rect.width * widthMultiplier,
+                    rect.y + rect.height / 2 - leaderPortrait.height / 2f, leaderPortrait.width, leaderPortrait.height);
+                
+                GUI.DrawTexture(leaderRect, leaderPortrait);
+
+                TooltipHandler.TipRegion(leaderRect,
+                    "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader.Name
+                        .ToStringFull));
+            }
+            else
+            {
+                leaderRect = new Rect(rect.x + rect.width / 2 + margin, rect.y + margin,
+                    rect.width - rect.width * widthMultiplier - margin, rect.height);
+
+                Text.Font = GameFont.Tiny;
+                
+                Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
+            }
+        }
+
+        private static bool CanChangeLeader(PersistentColony colony, PersistentWorld world)
+        {
+            return Equals(colony, world.Colony);
+        }
+
+        private static void DrawDynamicLeader(Rect rect, out Rect leaderRect, PersistentColony colony, PersistentWorld world,
+            float widthMultiplier)
+        {
+            var portraitSize = new Vector2(rect.width / 2, rect.height);
+            leaderRect = new Rect(rect.x + rect.width * widthMultiplier, rect.y, portraitSize.x, portraitSize.y);;
+
+            if (colony.ColonyData.Leader != null && colony.ColonyData.Leader.Set &&
+                (object) colony.ColonyData.Leader.Texture != null ||
+                colony.ColonyData.Leader?.Reference != null)
+            {
+                if (colony.ColonyData.Leader.Reference != null)
+                {
+                    colony.ColonyData.Leader.Texture =
+                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize);
+                }
+
+                var leaderPortrait = colony.ColonyData.Leader.Texture;
+
+                var canChangeLeader = CanChangeLeader(colony, world);
+
+                if (canChangeLeader)
+                {
+                    if (WidgetExtensions.ButtonImage(leaderRect, leaderPortrait, Color.white, GenUI.MouseoverColor))
+                    {
+                        Find.WindowStack.Add(new Dialog_PersistentWorlds_LeaderPawnSelection(colony));
+                    }
+                }
+                else
+                {
+                    GUI.DrawTexture(leaderRect, leaderPortrait);
+                }
+
+                TooltipHandler.TipRegion(leaderRect,
+                    canChangeLeader
+                        ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader".Translate()
+                        : "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader
+                            .Name.ToStringFull));
+            }
+            else
+            {
+                Text.Font = GameFont.Tiny;
+                
+                Widgets.Label(leaderRect, "FilUnderscore.PersistentRimWorlds.Colony.NoLeader".Translate());
+
+                Text.Font = GameFont.Small;
+            }
+        }
+
+        private static void DrawTexture(Rect rect, Texture texture, Color color)
+        {
+            var previousColor = GUI.color;
+            GUI.color = color;
+            
+            GUI.DrawTexture(rect, texture);
+
+            GUI.color = previousColor;
         }
     }
 }

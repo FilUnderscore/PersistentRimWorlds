@@ -30,6 +30,7 @@ namespace PersistentWorlds.UI
             this.persistentWorld = persistentWorld;
             
             // Load colonies in a separate thread.
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingColonies".Translate());
             new Thread(() => { persistentWorld.LoadSaver.LoadColonies(); }).Start();
             
             this.doCloseButton = true;
@@ -67,6 +68,8 @@ namespace PersistentWorlds.UI
              
             PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
                         
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingColony".Translate());
+            
             this.persistentWorld.LoadSaver.LoadColony(ref colony);
             this.persistentWorld.Colonies[index] = colony;
 
