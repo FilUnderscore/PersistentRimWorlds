@@ -66,7 +66,7 @@ namespace PersistentWorlds.UI
             {
                 persistentWorld.ConvertCurrentGameWorldObjects();
                 
-                persistentWorld.LoadSaver.SaveWorldData();
+                persistentWorld.LoadSaver.SaveWorldData(true);
             }, "FilUnderscore.PersistentRimWorlds.SavingWorld", false, null);
             
             LongEventHandler.QueueLongEvent(delegate
