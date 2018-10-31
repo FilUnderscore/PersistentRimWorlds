@@ -287,7 +287,8 @@ namespace PersistentWorlds.Logic
                 colony.Name = settlement.HasName ? settlement.Name : null;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
-
+                Log.Message("Name: " + colony.PersistentColonyData.ColonyFaction.Name);
+                
                 toAdd.Add(colony);
                 toRemove.Add(settlement);
             }
@@ -610,13 +611,13 @@ namespace PersistentWorlds.Logic
             }
         }
 
-        public void SaveColony(PersistentColony colony)
+        public void SaveColony()
         {
-            var index = this.Colonies.IndexOf(colony);
+            var index = this.Colonies.IndexOf(this.Colony);
             
-            LoadSaver.SaveColonyAndColonyMapsData(ref colony);
+            LoadSaver.SaveColonyAndColonyMapsData(ref this.Colony);
 
-            Colonies[index] = colony;
+            Colonies[index] = this.Colony;
         }
 
         public void UnloadColony(PersistentColony colony)

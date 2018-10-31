@@ -56,19 +56,19 @@ namespace PersistentWorlds.UI
             persistentWorld.Game.World.renderer.wantedMode = WorldRenderMode.None;
 
             var previousColony = persistentWorld.Colony;
-
+            
             LongEventHandler.QueueLongEvent(delegate
             {
-                persistentWorld.SaveColony(previousColony);
-
-                persistentWorld.ConvertCurrentGameWorldObjects();
+                persistentWorld.SaveColony();
             }, "FilUnderscore.PersistentRimWorlds.SavingColony", false, null);
-
+            
             LongEventHandler.QueueLongEvent(delegate
             {
+                persistentWorld.ConvertCurrentGameWorldObjects();
+                
                 persistentWorld.LoadSaver.SaveWorldData();
             }, "FilUnderscore.PersistentRimWorlds.SavingWorld", false, null);
-                        
+            
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.LoadSaver.LoadColony(ref colony);
