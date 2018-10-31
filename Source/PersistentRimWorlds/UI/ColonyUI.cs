@@ -190,10 +190,10 @@ namespace PersistentWorlds.UI
                             load(i);
                         }
                     }
-                    
-                    DrawDynamicLeader(boxRect, out var leaderRect, colony, persistentWorld, 0.485f);
-    
+
                     GUI.color = Color.white;
+
+                    DrawDynamicLeader(boxRect, out var leaderRect, colony, persistentWorld, 0.485f);
     
                     TooltipHandler.TipRegion(textureRect,
                         Equals(colony, persistentWorld.Colony)
