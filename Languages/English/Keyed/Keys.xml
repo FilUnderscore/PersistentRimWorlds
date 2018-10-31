@@ -23,11 +23,16 @@
 	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
 	
 	<!-- Persistent Worlds - Loading -->
-	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading persistent world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
+	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
 	<FilUnderscore.PersistentRimWorlds.LoadingColonies>Loading colonies</FilUnderscore.PersistentRimWorlds.LoadingColonies>
 	<FilUnderscore.PersistentRimWorlds.LoadingColony>Loading colony</FilUnderscore.PersistentRimWorlds.LoadingColony>
 	<FilUnderscore.PersistentRimWorlds.LoadingMaps>Loading maps</FilUnderscore.PersistentRimWorlds.LoadingMaps>
-	<FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps>Loading colony/maps</FilUnderscore.PersistentRimWorlds.LoadingColonyAndMaps>
+	<FilUnderscore.PersistentRimWorlds.LoadingGame>Loading game</FilUnderscore.PersistentRimWorlds.LoadingGame>
+	<FilUnderscore.PersistentRimWorlds.FinalizingGame>Finalizing game</FilUnderscore.PersistentRimWorlds.FinalizingGame>
+	
+	<!-- Persistent Worlds - Saving -->
+	<FilUnderscore.PersistentRimWorlds.SavingWorld>Saving world</FilUnderscore.PersistentRimWorlds.SavingWorld>
+	<FilUnderscore.PersistentRimWorlds.SavingColony>Saving colony</FilUnderscore.PersistentRimWorlds.SavingColony>
 	
 	<!-- Base Resettle Command -->
 	<FilUnderscore.PersistentRimWorlds.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.BaseResettle>

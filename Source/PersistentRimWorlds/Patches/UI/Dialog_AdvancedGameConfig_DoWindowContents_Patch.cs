@@ -25,6 +25,20 @@ namespace PersistentWorlds.Patches.UI
             AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
         #endregion
         
+        #region Constructors
+        static Dialog_AdvancedGameConfig_DoWindowContents_Patch()
+        {
+            if(DisposeMethod == null)
+                throw new NullReferenceException($"{nameof(DisposeMethod)} is null.");
+            
+            if(GetInstanceMethod == null)
+                throw new NullReferenceException($"{nameof(GetInstanceMethod)} is null.");
+            
+            if(PersistentWorldNotNullMethod == null)
+                throw new NullReferenceException($"{nameof(PersistentWorldNotNullMethod)} is null.");
+        }
+        #endregion
+        
         #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
         {

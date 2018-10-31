@@ -21,11 +21,23 @@ namespace PersistentWorlds.Patches
             AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
 
         private static readonly MethodInfo GetTicksAbsMethod = AccessTools.Method(typeof(GenTicks), "get_TicksAbs");
-
-        private static readonly MethodInfo GetTickManagerMethod = AccessTools.Method(typeof(Find), "get_TickManager");
-
-        private static readonly FieldInfo GameStartAbsTickField =
-            AccessTools.Field(typeof(TickManager), "gameStartAbsTick");
+        #endregion
+        
+        #region Constructors
+        static LogEntry_Patch()
+        {
+            if(TicksAbsField == null)
+                throw new NullReferenceException($"{nameof(TicksAbsField)} is null.");
+            
+            if(GetInstanceMethod == null)
+                throw new NullReferenceException($"{nameof(GetInstanceMethod)} is null.");
+            
+            if(PersistentWorldNotNullMethod == null)
+                throw new NullReferenceException($"{nameof(PersistentWorldNotNullMethod)} is null.");
+            
+            if(GetTicksAbsMethod == null)
+                throw new NullReferenceException($"{nameof(GetTicksAbsMethod)} is null.");
+        }
         #endregion
         
         #region Methods
@@ -75,7 +87,7 @@ namespace PersistentWorlds.Patches
 
         static ConstructorInfo TargetMethod()
         {
-            return AccessTools.Constructor(typeof(LogEntry), new Type[] { typeof(LogEntryDef) });
+            return AccessTools.Constructor(typeof(LogEntry), new[] { typeof(LogEntryDef) });
         }
         #endregion
     }

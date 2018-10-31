@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Harmony;
 using RimWorld;
@@ -11,6 +12,14 @@ namespace PersistentWorlds.Patches.UI
         #region Fields
         private static readonly FieldInfo FactionDefField =
             AccessTools.Field(typeof(ScenPart_PlayerFaction), "factionDef");
+        #endregion
+        
+        #region Constructors
+        static ScenPart_PlayerFaction_Patch()
+        {
+            if(FactionDefField == null)
+                throw new NullReferenceException($"{nameof(FactionDefField)} is null.");
+        }
         #endregion
         
         #region Methods
