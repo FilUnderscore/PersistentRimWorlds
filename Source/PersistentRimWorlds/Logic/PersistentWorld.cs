@@ -87,9 +87,6 @@ namespace PersistentWorlds.Logic
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
             
-            AccessTools.Method(typeof(Game), "FillComponents", new Type[0]).Invoke(this.Game, new object[0]);
-            BackCompatibility.GameLoadingVars(this.Game);
-
             /*
              * Load world and maps.
              */
@@ -287,7 +284,6 @@ namespace PersistentWorlds.Logic
                 colony.Name = settlement.HasName ? settlement.Name : null;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
-                Log.Message("Name: " + colony.PersistentColonyData.ColonyFaction.Name);
                 
                 toAdd.Add(colony);
                 toRemove.Add(settlement);

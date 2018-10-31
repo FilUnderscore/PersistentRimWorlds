@@ -116,6 +116,9 @@ namespace PersistentWorlds.Logic
             Current.Game.tutor = this.tutor;
             Current.Game.dateNotifier = this.dateNotifier;
             Current.Game.components = this.gameComponents;
+            
+            AccessTools.Method(typeof(Game), "FillComponents", new Type[0]).Invoke(Current.Game, new object[0]);
+            BackCompatibility.GameLoadingVars(Current.Game);
         }
 
         public static PersistentColonyGameData Convert(Game game)
@@ -131,6 +134,7 @@ namespace PersistentWorlds.Logic
                 CurrentMapIndex = game.currentMapIndex,
                 MapSize = game.World.info.initialMapSize.x,
                 info = game.Info,
+                rules = game.Rules,
                 scenario = game.Scenario,
                 playSettings = game.playSettings,
                 storyWatcher = game.storyWatcher,

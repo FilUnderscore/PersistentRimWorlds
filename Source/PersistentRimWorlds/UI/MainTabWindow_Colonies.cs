@@ -75,12 +75,14 @@ namespace PersistentWorlds.UI
                 persistentWorld.Colonies[index] = colony;
                             
                 persistentWorld.SetPlayerFactionVarsToColonyFaction();
+                colony.GameData.SetGame();
             }, "FilUnderscore.PersistentRimWorlds.LoadingColony", true, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
                 // TODO: Figure out how to load asynchronously to not lock up game.
                 var maps = DynamicMapLoader.LoadColonyMaps(colony);
+                
                 Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
 
                 persistentWorld.UnloadColony(previousColony);
