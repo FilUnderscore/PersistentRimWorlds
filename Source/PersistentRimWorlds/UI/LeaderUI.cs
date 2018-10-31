@@ -10,5 +10,10 @@ namespace PersistentWorlds.UI
         {
             
         }
+
+        public static void Reset()
+        {
+            
+        }
     }
 }

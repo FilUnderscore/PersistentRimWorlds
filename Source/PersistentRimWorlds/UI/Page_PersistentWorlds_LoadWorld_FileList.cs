@@ -50,8 +50,6 @@ namespace PersistentWorlds.UI
         #region Methods
         public override void PostClose()
         {
-            base.PostClose();
-
             PersistentWorldMenuUI.Reset();
             
             if (!normalClose) return;

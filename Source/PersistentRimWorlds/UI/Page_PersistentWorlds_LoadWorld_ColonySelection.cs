@@ -44,8 +44,6 @@ namespace PersistentWorlds.UI
         #region Methods
         public override void PostClose()
         {
-            base.PostClose();
-            
             ColonyUI.Reset();
             
             if (!normalClose) return;

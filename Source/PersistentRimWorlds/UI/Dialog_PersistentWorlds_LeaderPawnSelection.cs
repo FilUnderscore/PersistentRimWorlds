@@ -13,6 +13,11 @@ namespace PersistentWorlds.UI
             this.colony = colony;
         }
 
+        public override void PostClose()
+        {
+            LeaderUI.Reset();
+        }
+
         public override void DoWindowContents(Rect inRect)
         {
             

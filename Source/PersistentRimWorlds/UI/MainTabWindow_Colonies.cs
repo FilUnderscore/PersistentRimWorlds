@@ -43,8 +43,6 @@ namespace PersistentWorlds.UI
 
         public override void PostClose()
         {
-            base.PostClose();
-            
             ColonyUI.Reset();
         }
 
