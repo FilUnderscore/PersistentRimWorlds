@@ -35,7 +35,6 @@ namespace PersistentWorlds.Patches
         {
             var codes = new List<CodeInstruction>(instr);
 
-            var successLabel = ilGen.DefineLabel();
             var jumpLabel = ilGen.DefineLabel();
             
             for (var i = 0; i < codes.Count; i++)
@@ -49,8 +48,6 @@ namespace PersistentWorlds.Patches
                 var insertInstr = new List<CodeInstruction>
                 {
                     new CodeInstruction(OpCodes.Call, AnyWorldsMethod),
-                    new CodeInstruction(OpCodes.Brtrue_S, successLabel),
-                    new CodeInstruction(OpCodes.Ldarg_1),
                     new CodeInstruction(OpCodes.Brfalse_S, jumpLabel),
                     
                     new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds"),
@@ -67,8 +64,6 @@ namespace PersistentWorlds.Patches
 
                 codes[i].labels.DoIf(label => label != jumpLabel, insertInstr[0].labels.Add);
                 codes[i].labels.RemoveAll(label => label != jumpLabel);
-
-                insertInstr[4].labels.Add(successLabel);
                 
                 codes.InsertRange(i, insertInstr);
                 
