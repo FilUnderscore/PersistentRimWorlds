@@ -289,7 +289,7 @@ namespace PersistentWorlds.UI
             else
             {
                 leaderRect = new Rect(rect.x + rect.width / 2 + margin, rect.y + margin,
-                    rect.width - rect.width * widthMultiplier, rect.height);
+                    rect.width - rect.width * widthMultiplier - margin, rect.height);
 
                 Text.Font = GameFont.Tiny;
                 
