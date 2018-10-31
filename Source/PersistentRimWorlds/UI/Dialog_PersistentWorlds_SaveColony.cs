@@ -7,7 +7,7 @@ namespace PersistentWorlds.UI
     {
         public override void DoWindowContents(Rect inRect)
         {
-            ColonyUI.DrawColoniesSaveList(ref inRect, this.Margin,
+            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.CloseButSize,
                 PersistentWorldManager.GetInstance().PersistentWorld.Colonies, this.OnClick);
         }
 

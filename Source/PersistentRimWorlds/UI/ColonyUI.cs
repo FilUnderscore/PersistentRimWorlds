@@ -11,7 +11,7 @@ using Verse;
 namespace PersistentWorlds.UI
 {
     [StaticConstructorOnStartup]
-    internal static class ColonyUI
+    public static class ColonyUI
     {
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
         
@@ -31,7 +31,7 @@ namespace PersistentWorlds.UI
         /// <param name="load"></param>
         
         public static void DrawColoniesList(ref Rect inRect, float margin, Vector2 closeButtonSize,
-            List<PersistentColony> colonies, Action<int> load, Action newColony, Action<int> delete)
+            List<PersistentColony> colonies, Action<int> interact, Action newColony = null, Action<int> delete = null)
         {
             const int perRow = 3;
             var gap = (int) margin;
@@ -54,22 +54,28 @@ namespace PersistentWorlds.UI
                 
                     // Delete button.
                     var deleteSize = boxRect.width / 8;
-                    var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize, deleteSize);
 
-                    // Draw delete button first.
-                    if (Widgets.ButtonImage(deleteRect, DeleteX))
+                    if (delete != null)
                     {
-                        delete(i);
+                        var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize,
+                            deleteSize);
+
+                        // Draw delete button first.
+                        if (Widgets.ButtonImage(deleteRect, DeleteX))
+                        {
+                            delete(i);
+                        }
+
+                        TooltipHandler.TipRegion(deleteRect,
+                            "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
                     }
-                
-                    TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
                     // Draw whole box button second.
                     if (Widgets.ButtonInvisible(boxRect))
                     {
-                        load(i);
+                        interact(i);
                     }
                 
                     var texture = GetTexture(colony.ColonyData.ColonyFaction);
@@ -84,18 +90,20 @@ namespace PersistentWorlds.UI
                     const float nameMargin = 4f;
     
                     var colonyNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
-                        boxRect.width - nameMargin - deleteSize,
+                        boxRect.width - nameMargin - (delete != null ? deleteSize : 0),
                         textureRect.y - boxRect.y);
     
                     DrawNameLabel(colonyNameRect, colony);
                 
                     return true;
-                }, colonies.Count + 1, (width, height) =>
+                }, colonies.Count + (newColony != null ? 1 : 0), (width, height) =>
                 {
+                    if (newColony == null) return;
+                    
                     /*
                      * New Colony Button
                      */
-                    
+                        
                     var y = width * Mathf.Floor((float) colonies.Count / perRow) +
                             (colonies.Count / perRow) * gap;
 
@@ -111,7 +119,8 @@ namespace PersistentWorlds.UI
                         newColony();
                     }
 
-                    TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
+                    TooltipHandler.TipRegion(boxRect,
+                        "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
 
                     Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
                         new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white,
@@ -204,12 +213,6 @@ namespace PersistentWorlds.UI
 
                     return true;
                 }, colonies.Count);
-        }
-
-        public static void DrawColoniesSaveList(ref Rect inRect, float margin,
-            List<PersistentColony> colonies, Action<int> click)
-        {
-            
         }
 
         public static void Reset()
