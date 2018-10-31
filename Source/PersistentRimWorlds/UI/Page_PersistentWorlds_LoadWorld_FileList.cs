@@ -17,8 +17,8 @@ namespace PersistentWorlds.UI
         #region Fields
         private bool normalClose = true;
 
-        private readonly List<PersistentWorldMenuUI.UIEntry> worldEntries = new List<PersistentWorldMenuUI.UIEntry>();
-        private readonly List<PersistentWorldMenuUI.UIEntry> saveGameEntries = new List<PersistentWorldMenuUI.UIEntry>();
+        private readonly List<WorldUI.UIEntry> worldEntries = new List<WorldUI.UIEntry>();
+        private readonly List<WorldUI.UIEntry> saveGameEntries = new List<WorldUI.UIEntry>();
         #endregion
         
         #region Properties
@@ -50,7 +50,7 @@ namespace PersistentWorlds.UI
         #region Methods
         public override void PostClose()
         {
-            PersistentWorldMenuUI.Reset();
+            WorldUI.Reset();
             
             if (!normalClose) return;
             
@@ -64,14 +64,14 @@ namespace PersistentWorlds.UI
             {
                 var worldDirInfo = new DirectoryInfo(worldDir);
                 
-                worldEntries.Add(new PersistentWorldMenuUI.PersistentWorldUIEntry(worldDirInfo));
+                worldEntries.Add(new WorldUI.WorldUIEntry(worldDirInfo));
             }
         }
 
         private void LoadPossibleConversions()
         {
             var names = new List<string>();
-            worldEntries.Do(entry => names.Add(((PersistentWorldMenuUI.PersistentWorldUIEntry) entry).Name));
+            worldEntries.Do(entry => names.Add(((WorldUI.WorldUIEntry) entry).Name));
             var namesArray = names.ToArray();
             
             foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
@@ -79,7 +79,7 @@ namespace PersistentWorlds.UI
                 if (SaveFileUtils.HasPossibleSameWorldName(namesArray, allSavedGameFile.FullName))
                     continue;
                 
-                saveGameEntries.Add(new PersistentWorldMenuUI.SaveGameUIEntry(allSavedGameFile.FullName));
+                saveGameEntries.Add(new WorldUI.SaveGameUIEntry(allSavedGameFile.FullName));
             }
             
             names.Clear();
@@ -87,7 +87,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            PersistentWorldMenuUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
+            WorldUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
         }
 
         private void LoadWorld(string worldDir)

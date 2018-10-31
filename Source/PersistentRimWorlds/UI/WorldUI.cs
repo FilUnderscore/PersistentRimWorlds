@@ -11,7 +11,7 @@ using Verse;
 namespace PersistentWorlds.UI
 {
     [StaticConstructorOnStartup]
-    internal static class PersistentWorldMenuUI
+    internal static class WorldUI
     {
         #region Fields
         private static readonly Texture2D OpenFolder = ContentFinder<Texture2D>.Get("UI/OpenFolder");
@@ -65,7 +65,7 @@ namespace PersistentWorlds.UI
                         var worldNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
                             boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
 
-                        DrawLabel(worldNameRect, ((PersistentWorldUIEntry) currentItem).Name, currentItem);
+                        DrawLabel(worldNameRect, ((WorldUIEntry) currentItem).Name, currentItem);
                     }
                     else if(isSaveGameEntries)
                     {
@@ -95,6 +95,12 @@ namespace PersistentWorlds.UI
 
                     return true;
                 }, worldEntries.Count + saveGameEntries.Count);
+        }
+
+        public static void DrawWorldSaveList(ref Rect inRect, float margin, List<UIEntry> worldEntries,
+            Action<string> overwriteWorld, Action newWorld, Action<string> deleteWorld)
+        {
+            
         }
 
         public static void Reset()
@@ -144,20 +150,20 @@ namespace PersistentWorlds.UI
             }
         }
 
-        internal class PersistentWorldUIEntry : UIEntry
+        internal class WorldUIEntry : UIEntry
         {
             public string Name { get; }
 
-            private PersistentWorldUIEntry(string path, string name) : base(path)
+            private WorldUIEntry(string path, string name) : base(path)
             {
                 this.Name = name;
             }
 
-            public PersistentWorldUIEntry(DirectoryInfo directoryInfo) : this(directoryInfo.FullName, directoryInfo.Name)
+            public WorldUIEntry(DirectoryInfo directoryInfo) : this(directoryInfo.FullName, directoryInfo.Name)
             {
             }
 
-            public PersistentWorldUIEntry(string directory) : this(new DirectoryInfo(directory))
+            public WorldUIEntry(string directory) : this(new DirectoryInfo(directory))
             {
             }
         }

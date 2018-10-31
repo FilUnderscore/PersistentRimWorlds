@@ -68,7 +68,7 @@ namespace PersistentWorlds.Patches
                         new CodeInstruction(OpCodes.Brfalse_S, saveJumpLabel),
                         
                         new CodeInstruction(OpCodes.Ldloc_2),
-                        new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds.SaveColony"),
+                        new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds.SaveWorld"),
                         new CodeInstruction(OpCodes.Call, TranslateMethod),
                         new CodeInstruction(OpCodes.Ldsfld, SaveMenuButtonDelegate),
                         new CodeInstruction(OpCodes.Castclass, typeof(Action)),

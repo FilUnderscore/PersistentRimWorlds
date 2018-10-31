@@ -52,7 +52,7 @@ namespace PersistentWorlds
 
         private static void PatchSaveMenu()
         {
-            Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveColony());
+            Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveWorld());
         }
         #endregion
     }
