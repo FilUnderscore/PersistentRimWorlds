@@ -17,7 +17,9 @@ namespace PersistentWorlds
     {
         #region Fields
         // Must be public or IL transpiler throws error of ldsfld NULL.
-        public static Delegate MainMenuButtonDelegate = new Action(PatchMainMenu);
+        internal static Delegate MainMenuButtonDelegate = new Action(PatchMainMenu);
+        
+        internal static Delegate SaveMenuButtonDelegate = new Action(PatchSaveMenu);
         #endregion
         
         #region Constructors
@@ -46,6 +48,11 @@ namespace PersistentWorlds
         private static void PatchMainMenu()
         {
             Find.WindowStack.Add(new Page_PersistentWorlds_Main());
+        }
+
+        private static void PatchSaveMenu()
+        {
+            Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveColony());
         }
         #endregion
     }

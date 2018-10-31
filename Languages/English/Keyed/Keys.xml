@@ -34,6 +34,8 @@
 	<FilUnderscore.PersistentRimWorlds.SavingWorld>Saving world</FilUnderscore.PersistentRimWorlds.SavingWorld>
 	<FilUnderscore.PersistentRimWorlds.SavingColony>Saving colony</FilUnderscore.PersistentRimWorlds.SavingColony>
 	
+	<FilUnderscore.PersistentRimWorlds.SaveColony>Save colony</FilUnderscore.PersistentRimWorlds.SaveColony>
+	
 	<!-- Base Resettle Command -->
 	<FilUnderscore.PersistentRimWorlds.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.BaseResettle>
 	<FilUnderscore.PersistentRimWorlds.BaseResettleDesc>Resettle into this abandoned colony base, it may be left in ruins after being left unmaintained for some time, or inhabited by pirates. Beware.</FilUnderscore.PersistentRimWorlds.BaseResettleDesc>

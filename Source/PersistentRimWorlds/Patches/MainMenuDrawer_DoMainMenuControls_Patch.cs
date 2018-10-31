@@ -37,6 +37,9 @@ namespace PersistentWorlds.Patches
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
             AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+
+        private static readonly FieldInfo SaveMenuButtonDelegate =
+            AccessTools.Field(typeof(PersistentWorldsMod), "SaveMenuButtonDelegate");
         #endregion
         
         #region Methods
@@ -54,8 +57,6 @@ namespace PersistentWorlds.Patches
                 if (codes[i].opcode == OpCodes.Call && codes[i].operand == GetGameMethod &&
                     codes[i + 5].opcode == OpCodes.Ldstr && codes[i + 5].operand as string == "Save")
                 {
-                    Log.Message("Patched");
-                    
                     codes[i + 4].labels.Add(saveJumpLabel);
                     codes[i + 17].labels.Add(saveSkipLabel);
                     
@@ -66,9 +67,9 @@ namespace PersistentWorlds.Patches
                         new CodeInstruction(OpCodes.Brfalse_S, saveJumpLabel),
                         
                         new CodeInstruction(OpCodes.Ldloc_2),
-                        new CodeInstruction(OpCodes.Ldstr, "SaveWorld"),
+                        new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds.SaveColony"),
                         new CodeInstruction(OpCodes.Call, TranslateMethod),
-                        new CodeInstruction(OpCodes.Ldsfld, MainMenuButtonDelegate),
+                        new CodeInstruction(OpCodes.Ldsfld, SaveMenuButtonDelegate),
                         new CodeInstruction(OpCodes.Castclass, typeof(Action)),
                         new CodeInstruction(OpCodes.Ldnull),
                         new CodeInstruction(OpCodes.Newobj, ListableOptionConstructor),
