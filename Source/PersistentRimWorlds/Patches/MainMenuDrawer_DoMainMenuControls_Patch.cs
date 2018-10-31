@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using Harmony;
 using PersistentWorlds.SaveAndLoad;
 using RimWorld;
@@ -79,6 +80,20 @@ namespace PersistentWorlds.Patches
                     
                     codes.InsertRange(i + 4, insertInstr);
                 }
+                else if (codes[i].opcode == OpCodes.Call && codes[i].operand == GetGameMethod && 
+                         codes[i + 4].opcode == OpCodes.Ldstr && codes[i + 4].operand as string == "LoadGame")
+                {
+                    var label = (Label) codes[i + 3].operand;
+                    
+                    var insertInstr = new List<CodeInstruction>
+                    {
+                        new CodeInstruction(OpCodes.Call, GetInstanceMethod),
+                        new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
+                        new CodeInstruction(OpCodes.Brtrue_S, label)
+                    };
+                    
+                    codes.InsertRange(i + 4, insertInstr);
+                }
                 else if (codes[i].opcode == OpCodes.Call && codes[i + 4].opcode == OpCodes.Ldstr &&
                     codes[i + 4].operand as string == "ReviewScenario")
                 {
@@ -110,8 +125,6 @@ namespace PersistentWorlds.Patches
                 }
             }
             
-            codes.Do(code => FileLog.Log(code.ToString()));
-
             return codes.AsEnumerable();
         }
         #endregion
