@@ -73,8 +73,7 @@ namespace PersistentWorlds.UI
             {
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
-                            
-                persistentWorld.SetPlayerFactionVarsToColonyFaction();
+                
                 colony.GameData.SetGame();
             }, "FilUnderscore.PersistentRimWorlds.LoadingColony", true, null);
             
@@ -88,7 +87,8 @@ namespace PersistentWorlds.UI
                 persistentWorld.UnloadColony(previousColony);
 
                 persistentWorld.ConvertToCurrentGameWorldObjects();
-                
+
+                persistentWorld.SetPlayerFactionVarsToColonyFaction();                
                 persistentWorld.CheckAndSetColonyData();
                             
                 Find.CameraDriver.SetRootPosAndSize(colony.GameData.CamRootPos, colony.GameData.DesiredSize);   
