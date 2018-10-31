@@ -90,7 +90,7 @@ namespace PersistentWorlds.UI
                         boxRect.width - nameMargin - deleteSize,
                         textureRect.y - boxRect.y);
     
-                    DrawNameLabel(colonyNameRect, colony);
+                    DrawNameLabel(colonyNameRect, colony, colony.ColonyData.ColonyFaction);
                 
                     return true;
                 }, colonies.Count + 1, (width, height) =>
@@ -203,7 +203,7 @@ namespace PersistentWorlds.UI
                     var colonyNameRect = new Rect(boxRect.x + 4f, textureRect.yMax, boxRect.width - leaderRect.width,
                         boxRect.yMax - textureRect.yMax);
                     
-                    DrawNameLabel(colonyNameRect, colony);
+                    DrawNameLabel(colonyNameRect, colony, faction);
 
                     return true;
                 }, colonies.Count);
@@ -255,7 +255,7 @@ namespace PersistentWorlds.UI
             return faction.def.ExpandingIconTexture;
         }
 
-        private static void DrawNameLabel(Rect rect, PersistentColony colony)
+        private static void DrawNameLabel(Rect rect, PersistentColony colony, Faction faction)
         {
             if(!ScrollPositions.ContainsKey(colony))
                 ScrollPositions.Add(colony, new Vector2());
@@ -264,7 +264,7 @@ namespace PersistentWorlds.UI
 
             Text.Font = GameFont.Tiny;
 
-            WidgetExtensions.LabelScrollable(rect, colony.ColonyData.ColonyFaction.Name, ref labelScrollPosition, false,
+            WidgetExtensions.LabelScrollable(rect, faction.Name, ref labelScrollPosition, false,
                 true, false);
             
             Text.Font = GameFont.Small;
