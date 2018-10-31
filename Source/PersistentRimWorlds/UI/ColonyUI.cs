@@ -11,7 +11,7 @@ using Verse;
 namespace PersistentWorlds.UI
 {
     [StaticConstructorOnStartup]
-    public static class ColonyUI
+    internal static class ColonyUI
     {
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
         
@@ -204,6 +204,12 @@ namespace PersistentWorlds.UI
 
                     return true;
                 }, colonies.Count);
+        }
+
+        public static void DrawColoniesSaveList(ref Rect inRect, float margin,
+            List<PersistentColony> colonies, Action<int> click)
+        {
+            
         }
 
         public static void Reset()
