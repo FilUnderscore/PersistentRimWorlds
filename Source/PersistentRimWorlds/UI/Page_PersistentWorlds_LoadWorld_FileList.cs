@@ -28,9 +28,6 @@ namespace PersistentWorlds.UI
         #region Constructors
         public Page_PersistentWorlds_LoadWorld_FileList()
         {
-            // TODO: HMM
-            PersistentWorldManager.GetInstance().Clear();
-
             // Multi thread to decrease loading times.
             new Thread(() =>
             {
@@ -103,11 +100,13 @@ namespace PersistentWorlds.UI
                 var persistentWorld = new PersistentWorld();
                 persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, worldDir);
 
-                // TODO: HMM
-                PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
-                        
-                persistentWorld.LoadSaver.LoadWorld();
-                        
+                if (GenScene.InEntryScene)
+                {
+                    PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
+
+                    persistentWorld.LoadSaver.LoadWorld();
+                }
+
                 Current.Game = previousGame;
                         
                 this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};

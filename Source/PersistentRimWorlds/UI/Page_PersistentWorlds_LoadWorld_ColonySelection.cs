@@ -45,13 +45,17 @@ namespace PersistentWorlds.UI
         public override void PostClose()
         {
             base.PostClose();
-            
+
             ColonyUI.Reset();
-            
+
             if (!normalClose) return;
 
             this.DoBack();
-            PersistentWorldManager.GetInstance().Clear();
+
+            if (GenScene.InEntryScene)
+            {
+                PersistentWorldManager.GetInstance().Clear();
+            }
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -65,9 +69,14 @@ namespace PersistentWorlds.UI
             this.Close();
             
             var colony = this.persistentWorld.Colonies[index];
-             
-            PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
-                        
+            
+            if (GenScene.InPlayScene)
+            {
+                PersistentWorldManager.GetInstance().PersistentWorld = this.persistentWorld;
+
+                this.persistentWorld.LoadWorld();
+            }
+            
             LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingColony".Translate());
             
             this.persistentWorld.LoadSaver.LoadColony(ref colony);
