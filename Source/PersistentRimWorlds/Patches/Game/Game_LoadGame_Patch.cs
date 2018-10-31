@@ -9,7 +9,7 @@ namespace PersistentWorlds.Patches
     public class Game_LoadGame_Patch
     {
         #region Methods
-        static bool Prefix(Game __instance)
+        static bool Prefix()
         {
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || !PersistentWorldManager.GetInstance()
                 .PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))

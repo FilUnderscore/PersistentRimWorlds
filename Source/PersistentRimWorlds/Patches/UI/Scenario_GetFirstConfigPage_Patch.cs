@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +20,20 @@ namespace PersistentWorlds.Patches.UI
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
             AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+        #endregion
+        
+        #region Constructors
+        static Scenario_GetFirstConfigPage_Patch()
+        {
+            if(PageCreateWorldParamsConstructor == null)
+                throw new NullReferenceException($"{nameof(PageCreateWorldParamsConstructor)} is null.");
+            
+            if(GetInstanceMethod == null)
+                throw new NullReferenceException($"{nameof(GetInstanceMethod)} is null.");
+            
+            if(PersistentWorldNotNullMethod == null)
+                throw new NullReferenceException($"{nameof(PersistentWorldNotNullMethod)} is null.");
+        }
         #endregion
 
         #region Methods

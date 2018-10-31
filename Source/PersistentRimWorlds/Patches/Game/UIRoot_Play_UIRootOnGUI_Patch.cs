@@ -8,7 +8,7 @@ namespace PersistentWorlds.Patches
     public class UIRoot_Play_UIRootOnGUI_Patch
     {
         #region Methods
-        static bool Prefix(UIRoot_Play __instance)
+        static bool Prefix()
         {
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
                 return true;

@@ -17,8 +17,8 @@ namespace PersistentWorlds.UI
         #region Fields
         private bool normalClose = true;
 
-        private List<PersistentWorldMenuUI.UIEntry> worldEntries = new List<PersistentWorldMenuUI.UIEntry>();
-        private List<PersistentWorldMenuUI.UIEntry> saveGameEntries = new List<PersistentWorldMenuUI.UIEntry>();
+        private readonly List<PersistentWorldMenuUI.UIEntry> worldEntries = new List<PersistentWorldMenuUI.UIEntry>();
+        private readonly List<PersistentWorldMenuUI.UIEntry> saveGameEntries = new List<PersistentWorldMenuUI.UIEntry>();
         #endregion
         
         #region Properties
@@ -65,44 +65,6 @@ namespace PersistentWorlds.UI
             foreach (var worldDir in Directory.GetDirectories(PersistentWorldLoadSaver.SaveDir))
             {
                 var worldDirInfo = new DirectoryInfo(worldDir);
-
-                /*
-                var scrollableListItem = new ScrollableListItem();
-
-                scrollableListItem.Text = worldDirInfo.Name;
-                scrollableListItem.ActionButtonText = "Load".Translate();
-                scrollableListItem.ActionButtonAction = delegate
-                {
-                    
-                };
-
-                scrollableListItem.DeleteButtonTooltip = "FilUnderscore.PersistentRimWorlds.DeleteWorldTooltip".Translate();
-                scrollableListItem.DeleteButtonAction = delegate
-                {
-                    // TODO: Implement deleting persistent worlds.
-                    var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.DeleteWorldDesc".Translate(worldDirInfo.Name), "Delete".Translate(),
-                        delegate
-                        {
-                            // TODO: Delete persistent world.
-                        }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate(), true)
-                    {
-                        buttonCText = "FilUnderscore.PersistentRimWorlds.ConvertWorld".Translate(),
-                        buttonCAction = delegate
-                        {
-                            // TODO: Convert world back to single colony game.  
-                        }
-                    };
-
-
-                    Find.WindowStack.Add(dialogBox);
-                };
-                
-                items.Add(scrollableListItem);
-                */
-                
-                //LoadWorld(worldDirInfo);
-
-                //break;
                 
                 worldEntries.Add(new PersistentWorldMenuUI.PersistentWorldUIEntry(worldDirInfo));
             }
@@ -110,40 +72,6 @@ namespace PersistentWorlds.UI
 
         private void LoadPossibleConversions()
         {
-            /*
-            foreach (var allSavedGameFile in GenFilePaths.AllSavedGameFiles)
-            {
-                var scrollableListItem = new ScrollableListItem();
-
-                if (SaveFileUtils.HasPossibleSameWorldName(this.items.ToArray(), allSavedGameFile.FullName))
-                {
-                    continue;
-                }
-                
-                scrollableListItem.Text = Path.GetFileNameWithoutExtension(allSavedGameFile.Name);
-                scrollableListItem.ActionButtonText = "FilUnderscore.PersistentRimWorlds.ConvertWorld".Translate();
-                scrollableListItem.ActionButtonAction = delegate
-                {
-                    normalClose = false;
-
-                    var prevGame = Current.Game; // Fix UIRoot_Entry error.
-
-                    var persistentWorld = new PersistentWorld();
-
-                    Current.Game = prevGame; // Fix UIRoot_Entry error.
-                    
-                    persistentWorld.LoadSaver = new PersistentWorldLoadSaver(persistentWorld, allSavedGameFile.FullName)
-                        {Status = PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting};
-                    
-                    PersistentWorldManager.GetInstance().PersistentWorld = persistentWorld;
-                    
-                    GameDataSaveLoader.LoadGame(Path.GetFileNameWithoutExtension(allSavedGameFile.Name));
-                };
-                
-                items.Add(scrollableListItem);
-            }
-            */
-
             var names = new List<string>();
             worldEntries.Do(entry => names.Add(((PersistentWorldMenuUI.PersistentWorldUIEntry) entry).Name));
             var namesArray = names.ToArray();
@@ -189,7 +117,21 @@ namespace PersistentWorlds.UI
         
         private void DeleteWorld(string worldDir)
         {
-            
+            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.DeleteWorldDesc".Translate(worldDir), "Delete".Translate(),
+                delegate
+                {
+                    // TODO: Delete persistent world.
+                }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate(), true)
+            {
+                buttonCText = "FilUnderscore.PersistentRimWorlds.ConvertWorld".Translate(),
+                buttonCAction = delegate
+                {
+                    // TODO: Convert world back to single colony game.  
+                }
+            };
+
+
+            Find.WindowStack.Add(dialogBox);
         }
         
         private void ConvertWorld(string filePath)

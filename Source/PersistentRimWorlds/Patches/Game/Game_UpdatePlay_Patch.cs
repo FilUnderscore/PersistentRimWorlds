@@ -8,7 +8,7 @@ namespace PersistentWorlds.Patches
     public class Game_UpdatePlay_Patch
     {
         #region Methods
-        static void Postfix(Game __instance)
+        static void Postfix()
         {
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || !PersistentWorldManager.GetInstance()
                 .PersistentWorldNotNullAndLoadStatusIsNot(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame))
