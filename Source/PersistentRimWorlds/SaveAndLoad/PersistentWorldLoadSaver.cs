@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Harmony;
 using PersistentWorlds.Logic;
 using RimWorld;
@@ -11,10 +12,14 @@ namespace PersistentWorlds.SaveAndLoad
 {
     public sealed class PersistentWorldLoadSaver
     {
+        #region Reflection Fields
+        private static readonly MethodInfo SavedGamesFolderPathMethod =
+            AccessTools.Property(typeof(GenFilePaths), "SavedGamesFolderPath").GetGetMethod();
+        #endregion
+        
         #region Fields
-        public static readonly string SaveDir =
-            (string) AccessTools.Method(typeof(GenFilePaths), "get_SavedGamesFolderPath", new Type[0]).Invoke(null, new object[0]);
-
+        public static readonly string SaveDir = (string) SavedGamesFolderPathMethod.Invoke(null, new object[0]);
+        
         private readonly PersistentWorld persistentWorld;
         
         private const string PersistentWorldFileExtension = ".pwf";
@@ -45,6 +50,14 @@ namespace PersistentWorlds.SaveAndLoad
             Finalizing,
             Ingame,
             Saving
+        }
+        #endregion
+        
+        #region Reflection Constructors
+        static PersistentWorldLoadSaver()
+        {
+            if(SavedGamesFolderPathMethod == null)
+                throw new NullReferenceException($"{nameof(SavedGamesFolderPathMethod)} is null.");
         }
         #endregion
         

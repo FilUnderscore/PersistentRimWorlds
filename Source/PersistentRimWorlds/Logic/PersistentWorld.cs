@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Harmony;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
@@ -13,6 +14,17 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentWorld : IDisposable
     {
+        #region Reflection Fields
+        private static readonly FieldInfo RelationsField = AccessTools.Field(typeof(Faction), "relations");
+
+        private static readonly MethodInfo FillComponentsMethod =
+            AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents");
+        
+        private static readonly FieldInfo PredatorThreatsField = AccessTools.Field(typeof(Faction), "predatorThreats");
+        
+        private static readonly FieldInfo NaturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
+        #endregion
+        
         #region Fields
         public PersistentWorldLoadSaver LoadSaver;
         
@@ -25,6 +37,23 @@ namespace PersistentWorlds.Logic
         // Stores map tile ids.
         public readonly Dictionary<int, HashSet<PersistentColony>> LoadedMaps = new Dictionary<int, HashSet<PersistentColony>>();
         public readonly List<PersistentColony> Colonies = new List<PersistentColony>();
+        #endregion
+        
+        #region Reflection Constructors
+        static PersistentWorld()
+        {
+            if(RelationsField == null)
+                throw new NullReferenceException($"{nameof(RelationsField)} is null.");
+            
+            if(FillComponentsMethod == null)
+                throw new NullReferenceException($"{nameof(FillComponentsMethod)} is null.");
+            
+            if(PredatorThreatsField == null)
+                throw new NullReferenceException($"{nameof(PredatorThreatsField)} is null.");
+            
+            if(NaturalGoodwillTimerField == null)
+                throw new NullReferenceException($"{nameof(NaturalGoodwillTimerField)} is null.");
+        }
         #endregion
         
         #region Constructors
@@ -62,7 +91,7 @@ namespace PersistentWorlds.Logic
                 Log.Message("Faction Name: " + faction.Name);
                 Log.Message("Faction ID: " + faction.loadID);
                 Log.Message("Type: " + faction.def.defName);
-                Log.Message("Relations: " + ((List<FactionRelation>) AccessTools.Field(typeof(Faction), "relations").GetValue(faction)).ToDebugString());
+                Log.Message("Relations: " + ((List<FactionRelation>) RelationsField.GetValue(faction)).ToDebugString());
             });
         }
         
@@ -225,7 +254,7 @@ namespace PersistentWorlds.Logic
             this.Game.uniqueIDsManager = this.WorldData.UniqueIDsManager;
             this.Game.World.components = this.WorldData.WorldComponents;
             
-            AccessTools.Method(typeof(RimWorld.Planet.World), "FillComponents", new Type[0]).Invoke(this.Game.World, new object[0]);
+            FillComponentsMethod.Invoke(this.Game.World, new object[0]);
 
             if (Scribe.mode != LoadSaveMode.LoadingVars) return;
             
@@ -432,15 +461,13 @@ namespace PersistentWorlds.Logic
 
             targetFaction.kidnapped = sourceFaction.kidnapped;
             
-            var predatorThreatsField = AccessTools.Field(typeof(Faction), "predatorThreats");
-            predatorThreatsField.SetValue(targetFaction, predatorThreatsField.GetValue(sourceFaction));
+            PredatorThreatsField.SetValue(targetFaction, PredatorThreatsField.GetValue(sourceFaction));
             
             targetFaction.defeated = sourceFaction.defeated;
             targetFaction.lastTraderRequestTick = sourceFaction.lastTraderRequestTick;
             targetFaction.lastMilitaryAidRequestTick = sourceFaction.lastMilitaryAidRequestTick;
 
-            var naturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
-            naturalGoodwillTimerField.SetValue(targetFaction, naturalGoodwillTimerField.GetValue(sourceFaction));
+            NaturalGoodwillTimerField.SetValue(targetFaction, NaturalGoodwillTimerField.GetValue(sourceFaction));
 
             if (lateExecute)
             {
@@ -454,10 +481,8 @@ namespace PersistentWorlds.Logic
 
         private void SetFactionRelationsVars(Faction sourceFaction, Faction targetFaction, FactionMode mode)
         {
-            var relationsField = AccessTools.Field(typeof(Faction), "relations");
-
-            var sourceFactionRelations = (List<FactionRelation>) relationsField.GetValue(sourceFaction);
-            var targetFactionRelations = (List<FactionRelation>) relationsField.GetValue(targetFaction);
+            var sourceFactionRelations = (List<FactionRelation>) RelationsField.GetValue(sourceFaction);
+            var targetFactionRelations = (List<FactionRelation>) RelationsField.GetValue(targetFaction);
 
             var allFactions = this.WorldData.FactionManager.AllFactionsListForReading;
             
@@ -471,7 +496,7 @@ namespace PersistentWorlds.Logic
                     {
                         if (faction.IsPlayer) continue;
                         
-                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
+                        var factionRelations = (List<FactionRelation>) RelationsField.GetValue(faction);
 
                         // Clear any previous relations that are player factions.
                         for (var i = 0; i < factionRelations.Count; i++)
@@ -523,7 +548,7 @@ namespace PersistentWorlds.Logic
                     {   
                         if (faction.IsPlayer) continue;
 
-                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
+                        var factionRelations = (List<FactionRelation>) RelationsField.GetValue(faction);
 
                         for(var i = 0; i < factionRelations.Count; i++)
                         {
@@ -558,13 +583,13 @@ namespace PersistentWorlds.Logic
                     break;
                 case FactionMode.Reset:
                     
-                    relationsField.SetValue(targetFaction, sourceFactionRelations);
+                    RelationsField.SetValue(targetFaction, sourceFactionRelations);
 
                     foreach (var faction in allFactions)
                     {
                         if (faction.IsPlayer) continue;
                         
-                        var factionRelations = (List<FactionRelation>) relationsField.GetValue(faction);
+                        var factionRelations = (List<FactionRelation>) RelationsField.GetValue(faction);
 
                         for (var i = 0; i < factionRelations.Count; i++)
                         {
