@@ -367,6 +367,9 @@ namespace PersistentWorlds.SaveAndLoad
             for (var i = 0; i < maps.Count; i++)
             {
                 var map = maps[i];
+
+                if (!persistentWorld.LoadedMaps.ContainsKey(map.Tile))
+                    continue;
                 
                 var set = persistentWorld.LoadedMaps[map.Tile];
 
@@ -435,6 +438,11 @@ namespace PersistentWorlds.SaveAndLoad
 
                 Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
             }, "Play", "LoadingLongEvent", true, null);
+        }
+        
+        public string GetWorldFolderPath()
+        {
+            return this.worldFolderDirectoryInfo.FullName;
         }
         #endregion
         

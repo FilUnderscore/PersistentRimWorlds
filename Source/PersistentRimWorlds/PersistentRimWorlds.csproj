@@ -106,6 +106,7 @@
     <Compile Include="SaveAndLoad\ScribeVars.cs" />
     <Compile Include="UI\ColonyUI.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_LeaderPawnSelection.cs" />
+    <Compile Include="UI\Dialog_PersistentWorlds_NameWorld.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_SaveWorld.cs" />
     <Compile Include="UI\LeaderUI.cs" />
     <Compile Include="UI\Page_PersistentWorlds_LoadWorld_ColonySelection.cs" />

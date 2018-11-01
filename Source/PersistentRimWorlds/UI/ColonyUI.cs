@@ -123,7 +123,7 @@ namespace PersistentWorlds.UI
                     Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
                         new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white,
                         1f);
-                });
+                }, closeButtonSize);
 
             outRect.height -= closeButtonSize.y + margin;
         }
