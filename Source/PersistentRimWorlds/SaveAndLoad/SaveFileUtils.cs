@@ -56,19 +56,19 @@ namespace PersistentWorlds.SaveAndLoad
 
         public static void DeleteDirectory(string path)
         {
+            var dirInfo = new DirectoryInfo(path);
+
+            foreach (var file in dirInfo.GetFiles())
+            {
+                file.Attributes = FileAttributes.Normal;
+            }
+            
             foreach (var dir in Directory.GetDirectories(path))
             {
-                DeleteDirectory(path);
+                DeleteDirectory(dir);
             }
-
-            try
-            {
-                Directory.Delete(path, true);
-            }
-            catch (Exception)
-            {
-                DeleteDirectory(path);
-            }
+            
+            dirInfo.Delete(true);
         }
 
         public static bool WorldWithNameExists(string name)

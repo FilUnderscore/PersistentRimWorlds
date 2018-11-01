@@ -121,11 +121,13 @@ namespace PersistentWorlds.UI
         private void DeleteWorld(string worldDir)
         {
             SaveFileUtils.DeleteDirectory(worldDir);
+            
+            this.LoadWorldsAsEntries();
         }
 
         private void ConvertWorldToSingleColonyGame(string worldDir)
         {
-            
+            // TODO: ...
         }
         
         private void ConvertWorld(string filePath)
