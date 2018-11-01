@@ -117,7 +117,14 @@ namespace PersistentWorlds.UI
                         PersistentWorldManager.GetInstance().PersistentWorld.LoadSaver
                             .GetWorldFolderPath());
                     
-                    Widgets.DrawAltRect(boxRect);
+                    if (currentWorld)
+                    {
+                        Widgets.DrawHighlight(boxRect);
+                    }
+                    else
+                    {
+                        Widgets.DrawAltRect(boxRect);
+                    }
                     
                     var deleteSize = 0f;
 
@@ -136,10 +143,6 @@ namespace PersistentWorlds.UI
                         TooltipHandler.TipRegion(deleteRect,
                             "FilUnderscore.PersistentRimWorlds.Delete.World".Translate());
                     }
-                    else
-                    {
-                        Widgets.DrawHighlight(boxRect);
-                    }
                     
                     DrawTexture(boxRect, OpenFolder, out var textureRect, 0.3f, 0.2f);
                         
@@ -149,7 +152,7 @@ namespace PersistentWorlds.UI
                         boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
 
                     DrawLabel(worldNameRect, ((WorldUIEntry) currentItem).Name, currentItem);
-                        
+
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
                     if (Widgets.ButtonInvisible(boxRect))
@@ -188,6 +191,26 @@ namespace PersistentWorlds.UI
                 }, closeButtonSize);
         }
 
+        public static void ShowDeleteWorldDialog(string worldDir)
+        {
+            var worldDirInfo = new DirectoryInfo(worldDir);
+            
+            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(worldDirInfo.Name), "Delete".Translate(),
+                delegate
+                {
+                    SaveFileUtils.DeleteDirectory(worldDirInfo.FullName);
+                }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.Delete.World".Translate(), true)
+            {
+                buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate(),
+                buttonCAction = delegate
+                {
+                    // TODO: Convert world back to single colony game.  
+                }
+            };
+
+            Find.WindowStack.Add(dialogBox);
+        }
+        
         public static void Reset()
         {
             scrollPosition = new Vector2();

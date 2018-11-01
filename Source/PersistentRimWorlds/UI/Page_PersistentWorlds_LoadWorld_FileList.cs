@@ -31,13 +31,10 @@ namespace PersistentWorlds.UI
             // TODO: HMM
             PersistentWorldManager.GetInstance().Clear();
 
+            this.LoadWorldsAsEntries();
+            
             // Multi thread to decrease loading times.
-            new Thread(() =>
-            {
-                this.LoadWorldsAsEntries();
-
-                this.LoadPossibleConversions();
-            }).Start();
+            new Thread(this.LoadPossibleConversions).Start();
             
             this.doCloseButton = true;
             this.doCloseX = true;
@@ -59,10 +56,15 @@ namespace PersistentWorlds.UI
 
         private void LoadWorldsAsEntries()
         {
-            foreach (var entry in SaveFileUtils.LoadWorldEntries())
+            this.worldEntries.Clear();
+            
+            new Thread(() =>
             {
-                this.worldEntries.Add(entry);
-            }
+                foreach (var entry in SaveFileUtils.LoadWorldEntries())
+                {
+                    this.worldEntries.Add(entry);
+                }
+            }).Start();
         }
 
         private void LoadPossibleConversions()
@@ -112,23 +114,9 @@ namespace PersistentWorlds.UI
         
         private void DeleteWorld(string worldDir)
         {
-            var worldDirInfo = new DirectoryInfo(worldDir);
+            WorldUI.ShowDeleteWorldDialog(worldDir);
             
-            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(worldDirInfo.Name), "Delete".Translate(),
-                delegate
-                {
-                    // TODO: Delete persistent world.
-                }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.Delete.World".Translate(), true)
-            {
-                buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate(),
-                buttonCAction = delegate
-                {
-                    // TODO: Convert world back to single colony game.  
-                }
-            };
-
-
-            Find.WindowStack.Add(dialogBox);
+            this.LoadWorldsAsEntries();
         }
         
         private void ConvertWorld(string filePath)

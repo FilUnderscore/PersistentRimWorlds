@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PersistentWorlds.UI;
@@ -51,6 +52,23 @@ namespace PersistentWorlds.SaveAndLoad
         {
             return Directory.GetDirectories(PersistentWorldLoadSaver.SaveDir)
                 .Select(worldDir => new WorldUI.WorldUIEntry(new DirectoryInfo(worldDir)));
+        }
+
+        public static void DeleteDirectory(string path)
+        {
+            foreach (var dir in Directory.GetDirectories(path))
+            {
+                DeleteDirectory(path);
+            }
+
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch (Exception)
+            {
+                DeleteDirectory(path);
+            }
         }
         #endregion
     }

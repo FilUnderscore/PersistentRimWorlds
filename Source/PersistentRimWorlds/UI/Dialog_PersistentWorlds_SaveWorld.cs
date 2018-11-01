@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection.Emit;
 using System.Threading;
 using PersistentWorlds.SaveAndLoad;
@@ -15,8 +16,7 @@ namespace PersistentWorlds.UI
         
         public Dialog_PersistentWorlds_SaveWorld()
         {
-            // Multi thread.
-            new Thread(this.LoadWorldsAsEntries).Start();
+            this.LoadWorldsAsEntries();
             
             this.doCloseButton = true;
             this.doCloseX = true;
@@ -27,10 +27,15 @@ namespace PersistentWorlds.UI
 
         private void LoadWorldsAsEntries()
         {
-            foreach (var entry in SaveFileUtils.LoadWorldEntries())
+            this.worldEntries.Clear();
+            
+            new Thread(() =>
             {
-                this.worldEntries.Add(entry);
-            }
+                foreach (var entry in SaveFileUtils.LoadWorldEntries())
+                {
+                    this.worldEntries.Add(entry);
+                }
+            }).Start();
         }
         
         public override void PostClose()
@@ -47,16 +52,22 @@ namespace PersistentWorlds.UI
         private void OnNewWorld()
         {
             this.Close();
+            
+            this.LoadWorldsAsEntries();
         }
         
         private void OnOverwriteWorld(string worldPath, bool isCurrentWorld)
         {
             this.Close();
+            
+            this.LoadWorldsAsEntries();
         }
 
         private void OnDeleteWorld(string worldPath)
         {
-            this.Close();
+            WorldUI.ShowDeleteWorldDialog(worldPath);
+            
+            this.LoadWorldsAsEntries();
         }
     }
 }
