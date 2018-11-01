@@ -34,7 +34,7 @@ namespace PersistentWorlds.UI
             // Multi thread to decrease loading times.
             new Thread(() =>
             {
-                this.LoadWorldsAsItems();
+                this.LoadWorldsAsEntries();
 
                 this.LoadPossibleConversions();
             }).Start();
@@ -57,14 +57,11 @@ namespace PersistentWorlds.UI
             this.DoBack();
         }
 
-        private void LoadWorldsAsItems()
+        private void LoadWorldsAsEntries()
         {
-            // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
-            foreach (var worldDir in Directory.GetDirectories(PersistentWorldLoadSaver.SaveDir))
+            foreach (var entry in SaveFileUtils.LoadWorldEntries())
             {
-                var worldDirInfo = new DirectoryInfo(worldDir);
-                
-                worldEntries.Add(new WorldUI.WorldUIEntry(worldDirInfo));
+                this.worldEntries.Add(entry);
             }
         }
 
@@ -87,7 +84,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            WorldUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
+            WorldUI.DrawWorldList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
         }
 
         private void LoadWorld(string worldDir)

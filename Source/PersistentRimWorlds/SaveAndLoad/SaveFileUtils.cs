@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using PersistentWorlds.UI;
 using Verse;
@@ -44,6 +45,12 @@ namespace PersistentWorlds.SaveAndLoad
             return ((info.GetDirectories().Length > 0 || GenFilePaths.AllSavedGameFiles.Any()) && Current.ProgramState == ProgramState.Entry &&
                    GenScene.InEntryScene);
 
+        }
+
+        internal static IEnumerable<WorldUI.WorldUIEntry> LoadWorldEntries()
+        {
+            return Directory.GetDirectories(PersistentWorldLoadSaver.SaveDir)
+                .Select(worldDir => new WorldUI.WorldUIEntry(new DirectoryInfo(worldDir)));
         }
         #endregion
     }

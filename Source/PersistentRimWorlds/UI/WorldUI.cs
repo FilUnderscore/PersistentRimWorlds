@@ -25,10 +25,12 @@ namespace PersistentWorlds.UI
         #endregion
             
         #region Methods
-        public static void DrawWorldList(ref Rect inRect, float margin, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
+        public static void DrawWorldList(ref Rect inRect, float margin, Vector2 closeButtonSize, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
+
+            inRect.width += gap;
             
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
@@ -94,14 +96,16 @@ namespace PersistentWorlds.UI
                     }
 
                     return true;
-                }, worldEntries.Count + saveGameEntries.Count);
+                }, worldEntries.Count + saveGameEntries.Count, null, closeButtonSize);
         }
 
-        public static void DrawWorldSaveList(ref Rect inRect, float margin, List<UIEntry> worldEntries,
+        public static void DrawWorldSaveList(ref Rect inRect, float margin, Vector2 closeButtonSize, List<UIEntry> worldEntries,
             Action<string> overwriteWorld, Action newWorld, Action<string> deleteWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
+
+            inRect.width += gap;
             
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
                 {
@@ -135,7 +139,7 @@ namespace PersistentWorlds.UI
                     Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
                         new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white,
                         1f);
-                });
+                }, closeButtonSize);
         }
 
         public static void Reset()

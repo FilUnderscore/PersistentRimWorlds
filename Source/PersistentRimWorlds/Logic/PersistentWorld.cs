@@ -326,7 +326,7 @@ namespace PersistentWorlds.Logic
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
                 colony.Name = settlement.Name;
-                colony.namedByPlayer = settlement.namedByPlayer;
+                colony.NamedByPlayer = settlement.namedByPlayer;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
                 
@@ -409,7 +409,7 @@ namespace PersistentWorlds.Logic
                 settlement.Tile = colony.Tile;
                 
                 settlement.Name = colony.Name;
-                settlement.namedByPlayer = colony.namedByPlayer; // Prevents non-stop renaming.
+                settlement.namedByPlayer = colony.NamedByPlayer; // Prevents non-stop renaming.
                 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);
