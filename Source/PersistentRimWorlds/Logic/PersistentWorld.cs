@@ -79,6 +79,8 @@ namespace PersistentWorlds.Logic
             this.Game.FinalizeInit();
             
             this.LoadCameraDriver();
+
+            SchedulePause();
             
             GameComponentUtility.LoadedGame();
             
@@ -94,7 +96,20 @@ namespace PersistentWorlds.Logic
                 Log.Message("Relations: " + ((List<FactionRelation>) RelationsField.GetValue(faction)).ToDebugString());
             });
         }
-        
+
+        public void SchedulePause()
+        {
+            // Pause on load.
+            if (Prefs.PauseOnLoad)
+            {
+                LongEventHandler.ExecuteWhenFinished(() =>
+                {
+                    Find.TickManager.DoSingleTick();
+                    Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                });
+            }
+        }
+
         // Called from Patched Game.LoadGame().
         public void LoadGame()
         {
