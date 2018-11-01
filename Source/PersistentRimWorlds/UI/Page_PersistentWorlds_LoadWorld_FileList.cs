@@ -31,13 +31,10 @@ namespace PersistentWorlds.UI
             // TODO: HMM
             PersistentWorldManager.GetInstance().Clear();
 
+            this.LoadWorldsAsEntries();
+            
             // Multi thread to decrease loading times.
-            new Thread(() =>
-            {
-                this.LoadWorldsAsItems();
-
-                this.LoadPossibleConversions();
-            }).Start();
+            new Thread(this.LoadPossibleConversions).Start();
             
             this.doCloseButton = true;
             this.doCloseX = true;
@@ -57,15 +54,17 @@ namespace PersistentWorlds.UI
             this.DoBack();
         }
 
-        private void LoadWorldsAsItems()
+        private void LoadWorldsAsEntries()
         {
-            // Have a method fetch all world folders in RimWorld save folder in a SaveUtil or something instead of here...
-            foreach (var worldDir in Directory.GetDirectories(PersistentWorldLoadSaver.SaveDir))
+            this.worldEntries.Clear();
+            
+            new Thread(() =>
             {
-                var worldDirInfo = new DirectoryInfo(worldDir);
-                
-                worldEntries.Add(new WorldUI.WorldUIEntry(worldDirInfo));
-            }
+                foreach (var entry in SaveFileUtils.LoadWorldEntries())
+                {
+                    this.worldEntries.Add(entry);
+                }
+            }).Start();
         }
 
         private void LoadPossibleConversions()
@@ -87,7 +86,8 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            WorldUI.DrawWorldList(ref inRect, this.Margin, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
+            WorldUI.DrawWorldList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.saveGameEntries,
+                this.LoadWorld, this.OpenDeleteWorldDialog, this.ConvertWorld);
         }
 
         private void LoadWorld(string worldDir)
@@ -113,25 +113,21 @@ namespace PersistentWorlds.UI
             }, "FilUnderscore.PersistentRimWorlds.Loading.World", true, null);
         }
         
+        private void OpenDeleteWorldDialog(string worldDir)
+        {
+            WorldUI.ShowDeleteWorldDialog(worldDir, this.DeleteWorld, this.ConvertWorldToSingleColonyGame);
+        }
+
         private void DeleteWorld(string worldDir)
         {
-            var worldDirInfo = new DirectoryInfo(worldDir);
+            SaveFileUtils.DeleteDirectory(worldDir);
             
-            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(worldDirInfo.Name), "Delete".Translate(),
-                delegate
-                {
-                    // TODO: Delete persistent world.
-                }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.Delete.World".Translate(), true)
-            {
-                buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate(),
-                buttonCAction = delegate
-                {
-                    // TODO: Convert world back to single colony game.  
-                }
-            };
+            this.LoadWorldsAsEntries();
+        }
 
-
-            Find.WindowStack.Add(dialogBox);
+        private void ConvertWorldToSingleColonyGame(string worldDir)
+        {
+            // TODO: ...
         }
         
         private void ConvertWorld(string filePath)

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -16,7 +17,8 @@ namespace PersistentWorlds.Utils
         {
             #if DEBUG
             LogWriter = new StreamWriter(filePath, false);
-            Log("Persistent RimWorlds Debug Log (AssemblyVersion=" + Assembly.GetExecutingAssembly().GetName().Version + ")");
+            Log($"Persistent RimWorlds Debug Log (AssemblyVersion={Assembly.GetExecutingAssembly().GetName().Version}, " +
+                $"AssemblyFileVersion={FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location)})");
             #endif
         }
 

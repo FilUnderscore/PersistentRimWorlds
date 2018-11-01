@@ -79,6 +79,8 @@ namespace PersistentWorlds.Logic
             this.Game.FinalizeInit();
             
             this.LoadCameraDriver();
+
+            SchedulePause();
             
             GameComponentUtility.LoadedGame();
             
@@ -94,7 +96,20 @@ namespace PersistentWorlds.Logic
                 Log.Message("Relations: " + ((List<FactionRelation>) RelationsField.GetValue(faction)).ToDebugString());
             });
         }
-        
+
+        public void SchedulePause()
+        {
+            // Pause on load.
+            if (Prefs.PauseOnLoad)
+            {
+                LongEventHandler.ExecuteWhenFinished(() =>
+                {
+                    Find.TickManager.DoSingleTick();
+                    Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                });
+            }
+        }
+
         // Called from Patched Game.LoadGame().
         public void LoadGame()
         {
@@ -310,7 +325,8 @@ namespace PersistentWorlds.Logic
                 var colony = (Colony) WorldObjectSameIDMaker.MakeWorldObject(PersistentWorldsDefOf.Colony, settlement.ID);
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
-                colony.Name = settlement.HasName ? settlement.Name : null;
+                colony.Name = settlement.Name;
+                colony.NamedByPlayer = settlement.namedByPlayer;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
                 
@@ -392,8 +408,8 @@ namespace PersistentWorlds.Logic
                 colony.Map.info.parent = settlement;
                 settlement.Tile = colony.Tile;
                 
-                settlement.Name = colony.HasName ? colony.Name : null;
-                settlement.namedByPlayer = colony.HasName; // Prevents non-stop renaming.
+                settlement.Name = colony.Name;
+                settlement.namedByPlayer = colony.NamedByPlayer; // Prevents non-stop renaming.
                 
                 toAdd.Add(settlement);
                 toRemove.Add(colony);

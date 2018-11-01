@@ -66,14 +66,7 @@ namespace PersistentWorlds.Patches
             Find.CameraDriver.JumpToCurrentMapLoc(MapGenerator.PlayerStartSpot);
             Find.CameraDriver.ResetSize();
 
-            if (Prefs.PauseOnLoad && Current.Game.InitData.startedFromEntry)
-            {
-                LongEventHandler.ExecuteWhenFinished(delegate
-                {
-                    game.tickManager.DoSingleTick();
-                    game.tickManager.CurTimeSpeed = TimeSpeed.Paused;
-                });
-            }
+            persistentWorld.SchedulePause();
             
             Find.Scenario.PostGameStart();
 

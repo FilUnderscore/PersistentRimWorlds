@@ -25,10 +25,12 @@ namespace PersistentWorlds.UI
         #endregion
             
         #region Methods
-        public static void DrawWorldList(ref Rect inRect, float margin, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
+        public static void DrawWorldList(ref Rect inRect, float margin, Vector2 closeButtonSize, List<UIEntry> worldEntries, List<UIEntry> saveGameEntries, Action<string> loadWorld, Action<string> deleteWorld, Action<string> convertWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
+
+            inRect.width += gap;
             
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
@@ -94,19 +96,72 @@ namespace PersistentWorlds.UI
                     }
 
                     return true;
-                }, worldEntries.Count + saveGameEntries.Count);
+                }, worldEntries.Count + saveGameEntries.Count, null, closeButtonSize);
         }
 
-        public static void DrawWorldSaveList(ref Rect inRect, float margin, List<UIEntry> worldEntries,
-            Action<string> overwriteWorld, Action newWorld, Action<string> deleteWorld)
+        public static void DrawWorldSaveList(ref Rect inRect, float margin, Vector2 closeButtonSize, List<UIEntry> worldEntries,
+            Action saveWorld, Action newWorld, Action<string> deleteWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
+
+            inRect.width += gap;
             
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
                 {
-                    Widgets.DrawAltRect(boxRect);
+                    if (i >= worldEntries.Count) return false;
                     
+                    var currentItem = worldEntries[i];
+
+                    var currentWorld = new DirectoryInfo(currentItem.Path).FullName.EqualsIgnoreCase(
+                        PersistentWorldManager.GetInstance().PersistentWorld.LoadSaver
+                            .GetWorldFolderPath());
+                    
+                    if (currentWorld)
+                    {
+                        Widgets.DrawHighlight(boxRect);
+                    }
+                    else
+                    {
+                        Widgets.DrawAltRect(boxRect);
+                    }
+                    
+                    var deleteSize = 0f;
+
+                    if (!currentWorld)
+                    {
+                        deleteSize = boxRect.width / 8;
+                        
+                        var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize,
+                            deleteSize);
+
+                        if (Widgets.ButtonImage(deleteRect, DeleteX))
+                        {
+                            deleteWorld(currentItem.Path);
+                        }
+
+                        TooltipHandler.TipRegion(deleteRect,
+                            "FilUnderscore.PersistentRimWorlds.Delete.World".Translate());
+                    }
+                    
+                    DrawTexture(boxRect, OpenFolder, out var textureRect, 0.3f, 0.2f);
+                        
+                    const float nameMargin = 4f;
+
+                    var worldNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
+                        boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
+
+                    DrawLabel(worldNameRect, ((WorldUIEntry) currentItem).Name, currentItem);
+
+                    if (!currentWorld) return true;
+
+                    Widgets.DrawHighlightIfMouseover(boxRect);
+
+                    if (Widgets.ButtonInvisible(boxRect))
+                    {
+                        saveWorld();
+                    }
+
                     return true;
                 }, worldEntries.Count + 1, (width, height) =>
                 {
@@ -135,9 +190,35 @@ namespace PersistentWorlds.UI
                     Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 3, boxRect.y + boxRect.height / 2),
                         new Vector2(boxRect.x + boxRect.width * 0.66f, boxRect.y + boxRect.height / 2), Color.white,
                         1f);
-                });
+                }, closeButtonSize);
         }
 
+        public static void ShowDeleteWorldDialog(string worldDir, Action<string> onDelete, 
+            Action<string> onConvert = null)
+        {
+            var worldDirInfo = new DirectoryInfo(worldDir);
+
+            var dialogBox = new Dialog_MessageBox(
+                "FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(worldDirInfo.Name),
+                "Delete".Translate(),
+                () => onDelete(worldDirInfo.FullName), "FilUnderscore.PersistentRimWorlds.Cancel".Translate(),
+                null, "FilUnderscore.PersistentRimWorlds.Delete.World".Translate(), true);
+
+            if (onConvert != null)
+            {
+                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate();
+
+                dialogBox.buttonCAction = () => onConvert(worldDirInfo.FullName);
+            }
+
+            Find.WindowStack.Add(dialogBox);
+        }
+
+        public static void ShowOverwriteWorldDialog(string worldDir, Action<string> onConfirm)
+        {
+            
+        }
+        
         public static void Reset()
         {
             scrollPosition = new Vector2();

@@ -8,7 +8,7 @@ namespace PersistentWorlds.UI
     {
         public static void DrawBoxGridView(out Rect viewRect, out Rect outRect, ref Rect inRect,
             ref Vector2 scrollPosition, int perRow, int gap, Func<int, Rect, bool> iterateFunction, int iteratorSize,
-            Action<float, float> endAction = null, int boxHeightDivisor = 1)
+            Action<float, float> endAction = null, Vector2 closeButtonSize = new Vector2(), int boxHeightDivisor = 1)
         {
             var boxWidth = (inRect.width - gap * perRow) / perRow;
             var boxHeight = boxWidth;
@@ -22,6 +22,7 @@ namespace PersistentWorlds.UI
                 (Mathf.Ceil((float) (iteratorSize) / perRow)) * boxWidth + (iteratorSize / perRow) * gap);
 
             outRect = new Rect(inRect.AtZero());
+            outRect.height -= closeButtonSize.y + gap;
 
             GUI.BeginGroup(inRect);
 

@@ -36,7 +36,10 @@
 	
 	<FilUnderscore.PersistentRimWorlds.Save.Colony>Save colony</FilUnderscore.PersistentRimWorlds.Save.Colony>
 	<FilUnderscore.PersistentRimWorlds.Save.World>Save world</FilUnderscore.PersistentRimWorlds.Save.World>
+	
 	<FilUnderscore.PersistentRimWorlds.Save.NewWorld>Click to save as a new world.</FilUnderscore.PersistentRimWorlds.Save.NewWorld>
+	<FilUnderscore.PersistentRimWorlds.Save.NewWorld.Desc>Please enter a name for this world:</FilUnderscore.PersistentRimWorlds.Save.NewWorld.Desc>
+	<FilUnderscore.PersistentRimWorlds.Save.WorldNameAlreadyUsed>A world with that name already exists!</FilUnderscore.PersistentRimWorlds.Save.WorldNameAlreadyUsed>
 	
 	<!-- Base Resettle Command -->
 	<FilUnderscore.PersistentRimWorlds.Command.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.Command.BaseResettle>
