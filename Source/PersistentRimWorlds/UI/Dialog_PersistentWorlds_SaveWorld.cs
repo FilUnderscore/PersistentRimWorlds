@@ -49,7 +49,7 @@ namespace PersistentWorlds.UI
             this.Close();
         }
         
-        private void OnOverwriteWorld(string worldPath)
+        private void OnOverwriteWorld(string worldPath, bool isCurrentWorld)
         {
             this.Close();
         }

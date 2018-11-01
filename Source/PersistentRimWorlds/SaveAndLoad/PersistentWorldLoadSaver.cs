@@ -436,6 +436,11 @@ namespace PersistentWorlds.SaveAndLoad
                 Current.Game = new Game {InitData = new GameInitData {gameToLoad = "PersistentWorld"}}; // Just to get the SavedGameLoaderNow.LoadGameFromSaveFileNow() patch to load.
             }, "Play", "LoadingLongEvent", true, null);
         }
+        
+        public string GetWorldFolderPath()
+        {
+            return this.worldFolderDirectoryInfo.FullName;
+        }
         #endregion
         
         #region Structs

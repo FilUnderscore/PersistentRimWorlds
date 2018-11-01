@@ -100,7 +100,7 @@ namespace PersistentWorlds.UI
         }
 
         public static void DrawWorldSaveList(ref Rect inRect, float margin, Vector2 closeButtonSize, List<UIEntry> worldEntries,
-            Action<string> overwriteWorld, Action newWorld, Action<string> deleteWorld)
+            Action<string, bool> overwriteWorld, Action newWorld, Action<string> deleteWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
@@ -109,7 +109,53 @@ namespace PersistentWorlds.UI
             
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
                 {
+                    if (i >= worldEntries.Count) return false;
+                    
+                    var currentItem = worldEntries[i];
+
+                    var currentWorld = new DirectoryInfo(currentItem.Path).FullName.EqualsIgnoreCase(
+                        PersistentWorldManager.GetInstance().PersistentWorld.LoadSaver
+                            .GetWorldFolderPath());
+                    
                     Widgets.DrawAltRect(boxRect);
+                    
+                    var deleteSize = 0f;
+
+                    if (!currentWorld)
+                    {
+                        deleteSize = boxRect.width / 8;
+                        
+                        var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize,
+                            deleteSize);
+
+                        if (Widgets.ButtonImage(deleteRect, DeleteX))
+                        {
+                            deleteWorld(currentItem.Path);
+                        }
+
+                        TooltipHandler.TipRegion(deleteRect,
+                            "FilUnderscore.PersistentRimWorlds.Delete.World".Translate());
+                    }
+                    else
+                    {
+                        Widgets.DrawHighlight(boxRect);
+                    }
+                    
+                    DrawTexture(boxRect, OpenFolder, out var textureRect, 0.3f, 0.2f);
+                        
+                    const float nameMargin = 4f;
+
+                    var worldNameRect = new Rect(boxRect.x + nameMargin, boxRect.y + nameMargin,
+                        boxRect.width - nameMargin - deleteSize, textureRect.y - boxRect.y);
+
+                    DrawLabel(worldNameRect, ((WorldUIEntry) currentItem).Name, currentItem);
+                        
+                    Widgets.DrawHighlightIfMouseover(boxRect);
+
+                    if (Widgets.ButtonInvisible(boxRect))
+                    {
+                        overwriteWorld(currentItem.Path, currentWorld);
+                    }
                     
                     return true;
                 }, worldEntries.Count + 1, (width, height) =>
