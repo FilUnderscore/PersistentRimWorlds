@@ -367,6 +367,9 @@ namespace PersistentWorlds.SaveAndLoad
             for (var i = 0; i < maps.Count; i++)
             {
                 var map = maps[i];
+
+                if (!persistentWorld.LoadedMaps.ContainsKey(map.Tile))
+                    continue;
                 
                 var set = persistentWorld.LoadedMaps[map.Tile];
 

@@ -90,7 +90,7 @@ namespace PersistentWorlds.UI
                     
                 persistentWorld.ConvertCurrentGameWorldObjects();
                 
-                persistentWorld.LoadSaver.SaveWorldData(true);
+                persistentWorld.LoadSaver.SaveWorldData();
                     
                 persistentWorld.ConvertToCurrentGameWorldObjects();
             }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
