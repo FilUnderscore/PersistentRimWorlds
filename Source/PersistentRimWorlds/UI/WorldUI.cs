@@ -100,7 +100,7 @@ namespace PersistentWorlds.UI
         }
 
         public static void DrawWorldSaveList(ref Rect inRect, float margin, Vector2 closeButtonSize, List<UIEntry> worldEntries,
-            Action<string, bool> overwriteWorld, Action newWorld, Action<string> deleteWorld)
+            Action saveWorld, Action newWorld, Action<string> deleteWorld)
         {
             const int perRow = 3;
             var gap = (int) margin;
@@ -153,13 +153,15 @@ namespace PersistentWorlds.UI
 
                     DrawLabel(worldNameRect, ((WorldUIEntry) currentItem).Name, currentItem);
 
+                    if (!currentWorld) return true;
+
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
                     if (Widgets.ButtonInvisible(boxRect))
                     {
-                        overwriteWorld(currentItem.Path, currentWorld);
+                        saveWorld();
                     }
-                    
+
                     return true;
                 }, worldEntries.Count + 1, (width, height) =>
                 {
@@ -210,6 +212,11 @@ namespace PersistentWorlds.UI
             }
 
             Find.WindowStack.Add(dialogBox);
+        }
+
+        public static void ShowOverwriteWorldDialog(string worldDir, Action<string> onConfirm)
+        {
+            
         }
         
         public static void Reset()

@@ -56,6 +56,8 @@ namespace PersistentWorlds.UI
             if (IsValidName(this.curName))
             {
                 onName?.Invoke(this.curName);
+
+                Find.WindowStack.TryRemove(this);
             }
         }
     }

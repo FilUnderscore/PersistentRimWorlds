@@ -4,11 +4,13 @@ using System.Reflection.Emit;
 using System.Threading;
 using Harmony;
 using PersistentWorlds.SaveAndLoad;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace PersistentWorlds.UI
 {
+    // TODO: Full refactor of all UI classes involved with saving.
     public class Dialog_PersistentWorlds_SaveWorld : Window
     {
         private readonly List<WorldUI.UIEntry> worldEntries = new List<WorldUI.UIEntry>();
@@ -46,7 +48,7 @@ namespace PersistentWorlds.UI
         
         public override void DoWindowContents(Rect inRect)
         {
-            WorldUI.DrawWorldSaveList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.OnOverwriteWorld,
+            WorldUI.DrawWorldSaveList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.SaveWorld,
                 this.OnNewWorld, this.ShowDeleteWorldDialog);
         }
 
@@ -56,8 +58,6 @@ namespace PersistentWorlds.UI
             
             var nameWorldDialog = new Dialog_PersistentWorlds_NameWorld((name) =>
             {
-                this.Close();
-
                 var worldDir = SaveFileUtils.Clone(persistentWorld.LoadSaver.GetWorldFolderPath(),
                     PersistentWorldLoadSaver.SaveDir + "/" + name);
                 
@@ -70,28 +70,32 @@ namespace PersistentWorlds.UI
                 persistentWorld.LoadSaver =
                     new PersistentWorldLoadSaver(persistentWorld, worldDir.FullName);
 
-                LongEventHandler.QueueLongEvent(delegate
-                {
-                    persistentWorld.SaveColony();
-                    
-                    persistentWorld.ConvertCurrentGameWorldObjects();
-                
-                    persistentWorld.LoadSaver.SaveWorldData(true);
-                    
-                    persistentWorld.ConvertToCurrentGameWorldObjects();
-                }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
+                this.SaveWorld();
 
                 this.LoadWorldsAsEntries();
             });
             
             Find.WindowStack.Add(nameWorldDialog);
         }
-        
-        private void OnOverwriteWorld(string worldPath, bool isCurrentWorld)
+
+        private void SaveWorld()
         {
             this.Close();
+            
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                persistentWorld.SaveColony();
+                    
+                persistentWorld.ConvertCurrentGameWorldObjects();
+                
+                persistentWorld.LoadSaver.SaveWorldData(true);
+                    
+                persistentWorld.ConvertToCurrentGameWorldObjects();
+            }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
         }
-
+        
         private void ShowDeleteWorldDialog(string worldPath)
         {
             WorldUI.ShowDeleteWorldDialog(worldPath, this.DeleteWorld);
@@ -99,6 +103,8 @@ namespace PersistentWorlds.UI
 
         private void DeleteWorld(string worldPath)
         {
+            SaveFileUtils.DeleteDirectory(worldPath);
+            
             this.LoadWorldsAsEntries();
         }
     }
