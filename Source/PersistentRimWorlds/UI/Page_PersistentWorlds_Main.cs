@@ -33,7 +33,7 @@ namespace PersistentWorlds.UI
 
             var optList = new List<ListableOption>
             {
-                new ListableOption("FilUnderscore.PersistentRimWorlds.LoadWorld".Translate(),
+                new ListableOption("FilUnderscore.PersistentRimWorlds.Load.World".Translate(),
                     delegate
                     {
                         this.next = new Page_PersistentWorlds_LoadWorld_FileList {prev = this};

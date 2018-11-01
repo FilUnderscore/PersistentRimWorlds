@@ -16,13 +16,15 @@ namespace PersistentWorlds.Patches.UI
     public class Dialog_AdvancedGameConfig_DoWindowContents_Patch
     {
         #region Fields
-        private static readonly MethodInfo DisposeMethod = AccessTools.Method(typeof(IDisposable), "Dispose");
+        private static readonly MethodInfo DisposeMethod =
+            AccessTools.Method(typeof(IDisposable), nameof(IDisposable.Dispose));
 
         private static readonly MethodInfo
-            GetInstanceMethod = AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+            GetInstanceMethod =
+                AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.GetInstance));
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.PersistentWorldNotNull));
         #endregion
         
         #region Constructors

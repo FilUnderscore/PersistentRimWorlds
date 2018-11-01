@@ -4,7 +4,7 @@ using Verse;
 
 namespace PersistentWorlds.UI
 {
-    public static class UITools
+    internal static class UITools
     {
         public static void DrawBoxGridView(out Rect viewRect, out Rect outRect, ref Rect inRect,
             ref Vector2 scrollPosition, int perRow, int gap, Func<int, Rect, bool> iterateFunction, int iteratorSize,

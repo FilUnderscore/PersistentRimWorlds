@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,11 +20,23 @@ namespace PersistentWorlds.Patches
         /// <summary>
         /// Keeps track of the current list index in the current list when saving. Used for ReferenceTable.
         /// </summary>
-        private static readonly Dictionary<int, int> listIndexes = new Dictionary<int, int>();
+        private static readonly Dictionary<int, int> ListIndexes = new Dictionary<int, int>();
 
         private static int currentThingIndex;
         #endregion
 
+        #region Constructors
+        static ScribeSaver_EnterNode_Patch()
+        {
+            if(WriterField == null)
+                throw new NullReferenceException($"{nameof(WriterField)} is null.");
+            
+            if(CurPathField == null)
+                throw new NullReferenceException($"{nameof(CurPathField)} is null.");
+        }
+        #endregion
+        
+        #region Methods        
         public static int GetIndexInList(string curPath, string nodeName)
         {
             var currentListIndex = Regex.Matches(curPath + "/", "\\/li\\[(\\d+)\\]\\/").Count;
@@ -33,7 +46,7 @@ namespace PersistentWorlds.Patches
                 ++currentListIndex;
             }
             
-            return listIndexes[currentListIndex];
+            return ListIndexes[currentListIndex];
         }
 
         public static int GetThingIndex()
@@ -45,8 +58,7 @@ namespace PersistentWorlds.Patches
         {
             currentThingIndex = 0;
         }
-        
-        #region Methods
+
         static bool Prefix(ScribeSaver __instance, string nodeName)
         {
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
@@ -74,15 +86,15 @@ namespace PersistentWorlds.Patches
             {   
                 if (nodeName == "li")
                 {
-                    if (listIndexes.ContainsKey(currentListIndex))
-                        listIndexes[currentListIndex] += 1;
+                    if (ListIndexes.ContainsKey(currentListIndex))
+                        ListIndexes[currentListIndex] += 1;
                     else
                     {
-                        listIndexes.Add(currentListIndex, 0);
+                        ListIndexes.Add(currentListIndex, 0);
                     }
                     
                     FileLog.Log("CurPath b4 set: " + curPath);
-                    curPath = curPath + "[" + listIndexes[currentListIndex] + "]";
+                    curPath = curPath + "[" + ListIndexes[currentListIndex] + "]";
                     FileLog.Log("CurPath after set: " + curPath);
                 }
                 else
@@ -92,9 +104,9 @@ namespace PersistentWorlds.Patches
             }
             else
             {
-                if (currentListIndex < listIndexes.Count)
+                if (currentListIndex < ListIndexes.Count)
                 {
-                    listIndexes.RemoveAll(set => set.Key > currentListIndex);
+                    ListIndexes.RemoveAll(set => set.Key > currentListIndex);
                 }
             }
             

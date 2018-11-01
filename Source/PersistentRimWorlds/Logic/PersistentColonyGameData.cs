@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Harmony;
 using RimWorld;
 using UnityEngine;
@@ -11,6 +12,18 @@ namespace PersistentWorlds.Logic
 {
     public class PersistentColonyGameData : IExposable
     {
+        #region Reflection Fields
+        private static readonly FieldInfo InfoField = AccessTools.Field(typeof(Game), "info");
+
+        private static readonly FieldInfo RulesField = AccessTools.Field(typeof(Game), "rules");
+
+        private static readonly MethodInfo FillComponentsMethod = AccessTools.Method(typeof(Game), "FillComponents");
+
+        private static readonly FieldInfo RootPosField = AccessTools.Field(typeof(CameraDriver), "rootPos");
+
+        private static readonly FieldInfo DesiredSizeField = AccessTools.Field(typeof(CameraDriver), "desiredSize");
+        #endregion
+        
         #region Fields
         public sbyte CurrentMapIndex;
         public int MapSize;
@@ -40,6 +53,26 @@ namespace PersistentWorlds.Logic
          */
         public Vector3 CamRootPos;
         public float DesiredSize;
+        #endregion
+        
+        #region Reflection Constructors
+        static PersistentColonyGameData()
+        {
+            if(InfoField == null)
+                throw new NullReferenceException($"{nameof(InfoField)} is null.");
+            
+            if(RulesField == null)
+                throw new NullReferenceException($"{nameof(RulesField)} is null.");
+            
+            if(FillComponentsMethod == null)
+                throw new NullReferenceException($"{nameof(FillComponentsMethod)} is null.");
+            
+            if(RootPosField == null)
+                throw new NullReferenceException($"{nameof(RootPosField)} is null.");
+            
+            if(DesiredSizeField == null)
+                throw new NullReferenceException($"{nameof(DesiredSizeField)} is null.");
+        }
         #endregion
         
         #region Methods
@@ -96,8 +129,8 @@ namespace PersistentWorlds.Logic
             Current.Game.currentMapIndex = this.CurrentMapIndex;
             Current.Game.World.info.initialMapSize = new IntVec3(MapSize, 1, MapSize);
             
-            AccessTools.Field(typeof(Game), "info").SetValue(Current.Game, this.info);
-            AccessTools.Field(typeof(Game), "rules").SetValue(Current.Game, this.rules);
+            InfoField.SetValue(Current.Game, this.info);
+            RulesField.SetValue(Current.Game, this.rules);
             
             Current.Game.Scenario = this.scenario;
             Current.Game.playSettings = this.playSettings;
@@ -116,6 +149,9 @@ namespace PersistentWorlds.Logic
             Current.Game.tutor = this.tutor;
             Current.Game.dateNotifier = this.dateNotifier;
             Current.Game.components = this.gameComponents;
+            
+            FillComponentsMethod.Invoke(Current.Game, new object[0]);
+            BackCompatibility.GameLoadingVars(Current.Game);
         }
 
         public static PersistentColonyGameData Convert(Game game)
@@ -123,14 +159,15 @@ namespace PersistentWorlds.Logic
             /*
              * Camera Driver.
              */
-            var cameraDriverRootPos = (Vector3) AccessTools.Field(typeof(CameraDriver), "rootPos").GetValue(Find.CameraDriver);
-            var cameraDriverDesiredSize = (float) AccessTools.Field(typeof(CameraDriver), "desiredSize").GetValue(Find.CameraDriver);
+            var cameraDriverRootPos = (Vector3) RootPosField.GetValue(Find.CameraDriver);
+            var cameraDriverDesiredSize = (float) DesiredSizeField.GetValue(Find.CameraDriver);
             
             var persistentColonyGameData = new PersistentColonyGameData
             {
                 CurrentMapIndex = game.currentMapIndex,
                 MapSize = game.World.info.initialMapSize.x,
                 info = game.Info,
+                rules = game.Rules,
                 scenario = game.Scenario,
                 playSettings = game.playSettings,
                 storyWatcher = game.storyWatcher,

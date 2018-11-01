@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,14 @@ namespace PersistentWorlds.SaveAndLoad
         
         #region Properties
         private static PersistentWorld PersistentWorld => PersistentWorldManager.GetInstance().PersistentWorld;
+        #endregion
+        
+        #region Constructors
+        static DynamicMapLoader()
+        {
+            if(ReservedDestinationsField == null)
+                throw new NullReferenceException($"{nameof(ReservedDestinationsField)} is null.");
+        }
         #endregion
         
         #region Methods
