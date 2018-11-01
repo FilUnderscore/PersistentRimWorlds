@@ -86,8 +86,8 @@ namespace PersistentWorlds.World
             {
                 yield return new Command_Action
                 {
-                    defaultLabel = "FilUnderscore.PersistentRimWorlds.Visit.Colony".Translate(),
-                    defaultDesc = "FilUnderscore.PersistentRimWorlds.Visit.Colony.Desc".Translate(),
+                    defaultLabel = "FilUnderscore.PersistentRimWorlds.Command.VisitColony".Translate(),
+                    defaultDesc = "FilUnderscore.PersistentRimWorlds.Command.VisitColony.Desc".Translate(),
                     icon = VisitCommand,
                     hotKey = KeyBindingDefOf.Misc2,
                     action = delegate
@@ -99,7 +99,7 @@ namespace PersistentWorlds.World
                                 {
                                     Visit(caravan);
                                 }, 
-                                "FilUnderscore.PersistentRimWorlds.LoadingMap", false, null);
+                                "FilUnderscore.PersistentRimWorlds.Loading.Map", false, null);
                         }
                 };
             }
