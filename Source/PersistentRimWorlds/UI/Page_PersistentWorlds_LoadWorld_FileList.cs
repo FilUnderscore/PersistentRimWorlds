@@ -115,7 +115,9 @@ namespace PersistentWorlds.UI
         
         private void DeleteWorld(string worldDir)
         {
-            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(Path.GetDirectoryName(worldDir)), "Delete".Translate(),
+            var worldDirInfo = new DirectoryInfo(worldDir);
+            
+            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(worldDirInfo.Name), "Delete".Translate(),
                 delegate
                 {
                     // TODO: Delete persistent world.

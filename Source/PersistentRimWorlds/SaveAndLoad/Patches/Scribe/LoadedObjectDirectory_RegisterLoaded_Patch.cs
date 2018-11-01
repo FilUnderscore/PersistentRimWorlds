@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Harmony;
@@ -12,6 +13,14 @@ namespace PersistentWorlds.Patches
         #region Fields
         private static readonly FieldInfo AllObjectsByLoadIdField =
             AccessTools.Field(typeof(LoadedObjectDirectory), "allObjectsByLoadID");
+        #endregion
+        
+        #region Constructors
+        static LoadedObjectDirectory_RegisterLoaded_Patch()
+        {
+            if(AllObjectsByLoadIdField == null)
+                throw new NullReferenceException($"{nameof(AllObjectsByLoadIdField)} is null.");
+        }
         #endregion
         
         #region Methods

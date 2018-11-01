@@ -16,10 +16,10 @@ namespace PersistentWorlds.Patches.UI
             AccessTools.Constructor(typeof(Page_CreateWorldParams));
 
         private static readonly MethodInfo GetInstanceMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.GetInstance));
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.PersistentWorldNotNull));
         #endregion
         
         #region Constructors

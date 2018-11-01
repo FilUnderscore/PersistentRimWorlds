@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Harmony;
@@ -16,8 +17,16 @@ namespace PersistentWorlds.Patches
             AccessTools.Field(typeof(DebugLoadIDsSavingErrorsChecker), "deepSaved");
         #endregion
         
+        #region Constructors
+        static DebugLoadIDsSavingErrorsChecker_RegisterDeepSaved_Patch()
+        {
+            if(deepSavedField == null)
+                throw new NullReferenceException($"{nameof(deepSavedField)} is null.");
+        }
+        #endregion
+        
         #region Methods
-        static bool Prefix(DebugLoadIDsSavingErrorsChecker __instance, object obj, string label)
+        static bool Prefix(object obj, string label)
         {
             if (Scribe.mode != LoadSaveMode.Saving || !PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return true;
             

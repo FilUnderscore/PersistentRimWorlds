@@ -17,30 +17,64 @@ namespace PersistentWorlds.Patches
     {
         #region Fields
         private static readonly MethodInfo TranslateMethod =
-            AccessTools.Method(typeof(Translator), "Translate", new[] {typeof(string)});
+            AccessTools.Method(typeof(Translator), nameof(Translator.Translate), new[] {typeof(string)});
 
         private static readonly FieldInfo MainMenuButtonDelegate =
-            AccessTools.Field(typeof(PersistentWorldsMod), "MainMenuButtonDelegate");
+            AccessTools.Field(typeof(PersistentWorldsMod), nameof(PersistentWorldsMod.MainMenuButtonDelegate));
 
-        private static readonly ConstructorInfo ListableOptionConstructor = AccessTools.Constructor(typeof(ListableOption),
-            new[] {typeof(string), typeof(Action), typeof(string)});
+        private static readonly ConstructorInfo ListableOptionConstructor = AccessTools.Constructor(
+            typeof(ListableOption), new[] {typeof(string), typeof(Action), typeof(string)});
 
         private static readonly MethodInfo AddMethod =
-            AccessTools.Method(typeof(List<ListableOption>), "Add", new[] {typeof(ListableOption)});
+            AccessTools.Method(typeof(List<ListableOption>), nameof(List<ListableOption>.Add),
+                new[] {typeof(ListableOption)});
 
         private static readonly MethodInfo AnyWorldsMethod =
-            AccessTools.Method(typeof(SaveFileUtils), "AnyWorlds");
+            AccessTools.Method(typeof(SaveFileUtils), nameof(SaveFileUtils.AnyWorlds));
 
-        private static readonly MethodInfo GetGameMethod = AccessTools.Method(typeof(Current), "get_Game");
+        private static readonly MethodInfo GetGameMethod =
+            AccessTools.Property(typeof(Current), nameof(Current.Game)).GetGetMethod();
 
         private static readonly MethodInfo GetInstanceMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.GetInstance));
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.PersistentWorldNotNull));
 
         private static readonly FieldInfo SaveMenuButtonDelegate =
-            AccessTools.Field(typeof(PersistentWorldsMod), "SaveMenuButtonDelegate");
+            AccessTools.Field(typeof(PersistentWorldsMod), nameof(PersistentWorldsMod.SaveMenuButtonDelegate));
+        #endregion
+        
+        #region Constructors
+        static MainMenuDrawer_DoMainMenuControls_Patch()
+        {
+            if(TranslateMethod == null)
+                throw new NullReferenceException($"{nameof(TranslateMethod)} is null.");
+            
+            if(MainMenuButtonDelegate == null)
+                throw new NullReferenceException($"{nameof(MainMenuButtonDelegate)} is null.");
+            
+            if(ListableOptionConstructor == null)
+                throw new NullReferenceException($"{nameof(ListableOptionConstructor)} is null.");
+            
+            if(AddMethod == null)
+                throw new NullReferenceException($"{nameof(AddMethod)} is null.");
+            
+            if(AnyWorldsMethod == null)
+                throw new NullReferenceException($"{nameof(AnyWorldsMethod)} is null.");
+            
+            if(GetGameMethod == null)
+                throw new NullReferenceException($"{nameof(GetGameMethod)} is null.");
+            
+            if(GetInstanceMethod == null)
+                throw new NullReferenceException($"{nameof(GetInstanceMethod)} is null.");
+            
+            if(PersistentWorldNotNullMethod == null)
+                throw new NullReferenceException($"{nameof(PersistentWorldNotNullMethod)} is null.");
+            
+            if(SaveMenuButtonDelegate == null)
+                throw new NullReferenceException($"{nameof(SaveMenuButtonDelegate)} is null.");
+        }
         #endregion
         
         #region Methods

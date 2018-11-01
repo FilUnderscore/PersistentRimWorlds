@@ -15,12 +15,13 @@ namespace PersistentWorlds.Patches
         private static readonly FieldInfo TicksAbsField = AccessTools.Field(typeof(LogEntry), "ticksAbs");
         
         private static readonly MethodInfo GetInstanceMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.GetInstance));
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.PersistentWorldNotNull));
 
-        private static readonly MethodInfo GetTicksAbsMethod = AccessTools.Method(typeof(GenTicks), "get_TicksAbs");
+        private static readonly MethodInfo GetTicksAbsMethod =
+            AccessTools.Property(typeof(GenTicks), "TicksAbs").GetGetMethod();
         #endregion
         
         #region Constructors
