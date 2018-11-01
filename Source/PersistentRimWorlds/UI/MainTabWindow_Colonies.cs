@@ -43,8 +43,6 @@ namespace PersistentWorlds.UI
 
         public override void PostClose()
         {
-            base.PostClose();
-            
             ColonyUI.Reset();
         }
 
@@ -61,38 +59,40 @@ namespace PersistentWorlds.UI
             
             LongEventHandler.QueueLongEvent(delegate
             {
-                persistentWorld.LoadSaver.SaveWorldData();
-                
-                persistentWorld.ConvertCurrentGameWorldObjects();
-            }, "FilUnderscore.PersistentRimWorlds.SavingWorld", false, null);
+                persistentWorld.SaveColony();
+            }, "FilUnderscore.PersistentRimWorlds.Saving.Colony", false, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
-                persistentWorld.SaveColony(previousColony);
-            }, "FilUnderscore.PersistentRimWorlds.SavingColony", false, null);
+                persistentWorld.ConvertCurrentGameWorldObjects();
+                
+                persistentWorld.LoadSaver.SaveWorldData(true);
+            }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.LoadSaver.LoadColony(ref colony);
                 persistentWorld.Colonies[index] = colony;
-                            
-                persistentWorld.SetPlayerFactionVarsToColonyFaction();
-            }, "FilUnderscore.PersistentRimWorlds.LoadingColony", true, null);
+                
+                colony.GameData.SetGame();
+            }, "FilUnderscore.PersistentRimWorlds.Loading.Colony", true, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
                 // TODO: Figure out how to load asynchronously to not lock up game.
                 var maps = DynamicMapLoader.LoadColonyMaps(colony);
+                
                 Current.Game.CurrentMap = Current.Game.FindMap(maps.First().Tile);
 
                 persistentWorld.UnloadColony(previousColony);
 
                 persistentWorld.ConvertToCurrentGameWorldObjects();
-                
+
+                persistentWorld.SetPlayerFactionVarsToColonyFaction();                
                 persistentWorld.CheckAndSetColonyData();
                             
                 Find.CameraDriver.SetRootPosAndSize(colony.GameData.CamRootPos, colony.GameData.DesiredSize);   
-            }, "FilUnderscore.PersistentRimWorlds.LoadingMaps", false, null);
+            }, "FilUnderscore.PersistentRimWorlds.Loading.Maps", false, null);
         }
         #endregion
     }

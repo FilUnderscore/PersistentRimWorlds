@@ -13,7 +13,7 @@ namespace PersistentWorlds.SaveAndLoad
     {
         #region Fields
         public static readonly string SaveDir =
-            (string) AccessTools.Method(typeof(GenFilePaths), "get_SavedGamesFolderPath", new Type[0]).Invoke(null, new object[0]);
+            (string) AccessTools.Method(typeof(GenFilePaths), "get_SavedGamesFolderPath").Invoke(null, new object[0]);
 
         private readonly PersistentWorld persistentWorld;
         
@@ -288,7 +288,7 @@ namespace PersistentWorlds.SaveAndLoad
             this.persistentWorld.ConvertToCurrentGameWorldObjects();
         }
 
-        public void SaveWorldData()
+        public void SaveWorldData(bool check = false)
         {
             Log.Message("Saving world data...");
             
@@ -301,7 +301,13 @@ namespace PersistentWorlds.SaveAndLoad
                 ScribeMetaHeaderUtility.WriteMetaHeader();
                 Scribe_Deep.Look(ref this.persistentWorld.WorldData, "data");
             });
-            
+
+            if (check)
+            {
+                // ScribeSaver.FinalizeSaving() stops this from calling when Persistent World is present.
+                Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
+            }
+
             Log.Message("Saved world data.");
         }
 
@@ -318,9 +324,6 @@ namespace PersistentWorlds.SaveAndLoad
             SaveColony(ref colony);
 
             SaveColonyMapData(colony);
-            
-            // ScribeSaver.FinalizeSaving() stops this from calling when Persistent World is present.
-            Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
             
             Log.Message("Saved colony and colony maps data.");
         }

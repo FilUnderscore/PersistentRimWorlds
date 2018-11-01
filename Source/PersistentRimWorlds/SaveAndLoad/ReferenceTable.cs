@@ -34,9 +34,14 @@ namespace PersistentWorlds.SaveAndLoad
         /// <exception cref="NullReferenceException"></exception>
         static ReferenceTable()
         {
-            if(CurPathField == null) throw new NullReferenceException(nameof(CurPathField) + " is null.");
-            if(LoadedObjectDirectoryField == null) throw new NullReferenceException(nameof(LoadedObjectDirectoryField) + " is null.");
-            if(AllObjectsByLoadIdField == null) throw new NullReferenceException(nameof(AllObjectsByLoadIdField) + " is null.");
+            if(CurPathField == null) 
+                throw new NullReferenceException($"{nameof(CurPathField)} is null.");
+            
+            if(LoadedObjectDirectoryField == null) 
+                throw new NullReferenceException($"{nameof(LoadedObjectDirectoryField)} + is null.");
+            
+            if(AllObjectsByLoadIdField == null) 
+                throw new NullReferenceException($"{nameof(AllObjectsByLoadIdField)} is null.");
         }
         #endregion
         

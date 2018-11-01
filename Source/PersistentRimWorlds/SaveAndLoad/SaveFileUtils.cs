@@ -41,7 +41,8 @@ namespace PersistentWorlds.SaveAndLoad
 
             var info = new DirectoryInfo(savePath);
 
-            return info.GetDirectories().Length > 0;
+            return ((info.GetDirectories().Length > 0 || GenFilePaths.AllSavedGameFiles.Any()) && Current.ProgramState == ProgramState.Entry &&
+                   GenScene.InEntryScene);
 
         }
         #endregion

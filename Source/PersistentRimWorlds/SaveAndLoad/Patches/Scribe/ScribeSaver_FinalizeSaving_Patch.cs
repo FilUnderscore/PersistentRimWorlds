@@ -13,18 +13,20 @@ namespace PersistentWorlds.Patches
     {
         #region Fields
         private static readonly FieldInfo LoadIDsErrorsCheckerField =
-            AccessTools.Field(typeof(ScribeSaver), "loadIDsErrorsChecker");
+            AccessTools.Field(typeof(ScribeSaver), nameof(ScribeSaver.loadIDsErrorsChecker));
 
         private static readonly MethodInfo CheckForErrorsAndClearMethod =
-            AccessTools.Method(typeof(DebugLoadIDsSavingErrorsChecker), "CheckForErrorsAndClear");
+            AccessTools.Method(typeof(DebugLoadIDsSavingErrorsChecker),
+                nameof(DebugLoadIDsSavingErrorsChecker.CheckForErrorsAndClear));
 
         private static readonly MethodInfo GetInstanceMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "GetInstance");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.GetInstance));
 
         private static readonly MethodInfo PersistentWorldNotNullMethod =
-            AccessTools.Method(typeof(PersistentWorldManager), "PersistentWorldNotNull");
+            AccessTools.Method(typeof(PersistentWorldManager), nameof(PersistentWorldManager.PersistentWorldNotNull));
         #endregion
-
+        
+        #region Constructors
         static ScribeSaver_FinalizeSaving_Patch()
         {
             if (LoadIDsErrorsCheckerField == null)
@@ -39,6 +41,7 @@ namespace PersistentWorlds.Patches
             if(PersistentWorldNotNullMethod == null)
                 throw new NullReferenceException($"{nameof(PersistentWorldNotNullMethod)} is null.");
         }
+        #endregion
         
         #region Methods
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGen)

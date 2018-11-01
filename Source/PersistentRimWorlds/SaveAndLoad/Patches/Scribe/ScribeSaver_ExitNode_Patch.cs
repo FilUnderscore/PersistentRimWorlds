@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Harmony;
@@ -9,9 +10,20 @@ namespace PersistentWorlds.Patches
     public class ScribeSaver_ExitNode_Patch
     {
         #region Fields
-        private static readonly FieldInfo writerField = AccessTools.Field(typeof(ScribeSaver), "writer");
+        private static readonly FieldInfo WriterField = AccessTools.Field(typeof(ScribeSaver), "writer");
         
-        private static readonly FieldInfo curPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
+        private static readonly FieldInfo CurPathField = AccessTools.Field(typeof(ScribeSaver), "curPath");
+        #endregion
+        
+        #region Constructors
+        static ScribeSaver_ExitNode_Patch()
+        {
+            if(WriterField == null)
+                throw new NullReferenceException($"{nameof(WriterField)} is null.");
+            
+            if(CurPathField == null)
+                throw new NullReferenceException($"{nameof(CurPathField)} is null.");
+        }
         #endregion
         
         #region Methods
@@ -20,11 +32,11 @@ namespace PersistentWorlds.Patches
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull())
                 return true;
             
-            var writer = writerField.GetValue(__instance);
+            var writer = WriterField.GetValue(__instance);
 
             if (writer == null) return true;
 
-            var curPath = (string) curPathField.GetValue(__instance);
+            var curPath = (string) CurPathField.GetValue(__instance);
 
             if (curPath.EndsWith("thing"))
             {
@@ -35,7 +47,7 @@ namespace PersistentWorlds.Patches
             var length = curPath.LastIndexOf('/');
             curPath = length <= 0 ? null : curPath.Substring(0, length);
             
-            curPathField.SetValue(__instance, curPath);
+            CurPathField.SetValue(__instance, curPath);
             
             return true;
         }

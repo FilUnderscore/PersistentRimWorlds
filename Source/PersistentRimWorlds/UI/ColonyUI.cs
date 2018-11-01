@@ -54,15 +54,18 @@ namespace PersistentWorlds.UI
                 
                     // Delete button.
                     var deleteSize = boxRect.width / 8;
-                    var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize, deleteSize);
+
+                    var deleteRect = new Rect(boxRect.x + boxRect.width - deleteSize, boxRect.y, deleteSize,
+                        deleteSize);
 
                     // Draw delete button first.
                     if (Widgets.ButtonImage(deleteRect, DeleteX))
                     {
                         delete(i);
                     }
-                
-                    TooltipHandler.TipRegion(deleteRect, "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
+
+                    TooltipHandler.TipRegion(deleteRect,
+                        "FilUnderscore.PersistentRimWorlds.Delete.Colony".Translate());
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
@@ -87,15 +90,14 @@ namespace PersistentWorlds.UI
                         boxRect.width - nameMargin - deleteSize,
                         textureRect.y - boxRect.y);
     
-                    DrawNameLabel(colonyNameRect, colony);
+                    DrawNameLabel(colonyNameRect, colony, colony.ColonyData.ColonyFaction);
                 
                     return true;
                 }, colonies.Count + 1, (width, height) =>
                 {
                     /*
                      * New Colony Button
-                     */
-                    
+                     */       
                     var y = width * Mathf.Floor((float) colonies.Count / perRow) +
                             (colonies.Count / perRow) * gap;
 
@@ -111,7 +113,8 @@ namespace PersistentWorlds.UI
                         newColony();
                     }
 
-                    TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
+                    TooltipHandler.TipRegion(boxRect,
+                        "FilUnderscore.PersistentRimWorlds.Create.NewColony".Translate());
 
                     Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
                         new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white,
@@ -187,20 +190,20 @@ namespace PersistentWorlds.UI
                             load(i);
                         }
                     }
-                    
-                    DrawDynamicLeader(boxRect, out var leaderRect, colony, persistentWorld, 0.485f);
-    
+
                     GUI.color = Color.white;
+
+                    DrawDynamicLeader(boxRect, out var leaderRect, colony, persistentWorld, 0.485f);
     
                     TooltipHandler.TipRegion(textureRect,
                         Equals(colony, persistentWorld.Colony)
-                            ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor".Translate()
-                            : "FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo".Translate());
+                            ? "FilUnderscore.PersistentRimWorlds.Colony.ChangeColor".Translate()
+                            : "FilUnderscore.PersistentRimWorlds.Colony.SwitchTo".Translate());
                     
                     var colonyNameRect = new Rect(boxRect.x + 4f, textureRect.yMax, boxRect.width - leaderRect.width,
                         boxRect.yMax - textureRect.yMax);
                     
-                    DrawNameLabel(colonyNameRect, colony);
+                    DrawNameLabel(colonyNameRect, colony, faction);
 
                     return true;
                 }, colonies.Count);
@@ -252,7 +255,7 @@ namespace PersistentWorlds.UI
             return faction.def.ExpandingIconTexture;
         }
 
-        private static void DrawNameLabel(Rect rect, PersistentColony colony)
+        private static void DrawNameLabel(Rect rect, PersistentColony colony, Faction faction)
         {
             if(!ScrollPositions.ContainsKey(colony))
                 ScrollPositions.Add(colony, new Vector2());
@@ -261,7 +264,7 @@ namespace PersistentWorlds.UI
 
             Text.Font = GameFont.Tiny;
 
-            WidgetExtensions.LabelScrollable(rect, colony.ColonyData.ColonyFaction.Name, ref labelScrollPosition, false,
+            WidgetExtensions.LabelScrollable(rect, faction.Name, ref labelScrollPosition, false,
                 true, false);
             
             Text.Font = GameFont.Small;
@@ -336,7 +339,7 @@ namespace PersistentWorlds.UI
 
                 TooltipHandler.TipRegion(leaderRect,
                     canChangeLeader
-                        ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader".Translate()
+                        ? "FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader".Translate()
                         : "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader
                             .Name.ToStringFull));
             }
