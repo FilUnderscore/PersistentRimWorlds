@@ -22,7 +22,7 @@ namespace PersistentWorlds.World
         private static readonly Texture2D VisitCommand = ContentFinder<Texture2D>.Get("UI/Commands/Visit", true);
 
         private string nameInt;
-        public bool namedByPlayer;
+        public bool NamedByPlayer;
         
         public PersistentColonyData PersistentColonyData = new PersistentColonyData();
         private Material cachedMat;
@@ -73,7 +73,7 @@ namespace PersistentWorlds.World
             base.ExposeData();
             
             Scribe_Values.Look(ref nameInt, "name");
-            Scribe_Values.Look(ref namedByPlayer, "namedByPlayer");
+            Scribe_Values.Look(ref NamedByPlayer, "namedByPlayer");
             Scribe_References.Look(ref PersistentColonyData, "colony");
         }
 
