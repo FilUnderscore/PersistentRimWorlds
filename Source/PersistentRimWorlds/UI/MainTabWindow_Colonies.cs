@@ -60,14 +60,14 @@ namespace PersistentWorlds.UI
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.SaveColony();
-            }, "FilUnderscore.PersistentRimWorlds.SavingColony", false, null);
+            }, "FilUnderscore.PersistentRimWorlds.Saving.Colony", false, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
                 persistentWorld.ConvertCurrentGameWorldObjects();
                 
                 persistentWorld.LoadSaver.SaveWorldData(true);
-            }, "FilUnderscore.PersistentRimWorlds.SavingWorld", false, null);
+            }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
@@ -75,7 +75,7 @@ namespace PersistentWorlds.UI
                 persistentWorld.Colonies[index] = colony;
                 
                 colony.GameData.SetGame();
-            }, "FilUnderscore.PersistentRimWorlds.LoadingColony", true, null);
+            }, "FilUnderscore.PersistentRimWorlds.Loading.Colony", true, null);
             
             LongEventHandler.QueueLongEvent(delegate
             {
@@ -92,7 +92,7 @@ namespace PersistentWorlds.UI
                 persistentWorld.CheckAndSetColonyData();
                             
                 Find.CameraDriver.SetRootPosAndSize(colony.GameData.CamRootPos, colony.GameData.DesiredSize);   
-            }, "FilUnderscore.PersistentRimWorlds.LoadingMaps", false, null);
+            }, "FilUnderscore.PersistentRimWorlds.Loading.Maps", false, null);
         }
         #endregion
     }

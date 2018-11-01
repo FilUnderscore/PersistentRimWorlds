@@ -2,45 +2,46 @@
 <LanguageData>
 	<!-- Persistent Worlds Core -->
 	<FilUnderscore.PersistentRimWorlds>Persistent RimWorlds</FilUnderscore.PersistentRimWorlds>
-	<FilUnderscore.PersistentRimWorlds.ConfirmConversion>Are you sure you want to convert this world to a persistent world? There is no going back, and may be incompatible with some mods. This action will also overwrite any saves with the same name as the world name, this can be checked through the World tab in the save by clicking a tile and clicking the Planet tab in the bottom-left corner of your screen. You have been warned.</FilUnderscore.PersistentRimWorlds.ConfirmConversion>
-	<FilUnderscore.PersistentRimWorlds.ConvertingWorld>Converting world to persistent world</FilUnderscore.PersistentRimWorlds.ConvertingWorld>
-	<FilUnderscore.PersistentRimWorlds.ConversionComplete>Conversion for world {0} is complete. The persistent world will now be saved as {0} and can be loaded through the Persistent Worlds menu.</FilUnderscore.PersistentRimWorlds.ConversionComplete>
-	<FilUnderscore.PersistentRimWorlds.ConvertWorld>Convert</FilUnderscore.PersistentRimWorlds.ConvertWorld>
-	<FilUnderscore.PersistentRimWorlds.DeleteColony>Click to delete this colony.</FilUnderscore.PersistentRimWorlds.DeleteColony>
-	<FilUnderscore.PersistentRimWorlds.DeleteColonyDesc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this colony into a colony run by AI, or cancel this action.</FilUnderscore.PersistentRimWorlds.DeleteColonyDesc>
-	<FilUnderscore.PersistentRimWorlds.DeleteWorld>Delete persistent world.</FilUnderscore.PersistentRimWorlds.DeleteWorld>
-	<FilUnderscore.PersistentRimWorlds.DeleteWorldDesc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this world to a single colony game, or cancel this action.</FilUnderscore.PersistentRimWorlds.DeleteWorldDesc>
-	<FilUnderscore.PersistentRimWorlds.LoadWorld>Load World</FilUnderscore.PersistentRimWorlds.LoadWorld>
+	<FilUnderscore.PersistentRimWorlds.Convert.Confirm>Are you sure you want to convert this world to a persistent world? This action will create a copy of your current save game, placing it in a folder in your 'Saves' folder with the name of the folder being the world name.</FilUnderscore.PersistentRimWorlds.Convert.Confirm>
+	<FilUnderscore.PersistentRimWorlds.Convert.World>Converting world to persistent world</FilUnderscore.PersistentRimWorlds.Convert.World>
+	<FilUnderscore.PersistentRimWorlds.Convert.Complete>Conversion for world {0} is complete. The persistent world will now be saved as {0} and can be loaded through the Persistent Worlds menu.</FilUnderscore.PersistentRimWorlds.Convert.Complete>
+	<FilUnderscore.PersistentRimWorlds.Convert>Convert</FilUnderscore.PersistentRimWorlds.Convert>
+	<FilUnderscore.PersistentRimWorlds.Delete.Colony>Click to delete this colony.</FilUnderscore.PersistentRimWorlds.Delete.Colony>
+	<FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this colony into a colony run by AI, or cancel this action.</FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc>
+	<FilUnderscore.PersistentRimWorlds.Delete.World>Delete persistent world.</FilUnderscore.PersistentRimWorlds.Delete.World>
+	<FilUnderscore.PersistentRimWorlds.Delete.World.Desc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this world to a single colony game, or cancel this action.</FilUnderscore.PersistentRimWorlds.Delete.World.Desc>
+	<FilUnderscore.PersistentRimWorlds.Load.World>Load World</FilUnderscore.PersistentRimWorlds.Load.World>
 	<FilUnderscore.PersistentRimWorlds.BackToMenu>Back to Menu</FilUnderscore.PersistentRimWorlds.BackToMenu>
 	<FilUnderscore.PersistentRimWorlds.Cancel>Cancel</FilUnderscore.PersistentRimWorlds.Cancel>
-	<FilUnderscore.PersistentRimWorlds.SwitchToColony>Switch To</FilUnderscore.PersistentRimWorlds.SwitchToColony>
-	<FilUnderscore.PersistentRimWorlds.CreateANewColony>Click to create a new colony.</FilUnderscore.PersistentRimWorlds.CreateANewColony>
+	<FilUnderscore.PersistentRimWorlds.Create.NewColony>Click to create a new colony.</FilUnderscore.PersistentRimWorlds.Create.NewColony>
 	
 	<FilUnderscore.PersistentRimWorlds.Colony.NoLeader>This colony doesn't have a leader.</FilUnderscore.PersistentRimWorlds.Colony.NoLeader>
-	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>Click to change this colony's color.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor>
-	<FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo>Click to switch to this colony.</FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo>
-	<FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader>Click to change this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader>
+	<FilUnderscore.PersistentRimWorlds.Colony.ChangeColor>Click to change this colony's color.</FilUnderscore.PersistentRimWorlds.Colony.ChangeColor>
+	<FilUnderscore.PersistentRimWorlds.Colony.SwitchTo>Click to switch to this colony.</FilUnderscore.PersistentRimWorlds.Colony.SwitchTo>
+	<FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader>Click to change this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader>
 	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
 	
 	<!-- Persistent Worlds - Loading -->
-	<FilUnderscore.PersistentRimWorlds.LoadingWorld>Loading world</FilUnderscore.PersistentRimWorlds.LoadingWorld>
-	<FilUnderscore.PersistentRimWorlds.LoadingColonies>Loading colonies</FilUnderscore.PersistentRimWorlds.LoadingColonies>
-	<FilUnderscore.PersistentRimWorlds.LoadingColony>Loading colony</FilUnderscore.PersistentRimWorlds.LoadingColony>
-	<FilUnderscore.PersistentRimWorlds.LoadingMaps>Loading maps</FilUnderscore.PersistentRimWorlds.LoadingMaps>
-	<FilUnderscore.PersistentRimWorlds.LoadingGame>Loading game</FilUnderscore.PersistentRimWorlds.LoadingGame>
-	<FilUnderscore.PersistentRimWorlds.FinalizingGame>Finalizing game</FilUnderscore.PersistentRimWorlds.FinalizingGame>
+	<FilUnderscore.PersistentRimWorlds.Loading.World>Loading world</FilUnderscore.PersistentRimWorlds.Loading.World>
+	<FilUnderscore.PersistentRimWorlds.Loading.Colonies>Loading colonies</FilUnderscore.PersistentRimWorlds.Loading.Colonies>
+	<FilUnderscore.PersistentRimWorlds.Loading.Colony>Loading colony</FilUnderscore.PersistentRimWorlds.Loading.Colony>
+	<FilUnderscore.PersistentRimWorlds.Loading.Maps>Loading maps</FilUnderscore.PersistentRimWorlds.Loading.Maps>
+	<FilUnderscore.PersistentRimWorlds.Loading.Game>Loading game</FilUnderscore.PersistentRimWorlds.Loading.Game>
+	<FilUnderscore.PersistentRimWorlds.Loading.Game.Finalizing>Finalizing game</FilUnderscore.PersistentRimWorlds.Loading.Game.Finalizing>
 	
 	<!-- Persistent Worlds - Saving -->
-	<FilUnderscore.PersistentRimWorlds.SavingWorld>Saving world</FilUnderscore.PersistentRimWorlds.SavingWorld>
-	<FilUnderscore.PersistentRimWorlds.SavingColony>Saving colony</FilUnderscore.PersistentRimWorlds.SavingColony>
+	<FilUnderscore.PersistentRimWorlds.Saving.World>Saving world</FilUnderscore.PersistentRimWorlds.Saving.World>
+	<FilUnderscore.PersistentRimWorlds.Saving.Colony>Saving colony</FilUnderscore.PersistentRimWorlds.Saving.Colony>
 	
-	<FilUnderscore.PersistentRimWorlds.SaveColony>Save colony</FilUnderscore.PersistentRimWorlds.SaveColony>
+	<FilUnderscore.PersistentRimWorlds.Save.Colony>Save colony</FilUnderscore.PersistentRimWorlds.Save.Colony>
+	<FilUnderscore.PersistentRimWorlds.Save.World>Save world</FilUnderscore.PersistentRimWorlds.Save.World>
+	<FilUnderscore.PersistentRimWorlds.Save.NewWorld>Click to save as a new world.</FilUnderscore.PersistentRimWorlds.Save.NewWorld>
 	
 	<!-- Base Resettle Command -->
-	<FilUnderscore.PersistentRimWorlds.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.BaseResettle>
-	<FilUnderscore.PersistentRimWorlds.BaseResettleDesc>Resettle into this abandoned colony base, it may be left in ruins after being left unmaintained for some time, or inhabited by pirates. Beware.</FilUnderscore.PersistentRimWorlds.BaseResettleDesc>
+	<FilUnderscore.PersistentRimWorlds.Command.BaseResettle>Resettle</FilUnderscore.PersistentRimWorlds.Command.BaseResettle>
+	<FilUnderscore.PersistentRimWorlds.Command.BaseResettle.Desc>Resettle into this abandoned colony base, it may be left in ruins after being left unmaintained for some time, or inhabited by pirates. Beware.</FilUnderscore.PersistentRimWorlds.Command.BaseResettle.Desc>
 	
 	<!-- Visit Command -->
-	<FilUnderscore.PersistentRimWorlds.VisitColony>Visit</FilUnderscore.PersistentRimWorlds.VisitColony>
-	<FilUnderscore.PersistentRimWorlds.VisitColonyDesc>Stop by the colony to trade and assist them.</FilUnderscore.PersistentRimWorlds.VisitColonyDesc>
+	<FilUnderscore.PersistentRimWorlds.Command.VisitColony>Visit</FilUnderscore.PersistentRimWorlds.Command.VisitColony>
+	<FilUnderscore.PersistentRimWorlds.Command.VisitColony.Desc>Stop by the colony to trade and assist them.</FilUnderscore.PersistentRimWorlds.Command.VisitColony.Desc>
 </LanguageData>

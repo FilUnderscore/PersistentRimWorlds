@@ -24,8 +24,8 @@ namespace PersistentWorlds.World
 
             yield return new Command_Action
             {
-                defaultLabel = "FilUnderscore.PersistentRimWorlds.BaseResettle".Translate(),
-                defaultDesc = "FilUnderscore.PersistentRimWorlds.BaseResettleDesc".Translate(),
+                defaultLabel = "FilUnderscore.PersistentRimWorlds.Command.BaseResettle".Translate(),
+                defaultDesc = "FilUnderscore.PersistentRimWorlds.Command.BaseResettle.Desc".Translate(),
                 icon = BaseResettleCommand,
                 action = delegate
                 {

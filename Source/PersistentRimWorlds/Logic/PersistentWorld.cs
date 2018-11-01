@@ -40,11 +40,11 @@ namespace PersistentWorlds.Logic
         {
             Current.Game = this.Game;
             
-            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingWorld".Translate());
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.Loading.World".Translate());
             
             this.Game.LoadGame();
             
-            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.FinalizingGame".Translate());
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.Loading.Game.Finalizing".Translate());
             
             // At the end.. because Scribe doesn't run due to us not loading Game directly.
             this.Game.FinalizeInit();
@@ -81,7 +81,7 @@ namespace PersistentWorlds.Logic
                 return;
             }
             
-            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingGame".Translate());
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.Loading.Game".Translate());
             
             Colony.GameData.SetGame();
 
@@ -107,7 +107,7 @@ namespace PersistentWorlds.Logic
 
         private void LoadMaps()
         {
-            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.LoadingMaps".Translate());
+            LongEventHandler.SetCurrentEventText("FilUnderscore.PersistentRimWorlds.Loading.Maps".Translate());
             
             var maps = this.LoadSaver.LoadMaps(this.Colony.ColonyData.ActiveWorldTiles.ToArray());
             maps.Do(Current.Game.AddMap);

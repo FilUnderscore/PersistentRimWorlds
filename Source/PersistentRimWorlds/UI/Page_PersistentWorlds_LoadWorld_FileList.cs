@@ -110,18 +110,18 @@ namespace PersistentWorlds.UI
                         
                 this.next = new Page_PersistentWorlds_LoadWorld_ColonySelection(persistentWorld) {prev = this};
                 this.DoNext();
-            }, "FilUnderscore.PersistentRimWorlds.LoadingWorld", true, null);
+            }, "FilUnderscore.PersistentRimWorlds.Loading.World", true, null);
         }
         
         private void DeleteWorld(string worldDir)
         {
-            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.DeleteWorldDesc".Translate(worldDir), "Delete".Translate(),
+            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.World.Desc".Translate(Path.GetDirectoryName(worldDir)), "Delete".Translate(),
                 delegate
                 {
                     // TODO: Delete persistent world.
-                }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.DeleteWorld".Translate(), true)
+                }, "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.Delete.World".Translate(), true)
             {
-                buttonCText = "FilUnderscore.PersistentRimWorlds.ConvertWorld".Translate(),
+                buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate(),
                 buttonCAction = delegate
                 {
                     // TODO: Convert world back to single colony game.  

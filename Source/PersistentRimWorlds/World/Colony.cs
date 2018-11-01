@@ -86,8 +86,8 @@ namespace PersistentWorlds.World
             {
                 yield return new Command_Action
                 {
-                    defaultLabel = "FilUnderscore.PersistentRimWorlds.VisitColony".Translate(),
-                    defaultDesc = "FilUnderscore.PersistentRimWorlds.VisitColonyDesc".Translate(),
+                    defaultLabel = "FilUnderscore.PersistentRimWorlds.Visit.Colony".Translate(),
+                    defaultDesc = "FilUnderscore.PersistentRimWorlds.Visit.Colony.Desc".Translate(),
                     icon = VisitCommand,
                     hotKey = KeyBindingDefOf.Misc2,
                     action = delegate

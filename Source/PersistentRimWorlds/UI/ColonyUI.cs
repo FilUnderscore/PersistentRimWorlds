@@ -65,7 +65,7 @@ namespace PersistentWorlds.UI
                     }
 
                     TooltipHandler.TipRegion(deleteRect,
-                        "FilUnderscore.PersistentRimWorlds.DeleteColony".Translate());
+                        "FilUnderscore.PersistentRimWorlds.Delete.Colony".Translate());
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
@@ -114,7 +114,7 @@ namespace PersistentWorlds.UI
                     }
 
                     TooltipHandler.TipRegion(boxRect,
-                        "FilUnderscore.PersistentRimWorlds.CreateANewColony".Translate());
+                        "FilUnderscore.PersistentRimWorlds.Create.NewColony".Translate());
 
                     Widgets.DrawLine(new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height / 3),
                         new Vector2(boxRect.x + boxRect.width / 2, boxRect.y + boxRect.height * 0.66f), Color.white,
@@ -197,8 +197,8 @@ namespace PersistentWorlds.UI
     
                     TooltipHandler.TipRegion(textureRect,
                         Equals(colony, persistentWorld.Colony)
-                            ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeColor".Translate()
-                            : "FilUnderscore.PersistentRimWorlds.Colony.ClickToSwitchTo".Translate());
+                            ? "FilUnderscore.PersistentRimWorlds.Colony.ChangeColor".Translate()
+                            : "FilUnderscore.PersistentRimWorlds.Colony.SwitchTo".Translate());
                     
                     var colonyNameRect = new Rect(boxRect.x + 4f, textureRect.yMax, boxRect.width - leaderRect.width,
                         boxRect.yMax - textureRect.yMax);
@@ -339,7 +339,7 @@ namespace PersistentWorlds.UI
 
                 TooltipHandler.TipRegion(leaderRect,
                     canChangeLeader
-                        ? "FilUnderscore.PersistentRimWorlds.Colony.ClickToChangeLeader".Translate()
+                        ? "FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader".Translate()
                         : "FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader".Translate(colony.ColonyData.Leader
                             .Name.ToStringFull));
             }
