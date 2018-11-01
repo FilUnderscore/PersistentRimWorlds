@@ -310,7 +310,7 @@ namespace PersistentWorlds.Logic
                 var colony = (Colony) WorldObjectSameIDMaker.MakeWorldObject(PersistentWorldsDefOf.Colony, settlement.ID);
                 settlement.Map.info.parent = colony;
                 colony.Tile = settlement.Tile;
-                colony.Name = settlement.HasName ? settlement.Name : null;
+                colony.Name = settlement.HasName && settlement.namedByPlayer ? settlement.Name : null;
 
                 colony.PersistentColonyData = this.LoadSaver.Status == PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting ? this.Colonies[0].ColonyData : this.Colony.ColonyData;
                 
