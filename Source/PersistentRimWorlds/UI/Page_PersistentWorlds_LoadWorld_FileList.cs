@@ -86,7 +86,8 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            WorldUI.DrawWorldList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.saveGameEntries, this.LoadWorld, this.DeleteWorld, this.ConvertWorld);
+            WorldUI.DrawWorldList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.saveGameEntries,
+                this.LoadWorld, this.OpenDeleteWorldDialog, this.ConvertWorld);
         }
 
         private void LoadWorld(string worldDir)
@@ -112,11 +113,19 @@ namespace PersistentWorlds.UI
             }, "FilUnderscore.PersistentRimWorlds.Loading.World", true, null);
         }
         
+        private void OpenDeleteWorldDialog(string worldDir)
+        {
+            WorldUI.ShowDeleteWorldDialog(worldDir, this.DeleteWorld, this.ConvertWorldToSingleColonyGame);
+        }
+
         private void DeleteWorld(string worldDir)
         {
-            WorldUI.ShowDeleteWorldDialog(worldDir);
+            SaveFileUtils.DeleteDirectory(worldDir);
+        }
+
+        private void ConvertWorldToSingleColonyGame(string worldDir)
+        {
             
-            this.LoadWorldsAsEntries();
         }
         
         private void ConvertWorld(string filePath)

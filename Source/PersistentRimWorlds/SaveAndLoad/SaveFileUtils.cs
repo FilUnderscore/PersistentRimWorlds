@@ -70,6 +70,28 @@ namespace PersistentWorlds.SaveAndLoad
                 DeleteDirectory(path);
             }
         }
+
+        public static bool WorldWithNameExists(string name)
+        {
+            return LoadWorldEntries().Any(entry => entry.Name.EqualsIgnoreCase(name));
+        }
         #endregion
+
+        public static DirectoryInfo Clone(string folderPath, string newFolderPath)
+        {
+            var rootDirectory = Directory.CreateDirectory(newFolderPath);
+            
+            foreach (var dir in Directory.GetDirectories(folderPath, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dir.Replace(folderPath, newFolderPath));
+            }
+
+            foreach (var file in Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(file, file.Replace(folderPath, newFolderPath), true);
+            }
+
+            return rootDirectory;
+        }
     }
 }

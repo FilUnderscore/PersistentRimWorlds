@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Emit;
 using System.Threading;
+using Harmony;
 using PersistentWorlds.SaveAndLoad;
 using UnityEngine;
 using Verse;
@@ -46,27 +47,58 @@ namespace PersistentWorlds.UI
         public override void DoWindowContents(Rect inRect)
         {
             WorldUI.DrawWorldSaveList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.OnOverwriteWorld,
-                this.OnNewWorld, this.OnDeleteWorld);
+                this.OnNewWorld, this.ShowDeleteWorldDialog);
         }
 
         private void OnNewWorld()
         {
-            this.Close();
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             
-            this.LoadWorldsAsEntries();
+            var nameWorldDialog = new Dialog_PersistentWorlds_NameWorld((name) =>
+            {
+                this.Close();
+
+                var worldDir = SaveFileUtils.Clone(persistentWorld.LoadSaver.GetWorldFolderPath(),
+                    PersistentWorldLoadSaver.SaveDir + "/" + name);
+                
+                // Delete original world file.
+                worldDir.GetFiles("*.pwf").Do(file => file.Delete());
+                
+                // Change original world name.
+                persistentWorld.WorldData.Info.name = name;
+                
+                persistentWorld.LoadSaver =
+                    new PersistentWorldLoadSaver(persistentWorld, worldDir.FullName);
+
+                LongEventHandler.QueueLongEvent(delegate
+                {
+                    persistentWorld.SaveColony();
+                    
+                    persistentWorld.ConvertCurrentGameWorldObjects();
+                
+                    persistentWorld.LoadSaver.SaveWorldData(true);
+                    
+                    persistentWorld.ConvertToCurrentGameWorldObjects();
+                }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
+
+                this.LoadWorldsAsEntries();
+            });
+            
+            Find.WindowStack.Add(nameWorldDialog);
         }
         
         private void OnOverwriteWorld(string worldPath, bool isCurrentWorld)
         {
             this.Close();
-            
-            this.LoadWorldsAsEntries();
         }
 
-        private void OnDeleteWorld(string worldPath)
+        private void ShowDeleteWorldDialog(string worldPath)
         {
-            WorldUI.ShowDeleteWorldDialog(worldPath);
-            
+            WorldUI.ShowDeleteWorldDialog(worldPath, this.DeleteWorld);
+        }
+
+        private void DeleteWorld(string worldPath)
+        {
             this.LoadWorldsAsEntries();
         }
     }
