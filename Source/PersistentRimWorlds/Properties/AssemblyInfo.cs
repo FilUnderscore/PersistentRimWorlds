@@ -6,7 +6,7 @@
 [assembly: AssemblyTitle("PersistentRimWorlds")]
 [assembly: AssemblyDescription("Turns a rimworld into a persistent rimworld, explore fallen colonies where pirates may lurk and stop by your predecessors.")]
 [assembly: AssemblyProduct("PersistentWorlds")]
-[assembly: AssemblyCopyright("Copyright © FilUnderscore 2018")]
+[assembly: AssemblyCopyright("Copyright © FilUnderscore 2019")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -19,4 +19,4 @@
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.3.0")]
+[assembly: AssemblyFileVersion("0.1.4.0")]
