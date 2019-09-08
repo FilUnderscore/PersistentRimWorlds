@@ -24,7 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Additional information (please complete the following information):**
-- Version: [e.g. 1.0]
+- Game Version: [e.g. 1.0]
+- Mod Version: [e.g. 0.1.3.0]
+- List of mods loaded: [e.g. Mod Manager, Prepare Carefully, etc.]
 
 **Additional context**
 Add any other context about the problem here.
