@@ -35,7 +35,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0ColourPicker, Version=2.0.0.34810, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="0ColourPicker, Version=2.0.0.22137, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Assemblies\0ColourPicker.dll</HintPath>
     </Reference>
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
