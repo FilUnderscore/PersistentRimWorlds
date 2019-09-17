@@ -3,6 +3,6 @@
 	<identifier>PersistentRimWorlds</identifier>
 	<version>0.1.4.0</version>
 	<showCrossPromotions>true</showCrossPromotions>
-	<manifestUri>https://cdn.jsdelivr.net/gh/FilUnderscore/PersistentRimWorlds/About/Manifest.xml</manifestUri>
+	<manifestUri>https://cdn.jsdelivr.net/gh/FilUnderscore/PersistentRimWorlds@master/About/Manifest.xml</manifestUri>
 	<downloadUri>https://github.com/FilUnderscore/PersistentRimWorlds/releases/latest</downloadUri>
 </Manifest>
