@@ -17,6 +17,7 @@ namespace PersistentWorlds.World
         #region Methods
         public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
+            // Enumerate and display all the previous gizmos.
             foreach (var gizmo in base.GetCaravanGizmos(caravan))
             {
                 yield return gizmo;
@@ -29,6 +30,7 @@ namespace PersistentWorlds.World
                 icon = BaseResettleCommand,
                 action = delegate
                 {
+                    // TODO: Reminder. Make sure to warn player before resettling about the possible consequences depending on how much time has passed since abandonment.
                     Find.WindowStack.Add(new Dialog_MessageBox("Resettle, Roll the Dice and see whether it will be overtaken by enemy base already.", "Dismiss"));
                 
                     /*

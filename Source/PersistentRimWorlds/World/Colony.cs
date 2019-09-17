@@ -120,6 +120,7 @@ namespace PersistentWorlds.World
             return inspectString;
         }
 
+        // TODO: Provide more colony information in a separate inspection tab.
         public override IEnumerable<InspectTabBase> GetInspectTabs()
         {
             return base.GetInspectTabs();
