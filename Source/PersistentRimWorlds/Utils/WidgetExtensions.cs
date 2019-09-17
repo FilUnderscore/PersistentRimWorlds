@@ -20,15 +20,21 @@ namespace PersistentWorlds.Utils
         {
             var flag1 = takeScrollbarSpaceEvenIfNoScrollbar || (double) Verse.Text.CalcHeight(label, rect.width) > (double) rect.height;
             var flag2 = flag1 && (!dontConsumeScrollEventsIfNoScrollbar || (double) Verse.Text.CalcHeight(label, rect.width - 16f) > (double) rect.height);
+            
             var width = rect.width;
+            
             if (flag1)
                 width -= 16f;
+            
             var rect1 = new Rect(0.0f, 0.0f, width, Mathf.Max(Verse.Text.CalcHeight(label, width) + 5f, rect.height));
+            
             if (flag2)
                 Widgets.BeginScrollView(rect, ref scrollbarPosition, rect1, scrollbar);
             else
                 GUI.BeginGroup(rect);
+            
             Widgets.Label(rect1, label);
+            
             if (flag2)
                 Widgets.EndScrollView();
             else

@@ -34,16 +34,22 @@ namespace PersistentWorlds.SaveAndLoad
         {
             Current.ProgramState = ProgramState.MapInitializing;
 
+            #if DEBUG
             Log.Message("Tiles: " + tiles.Length);
+            #endif
             
             var tileSet = new List<int>(tiles);
             tileSet.RemoveAll(tile => PersistentWorld.LoadedMaps.ContainsKey(tile));
             
+            #if DEBUG
             Log.Message("Set count: " + tileSet.Count);
+            #endif
             
             var maps = new List<Map>(PersistentWorld.LoadSaver.LoadMaps(tileSet.ToArray()));
 
+            #if DEBUG
             Log.Message("Map count: " + maps.Count);
+            #endif
             
             foreach (var map in maps)
             {
