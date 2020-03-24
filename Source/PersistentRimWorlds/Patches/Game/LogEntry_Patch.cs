@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
-using PersistentWorlds.Logic;
+using HarmonyLib;
 using Verse;
 
 namespace PersistentWorlds.Patches

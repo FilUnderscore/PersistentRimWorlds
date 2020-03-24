@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using Harmony;
+using HarmonyLib;
 using PersistentWorlds;
 using PersistentWorlds.Logic;
 using RimWorld;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -151,7 +151,7 @@ namespace PersistentWorlds.Logic
             Current.Game.components = this.gameComponents;
             
             FillComponentsMethod.Invoke(Current.Game, new object[0]);
-            BackCompatibility.GameLoadingVars(Current.Game);
+            BackCompatibility.PostExposeData(Current.Game);
         }
 
         public static PersistentColonyGameData Convert(Game game)
