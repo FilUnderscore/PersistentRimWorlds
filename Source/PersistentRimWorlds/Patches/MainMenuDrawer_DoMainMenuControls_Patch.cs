@@ -51,7 +51,7 @@ namespace PersistentWorlds.Patches
 
     /**
       *
-      * DEPRECATED - removed in a future release.
+      * OBSOLETE - removed in a future release.
       * 
     [HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
     public class MainMenuDrawer_DoMainMenuControls_Patch
