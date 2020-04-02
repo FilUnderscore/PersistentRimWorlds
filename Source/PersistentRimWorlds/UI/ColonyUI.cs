@@ -252,7 +252,7 @@ namespace PersistentWorlds.UI
 
         private static Texture2D GetTexture(Faction faction)
         {
-            return faction.def.ExpandingIconTexture;
+            return faction.def.FactionIcon;
         }
 
         private static void DrawNameLabel(Rect rect, PersistentColony colony, Faction faction)

@@ -4,14 +4,55 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using Harmony;
+using HarmonyLib;
 using PersistentWorlds.SaveAndLoad;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds.Patches
 {
+    // Some different implementation from Parexy's Multiplayer Mod - saves the hassle of transpiling.
+    [HarmonyPatch(typeof(MainMenuDrawer), nameof(MainMenuDrawer.DoMainMenuControls))]
+    public class MainMenuMarker
+    {
+        public static bool drawing;
+
+        static void Prefix()
+        {
+            drawing = true;
+        }
+
+        static void Postfix()
+        {
+            drawing = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(OptionListingUtility), nameof(OptionListingUtility.DrawOptionListing))]
+    public class MainMenuDrawer_DoMainMenuControls_OptionListingUtility_DrawOptionListing_Patch
+    {
+        static void Prefix(Rect rect, List<ListableOption> optList)
+        {
+            if (!MainMenuMarker.drawing)
+                return;
+
+            if(Current.ProgramState == ProgramState.Entry)
+            {
+                int index;
+                if ((index = optList.FindIndex(opt => opt.label == "LoadGame".Translate())) != -1)
+                {
+                    optList.Insert(index + 1, new ListableOption("FilUnderscore.PersistentRimWorlds".Translate(), (Action) PersistentWorldsMod.MainMenuButtonDelegate));
+                }
+            }
+        }
+    }
+
+    /**
+      *
+      * OBSOLETE - removed in a future release.
+      * 
     [HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
     public class MainMenuDrawer_DoMainMenuControls_Patch
     {
@@ -43,6 +84,9 @@ namespace PersistentWorlds.Patches
 
         private static readonly FieldInfo SaveMenuButtonDelegate =
             AccessTools.Field(typeof(PersistentWorldsMod), nameof(PersistentWorldsMod.SaveMenuButtonDelegate));
+
+        // New
+        private static readonly MethodInfo DrawOptionListing = AccessTools.Method(typeof(OptionListingUtility), nameof(DrawOptionListing), new[] { typeof(Rect), typeof(List<ListableOption>) });
         #endregion
         
         #region Constructors
@@ -89,6 +133,7 @@ namespace PersistentWorlds.Patches
             
             for (var i = 0; i < codes.Count; i++)
             {
+                /*
                 if (codes[i].opcode == OpCodes.Call && codes[i].operand == GetGameMethod &&
                     codes[i + 5].opcode == OpCodes.Ldstr && codes[i + 5].operand as string == "Save")
                 {
@@ -157,10 +202,39 @@ namespace PersistentWorlds.Patches
 
                     break;
                 }
+                */
+
+    /**
+                if(codes[i + 2].opcode == OpCodes.Call && codes[i + 2].operand as MethodInfo == DrawOptionListing)
+                {
+                    var labels = codes[i].labels;
+
+                    var insertInstr = new List<CodeInstruction>()
+                    {
+                        new CodeInstruction(OpCodes.Ldstr, "FilUnderscore.PersistentRimWorlds"),
+                        new CodeInstruction(OpCodes.Call, TranslateMethod),
+                        new CodeInstruction(OpCodes.Ldsfld, MainMenuButtonDelegate),
+                        new CodeInstruction(OpCodes.Castclass, typeof(Action)),
+                        new CodeInstruction(OpCodes.Ldnull),
+                        new CodeInstruction(OpCodes.Newobj, ListableOptionConstructor),
+                        new CodeInstruction(OpCodes.Stloc_3),
+                        new CodeInstruction(OpCodes.Ldloc_2),
+                        new CodeInstruction(OpCodes.Ldloc_3),
+                        new CodeInstruction(OpCodes.Callvirt, AddMethod)
+                    };
+
+                    codes.InsertRange(i, insertInstr.AsEnumerable());
+
+                    labels.ForEach(label => codes[i].labels.Add(label));
+                    labels.Clear();
+
+                    break;
+                }
             }
             
             return codes.AsEnumerable();
         }
         #endregion
     }
+    **/
 }
