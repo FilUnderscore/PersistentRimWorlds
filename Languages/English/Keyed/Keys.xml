@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<!-- Persistent Worlds Core -->
 	<FilUnderscore.PersistentRimWorlds>Persistent RimWorlds</FilUnderscore.PersistentRimWorlds>
 	<FilUnderscore.PersistentRimWorlds.Convert.Confirm>Are you sure you want to convert this world to a persistent world? This action will create a copy of your current save game, placing it in a folder in your 'Saves' folder with the name of the folder being the world name.</FilUnderscore.PersistentRimWorlds.Convert.Confirm>
 	<FilUnderscore.PersistentRimWorlds.Convert.World>Converting world to persistent world</FilUnderscore.PersistentRimWorlds.Convert.World>

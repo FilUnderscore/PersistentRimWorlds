@@ -8,6 +8,7 @@ using Verse;
 using PersistentWorlds.UI;
 using FileLog = PersistentWorlds.Utils.FileLog;
 using RimWorld.QuestGen;
+using RimWorld;
 
 namespace PersistentWorlds
 {
@@ -48,7 +49,7 @@ namespace PersistentWorlds
         /// </summary>
         private static void PatchMainMenu()
         {
-            Find.WindowStack.Add(new Page_PersistentWorlds_Main());
+            Find.WindowStack.Add(new Page_PersistentWorlds_LoadWorld_FileList());
         }
 
         private static void PatchSaveMenu()

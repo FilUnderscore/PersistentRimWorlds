@@ -15,7 +15,7 @@ namespace PersistentWorlds.UI
     {
         private readonly List<WorldUI.UIEntry> worldEntries = new List<WorldUI.UIEntry>();
         
-        public override Vector2 InitialSize => new Vector2(600f, 700f);
+        public override Vector2 InitialSize => new Vector2(620f, 700f);
         
         public Dialog_PersistentWorlds_SaveWorld()
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using ColourPicker;
 using PersistentWorlds.Logic;
 using PersistentWorlds.Utils;
+using PersistentWorlds.World;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -14,7 +15,10 @@ namespace PersistentWorlds.UI
     public static class ColonyUI
     {
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
-        
+
+        private static readonly Texture2D FavouriteStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarOutline");
+        private static readonly Texture2D FavouritedStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarFilledIn");
+
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
 
@@ -209,6 +213,9 @@ namespace PersistentWorlds.UI
                     
                     DrawNameLabel(colonyNameRect, colony, faction);
 
+                    //TODO: Draw interactable favourites star in top-right.
+                    DrawFavouriteStar(boxRect, colony);
+
                     return true;
                 }, colonies.Count);
         }
@@ -365,6 +372,13 @@ namespace PersistentWorlds.UI
             GUI.DrawTexture(rect, texture);
 
             GUI.color = previousColor;
+        }
+
+        private static void DrawFavouriteStar(Rect rect, PersistentColony colony)
+        {
+            const float size = 32f;
+
+            DrawTexture(new Rect(rect.x + rect.width * 0.8f, rect.y + rect.width * 0.8f, size, size), FavouriteStar, GenUI.MouseoverColor);
         }
     }
 }
