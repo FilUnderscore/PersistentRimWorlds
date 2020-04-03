@@ -132,10 +132,11 @@ namespace PersistentWorlds.UI
         /// <summary>
         /// Draw in-game colonies tab.
         /// </summary>
-        /// <param name="inRect"></param>
-        /// <param name="margin"></param>
-        /// <param name="colonies"></param>
-        /// <param name="load"></param>
+        /// <param name="inRect">The rect that is being modified - the rect that holds the colonies UI elements.</param>
+        /// <param name="margin">The margin spacing/gap between each colony UI element.</param>
+        /// <param name="colonies">List of colonies to be displayed.</param>
+        /// <param name="load">Action to run on click (colony load/switch).</param>
+        /// <param name="tabSize">The size of the tab when opened depending on screen resolution.</param>
         public static void DrawColoniesTab(ref Rect inRect, float margin,
             List<PersistentColony> colonies, Action<int> load, Vector2 tabSize)
         {
