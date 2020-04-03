@@ -137,23 +137,26 @@ namespace PersistentWorlds.UI
         /// <param name="colonies"></param>
         /// <param name="load"></param>
         public static void DrawColoniesTab(ref Rect inRect, float margin,
-            List<PersistentColony> colonies, Action<int> load)
+            List<PersistentColony> colonies, Action<int> load, Vector2 tabSize)
         {
-            const int perRow = 6;
             var gap = (int) margin;
             
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             
             SortColoniesOneTime(ref colonies);
             SortColonies(ref colonies);
-         
+
+            // Scale the number of rows depending on the current resolution.
+            int perRow = ((int) tabSize.x) / 160; // Reference is 6 per row @ 1920 resolution width.
+
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
                 (i, boxRect) =>
                 {
                    var colony = colonies[i];
              
                     Faction faction;
-                    
+
+                    // The top-left most colony is the current colony the player is playing as.                    
                     if (Equals(colony, persistentWorld.Colony))
                     {
                         Widgets.DrawHighlight(boxRect);
@@ -318,7 +321,7 @@ namespace PersistentWorlds.UI
                 if (colony.ColonyData.Leader.Reference != null)
                 {
                     colony.ColonyData.Leader.Texture =
-                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize);
+                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize, new Vector3(), 1f, true, true);
                 }
 
                 var leaderPortrait = colony.ColonyData.Leader.Texture;

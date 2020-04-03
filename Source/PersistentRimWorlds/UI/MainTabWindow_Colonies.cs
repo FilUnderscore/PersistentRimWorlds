@@ -27,7 +27,7 @@ namespace PersistentWorlds.UI
         public override void DoWindowContents(Rect inRect)
         {
             ColonyUI.DrawColoniesTab(ref inRect, this.Margin,
-                PersistentWorldManager.GetInstance().PersistentWorld.Colonies, Load);
+                PersistentWorldManager.GetInstance().PersistentWorld.Colonies, Load, RequestedTabSize);
         }
 
         public override void PreOpen()
