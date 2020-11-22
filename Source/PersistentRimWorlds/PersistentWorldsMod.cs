@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Persistent RimWorlds - Persistent Worlds RimWorld Mod
+// Copyright (C) 2018-2020 Filip Jerkovic
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
