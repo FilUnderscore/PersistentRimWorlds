@@ -10,6 +10,7 @@ This mod will require extensive testing and so any help is appreciated in stabil
 
 ### Branches
 `stable` - The latest stable version of the mod, i.e. pre-release/official release.
+
 `dev` - The latest unstable development version of the mod, i.e. the next version for release in-development.
 
 ## Features
