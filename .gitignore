@@ -5,6 +5,8 @@
 
 # Custom
 *.zip
+Assemblies/*.dll
+Assemblies/*.xml
 
 # User-specific files
 *.suo
