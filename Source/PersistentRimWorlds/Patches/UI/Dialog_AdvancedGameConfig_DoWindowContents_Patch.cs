@@ -43,37 +43,6 @@ namespace PersistentWorlds.Patches.UI
         #endregion
         
         #region Methods
-        /*
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
-        {
-            var codes = new List<CodeInstruction>(instr);
-
-            var label1 = ilGenerator.DefineLabel();
-
-            codes[201].labels.Add(label1);
-            
-            for (var i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode != OpCodes.Endfinally || codes[i - 1].opcode != OpCodes.Callvirt ||
-                    codes[i - 1].operand != DisposeMethod) continue;
-
-                var codesToInsert = new List<CodeInstruction>
-                {
-                    new CodeInstruction(OpCodes.Call,
-                        GetInstanceMethod),
-                    new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
-                    new CodeInstruction(OpCodes.Brtrue_S, label1)
-                };
-
-                codes.InsertRange(i + 3, codesToInsert);
-                
-                break;
-            }
-            
-            return codes.AsEnumerable();
-        }
-        */
-
         // Hope that no other mods use this method, otherwise we'll need to transpile for compatibility.
         static bool Prefix(Rect inRect)
         {
