@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using PersistentWorlds.UI;
+using PersistentWorlds.Utils;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -32,7 +33,7 @@ namespace PersistentWorlds.Patches
             GUI.BeginGroup(rect);
             Rect rect1 = new Rect(0, 0, size.x, size.y);
 
-            if (PersistentWorldWidgets.ButtonImageOn(rect1, WorldIcon))
+            if (WidgetExtensions.ButtonImageOn(rect1, WorldIcon))
                 PersistentWorldsMod.MainMenuButtonDelegate.DynamicInvoke();
             
             TooltipHandler.TipRegion(rect1, "FilUnderscore.PersistentRimWorlds".Translate());

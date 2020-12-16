@@ -129,7 +129,6 @@
     <Compile Include="UI\Page_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Page_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
-    <Compile Include="UI\PersistentWorldWidgets.cs" />
     <Compile Include="UI\WorldUI.cs" />
     <Compile Include="UI\UITools.cs" />
     <Compile Include="Utils\DebugExtensions.cs" />
