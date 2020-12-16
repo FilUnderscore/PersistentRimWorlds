@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace PersistentWorlds.Patches.UI
@@ -42,6 +43,7 @@ namespace PersistentWorlds.Patches.UI
         #endregion
         
         #region Methods
+        /*
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
         {
             var codes = new List<CodeInstruction>(instr);
@@ -69,6 +71,17 @@ namespace PersistentWorlds.Patches.UI
             }
             
             return codes.AsEnumerable();
+        }
+        */
+
+        // Hope that no other mods use this method, otherwise we'll need to transpile for compatibility.
+        static bool Prefix(Rect inRect)
+        {
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return true;
+            
+            Widgets.Label(inRect, "FilUnderscore.PersistentRimWorlds.Warning.AdvancedCreationUnavailable".Translate());
+            
+            return false;
         }
         #endregion
     }

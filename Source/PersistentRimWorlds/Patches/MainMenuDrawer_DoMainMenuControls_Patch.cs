@@ -34,6 +34,8 @@ namespace PersistentWorlds.Patches
 
             if (PersistentWorldWidgets.ButtonImageOn(rect1, WorldIcon))
                 PersistentWorldsMod.MainMenuButtonDelegate.DynamicInvoke();
+            
+            TooltipHandler.TipRegion(rect1, "FilUnderscore.PersistentRimWorlds".Translate());
 
             GUI.EndGroup();
         }
