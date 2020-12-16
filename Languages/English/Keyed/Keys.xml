@@ -23,16 +23,16 @@
 	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
 	
 	<!-- Persistent Worlds - Loading -->
-	<FilUnderscore.PersistentRimWorlds.Loading.World>Loading world</FilUnderscore.PersistentRimWorlds.Loading.World>
+	<FilUnderscore.PersistentRimWorlds.Loading.World>Loading persistent rimworld</FilUnderscore.PersistentRimWorlds.Loading.World>
 	<FilUnderscore.PersistentRimWorlds.Loading.Colonies>Loading colonies</FilUnderscore.PersistentRimWorlds.Loading.Colonies>
 	<FilUnderscore.PersistentRimWorlds.Loading.Colony>Loading colony</FilUnderscore.PersistentRimWorlds.Loading.Colony>
-	<FilUnderscore.PersistentRimWorlds.Loading.Map>Loading map</FilUnderscore.PersistentRimWorlds.Loading.Map>
-	<FilUnderscore.PersistentRimWorlds.Loading.Maps>Loading maps</FilUnderscore.PersistentRimWorlds.Loading.Maps>
+	<FilUnderscore.PersistentRimWorlds.Loading.Map>Loading colony map</FilUnderscore.PersistentRimWorlds.Loading.Map>
+	<FilUnderscore.PersistentRimWorlds.Loading.Maps>Loading colony maps</FilUnderscore.PersistentRimWorlds.Loading.Maps>
 	<FilUnderscore.PersistentRimWorlds.Loading.Game>Loading game</FilUnderscore.PersistentRimWorlds.Loading.Game>
 	<FilUnderscore.PersistentRimWorlds.Loading.Game.Finalizing>Finalizing game</FilUnderscore.PersistentRimWorlds.Loading.Game.Finalizing>
 	
 	<!-- Persistent Worlds - Saving -->
-	<FilUnderscore.PersistentRimWorlds.Saving.World>Saving world</FilUnderscore.PersistentRimWorlds.Saving.World>
+	<FilUnderscore.PersistentRimWorlds.Saving.World>Saving persistent world</FilUnderscore.PersistentRimWorlds.Saving.World>
 	<FilUnderscore.PersistentRimWorlds.Saving.Colony>Saving colony</FilUnderscore.PersistentRimWorlds.Saving.Colony>
 	
 	<FilUnderscore.PersistentRimWorlds.Save.Colony>Save colony</FilUnderscore.PersistentRimWorlds.Save.Colony>
