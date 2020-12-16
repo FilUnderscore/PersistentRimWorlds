@@ -6,9 +6,12 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using HarmonyLib;
 using PersistentWorlds.SaveAndLoad;
+using PersistentWorlds.UI;
 using RimWorld;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 using Verse;
+using Verse.Sound;
 using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds.Patches
@@ -18,7 +21,7 @@ namespace PersistentWorlds.Patches
     public class MainMenuMarker
     {
         private static readonly Texture2D WorldIcon = ContentFinder<Texture2D>.Get("UI/WorldIcon");
-
+        
         public static bool drawing;
 
         static void Prefix()
@@ -30,13 +33,16 @@ namespace PersistentWorlds.Patches
         {
             drawing = false;
 
-            Vector2 size = new Vector2(WorldIcon.width / 16, WorldIcon.height / 16);
+            Vector2 size = new Vector2(WorldIcon.width / 16f, WorldIcon.height / 16f);
 
-            Rect rect = new Rect(0.925f * Verse.UI.screenWidth, 0.675f * Verse.UI.screenHeight, size.x, size.y);
+            Rect rect = new Rect((Verse.UI.screenWidth - size.x) * 0.99675f, (Verse.UI.screenHeight - size.y) * 0.99f, size.x, size.y);
 
             GUI.BeginGroup(rect);
             Rect rect1 = new Rect(0, 0, size.x, size.y);
-            Widgets.ButtonImage(rect1, WorldIcon, Color.gray, GenUI.MouseoverColor, true);
+
+            if (PersistentWorldWidgets.ButtonImageOn(rect1, WorldIcon))
+                PersistentWorldsMod.MainMenuButtonDelegate.DynamicInvoke();
+
             GUI.EndGroup();
         }
     }
@@ -49,6 +55,9 @@ namespace PersistentWorlds.Patches
             if (!MainMenuMarker.drawing)
                 return;
 
+            /*
+             * DEPRECATED - Removed in the next release
+             * 
             if(Current.ProgramState == ProgramState.Entry)
             {
                 int index;
@@ -57,7 +66,9 @@ namespace PersistentWorlds.Patches
                     optList.Insert(index + 1, new ListableOption("FilUnderscore.PersistentRimWorlds".Translate(), (Action) PersistentWorldsMod.MainMenuButtonDelegate));
                 }
             }
-            else if(Current.ProgramState == ProgramState.Playing)
+            else 
+            */
+            if(Current.ProgramState == ProgramState.Playing)
             {
                 if (PersistentWorldManager.GetInstance().PersistentWorldNotNull())
                 {

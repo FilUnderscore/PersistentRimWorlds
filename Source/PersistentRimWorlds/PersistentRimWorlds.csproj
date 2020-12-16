@@ -64,6 +64,10 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logic\ColonyRelation.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="UI\Page_PersistentWorlds_LoadWorld_FileList.cs" />
     <Compile Include="UI\Page_PersistentWorlds_Main.cs" />
     <Compile Include="UI\MainTabWindow_Colonies.cs" />
+    <Compile Include="UI\PersistentWorldWidgets.cs" />
     <Compile Include="UI\WorldUI.cs" />
     <Compile Include="UI\UITools.cs" />
     <Compile Include="Utils\DebugExtensions.cs" />
