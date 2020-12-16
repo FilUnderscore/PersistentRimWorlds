@@ -74,7 +74,7 @@ namespace PersistentWorlds.UI
                     }
 
                     TooltipHandler.TipRegion(deleteRect,
-                        "FilUnderscore.PersistentRimWorlds.Delete.Colony".Translate());
+                        "FilUnderscore.PersistentRimWorlds.Delete.Colony.Click".Translate());
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
 

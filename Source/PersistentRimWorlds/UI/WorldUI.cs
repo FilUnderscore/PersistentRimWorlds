@@ -138,7 +138,7 @@ namespace PersistentWorlds.UI
                         }
 
                         TooltipHandler.TipRegion(deleteRect,
-                            "FilUnderscore.PersistentRimWorlds.Delete.World".Translate());
+                            "FilUnderscore.PersistentRimWorlds.Delete.World.Click".Translate());
                     }
                     
                     DrawTexture(boxRect, OpenFolder, out var textureRect, 0.3f, 0.2f);
