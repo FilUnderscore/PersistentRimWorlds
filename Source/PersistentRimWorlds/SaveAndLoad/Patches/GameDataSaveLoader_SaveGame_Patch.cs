@@ -8,7 +8,6 @@ namespace PersistentWorlds.Patches
     public class GameDataSaveLoader_SaveGame_Patch
     {
         #region Methods
-        // TODO: Disallow saving through normal save menu.
         static bool Prefix(string fileName)
         {
             if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull() || PersistentWorldManager.GetInstance().PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Converting))

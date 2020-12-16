@@ -206,7 +206,6 @@ namespace PersistentWorlds.SaveAndLoad
             
             Log.Message("Loaded colony data...");
         }
-        // TODO: Store basic colony information in world file.
 
         public IEnumerable<Map> LoadMaps(int[] mapTiles)
         {
