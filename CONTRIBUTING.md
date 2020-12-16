@@ -3,7 +3,7 @@
 ## Setup
 This mod relies mainly on the RimWorld `Assembly-CSharp` dll file which can be found in the `Rimworld_Win(64)_Data/Managed` folder (dependent on 32-bit or 64-bit systems) and add the file as a reference. 
 
-Grab the latest Harmony 1.X and Color Picker from the links in `Contributions` in the `README.md` file and add those as references too.
+Grab the latest Harmony 2.X and Color Picker from the links in `Contributions` in the `README.md` file and add those as references too.
 
 ## How you can contribute
 ### Filing bug reports
