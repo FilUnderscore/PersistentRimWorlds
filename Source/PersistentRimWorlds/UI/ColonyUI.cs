@@ -22,7 +22,7 @@ namespace PersistentWorlds.UI
         private static readonly Texture2D FavouriteStarToBe =
             ContentFinder<Texture2D>.Get("UI/FavouriteStarToBeFilledIn");
         
-        private static readonly Texture2D FavouredStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarFilledIn");
+        private static readonly Texture2D FavouredStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarFilledInNew");
 
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
@@ -384,13 +384,19 @@ namespace PersistentWorlds.UI
             GUI.color = previousColor;
         }
 
-        private static bool ButtonTextureHover(Rect rect, Texture texture, Texture hoverTexture, Color color, Color mouseoverColor, bool doMouseoverSound = true)
+        private static bool ButtonTextureHover(Rect rect, Texture texture, Texture hoverTexture, Color color, Color mouseoverColor, Color onColor, bool on, bool doMouseoverSound = true)
         {
             GUI.color = color;
             GUI.DrawTexture(rect, texture);
             GUI.color = Color.white;
-            
-            if (Mouse.IsOver(rect))
+
+            if (on && !Mouse.IsOver(rect))
+            {
+                GUI.color = onColor;
+                GUI.DrawTexture(rect, hoverTexture);
+                GUI.color = Color.white;
+            }
+            else if (Mouse.IsOver(rect))
             {
                 GUI.color = mouseoverColor;
                 GUI.DrawTexture(rect, hoverTexture);
@@ -412,8 +418,8 @@ namespace PersistentWorlds.UI
             
             Widgets.DrawHighlight(starRect);
             
-            if (ButtonTextureHover(starRect, favoured ? FavouredStar : FavouriteStar, FavouriteStarToBe,
-                favoured ? GenUI.MouseoverColor : Color.gray, favoured ? Color.red : GenUI.MouseoverColor))
+            if (ButtonTextureHover(starRect, FavouriteStar, FavouriteStarToBe,
+                Color.gray, favoured ? Color.red : GenUI.MouseoverColor, GenUI.MouseoverColor, favoured))
             {
                 colony.ColonyData.Favoured = !favoured;
             }
