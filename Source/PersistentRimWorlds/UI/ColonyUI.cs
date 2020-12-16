@@ -419,7 +419,7 @@ namespace PersistentWorlds.UI
             Widgets.DrawHighlight(starRect);
             
             if (ButtonTextureHover(starRect, FavouriteStar, FavouriteStarToBe,
-                Color.gray, favoured ? Color.red : GenUI.MouseoverColor, GenUI.MouseoverColor, favoured))
+                Color.gray, favoured ? Color.red : Color.green, GenUI.MouseoverColor, favoured))
             {
                 colony.ColonyData.Favoured = !favoured;
             }
