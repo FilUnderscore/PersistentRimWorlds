@@ -20,6 +20,8 @@ namespace PersistentWorlds.Logic
         
         // Used to load maps for colonies, 2 colonies can have the same tile loaded at the same time.
         public HashSet<int> ActiveWorldTiles = new HashSet<int>();
+
+        public bool Favoured = false;
         #endregion
         
         #region Methods
@@ -46,6 +48,8 @@ namespace PersistentWorlds.Logic
             Scribe_Deep.Look(ref Leader, "leader");
 
             Scribe_Collections.Look(ref ActiveWorldTiles, "activeWorldTiles");
+
+            Scribe_Values.Look(ref Favoured, "favoured", false);
         }
 
         public static PersistentColonyData Convert(Game game, PersistentColonyData colonyColonyData)
@@ -93,7 +97,8 @@ namespace PersistentWorlds.Logic
                    $"{nameof(UniqueId)}={UniqueId}, " +
                    $"{nameof(Color)}={Color}, " +
                    $"{nameof(Leader)}={Leader}, " +
-                   $"{nameof(ActiveWorldTiles)}={ActiveWorldTiles.ToDebugString()})";
+                   $"{nameof(ActiveWorldTiles)}={ActiveWorldTiles.ToDebugString()}, " +
+                   $"{nameof(Favoured)}={Favoured})";
         }
         #endregion
     }

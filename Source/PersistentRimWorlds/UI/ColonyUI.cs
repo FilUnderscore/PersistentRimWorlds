@@ -8,6 +8,7 @@ using PersistentWorlds.World;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace PersistentWorlds.UI
 {
@@ -17,7 +18,11 @@ namespace PersistentWorlds.UI
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
 
         private static readonly Texture2D FavouriteStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarOutline");
-        private static readonly Texture2D FavouritedStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarFilledIn");
+
+        private static readonly Texture2D FavouriteStarToBe =
+            ContentFinder<Texture2D>.Get("UI/FavouriteStarToBeFilledIn");
+        
+        private static readonly Texture2D FavouredStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarFilledIn");
 
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
@@ -155,8 +160,12 @@ namespace PersistentWorlds.UI
             int perRow = ((int) tabSize.x) / 160; // Reference is 6 per row @ 1920 resolution width.
 
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
-                (i, boxRect) =>
+                (i, origBoxRect) =>
                 {
+                    var boxRect = new Rect(origBoxRect.x, origBoxRect.y, origBoxRect.width * 0.8f, origBoxRect.height);
+                    var addRect = new Rect(boxRect.x + boxRect.width, boxRect.y, origBoxRect.width * 0.2f,
+                        origBoxRect.height);
+                    
                    var colony = colonies[i];
              
                     Faction faction;
@@ -213,8 +222,9 @@ namespace PersistentWorlds.UI
                     
                     DrawNameLabel(colonyNameRect, colony, faction);
 
+                    // Drawing additional stuff
                     //TODO: Draw interactable favourites star in top-right.
-                    DrawFavouriteStar(boxRect, colony);
+                    DrawFavouriteStar(addRect, colony);
 
                     return true;
                 }, colonies.Count);
@@ -374,11 +384,42 @@ namespace PersistentWorlds.UI
             GUI.color = previousColor;
         }
 
+        private static bool ButtonTextureHover(Rect rect, Texture texture, Texture hoverTexture, Color color, Color mouseoverColor, bool doMouseoverSound = true)
+        {
+            GUI.color = color;
+            GUI.DrawTexture(rect, texture);
+            GUI.color = Color.white;
+            
+            if (Mouse.IsOver(rect))
+            {
+                GUI.color = mouseoverColor;
+                GUI.DrawTexture(rect, hoverTexture);
+                GUI.color = Color.white;
+            }
+            
+            if(doMouseoverSound)
+                MouseoverSounds.DoRegion(rect);
+
+            return Widgets.ButtonInvisible(rect, false);
+        }
+
         private static void DrawFavouriteStar(Rect rect, PersistentColony colony)
         {
-            const float size = 32f;
+            var favoured = colony.ColonyData.Favoured;
+            
+            var size = rect.size.x;
+            var starRect = new Rect(rect.x, rect.y, size, size);
+            
+            Widgets.DrawHighlight(starRect);
+            
+            if (ButtonTextureHover(starRect, favoured ? FavouredStar : FavouriteStar, FavouriteStarToBe,
+                favoured ? GenUI.MouseoverColor : Color.gray, favoured ? Color.red : GenUI.MouseoverColor))
+            {
+                colony.ColonyData.Favoured = !favoured;
+            }
 
-            DrawTexture(new Rect(rect.x + rect.width * 0.8f, rect.y + rect.width * 0.8f, size, size), FavouriteStar, GenUI.MouseoverColor);
+            TooltipHandler.TipRegion(starRect, !favoured ? "FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add".Translate() : 
+                "FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove".Translate());
         }
     }
 }

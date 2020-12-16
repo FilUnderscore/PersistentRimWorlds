@@ -21,6 +21,8 @@
 	<FilUnderscore.PersistentRimWorlds.Colony.SwitchTo>Click to switch to this colony.</FilUnderscore.PersistentRimWorlds.Colony.SwitchTo>
 	<FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader>Click to change this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader>
 	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
+	<FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add>Add to favourites</FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add>
+	<FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove>Remove from favourites</FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove>
 	
 	<!-- Persistent Worlds - Loading -->
 	<FilUnderscore.PersistentRimWorlds.Loading.World>Loading persistent world</FilUnderscore.PersistentRimWorlds.Loading.World>
