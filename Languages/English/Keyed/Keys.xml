@@ -8,8 +8,10 @@
 	<FilUnderscore.PersistentRimWorlds.Convert>Convert</FilUnderscore.PersistentRimWorlds.Convert>
 	<FilUnderscore.PersistentRimWorlds.Delete.Colony>Click to delete this colony.</FilUnderscore.PersistentRimWorlds.Delete.Colony>
 	<FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this colony into a colony run by AI, or cancel this action.</FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc>
+	<FilUnderscore.PersistentRimWorlds.Delete.Colony.Convert>Convert</FilUnderscore.PersistentRimWorlds.Delete.Colony.Convert>
 	<FilUnderscore.PersistentRimWorlds.Delete.World>Delete persistent world.</FilUnderscore.PersistentRimWorlds.Delete.World>
 	<FilUnderscore.PersistentRimWorlds.Delete.World.Desc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this world to a single colony game, or cancel this action.</FilUnderscore.PersistentRimWorlds.Delete.World.Desc>
+	<FilUnderscore.PersistentRimWorlds.Delete.World.Convert>Convert</FilUnderscore.PersistentRimWorlds.Delete.World.Convert>
 	<FilUnderscore.PersistentRimWorlds.Load.World>Load World</FilUnderscore.PersistentRimWorlds.Load.World>
 	<FilUnderscore.PersistentRimWorlds.BackToMenu>Back to Menu</FilUnderscore.PersistentRimWorlds.BackToMenu>
 	<FilUnderscore.PersistentRimWorlds.Cancel>Cancel</FilUnderscore.PersistentRimWorlds.Cancel>

@@ -203,7 +203,7 @@ namespace PersistentWorlds.UI
 
             if (onConvert != null)
             {
-                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate();
+                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Delete.World.Convert".Translate();
 
                 dialogBox.buttonCAction = () => onConvert(worldDirInfo.FullName);
             }

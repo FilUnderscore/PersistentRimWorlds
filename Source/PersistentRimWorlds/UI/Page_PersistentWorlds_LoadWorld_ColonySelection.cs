@@ -89,7 +89,19 @@ namespace PersistentWorlds.UI
 
         private void Delete(int index)
         {
+            var colony = this.persistentWorld.Colonies[index];
             
+            ColonyUI.ShowDeleteColonyDialog(colony, DeleteColony, ConvertColonyToAIColony);
+        }
+
+        private void DeleteColony(PersistentColony colony)
+        {
+            // TODO...
+        }
+
+        private void ConvertColonyToAIColony(PersistentColony colony)
+        {
+            // TODO...
         }
         #endregion
     }

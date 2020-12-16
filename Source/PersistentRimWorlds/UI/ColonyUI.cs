@@ -427,5 +427,19 @@ namespace PersistentWorlds.UI
             TooltipHandler.TipRegion(starRect, !favoured ? "FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add".Translate() : 
                 "FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove".Translate());
         }
+
+        public static void ShowDeleteColonyDialog(PersistentColony colony, Action<PersistentColony> onDelete, Action<PersistentColony> onConvert)
+        {
+            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc".Translate(colony.ColonyData.ColonyFaction.Name), "Delete".Translate(), () => onDelete(colony), "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.Delete.Colony".Translate(), true);
+
+            if (onConvert != null)
+            {
+                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Delete.Colony.Convert".Translate();
+
+                dialogBox.buttonCAction = () => onConvert(colony);
+            }
+            
+            Find.WindowStack.Add(dialogBox);
+        }
     }
 }
