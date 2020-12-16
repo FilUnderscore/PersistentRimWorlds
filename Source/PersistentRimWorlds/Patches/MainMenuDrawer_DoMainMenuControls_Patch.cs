@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 using HarmonyLib;
-using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.UI;
 using RimWorld;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 using Verse;
-using Verse.Sound;
-using FileLog = PersistentWorlds.Utils.FileLog;
 
 namespace PersistentWorlds.Patches
 {
@@ -55,29 +47,15 @@ namespace PersistentWorlds.Patches
             if (!MainMenuMarker.drawing)
                 return;
 
-            /*
-             * DEPRECATED - Removed in the next release
-             * 
-            if(Current.ProgramState == ProgramState.Entry)
+            if(Current.ProgramState == ProgramState.Playing && PersistentWorldManager.GetInstance().PersistentWorldNotNull())
             {
                 int index;
-                if ((index = optList.FindIndex(opt => opt.label == "LoadGame".Translate())) != -1)
+                if ((index = optList.FindIndex(opt => opt.label == "Save".Translate())) != -1)
                 {
-                    optList.Insert(index + 1, new ListableOption("FilUnderscore.PersistentRimWorlds".Translate(), (Action) PersistentWorldsMod.MainMenuButtonDelegate));
-                }
-            }
-            else 
-            */
-            if(Current.ProgramState == ProgramState.Playing)
-            {
-                if (PersistentWorldManager.GetInstance().PersistentWorldNotNull())
-                {
-                    int index;
-                    if ((index = optList.FindIndex(opt => opt.label == "Save".Translate())) != -1)
-                    {
-                        optList.Insert(index, new ListableOption("FilUnderscore.PersistentRimWorlds.Save.World".Translate(), (Action)PersistentWorldsMod.SaveMenuButtonDelegate));
-                        optList.RemoveAt(index + 1);
-                    }
+                    optList.Insert(index,
+                        new ListableOption("FilUnderscore.PersistentRimWorlds.Save.World".Translate(),
+                            (Action) PersistentWorldsMod.SaveMenuButtonDelegate));
+                    optList.RemoveAt(index + 1);
                 }
             }
         }
