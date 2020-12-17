@@ -96,7 +96,7 @@ namespace PersistentWorlds.UI
 
         private void DeleteColony(PersistentColony colony)
         {
-            // TODO...
+            this.persistentWorld.DeleteColony(colony);
         }
 
         private void ConvertColonyToAIColony(PersistentColony colony)

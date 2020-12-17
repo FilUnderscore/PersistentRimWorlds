@@ -733,6 +733,13 @@ namespace PersistentWorlds.Logic
         {
             return Colonies.First(colony => colony.ColonyData?.UniqueId == uniqueId);
         }
+
+        public void DeleteColony(PersistentColony colony)
+        {
+            this.Colonies.Remove(colony);
+            
+            SaveFileUtils.DeleteFile(colony.FileInfo.FullName);
+        }
         #endregion
         
         #region Enums
