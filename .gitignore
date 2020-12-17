@@ -7,7 +7,7 @@
 *.zip
 Assemblies/*.dll
 Assemblies/*.xml
-Depend/*.dll
+Depend/
 
 # User-specific files
 *.suo
