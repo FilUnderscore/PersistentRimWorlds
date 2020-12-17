@@ -71,11 +71,17 @@ namespace PersistentWorlds.SaveAndLoad
             dirInfo.Delete(true);
         }
 
+        public static void DeleteFile(string path)
+        {
+            var fileInfo = new FileInfo(path);
+            
+            fileInfo.Delete();
+        }
+
         public static bool WorldWithNameExists(string name)
         {
             return LoadWorldEntries().Any(entry => entry.Name.EqualsIgnoreCase(name));
         }
-        #endregion
 
         public static DirectoryInfo Clone(string folderPath, string newFolderPath)
         {
@@ -93,5 +99,6 @@ namespace PersistentWorlds.SaveAndLoad
 
             return rootDirectory;
         }
+        #endregion
     }
 }

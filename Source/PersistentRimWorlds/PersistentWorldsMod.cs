@@ -1,12 +1,16 @@
-﻿using System;
+﻿// Persistent RimWorlds - Persistent Worlds RimWorld Mod
+// Copyright (C) 2018-2020 Filip Jerkovic
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using Verse;
 
 using PersistentWorlds.UI;
 using FileLog = PersistentWorlds.Utils.FileLog;
+using RimWorld.QuestGen;
+using RimWorld;
 
 namespace PersistentWorlds
 {
@@ -29,10 +33,10 @@ namespace PersistentWorlds
         /// <param name="content"></param>
         public PersistentWorldsMod(ModContentPack content) : base(content)
         {
-            var harmony = HarmonyInstance.Create("me.filunderscore.persistentrimworlds");
+            var harmony = new Harmony("me.filunderscore.persistentrimworlds");
 
 #if DEBUG
-            HarmonyInstance.DEBUG = true;
+            Harmony.DEBUG = true;
             
             FileLog.StartLoggingToFile("debug_log.txt");
 #endif
@@ -47,7 +51,7 @@ namespace PersistentWorlds
         /// </summary>
         private static void PatchMainMenu()
         {
-            Find.WindowStack.Add(new Page_PersistentWorlds_Main());
+            Find.WindowStack.Add(new Page_PersistentWorlds_LoadWorld_FileList());
         }
 
         private static void PatchSaveMenu()

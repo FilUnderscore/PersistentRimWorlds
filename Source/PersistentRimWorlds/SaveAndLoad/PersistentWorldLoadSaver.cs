@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Harmony;
+using HarmonyLib;
 using PersistentWorlds.Logic;
 using RimWorld;
 using Verse;
@@ -206,7 +206,6 @@ namespace PersistentWorlds.SaveAndLoad
             
             Log.Message("Loaded colony data...");
         }
-        // TODO: Store basic colony information in world file.
 
         public IEnumerable<Map> LoadMaps(int[] mapTiles)
         {

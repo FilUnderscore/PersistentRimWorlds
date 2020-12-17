@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using PersistentWorlds.Logic;
 using RimWorld;
 using Verse;
@@ -88,6 +88,9 @@ namespace PersistentWorlds.SaveAndLoad
             * Register in case as to not cause problems.
             */
             
+            /*
+             * OBSOLETE - RW VER 1.1
+             * 
             var reservedDestinations =
                 (Dictionary<Faction, PawnDestinationReservationManager.PawnDestinationSet>)
                 ReservedDestinationsField.GetValue(map.pawnDestinationReservationManager);
@@ -99,6 +102,7 @@ namespace PersistentWorlds.SaveAndLoad
                     map.pawnDestinationReservationManager.RegisterFaction(faction);
                 }
             }
+            */
             
             /*
              * Regenerate map data and finalize loading.

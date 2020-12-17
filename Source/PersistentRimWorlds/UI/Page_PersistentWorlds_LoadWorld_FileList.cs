@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using Harmony;
+using HarmonyLib;
 using PersistentWorlds;
 using PersistentWorlds.Logic;
 using RimWorld;
@@ -22,7 +22,7 @@ namespace PersistentWorlds.UI
         #endregion
         
         #region Properties
-        public override Vector2 InitialSize => new Vector2(600f, 700f);
+        public override Vector2 InitialSize => new Vector2(620f, 700f);
         #endregion
         
         #region Constructors

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace PersistentWorlds.Patches.UI
@@ -42,33 +43,14 @@ namespace PersistentWorlds.Patches.UI
         #endregion
         
         #region Methods
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr, ILGenerator ilGenerator)
+        // Hope that no other mods use this method, otherwise we'll need to transpile for compatibility.
+        static bool Prefix(Rect inRect)
         {
-            var codes = new List<CodeInstruction>(instr);
-
-            var label1 = ilGenerator.DefineLabel();
-
-            codes[201].labels.Add(label1);
+            if (!PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return true;
             
-            for (var i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode != OpCodes.Endfinally || codes[i - 1].opcode != OpCodes.Callvirt ||
-                    codes[i - 1].operand != DisposeMethod) continue;
-
-                var codesToInsert = new List<CodeInstruction>
-                {
-                    new CodeInstruction(OpCodes.Call,
-                        GetInstanceMethod),
-                    new CodeInstruction(OpCodes.Callvirt, PersistentWorldNotNullMethod),
-                    new CodeInstruction(OpCodes.Brtrue_S, label1)
-                };
-
-                codes.InsertRange(i + 3, codesToInsert);
-                
-                break;
-            }
+            Widgets.Label(inRect, "FilUnderscore.PersistentRimWorlds.Warning.AdvancedCreationUnavailable".Translate());
             
-            return codes.AsEnumerable();
+            return false;
         }
         #endregion
     }

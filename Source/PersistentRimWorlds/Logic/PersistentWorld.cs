@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
@@ -732,6 +732,13 @@ namespace PersistentWorlds.Logic
         public PersistentColony GetColonyById(int uniqueId)
         {
             return Colonies.First(colony => colony.ColonyData?.UniqueId == uniqueId);
+        }
+
+        public void DeleteColony(PersistentColony colony)
+        {
+            this.Colonies.Remove(colony);
+            
+            SaveFileUtils.DeleteFile(colony.FileInfo.FullName);
         }
         #endregion
         

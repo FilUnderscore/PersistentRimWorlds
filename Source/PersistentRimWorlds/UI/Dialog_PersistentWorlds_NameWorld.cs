@@ -35,6 +35,12 @@ namespace PersistentWorlds.UI
 
                 return false;
             }
+            else if (s.Length == 0)
+            {
+                // TODO: No name?
+                
+                return false;
+            }
 
             return true;
         }

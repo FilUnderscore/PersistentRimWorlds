@@ -8,6 +8,11 @@ I aim to have this mod compatible with many other mods out there, so this mod ru
 ## Development
 This mod will require extensive testing and so any help is appreciated in stabilizing mod support as well as end-game support as there is still a lot of testing that needs to be conducted and bugs to be fixed, as well as features to be implemented. Any contributions are welcome that improve mod compatibility, bugs or improvements on current mod features. Any suggestions can be reported in the Issues tab with using the 'enhancement' label. Any bugs that need to be reported can be labeled with the 'bug' label.
 
+### Branches
+`stable` - The latest stable version of the mod, i.e. pre-release/official release.
+
+`dev` - The latest unstable development version of the mod, i.e. the next version for release in-development.
+
 ## Features
 - Start a new colony using a world from a previous save.
 - Trade with previous colonies throughout the world. (This may include trading using the actual inventories of said colonies)

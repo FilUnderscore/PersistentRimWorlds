@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Harmony;
-using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.Utils;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -141,7 +138,7 @@ namespace PersistentWorlds.UI
                         }
 
                         TooltipHandler.TipRegion(deleteRect,
-                            "FilUnderscore.PersistentRimWorlds.Delete.World".Translate());
+                            "FilUnderscore.PersistentRimWorlds.Delete.World.Click".Translate());
                     }
                     
                     DrawTexture(boxRect, OpenFolder, out var textureRect, 0.3f, 0.2f);
@@ -206,7 +203,7 @@ namespace PersistentWorlds.UI
 
             if (onConvert != null)
             {
-                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Convert.World".Translate();
+                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Delete.World.Convert".Translate();
 
                 dialogBox.buttonCAction = () => onConvert(worldDirInfo.FullName);
             }

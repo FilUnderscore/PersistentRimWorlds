@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Harmony;
+using HarmonyLib;
 using Verse;
 
 namespace PersistentWorlds.Patches

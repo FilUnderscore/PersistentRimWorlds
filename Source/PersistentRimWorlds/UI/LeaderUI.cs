@@ -1,14 +1,47 @@
+using System;
 using System.Collections.Generic;
+using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace PersistentWorlds.UI
 {
-    internal static class LeaderUI
+    public static class LeaderUI
     {
-        public static void DrawColonistsMenu(ref Rect inRect, float margin, List<Pawn> colonists)
+        private static Vector2 scrollPosition;
+        
+        public static void DrawColonistsMenu(ref Rect inRect, float margin, List<Pawn> colonists, Action<Pawn> set)
         {
-            //UITools.DrawBoxGridView();
+            const int perRow = 3;
+            var gap = (int) margin;
+
+            inRect.width += gap;
+            
+            Log.Message("Open " + colonists.Count);
+            
+            UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
+            {
+                var colonist = colonists[i];
+                
+                Widgets.DrawAltRect(boxRect);
+                Widgets.DrawHighlightIfMouseover(boxRect);
+                
+                var portraitSize = new Vector2(boxRect.width / 2, boxRect.height);
+                var portraitRect = new Rect(boxRect.x + boxRect.width * 0.5f - portraitSize.x / 2, boxRect.y, portraitSize.x, portraitSize.y);
+                
+                Texture pawnTexture = PortraitsCache.Get(colonist, portraitSize);
+
+                GUI.DrawTexture(portraitRect, pawnTexture);
+                TooltipHandler.TipRegion(portraitRect, colonist.Name.ToStringFull);
+
+                if (Widgets.ButtonInvisible(boxRect))
+                {
+                    set(colonist);
+                }
+                
+                return true;
+            }, colonists.Count);
         }
 
         public static void Reset()

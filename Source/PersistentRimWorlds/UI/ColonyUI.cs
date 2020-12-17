@@ -4,9 +4,11 @@ using System.Linq;
 using ColourPicker;
 using PersistentWorlds.Logic;
 using PersistentWorlds.Utils;
+using PersistentWorlds.World;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace PersistentWorlds.UI
 {
@@ -14,7 +16,14 @@ namespace PersistentWorlds.UI
     public static class ColonyUI
     {
         private static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete");
+
+        private static readonly Texture2D FavouriteStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarOutline");
+
+        private static readonly Texture2D FavouriteStarToBe =
+            ContentFinder<Texture2D>.Get("UI/FavouriteStarToBeFilledIn");
         
+        private static readonly Texture2D FavouredStar = ContentFinder<Texture2D>.Get("UI/FavouriteStarFilledInNew");
+
         private static readonly Dictionary<PersistentColony, Vector2> ScrollPositions =
             new Dictionary<PersistentColony, Vector2>();
 
@@ -65,7 +74,7 @@ namespace PersistentWorlds.UI
                     }
 
                     TooltipHandler.TipRegion(deleteRect,
-                        "FilUnderscore.PersistentRimWorlds.Delete.Colony".Translate());
+                        "FilUnderscore.PersistentRimWorlds.Delete.Colony.Click".Translate());
 
                     Widgets.DrawHighlightIfMouseover(boxRect);
 
@@ -132,28 +141,36 @@ namespace PersistentWorlds.UI
         /// <summary>
         /// Draw in-game colonies tab.
         /// </summary>
-        /// <param name="inRect"></param>
-        /// <param name="margin"></param>
-        /// <param name="colonies"></param>
-        /// <param name="load"></param>
+        /// <param name="inRect">The rect that is being modified - the rect that holds the colonies UI elements.</param>
+        /// <param name="margin">The margin spacing/gap between each colony UI element.</param>
+        /// <param name="colonies">List of colonies to be displayed.</param>
+        /// <param name="load">Action to run on click (colony load/switch).</param>
+        /// <param name="tabSize">The size of the tab when opened depending on screen resolution.</param>
         public static void DrawColoniesTab(ref Rect inRect, float margin,
-            List<PersistentColony> colonies, Action<int> load)
+            List<PersistentColony> colonies, Action<int> load, Vector2 tabSize)
         {
-            const int perRow = 6;
             var gap = (int) margin;
             
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
             
             SortColoniesOneTime(ref colonies);
             SortColonies(ref colonies);
-         
+
+            // Scale the number of rows depending on the current resolution.
+            int perRow = ((int) tabSize.x) / 160; // Reference is 6 per row @ 1920 resolution width.
+
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
-                (i, boxRect) =>
+                (i, origBoxRect) =>
                 {
+                    var boxRect = new Rect(origBoxRect.x, origBoxRect.y, origBoxRect.width * 0.8f, origBoxRect.height);
+                    var addRect = new Rect(boxRect.x + boxRect.width, boxRect.y, origBoxRect.width * 0.2f,
+                        origBoxRect.height);
+                    
                    var colony = colonies[i];
              
                     Faction faction;
-                    
+
+                    // The top-left most colony is the current colony the player is playing as.                    
                     if (Equals(colony, persistentWorld.Colony))
                     {
                         Widgets.DrawHighlight(boxRect);
@@ -205,6 +222,10 @@ namespace PersistentWorlds.UI
                     
                     DrawNameLabel(colonyNameRect, colony, faction);
 
+                    // Drawing additional stuff
+                    //TODO: Draw interactable favourites star in top-right.
+                    DrawFavouriteStar(addRect, colony);
+
                     return true;
                 }, colonies.Count);
         }
@@ -252,7 +273,7 @@ namespace PersistentWorlds.UI
 
         private static Texture2D GetTexture(Faction faction)
         {
-            return faction.def.ExpandingIconTexture;
+            return faction.def.FactionIcon;
         }
 
         private static void DrawNameLabel(Rect rect, PersistentColony colony, Faction faction)
@@ -318,7 +339,7 @@ namespace PersistentWorlds.UI
                 if (colony.ColonyData.Leader.Reference != null)
                 {
                     colony.ColonyData.Leader.Texture =
-                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize);
+                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize, new Vector3(), 1f, true, true);
                 }
 
                 var leaderPortrait = colony.ColonyData.Leader.Texture;
@@ -361,6 +382,64 @@ namespace PersistentWorlds.UI
             GUI.DrawTexture(rect, texture);
 
             GUI.color = previousColor;
+        }
+
+        private static bool ButtonTextureHover(Rect rect, Texture texture, Texture hoverTexture, Color color, Color mouseoverColor, Color onColor, bool on, bool doMouseoverSound = true)
+        {
+            GUI.color = color;
+            GUI.DrawTexture(rect, texture);
+            GUI.color = Color.white;
+
+            if (on && !Mouse.IsOver(rect))
+            {
+                GUI.color = onColor;
+                GUI.DrawTexture(rect, hoverTexture);
+                GUI.color = Color.white;
+            }
+            else if (Mouse.IsOver(rect))
+            {
+                GUI.color = mouseoverColor;
+                GUI.DrawTexture(rect, hoverTexture);
+                GUI.color = Color.white;
+            }
+            
+            if(doMouseoverSound)
+                MouseoverSounds.DoRegion(rect);
+
+            return Widgets.ButtonInvisible(rect, false);
+        }
+
+        private static void DrawFavouriteStar(Rect rect, PersistentColony colony)
+        {
+            var favoured = colony.ColonyData.Favoured;
+            
+            var size = rect.size.x;
+            var starRect = new Rect(rect.x, rect.y, size, size);
+            
+            Widgets.DrawHighlight(starRect);
+            
+            if (ButtonTextureHover(starRect, FavouriteStar, FavouriteStarToBe,
+                Color.gray, favoured ? Color.red : Color.green, GenUI.MouseoverColor, favoured))
+            {
+                colony.ColonyData.Favoured = !favoured;
+            }
+
+            TooltipHandler.TipRegion(starRect, !favoured ? "FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add".Translate() : 
+                "FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove".Translate());
+        }
+
+        public static void ShowDeleteColonyDialog(PersistentColony colony, Action<PersistentColony> onDelete, Action<PersistentColony> onConvert)
+        {
+            var dialogBox = new Dialog_MessageBox("FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc".Translate(colony.ColonyData.ColonyFaction.Name), "Delete".Translate(), () => onDelete(colony), "FilUnderscore.PersistentRimWorlds.Cancel".Translate(), null, "FilUnderscore.PersistentRimWorlds.Delete.Colony".Translate(), true);
+
+            if (onConvert != null)
+            {
+                dialogBox.buttonCText = "FilUnderscore.PersistentRimWorlds.Delete.Colony.Convert".Translate();
+
+                dialogBox.buttonCAction = () => onConvert(colony);
+            }
+            
+            Find.WindowStack.Add(dialogBox);
         }
     }
 }

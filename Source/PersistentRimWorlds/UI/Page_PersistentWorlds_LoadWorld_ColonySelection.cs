@@ -21,7 +21,7 @@ namespace PersistentWorlds.UI
         #endregion
         
         #region Properties
-        public override Vector2 InitialSize => new Vector2(600f, 700f);
+        public override Vector2 InitialSize => new Vector2(620f, 700f);
         #endregion
         
         #region Constructors
@@ -89,7 +89,19 @@ namespace PersistentWorlds.UI
 
         private void Delete(int index)
         {
+            var colony = this.persistentWorld.Colonies[index];
             
+            ColonyUI.ShowDeleteColonyDialog(colony, DeleteColony, ConvertColonyToAIColony);
+        }
+
+        private void DeleteColony(PersistentColony colony)
+        {
+            this.persistentWorld.DeleteColony(colony);
+        }
+
+        private void ConvertColonyToAIColony(PersistentColony colony)
+        {
+            // TODO...
         }
         #endregion
     }

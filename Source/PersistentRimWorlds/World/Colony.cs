@@ -39,8 +39,8 @@ namespace PersistentWorlds.World
                 if (this.cachedMat == null)
                     this.cachedMat = MaterialPool.MatFrom(
                         this.PersistentColonyData?.ColonyFaction == null
-                            ? FactionDefOf.PlayerColony.homeIconPath
-                            : this.PersistentColonyData.ColonyFaction.def.homeIconPath,
+                            ? FactionDefOf.PlayerColony.factionIconPath
+                            : this.PersistentColonyData.ColonyFaction.def.factionIconPath,
                         ShaderDatabase.WorldOverlayTransparentLit, this.PersistentColonyData?.Color ?? Color.green,
                         WorldMaterials.WorldObjectRenderQueue);
 
@@ -48,10 +48,10 @@ namespace PersistentWorlds.World
             }
         }
 
-        public override Texture2D ExpandingIcon => ContentFinder<Texture2D>.Get(
+        public override Texture2D ExpandingIcon =>
             this.PersistentColonyData?.ColonyFaction == null
-                ? FactionDefOf.PlayerColony.expandingIconTexture
-                : this.PersistentColonyData.ColonyFaction.def.expandingIconTexture);
+                ? FactionDefOf.PlayerColony.FactionIcon
+                : this.PersistentColonyData.ColonyFaction.def.FactionIcon;
 
         public string Name 
         { 

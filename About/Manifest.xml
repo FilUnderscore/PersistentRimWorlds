@@ -2,7 +2,10 @@
 <Manifest>
 	<identifier>PersistentRimWorlds</identifier>
 	<version>0.1.4.0</version>
+	<dependencies>
+		<li>Harmony</li>
+	</dependencies>
 	<showCrossPromotions>true</showCrossPromotions>
-	<manifestUri>https://cdn.jsdelivr.net/gh/FilUnderscore/PersistentRimWorlds/About/Manifest.xml</manifestUri>
+	<manifestUri>https://raw.githubusercontent.com/FilUnderscore/PersistentRimWorlds/stable/About/Manifest.xml</manifestUri>
 	<downloadUri>https://github.com/FilUnderscore/PersistentRimWorlds/releases/latest</downloadUri>
 </Manifest>
