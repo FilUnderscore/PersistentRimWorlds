@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace PersistentWorlds.UI
 {
@@ -9,23 +11,34 @@ namespace PersistentWorlds.UI
     {
         private static Vector2 scrollPosition;
         
-        public static void DrawColonistsMenu(ref Rect inRect, float margin, List<Pawn> colonists)
+        public static void DrawColonistsMenu(ref Rect inRect, float margin, List<Pawn> colonists, Action<Pawn> set)
         {
             const int perRow = 3;
             var gap = (int) margin;
 
             inRect.width += gap;
             
+            Log.Message("Open " + colonists.Count);
+            
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
             {
-                Pawn colonist = colonists[i];
+                var colonist = colonists[i];
                 
                 Widgets.DrawAltRect(boxRect);
+                Widgets.DrawHighlightIfMouseover(boxRect);
                 
                 var portraitSize = new Vector2(boxRect.width / 2, boxRect.height);
-                Texture pawnTexture = PortraitsCache.Get(colonist, portraitSize);
+                var portraitRect = new Rect(boxRect.x + boxRect.width * 0.5f - portraitSize.x / 2, boxRect.y, portraitSize.x, portraitSize.y);
                 
-                GUI.DrawTexture(boxRect, pawnTexture);
+                Texture pawnTexture = PortraitsCache.Get(colonist, portraitSize);
+
+                GUI.DrawTexture(portraitRect, pawnTexture);
+                TooltipHandler.TipRegion(portraitRect, colonist.Name.ToStringFull);
+
+                if (Widgets.ButtonInvisible(boxRect))
+                {
+                    set(colonist);
+                }
                 
                 return true;
             }, colonists.Count);
