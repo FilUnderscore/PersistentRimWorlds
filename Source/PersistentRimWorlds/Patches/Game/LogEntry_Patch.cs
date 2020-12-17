@@ -51,7 +51,7 @@ namespace PersistentWorlds.Patches
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Stfld) continue;
-                if (codes[i].operand != TicksAbsField) continue;
+                if ((FieldInfo) codes[i].operand != TicksAbsField) continue;
 
                 codes[i + 1].labels.Add(jumpLabel);
                 codes[i + 7].labels.Add(skipLabel);

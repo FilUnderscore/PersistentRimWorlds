@@ -18,7 +18,7 @@ namespace PersistentWorlds.UI
 
         private static readonly Dictionary<UIEntry, Vector2> ScrollPositions = new Dictionary<UIEntry, Vector2>();
         
-        private static Vector2 scrollPosition;
+        private static Vector2 _scrollPosition;
         #endregion
             
         #region Methods
@@ -29,7 +29,7 @@ namespace PersistentWorlds.UI
 
             inRect.width += gap;
             
-            UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap,
+            UITools.DrawBoxGridView(out _, out _, ref inRect, ref _scrollPosition, perRow, gap,
                 (i, boxRect) =>
                 {
                     var selectedList = i >= worldEntries.Count ? saveGameEntries : worldEntries;
@@ -104,7 +104,7 @@ namespace PersistentWorlds.UI
 
             inRect.width += gap;
             
-            UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
+            UITools.DrawBoxGridView(out _, out _, ref inRect, ref _scrollPosition, perRow, gap, (i, boxRect) =>
                 {
                     if (i >= worldEntries.Count) return false;
                     
@@ -150,9 +150,9 @@ namespace PersistentWorlds.UI
 
                     DrawLabel(worldNameRect, ((WorldUIEntry) currentItem).Name, currentItem);
 
-                    if (!currentWorld) return true;
-
                     Widgets.DrawHighlightIfMouseover(boxRect);
+
+                    if (!currentWorld) return true;
 
                     if (Widgets.ButtonInvisible(boxRect))
                     {
@@ -218,7 +218,7 @@ namespace PersistentWorlds.UI
         
         public static void Reset()
         {
-            scrollPosition = new Vector2();
+            _scrollPosition = new Vector2();
             ScrollPositions.Clear();
         }
 
@@ -237,7 +237,7 @@ namespace PersistentWorlds.UI
 
             Text.Font = GameFont.Small;
 
-            ScrollPositions[item] = scrollPosition;
+            ScrollPositions[item] = _scrollPosition;
         }
 
         private static void DrawTexture(Rect rect, Texture texture, out Rect textureRect, float widthMultiplier, float heightMultiplier)

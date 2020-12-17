@@ -115,7 +115,7 @@ namespace PersistentWorlds.World
         {
             var inspectString = "";
 
-            inspectString += "Colony: " + this.PersistentColonyData.ColonyFaction.Name;
+            inspectString += $"Colony: {this.PersistentColonyData.ColonyFaction.Name}";
             
             return inspectString;
         }

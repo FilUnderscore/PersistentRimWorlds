@@ -11,7 +11,7 @@ namespace PersistentWorlds.SaveAndLoad
         private static PersistentWorld PersistentWorld => PersistentWorldManager.GetInstance().PersistentWorld;
 
 #pragma warning disable 414
-        private static bool Unloading = false;
+        private static bool _unloading = false;
 #pragma warning restore 414
         #endregion
         
@@ -22,11 +22,11 @@ namespace PersistentWorlds.SaveAndLoad
 
         public static void UnloadMap(Map map)
         {
-            Unloading = true; // Set state so MapDeiniter.Deinit(Map) patch knows.
+            _unloading = true; // Set state so MapDeiniter.Deinit(Map) patch knows.
             
             Current.Game.DeinitAndRemoveMap(map);
 
-            Unloading = false;
+            _unloading = false;
         }
 
         public static void UnloadColonyMaps(PersistentColony colony)

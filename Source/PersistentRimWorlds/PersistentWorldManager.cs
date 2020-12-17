@@ -13,7 +13,7 @@ namespace PersistentWorlds
     public sealed class PersistentWorldManager
     {
         #region Fields
-        private static PersistentWorldManager instance;
+        private static PersistentWorldManager _instance;
         
         private PersistentWorld persistentWorld;
         #endregion
@@ -38,7 +38,7 @@ namespace PersistentWorlds
 
         public static PersistentWorldManager GetInstance()
         {
-            return instance ?? (instance = new PersistentWorldManager());
+            return _instance ??= new PersistentWorldManager();
         }
         
         #region Checking Methods

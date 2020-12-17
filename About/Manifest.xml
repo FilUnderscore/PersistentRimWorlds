@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Manifest>
 	<identifier>PersistentRimWorlds</identifier>
-	<version>0.1.4.0</version>
+	<version>0.1.5.0</version>
 	<dependencies>
 		<li>Harmony</li>
 	</dependencies>

@@ -44,7 +44,7 @@ namespace PersistentWorlds.Patches.UI
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Newobj) continue;
-                if (codes[i].operand != PageCreateWorldParamsConstructor) continue;
+                if ((ConstructorInfo) codes[i].operand != PageCreateWorldParamsConstructor) continue;
 
                 var codesToInsert = new List<CodeInstruction>();
 

@@ -70,8 +70,8 @@ namespace PersistentWorlds.UI
                 persistentWorld.LoadSaver =
                     new PersistentWorldLoadSaver(persistentWorld, worldDir.FullName);
 
-                this.SaveWorld();
-
+                persistentWorld.SaveWorld();
+                
                 this.LoadWorldsAsEntries();
             });
             
@@ -83,17 +83,7 @@ namespace PersistentWorlds.UI
             this.Close();
             
             var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
-            
-            LongEventHandler.QueueLongEvent(delegate
-            {
-                persistentWorld.SaveColony();
-                    
-                persistentWorld.ConvertCurrentGameWorldObjects();
-                
-                persistentWorld.LoadSaver.SaveWorldData();
-                    
-                persistentWorld.ConvertToCurrentGameWorldObjects();
-            }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
+            persistentWorld.SaveWorld();
         }
         
         private void ShowDeleteWorldDialog(string worldPath)

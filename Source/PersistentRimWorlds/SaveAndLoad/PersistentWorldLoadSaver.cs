@@ -5,6 +5,7 @@ using System.Linq;
 using HarmonyLib;
 using PersistentWorlds.Logic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace PersistentWorlds.SaveAndLoad
@@ -331,17 +332,20 @@ namespace PersistentWorlds.SaveAndLoad
         {
             Log.Message("Saving colony data...");
 
-            var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
+            //var oldColonySaveFile = colony.FileInfo ?? new FileInfo(GetColonySaveFilePath(colony));
             
-            colony = PersistentColony.Convert(this.persistentWorld.Game, colony.ColonyData);
+            colony = PersistentColony.Convert(this.persistentWorld, this.persistentWorld.Game, colony.ColonyData);
             
             var colonySaveFile = GetColonySaveFilePath(colony);
             var colonyFile = new FileInfo(colonySaveFile);
 
+            /*
             if (!oldColonySaveFile.FullName.EqualsIgnoreCase(colonyFile.FullName))
             {
-                File.Delete(oldColonySaveFile.FullName);
+                // It could only be here?
+                //File.Delete(oldColonySaveFile.FullName);
             }
+            */
             
             this.SetCurrentFile(colonyFile);
             

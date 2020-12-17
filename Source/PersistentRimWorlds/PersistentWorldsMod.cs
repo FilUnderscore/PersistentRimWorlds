@@ -1,5 +1,5 @@
 ﻿// Persistent RimWorlds - Persistent Worlds RimWorld Mod
-// Copyright (C) 2018-2020 Filip Jerkovic
+// Copyright (C) 2018-2021 Filip Jerkovic [under GPLv3 license]
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,6 @@ namespace PersistentWorlds
     /// </summary>
     public sealed class PersistentWorldsMod : Mod
     {
-        #region Fields
-        // Must be public or IL transpiler throws error of ldsfld NULL.
-        internal static Delegate MainMenuButtonDelegate = new Action(PatchMainMenu);
-        
-        internal static Delegate SaveMenuButtonDelegate = new Action(PatchSaveMenu);
-        #endregion
-        
         #region Constructors
         /// <summary>
         /// Main mod constructor that initializes Harmony patches.
@@ -46,15 +39,7 @@ namespace PersistentWorlds
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Patches the button of "Persistent RimWorlds", more of a delegate called by "MainMenuButtonDelegate".
-        /// </summary>
-        private static void PatchMainMenu()
-        {
-            Find.WindowStack.Add(new Page_PersistentWorlds_LoadWorld_FileList());
-        }
-
-        private static void PatchSaveMenu()
+        public static void PatchSaveMenu()
         {
             Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveWorld());
         }
