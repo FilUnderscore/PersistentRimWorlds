@@ -35,10 +35,10 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            LeaderUI.DrawColonistsMenu(ref inRect, this.Margin, new List<Pawn>(PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_OfPlayerFaction), setLeader);
+            LeaderUI.DrawColonistsMenu(ref inRect, this.Margin, new List<Pawn>(PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_OfPlayerFaction), SetLeader);
         }
 
-        private void setLeader(Pawn pawn)
+        private void SetLeader(Pawn pawn)
         {
             this.Close();
 
