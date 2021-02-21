@@ -496,7 +496,7 @@ namespace PersistentWorlds.UI
         private static IEnumerable<Widgets.DropdownMenuElement<ColonySortOption>> Button_GenerateMenu(
             PersistentWorld persistentWorld)
         {
-            return ColonySortOption.VALUES.Select(colonySortOption => new Widgets.DropdownMenuElement<ColonySortOption>()
+            return ColonySortOption.Values.Select(colonySortOption => new Widgets.DropdownMenuElement<ColonySortOption>()
             {
                 option = new FloatMenuOption(colonySortOption.Name, () =>
                 {

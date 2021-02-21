@@ -18,8 +18,6 @@ namespace PersistentWorlds.UI
 
             inRect.width += gap;
             
-            Log.Message("Open " + colonists.Count);
-            
             UITools.DrawBoxGridView(out _, out _, ref inRect, ref _scrollPosition, perRow, gap, (i, boxRect) =>
             {
                 var colonist = colonists[i];
@@ -33,7 +31,7 @@ namespace PersistentWorlds.UI
                 Texture pawnTexture = PortraitsCache.Get(colonist, portraitSize);
 
                 GUI.DrawTexture(portraitRect, pawnTexture);
-                TooltipHandler.TipRegion(portraitRect, colonist.Name.ToStringFull);
+                TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader.Select".Translate(colonist.Name.ToStringFull));
 
                 if (Widgets.ButtonInvisible(boxRect))
                 {

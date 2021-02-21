@@ -16,10 +16,14 @@
 	<FilUnderscore.PersistentRimWorlds.Create.NewColony>Click to create a new colony.</FilUnderscore.PersistentRimWorlds.Create.NewColony>
 	<FilUnderscore.PersistentRimWorlds.Warning.AdvancedCreationUnavailable>This feature is not available with a persistent world.</FilUnderscore.PersistentRimWorlds.Warning.AdvancedCreationUnavailable>
 	
+	<FilUnderscore.PersistentRimWorlds.Misc.Sort.ID>ID</FilUnderscore.PersistentRimWorlds.Misc.Sort.ID>
+	<FilUnderscore.PersistentRimWorlds.Misc.Sort.LastWriteTime>Last Write Time</FilUnderscore.PersistentRimWorlds.Misc.Sort.LastWriteTime>
+	
 	<FilUnderscore.PersistentRimWorlds.Colony.NoLeader>This colony doesn't have a leader.</FilUnderscore.PersistentRimWorlds.Colony.NoLeader>
 	<FilUnderscore.PersistentRimWorlds.Colony.ChangeColor>Click to change this colony's color.</FilUnderscore.PersistentRimWorlds.Colony.ChangeColor>
 	<FilUnderscore.PersistentRimWorlds.Colony.SwitchTo>Click to switch to this colony.</FilUnderscore.PersistentRimWorlds.Colony.SwitchTo>
 	<FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader>Click to change this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader>
+	<FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader.Select>Click to pick {0} as this colony's leader.</FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader.Select>
 	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
 	<FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add>Add to favourites</FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add>
 	<FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove>Remove from favourites</FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove>
