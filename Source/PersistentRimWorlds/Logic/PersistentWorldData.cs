@@ -35,8 +35,8 @@ namespace PersistentWorlds.Logic
         /// </summary>
         private Dictionary<int, ExposableList<Caravan>> colonyCaravans = new Dictionary<int, ExposableList<Caravan>>();
 
-        private string colonySortOptionName;
-        private ColonySortOption colonySortOption = ColonySortOption.Id;
+        private string colonySortOptionId;
+        private ColonySortOption colonySortOption = ColonySortOption.ID;
         #endregion
         
         #region Properties
@@ -125,14 +125,14 @@ namespace PersistentWorlds.Logic
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 if (colonySortOption != null)
-                    colonySortOptionName = colonySortOption.Name;
+                    colonySortOptionId = colonySortOption.Id;
             }
 
-            Scribe_Values.Look(ref colonySortOptionName, "colonySortOption");
+            Scribe_Values.Look(ref colonySortOptionId, "colonySortOption");
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                this.colonySortOption = ColonySortOption.FindSortOptionByName(colonySortOptionName);
+                this.colonySortOption = ColonySortOption.FindSortOptionById(colonySortOptionId);
             }
         }
         

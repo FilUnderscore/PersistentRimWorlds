@@ -86,17 +86,6 @@ namespace PersistentWorlds.UI
             this.next = new Page_SelectScenario {prev = this};
             this.DoNext();
         }
-
-        private void DeleteColony(PersistentColony colony)
-        {
-            this.persistentWorld.DeleteColony(colony);
-        }
-
-        private void ConvertColonyToAIColony(PersistentColony colony)
-        {
-            Log.Error("This feature has not currently been implemented, stay tuned for updates.");
-            // TODO...
-        }
         #endregion
     }
 }

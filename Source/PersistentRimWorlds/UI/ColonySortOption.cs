@@ -8,30 +8,32 @@ namespace PersistentWorlds.UI
 {
     public abstract class ColonySortOption
     {
-        public static readonly ColonySortOption Id = new IdSortOption();
-        public static readonly ColonySortOption LastWriteTime = new LastWriteTimeSortOption();
+        public static readonly ColonySortOption ID = new IDColonySortOption();
+        public static readonly ColonySortOption LastWriteTime = new LastWriteTimeColonySortOption();
         
-        public static IEnumerable<ColonySortOption> VALUES
+        public static IEnumerable<ColonySortOption> Values
         {
             get
             {
-                yield return Id;
+                yield return ID;
                 yield return LastWriteTime;
             }
         }
-        
-        public string Name;
-        
-        public ColonySortOption(string Name)
+
+        public readonly string Id;
+        public readonly string Name;
+
+        private ColonySortOption(string id)
         {
-            this.Name = Name;
+            this.Id = id;
+            this.Name = $"FilUnderscore.PersistentRimWorlds.Misc.Sort.{id}".Translate();
         }
 
         public abstract void Sort(ref List<PersistentColony> colonies);
 
-        private class IdSortOption : ColonySortOption
+        private class IDColonySortOption : ColonySortOption
         {
-            public IdSortOption() : base("ID")
+            public IDColonySortOption() : base("ID")
             {
                 
             }
@@ -42,9 +44,9 @@ namespace PersistentWorlds.UI
             }
         }
 
-        private class LastWriteTimeSortOption : ColonySortOption
+        private class LastWriteTimeColonySortOption : ColonySortOption
         {
-            public LastWriteTimeSortOption() : base("Last Write Time")
+            public LastWriteTimeColonySortOption() : base("LastWriteTime")
             {
                 
             }
@@ -61,19 +63,19 @@ namespace PersistentWorlds.UI
             }
         }
         
-        public static ColonySortOption FindSortOptionByName(string name)
+        public static ColonySortOption FindSortOptionById(string id)
         {
-            foreach (var colonySortOption in VALUES)
+            foreach (var colonySortOption in Values)
             {
-                if (colonySortOption.Name == name)
+                if (colonySortOption.Id == id)
                 {
                     return colonySortOption;
                 }
             }
 
-            Log.Error($"Name {name} does not exist as a {nameof(ColonySortOption)}. Using default.");
+            Log.Error($"ID {id} does not exist as a {nameof(ColonySortOption)}. Using default.");
             
-            return VALUES.First();
+            return Values.First();
         }
     }
 }
