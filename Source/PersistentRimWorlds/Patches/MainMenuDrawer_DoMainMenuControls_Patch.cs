@@ -55,15 +55,44 @@ namespace PersistentWorlds.Patches
                 !PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return;
             
             int index;
-            if ((index = optList.FindIndex(opt => opt.label == "Save".Translate())) == -1) return;
+            if ((index = optList.FindIndex(opt => opt.label == "Save".Translate())) != -1)
+            {
+                optList.Insert(index,
+                    new ListableOption("FilUnderscore.PersistentRimWorlds.Save.World".Translate(),
+                        () => { Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveWorld()); }));
                 
-            optList.Insert(index,
-                new ListableOption("FilUnderscore.PersistentRimWorlds.Save.World".Translate(),
-                    () =>
-                    {
-                        Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveWorld());
-                    }));
-            optList.RemoveAt(index + 1);
+                optList.RemoveAt(index + 1);
+            }
+
+            if ((index = optList.FindIndex(opt => opt.label == "LoadGame".Translate())) != -1)
+            {
+                optList.RemoveAt(index);
+            }
+            
+            if  (((index = optList.FindIndex(opt => opt.label == "QuitToMainMenu".Translate())) != -1) || (Current.Game.Info.permadeathMode && 
+                 (index = optList.FindIndex(opt => opt.label == "SaveAndQuitToMainMenu".Translate())) != -1))
+            {
+                optList.Insert(index, new ListableOption("SaveAndQuitToMainMenu".Translate(), () =>
+                {
+                    PersistentWorldManager.GetInstance().PersistentWorld.SaveWorld(GenScene.GoToMainMenu);
+                }));
+             
+                if(Current.Game.Info.permadeathMode)
+                    optList.RemoveAt(index + 1);
+            }
+
+            if (((index = optList.FindIndex(opt => opt.label == "QuitToOS".Translate())) != -1) || (Current.Game.Info.permadeathMode &&
+                (index = optList.FindIndex(opt => opt.label == "SaveAndQuitToOS".Translate())) != -1))
+            {
+                optList.Insert(index, new ListableOption("SaveAndQuitToOS".Translate(), () =>
+                {
+                    PersistentWorldManager.GetInstance().PersistentWorld.SaveWorld(GenScene.GoToMainMenu);
+                    Root.Shutdown();
+                }));
+             
+                if(Current.Game.Info.permadeathMode)
+                    optList.RemoveAt(index + 1);
+            }
         }
     }
 }
