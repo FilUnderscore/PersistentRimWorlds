@@ -20,6 +20,7 @@ namespace PersistentWorlds.Logic
 
         public bool Set => !UniqueId.NullOrEmpty() && Name != null;
 
+        // Due to the nature of IExposable.
         public PersistentColonyLeader()
         {
         }

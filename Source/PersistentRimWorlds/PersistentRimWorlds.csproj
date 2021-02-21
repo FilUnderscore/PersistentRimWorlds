@@ -121,6 +121,7 @@
     <Compile Include="SaveAndLoad\SaveFileUtils.cs" />
     <Compile Include="SaveAndLoad\ScribeMultiLoader.cs" />
     <Compile Include="SaveAndLoad\ScribeVars.cs" />
+    <Compile Include="UI\ColonySortOption.cs" />
     <Compile Include="UI\ColonyUI.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_LeaderPawnSelection.cs" />
     <Compile Include="UI\Dialog_PersistentWorlds_NameWorld.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Utils\DebugExtensions.cs" />
     <Compile Include="Utils\ExposableList.cs" />
     <Compile Include="Utils\FileLog.cs" />
+    <Compile Include="Utils\ModSupportHelper.cs" />
     <Compile Include="Utils\WidgetExtensions.cs" />
     <Compile Include="World\AbandonedColony.cs" />
     <Compile Include="World\Colony.cs" />

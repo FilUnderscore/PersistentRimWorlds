@@ -12,9 +12,44 @@ namespace PersistentWorlds.World
         #region Fields
         private static readonly Texture2D BaseResettleCommand =
             ContentFinder<Texture2D>.Get("UI/Commands/BaseResettle");
+
+        private string nameInt;
+        private Material cachedMat;
+        #endregion
+        
+        #region Properties
+        public override Material Material
+        {
+            get
+            {
+                if (this.cachedMat == null)
+                    this.cachedMat = MaterialPool.MatFrom(FactionDefOf.PlayerColony.factionIconPath,
+                        ShaderDatabase.WorldOverlayTransparentLit, Color.gray, WorldMaterials.WorldObjectRenderQueue);
+
+                return this.cachedMat;
+            }
+        }
+        
+        public override Texture2D ExpandingIcon => FactionDefOf.PlayerColony.FactionIcon;
+
+        public string Name 
+        { 
+            get => nameInt;
+            set => nameInt = value;
+        }
+        
+        public override bool HasName => !nameInt.NullOrEmpty();
         #endregion
         
         #region Methods
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+            Scribe_Values.Look(ref nameInt, "name");
+        }
+
         public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
             // Enumerate and display all the previous gizmos.
@@ -64,6 +99,16 @@ namespace PersistentWorlds.World
                 }
             };
         }
+
+        public override string GetInspectString()
+        {
+            var inspectString = "";
+
+            inspectString += $"The old abandoned colony of {this.Name}";
+            
+            return inspectString;
+        }
+
         #endregion
     }
 }

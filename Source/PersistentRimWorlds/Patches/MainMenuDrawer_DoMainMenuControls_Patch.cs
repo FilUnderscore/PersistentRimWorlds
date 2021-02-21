@@ -11,6 +11,7 @@ namespace PersistentWorlds.Patches
 {
     // Some different implementation from Parexy's Multiplayer Mod - saves the hassle of transpiling.
     [HarmonyPatch(typeof(MainMenuDrawer), nameof(MainMenuDrawer.DoMainMenuControls))]
+    [StaticConstructorOnStartup]
     public class MainMenuMarker
     {
         private static readonly Texture2D WorldIcon = ContentFinder<Texture2D>.Get("UI/WorldIcon");
@@ -34,7 +35,7 @@ namespace PersistentWorlds.Patches
             Rect rect1 = new Rect(0, 0, size.x, size.y);
 
             if (WidgetExtensions.ButtonImageOn(rect1, WorldIcon))
-                PersistentWorldsMod.MainMenuButtonDelegate.DynamicInvoke();
+                Find.WindowStack.Add(new Page_PersistentWorlds_LoadWorld_FileList());
             
             TooltipHandler.TipRegion(rect1, "FilUnderscore.PersistentRimWorlds".Translate());
 
@@ -50,17 +51,19 @@ namespace PersistentWorlds.Patches
             if (!MainMenuMarker.drawing)
                 return;
 
-            if(Current.ProgramState == ProgramState.Playing && PersistentWorldManager.GetInstance().PersistentWorldNotNull())
-            {
-                int index;
-                if ((index = optList.FindIndex(opt => opt.label == "Save".Translate())) != -1)
-                {
-                    optList.Insert(index,
-                        new ListableOption("FilUnderscore.PersistentRimWorlds.Save.World".Translate(),
-                            (Action) PersistentWorldsMod.SaveMenuButtonDelegate));
-                    optList.RemoveAt(index + 1);
-                }
-            }
+            if (Current.ProgramState != ProgramState.Playing ||
+                !PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return;
+            
+            int index;
+            if ((index = optList.FindIndex(opt => opt.label == "Save".Translate())) == -1) return;
+                
+            optList.Insert(index,
+                new ListableOption("FilUnderscore.PersistentRimWorlds.Save.World".Translate(),
+                    () =>
+                    {
+                        Find.WindowStack.Add(new Dialog_PersistentWorlds_SaveWorld());
+                    }));
+            optList.RemoveAt(index + 1);
         }
     }
 }

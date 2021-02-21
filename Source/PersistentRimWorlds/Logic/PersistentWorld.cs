@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using JetBrains.Annotations;
 using PersistentWorlds.SaveAndLoad;
 using PersistentWorlds.World;
 using RimWorld;
@@ -24,6 +25,8 @@ namespace PersistentWorlds.Logic
         
         private static readonly FieldInfo NaturalGoodwillTimerField = AccessTools.Field(typeof(Faction), "naturalGoodwillTimer");
         #endregion
+
+        public static Delegate AbandonColonyButtonDelegate = new Action(PressAbandonColonyButton);
         
         #region Fields
         public PersistentWorldLoadSaver LoadSaver;
@@ -86,15 +89,17 @@ namespace PersistentWorlds.Logic
             
             this.CheckAndSetColonyData();
             
-            Log.Message("Faction count: " + Current.Game.World.factionManager.AllFactions.Count());
+            #if DEBUG
+            Log.Message($"Faction count: {Current.Game.World.factionManager.AllFactions.Count()}");
             
             Current.Game.World.factionManager.AllFactions.Do((faction) =>
             {
-                Log.Message("Faction Name: " + faction.Name);
-                Log.Message("Faction ID: " + faction.loadID);
-                Log.Message("Type: " + faction.def.defName);
-                Log.Message("Relations: " + ((List<FactionRelation>) RelationsField.GetValue(faction)).ToDebugString());
+                Log.Message($"Faction Name: {faction.Name}");
+                Log.Message($"Faction ID: {faction.loadID}");
+                Log.Message($"Type: {faction.def.defName}");
+                Log.Message($"Relations: {((List<FactionRelation>) RelationsField.GetValue(faction)).ToDebugString()}");
             });
+            #endif
         }
 
         public void SchedulePause()
@@ -120,7 +125,7 @@ namespace PersistentWorlds.Logic
             if (Colony == null)
             {
                 // Return to main menu.
-                Log.Error("Colony is null. - Persistent Worlds");
+                Log.Error($"{nameof(LoadGame)}: ${nameof(Colony)} is null.");
                 GenScene.GoToMainMenu();
                 return;
             }
@@ -160,7 +165,7 @@ namespace PersistentWorlds.Logic
             
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
-                Log.Warning("Some maps were null after loading.", false);
+                Log.Warning($"{nameof(LoadMaps)}: Some maps were null after loading.", false);
             }
 
             int num = -1;
@@ -168,13 +173,13 @@ namespace PersistentWorlds.Logic
             num = Colony.GameData.CurrentMapIndex;
             if (num < 0 && this.Game.Maps.Any<Map>())
             {
-                Log.Error("PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
+                Log.Error($"{nameof(LoadMaps)}: PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
                 num = 0;
             }
 
             if (num >= this.Game.Maps.Count)
             {
-                Log.Error("Current map index out of bounds after loading.", false);
+                Log.Error($"{nameof(LoadMaps)}: Current map index out of bounds after loading.", false);
                 if (this.Game.Maps.Any<Map>())
                 {
                     num = 0;
@@ -195,7 +200,7 @@ namespace PersistentWorlds.Logic
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error in Map.FinalizeLoading(): " + e, false);
+                    Log.Error($"{nameof(LoadMaps)}: Error in Map.FinalizeLoading(): {e}", false);
                 }
 
                 try
@@ -204,7 +209,7 @@ namespace PersistentWorlds.Logic
                 }
                 catch (Exception e)
                 {
-                    Log.Error("Error in MapParent.FinalizeLoading(): " + e, false);
+                    Log.Error($"{nameof(LoadMaps)}: Error in MapParent.FinalizeLoading(): {e}", false);
                 }
 
                 this.LoadedMaps.Add(t.Tile, new HashSet<PersistentColony>(){Colony});
@@ -215,7 +220,7 @@ namespace PersistentWorlds.Logic
         {
             if (Find.CameraDriver == null)
             {
-                Log.Error("Current CameraDriver is null.");
+                Log.Error($"{nameof(LoadCameraDriver)}: Current CameraDriver is null.");
                 return;
             }
             
@@ -229,7 +234,7 @@ namespace PersistentWorlds.Logic
 
             if (this.Game.World.components == null)
             {
-                Log.Error("Game World Components is null! Please look into this.");
+                Log.Error($"{nameof(ExposeGameWorldData)}: Game World Components is null! Please look into this.");
                 this.Game.World.components = new List<WorldComponent>();
             }
             
@@ -257,7 +262,7 @@ namespace PersistentWorlds.Logic
             this.ExposeAndFillGameWorldComponents();
         }
 
-        public void ExposeAndFillGameWorldComponents()
+        private void ExposeAndFillGameWorldComponents()
         {
             this.Game.tickManager = this.WorldData.TickManager;
             this.Game.World.factionManager = this.WorldData.FactionManager;
@@ -287,7 +292,7 @@ namespace PersistentWorlds.Logic
             
             this.WorldData = PersistentWorldData.Convert(game, this.WorldData);
 
-            var colony = PersistentColony.Convert(game);
+            var colony = PersistentColony.Convert(this, game);
             this.Colony = colony;
             
             this.Colonies.Add(colony);
@@ -337,7 +342,19 @@ namespace PersistentWorlds.Logic
             toAdd.Do(colony => this.Game.World.worldObjects.Add(colony));
             toAdd.Clear();
             
-            toRemove.Do(settlement => this.Game.World.worldObjects.Remove(settlement));
+            toRemove.Do(settlement =>
+            {
+                // Try to fix errors in conversion?
+                try
+                {
+                    this.Game.World.worldObjects.Remove(settlement);
+                }
+                catch (NullReferenceException)
+                {
+                    Log.Warning($"{nameof(ConvertCurrentGameSettlements)}: NRE thrown while removing WorldObject. ID: {settlement.ID}");
+                }
+            });
+            
             toRemove.Clear();
         }
 
@@ -396,7 +413,7 @@ namespace PersistentWorlds.Logic
                     }
                     else
                     {
-                        Log.Error("Null map for colony " + colony.PersistentColonyData.UniqueId + " at " + colony.Tile);
+                        Log.Error($"{nameof(ConvertToCurrentGameSettlements)}: Null map for colony {colony.PersistentColonyData.UniqueId} at {colony.Tile}");
                         
                         continue;
                     }
@@ -419,6 +436,44 @@ namespace PersistentWorlds.Logic
             toAdd.Clear();
             
             toRemove.Do(colony => this.WorldData.WorldObjectsHolder.Remove(colony));
+            toRemove.Clear();
+        }
+
+        
+        private void ConvertColoniesToAbandonedColonies(PersistentColony persistentColony)
+        {
+            var toAdd = new List<AbandonedColony>();
+            var toRemove = new List<Settlement>();
+
+            foreach (var settlement in this.WorldData.WorldObjectsHolder.Settlements)
+            {
+                if (settlement.Faction != Faction.OfPlayer)
+                {
+                    continue;
+                }
+
+                if (settlement.Map?.info == null)
+                {
+                    continue;
+                }
+
+                var abandonedColony =
+                    (AbandonedColony) WorldObjectSameIDMaker.MakeWorldObject(PersistentWorldsDefOf.AbandonedColony,
+                        settlement.ID);
+
+                settlement.Map.info.parent = abandonedColony;
+                abandonedColony.Tile = settlement.Tile;
+
+                abandonedColony.Name = persistentColony.ColonyData.ColonyFaction.Name;
+                    
+                toAdd.Add(abandonedColony);
+                toRemove.Add(settlement);
+            }
+
+            toAdd.Do(abandonedColony => this.WorldData.WorldObjectsHolder.Add(abandonedColony));
+            toAdd.Clear();
+            
+            toRemove.Do(settlement => this.WorldData.WorldObjectsHolder.Remove(settlement));
             toRemove.Clear();
         }
 
@@ -686,9 +741,6 @@ namespace PersistentWorlds.Logic
 
         private void CheckAndSetColonyLeader()
         {
-            // TODO: Check for Fluffy's Relations Tab / Psychology.   
-            // TODO: Come up with a good algorithm for choosing colony leader.
-
             if (this.Colony?.ColonyData == null)
             {
                 throw new NullReferenceException($"{nameof(CheckAndSetColonyLeader)}: Something is null! {nameof(this.Colony)}: {this.Colony == null} and {nameof(this.Colony.ColonyData)}: {this.Colony?.ColonyData == null}");
@@ -704,12 +756,30 @@ namespace PersistentWorlds.Logic
                 return;
             }
 
-            foreach (var pawn in Find.CurrentMap.mapPawns.AllPawns)
-            {
-                if (!pawn.IsColonist) continue;
+            this.SetColonyLeaderAutomatically();
+        }
 
-                this.Colony.ColonyData.Leader = new PersistentColonyLeader(pawn);
-                break;
+        private void SetColonyLeaderAutomatically()
+        {
+            // Mod Support for Psychology.
+            if (ModSupportHelper.IsPsychologyLoaded())
+            {
+                this.Colony.ColonyData.Leader = new PersistentColonyLeader(ModSupportHelper.GetPsychologyMayor());
+            }
+            // Mod Support for Fluffy's Relations Tab
+            else if (Colony.ColonyData.ColonyFaction?.leader != null)
+            {
+                this.Colony.ColonyData.Leader = new PersistentColonyLeader(this.Colony.ColonyData.ColonyFaction.leader);
+            }
+            else
+            {   
+                // TODO: Come up with a good algorithm for choosing colony leader.
+
+                foreach (var pawn in Find.CurrentMap.mapPawns.AllPawns.Where(pawn => pawn.IsColonist))
+                {
+                    this.Colony.ColonyData.Leader = new PersistentColonyLeader(pawn);
+                    break;
+                }
             }
         }
 
@@ -736,9 +806,44 @@ namespace PersistentWorlds.Logic
 
         public void DeleteColony(PersistentColony colony)
         {
-            this.Colonies.Remove(colony);
+            this.ConvertColoniesToAbandonedColonies(colony);
             
-            SaveFileUtils.DeleteFile(colony.FileInfo.FullName);
+            // TODO: Insert any processes before colony abandonment/deletion.
+            
+            this.SaveWorld(true);
+        }
+
+        // Called when Game Over Abandon Colony Button is pressed.
+        private static void PressAbandonColonyButton()
+        {
+            if (!PersistentWorldManager.GetInstance()
+                .PersistentWorldNotNullAndLoadStatusIs(PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame))
+                throw new InvalidOperationException($"{nameof(PressAbandonColonyButton)}: 'Game Over Colony Abandon' button cannot be pressed while not currently in a Persistent World.");
+
+            // TODO: Enter world view without tabs and ask player to choose a different colony.
+
+            // Delete current colony, "abandoning" it.
+            var persistentWorld = PersistentWorldManager.GetInstance().PersistentWorld;
+            persistentWorld.DeleteColony(persistentWorld.Colony);
+        }
+
+        public void SaveWorld(bool delete = false)
+        {
+            LongEventHandler.QueueLongEvent(delegate
+            {
+                this.SaveColony();
+                    
+                this.ConvertCurrentGameWorldObjects();
+                
+                this.LoadSaver.SaveWorldData();
+                    
+                this.ConvertToCurrentGameWorldObjects();
+
+                if (!delete) return;
+                
+                SaveFileUtils.DeleteFile(this.Colony.FileInfo.FullName);
+                GenScene.GoToMainMenu();
+            }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
         }
         #endregion
         

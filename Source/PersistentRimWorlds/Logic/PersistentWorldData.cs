@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using PersistentWorlds.UI;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -32,6 +34,9 @@ namespace PersistentWorlds.Logic
         /// Second type - List of Caravan - list of caravans for the colony.
         /// </summary>
         private Dictionary<int, ExposableList<Caravan>> colonyCaravans = new Dictionary<int, ExposableList<Caravan>>();
+
+        private string colonySortOptionName;
+        private ColonySortOption colonySortOption = ColonySortOption.Id;
         #endregion
         
         #region Properties
@@ -58,6 +63,12 @@ namespace PersistentWorlds.Logic
         public TickManager TickManager => tickManager;
 
         public Dictionary<int, ExposableList<Caravan>> ColonyCaravans => colonyCaravans;
+
+        public ColonySortOption ColonySortOption
+        {
+            get => colonySortOption;
+            set => colonySortOption = value;
+        }
         #endregion
         
         #region Methods
@@ -70,8 +81,9 @@ namespace PersistentWorlds.Logic
             
             Scribe_Deep.Look<WorldGrid>(ref this.grid, "grid", new object[0]);
             Current.Game.World.grid = this.grid;
-            
+
             this.ExposeComponents();
+            this.ExposeAdditionalComponents();
         }
 
         private void ExposeComponents()
@@ -106,6 +118,27 @@ namespace PersistentWorlds.Logic
             Current.Game.World.components = this.worldComponents;
             
             Scribe_Collections.Look(ref colonyCaravans, "caravans", LookMode.Value, LookMode.Deep);
+        }
+
+        private void ExposeColonySortOption()
+        {
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                if (colonySortOption != null)
+                    colonySortOptionName = colonySortOption.Name;
+            }
+
+            Scribe_Values.Look(ref colonySortOptionName, "colonySortOption");
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                this.colonySortOption = ColonySortOption.FindSortOptionByName(colonySortOptionName);
+            }
+        }
+        
+        private void ExposeAdditionalComponents()
+        {
+            this.ExposeColonySortOption();
         }
 
         public static PersistentWorldData Convert(Game game, PersistentWorldData worldData)

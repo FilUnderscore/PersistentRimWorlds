@@ -10,7 +10,7 @@ namespace PersistentWorlds.UI
     public class Dialog_PersistentWorlds_LeaderPawnSelection : Window
     {
         #region Fields
-        private PersistentColony colony;
+        private readonly PersistentColony colony;
         #endregion
         
         #region Properties
@@ -35,7 +35,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            LeaderUI.DrawColonistsMenu(ref inRect, this.Margin, new List<Pawn>(PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_OfPlayerFaction), SetLeader);
+            LeaderUI.DrawColonistsMenu(ref inRect, this.Margin, new List<Pawn>(PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_OfPlayerFaction.Where(pawn => !pawn.NonHumanlikeOrWildMan())), SetLeader);
         }
 
         private void SetLeader(Pawn pawn)

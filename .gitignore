@@ -5,9 +5,10 @@
 
 # Custom
 *.zip
-Assemblies/*.dll
-Assemblies/*.xml
+*.bat
+Assemblies/
 Depend/
+Tools/
 
 # User-specific files
 *.suo

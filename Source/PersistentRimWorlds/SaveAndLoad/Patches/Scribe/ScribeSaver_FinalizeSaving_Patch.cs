@@ -53,10 +53,10 @@ namespace PersistentWorlds.Patches
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Ldarg_0) continue;
-                if (codes[i + 1].opcode != OpCodes.Ldfld || codes[i + 1].operand != LoadIDsErrorsCheckerField) continue;
+                if (codes[i + 1].opcode != OpCodes.Ldfld || (FieldInfo) codes[i + 1].operand != LoadIDsErrorsCheckerField) continue;
 
                 if (codes[i + 2].opcode != OpCodes.Callvirt ||
-                    codes[i + 2].operand != CheckForErrorsAndClearMethod) continue;
+                    (MethodInfo) codes[i + 2].operand != CheckForErrorsAndClearMethod) continue;
 
                 codes[i + 3].labels.Add(label1);
 

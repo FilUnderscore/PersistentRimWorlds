@@ -16,7 +16,7 @@ namespace PersistentWorlds.Patches
         private static readonly MethodInfo PassPawnsToWorldMethod =
             AccessTools.Method(typeof(MapDeiniter), "PassPawnsToWorld");
 
-        private static readonly FieldInfo UnloadingField = AccessTools.Field(typeof(DynamicMapUnloader), "Unloading");
+        private static readonly FieldInfo UnloadingField = AccessTools.Field(typeof(DynamicMapUnloader), "_unloading");
 
         private static readonly MethodInfo UnloadPawnsFromWorld =
             AccessTools.Method(typeof(DynamicMapUnloader), "UnloadPawnsFromWorld");
@@ -47,7 +47,7 @@ namespace PersistentWorlds.Patches
             for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode != OpCodes.Call) continue;
-                if (codes[i].operand != PassPawnsToWorldMethod) continue;
+                if ((MethodInfo) codes[i].operand != PassPawnsToWorldMethod) continue;
 
                 var toInsert = new List<CodeInstruction>
                 {

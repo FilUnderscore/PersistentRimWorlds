@@ -54,7 +54,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.CloseButSize, this.persistentWorld.Colonies, this.Load, this.NewColony, this.Delete);
+            ColonyUI.DrawColoniesList(ref inRect, this.Margin, this.CloseButSize, this.persistentWorld.Colonies, this.Load, this.NewColony);
         }
 
         private void Load(int index)
@@ -87,13 +87,6 @@ namespace PersistentWorlds.UI
             this.DoNext();
         }
 
-        private void Delete(int index)
-        {
-            var colony = this.persistentWorld.Colonies[index];
-            
-            ColonyUI.ShowDeleteColonyDialog(colony, DeleteColony, ConvertColonyToAIColony);
-        }
-
         private void DeleteColony(PersistentColony colony)
         {
             this.persistentWorld.DeleteColony(colony);
@@ -101,6 +94,7 @@ namespace PersistentWorlds.UI
 
         private void ConvertColonyToAIColony(PersistentColony colony)
         {
+            Log.Error("This feature has not currently been implemented, stay tuned for updates.");
             // TODO...
         }
         #endregion

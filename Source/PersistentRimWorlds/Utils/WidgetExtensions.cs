@@ -4,14 +4,15 @@ using Verse.Sound;
 
 namespace PersistentWorlds.Utils
 {
+    [StaticConstructorOnStartup]
     public static class WidgetExtensions
     {
-        private static readonly Texture2D ButtonBGAtlas = ContentFinder<Texture2D>.Get("UI/Widgets/ButtonBG");
+        private static readonly Texture2D ButtonBgAtlas = ContentFinder<Texture2D>.Get("UI/Widgets/ButtonBG");
 
-        private static readonly Texture2D ButtonBGAtlasMouseover =
+        private static readonly Texture2D ButtonBgAtlasMouseover =
             ContentFinder<Texture2D>.Get("UI/Widgets/ButtonBGMouseover");
 
-        private static readonly Texture2D ButtonBGAtlasClick = ContentFinder<Texture2D>.Get("UI/Widgets/ButtonBGClick");
+        private static readonly Texture2D ButtonBgAtlasClick = ContentFinder<Texture2D>.Get("UI/Widgets/ButtonBGClick");
 
         public static bool ButtonImage(Rect butRect, Texture tex, Color baseColor, Color mouseoverColor)
         {
@@ -52,14 +53,14 @@ namespace PersistentWorlds.Utils
         public static bool ButtonImageOn(Rect rect, Texture2D tex,
             bool doMouseoverSound = true)
         {
-            var atlas = ButtonBGAtlas;
+            var atlas = ButtonBgAtlas;
 
             if (Mouse.IsOver(rect))
             {
-                atlas = ButtonBGAtlasMouseover;
+                atlas = ButtonBgAtlasMouseover;
 
                 if (Input.GetMouseButton(0))
-                    atlas = ButtonBGAtlasClick;
+                    atlas = ButtonBgAtlasClick;
             }
             
             Widgets.DrawAtlas(rect, atlas);

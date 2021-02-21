@@ -90,7 +90,7 @@ namespace PersistentWorlds.Patches
             persistentWorld.LoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Ingame;
 
-            var colony = PersistentColony.Convert(Current.Game);
+            var colony = PersistentColony.Convert(persistentWorld, Current.Game);
 
             colony.ColonyData.UniqueId = ++PersistentWorldManager.GetInstance().PersistentWorld.WorldData.NextColonyId;
             colony.ColonyData.ActiveWorldTiles.Add(map.Tile);

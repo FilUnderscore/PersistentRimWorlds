@@ -7,7 +7,7 @@ namespace PersistentWorlds.Utils
     {
         #region Fields
         #if DEBUG
-        private static StreamWriter LogWriter;
+        private static StreamWriter _logWriter;
         #endif    
         #endregion
         
@@ -15,7 +15,7 @@ namespace PersistentWorlds.Utils
         public static void StartLoggingToFile(string filePath)
         {
             #if DEBUG
-            LogWriter = new StreamWriter(filePath, false);
+            _logWriter = new StreamWriter(filePath, false);
             Log($"Persistent RimWorlds Debug Log (AssemblyVersion={Assembly.GetExecutingAssembly().GetName().Version}");
             #endif
         }
@@ -23,15 +23,15 @@ namespace PersistentWorlds.Utils
         public static void Log(string text)
         {
             #if DEBUG
-            LogWriter.Write(text + "\n");
-            LogWriter.Flush();
+            _logWriter.Write(text + "\n");
+            _logWriter.Flush();
             #endif
         }
 
         public static void Close()
         {
             #if DEBUG
-            LogWriter.Close();
+            _logWriter.Close();
             #endif
         }
         #endregion

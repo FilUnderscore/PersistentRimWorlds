@@ -9,7 +9,7 @@ namespace PersistentWorlds.UI
 {
     public static class LeaderUI
     {
-        private static Vector2 scrollPosition;
+        private static Vector2 _scrollPosition;
         
         public static void DrawColonistsMenu(ref Rect inRect, float margin, List<Pawn> colonists, Action<Pawn> set)
         {
@@ -20,7 +20,7 @@ namespace PersistentWorlds.UI
             
             Log.Message("Open " + colonists.Count);
             
-            UITools.DrawBoxGridView(out _, out _, ref inRect, ref scrollPosition, perRow, gap, (i, boxRect) =>
+            UITools.DrawBoxGridView(out _, out _, ref inRect, ref _scrollPosition, perRow, gap, (i, boxRect) =>
             {
                 var colonist = colonists[i];
                 

@@ -6,10 +6,6 @@
 	<FilUnderscore.PersistentRimWorlds.Convert.World>Converting world to persistent world</FilUnderscore.PersistentRimWorlds.Convert.World>
 	<FilUnderscore.PersistentRimWorlds.Convert.Complete>Conversion for world {0} is complete. The persistent world will now be saved as {0} and can be loaded through the Persistent RimWorlds menu.</FilUnderscore.PersistentRimWorlds.Convert.Complete>
 	<FilUnderscore.PersistentRimWorlds.Convert>Convert</FilUnderscore.PersistentRimWorlds.Convert>
-	<FilUnderscore.PersistentRimWorlds.Delete.Colony.Click>Click to delete this colony.</FilUnderscore.PersistentRimWorlds.Delete.Colony.Click>
-	<FilUnderscore.PersistentRimWorlds.Delete.Colony>Delete Colony</FilUnderscore.PersistentRimWorlds.Delete.Colony>
-	<FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this colony into a colony run by AI, or cancel this action.</FilUnderscore.PersistentRimWorlds.Delete.Colony.Desc>
-	<FilUnderscore.PersistentRimWorlds.Delete.Colony.Convert>Convert</FilUnderscore.PersistentRimWorlds.Delete.Colony.Convert>
 	<FilUnderscore.PersistentRimWorlds.Delete.World.Click>Delete persistent world.</FilUnderscore.PersistentRimWorlds.Delete.World.Click>
 	<FilUnderscore.PersistentRimWorlds.Delete.World>Delete Persistent World</FilUnderscore.PersistentRimWorlds.Delete.World>
 	<FilUnderscore.PersistentRimWorlds.Delete.World.Desc>Are you sure you want to delete {0}? Press delete to confirm deletion, convert to convert this world to a single colony game, or cancel this action.</FilUnderscore.PersistentRimWorlds.Delete.World.Desc>
@@ -27,6 +23,9 @@
 	<FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>Colony leader: {0}</FilUnderscore.PersistentRimWorlds.Colony.ColonyLeader>
 	<FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add>Add to favourites</FilUnderscore.PersistentRimWorlds.Colony.Favourite.Add>
 	<FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove>Remove from favourites</FilUnderscore.PersistentRimWorlds.Colony.Favourite.Remove>
+	<FilUnderscore.PersistentRimWorlds.Colony.Abandon>Abandon Colony</FilUnderscore.PersistentRimWorlds.Colony.Abandon>
+	<FilUnderscore.PersistentRimWorlds.Colony.Abandon.Desc>Are you sure you want to abandon {0}? You will be returned to the main menu.</FilUnderscore.PersistentRimWorlds.Colony.Abandon.Desc>
+	
 	
 	<!-- Persistent Worlds - Loading -->
 	<FilUnderscore.PersistentRimWorlds.Loading.World>Loading persistent world</FilUnderscore.PersistentRimWorlds.Loading.World>

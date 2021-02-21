@@ -13,7 +13,7 @@ namespace PersistentWorlds.Logic
         /// File info used to fetch information such as last write time.
         /// </summary>
         public FileInfo FileInfo;
-        
+
         /// <summary>
         /// Main source of data for colony information.
         /// </summary>
@@ -24,7 +24,14 @@ namespace PersistentWorlds.Logic
         /// </summary>
         public PersistentColonyGameData GameData = new PersistentColonyGameData();
         #endregion
-        
+
+        #region Constructors
+        public PersistentColony()
+        {
+        }
+
+        #endregion
+
         #region Methods
         /// <summary>
         /// Saving/loading of colony data.
@@ -35,16 +42,17 @@ namespace PersistentWorlds.Logic
             
             Scribe_Deep.Look(ref GameData, "gameData");
         }
-        
+
         /// <summary>
         /// Used in conversion/saving of the current colony in-game.
         /// </summary>
+        /// <param name="persistentWorld"></param>
         /// <param name="game"></param>
         /// <param name="colonyColonyData"></param>
         /// <returns></returns>
-        public static PersistentColony Convert(Game game, PersistentColonyData colonyColonyData = null)
+        public static PersistentColony Convert(PersistentWorld persistentWorld, Game game, PersistentColonyData colonyColonyData = null)
         {
-            var persistentColony = new PersistentColony
+            var persistentColony = new PersistentColony()
             {
                 ColonyData = PersistentColonyData.Convert(game, colonyColonyData),
                 GameData = PersistentColonyGameData.Convert(game)

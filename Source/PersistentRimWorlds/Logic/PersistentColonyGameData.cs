@@ -26,7 +26,7 @@ namespace PersistentWorlds.Logic
         
         #region Fields
         public sbyte CurrentMapIndex;
-        public int MapSize;
+        public int MapSize; // TODO: Make an option in "Edit Persistent World" settings menu (to be implemented).
         
         private GameInfo info = new GameInfo();
         private GameRules rules = new GameRules();
