@@ -809,8 +809,12 @@ namespace PersistentWorlds.Logic
             this.ConvertColoniesToAbandonedColonies(colony);
             
             // TODO: Insert any processes before colony abandonment/deletion.
-            
-            this.SaveWorld(true);
+
+            this.SaveWorld(() =>
+            {
+                SaveFileUtils.DeleteFile(this.Colony.FileInfo.FullName);
+                GenScene.GoToMainMenu();
+            });
         }
 
         // Called when Game Over Abandon Colony Button is pressed.
@@ -827,7 +831,7 @@ namespace PersistentWorlds.Logic
             persistentWorld.DeleteColony(persistentWorld.Colony);
         }
 
-        public void SaveWorld(bool delete = false)
+        public void SaveWorld(Action toExecuteWhenFinished = null)
         {
             LongEventHandler.QueueLongEvent(delegate
             {
@@ -838,12 +842,10 @@ namespace PersistentWorlds.Logic
                 this.LoadSaver.SaveWorldData();
                     
                 this.ConvertToCurrentGameWorldObjects();
-
-                if (!delete) return;
-                
-                SaveFileUtils.DeleteFile(this.Colony.FileInfo.FullName);
-                GenScene.GoToMainMenu();
             }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
+            
+            if(toExecuteWhenFinished != null)
+                LongEventHandler.ExecuteWhenFinished(toExecuteWhenFinished);
         }
         #endregion
         
