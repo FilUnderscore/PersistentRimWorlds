@@ -353,7 +353,7 @@ namespace PersistentWorlds.UI
                 if (colony.ColonyData.Leader.Reference != null)
                 {
                     colony.ColonyData.Leader.Texture =
-                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize, new Vector3(), 1f, true, true);
+                        PortraitsCache.Get(colony.ColonyData.Leader.Reference, portraitSize, Rot4.South, new Vector3(), 1f, true, true);
                 }
 
                 var leaderPortrait = colony.ColonyData.Leader.Texture;

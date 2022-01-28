@@ -28,7 +28,7 @@ namespace PersistentWorlds.UI
                 var portraitSize = new Vector2(boxRect.width / 2, boxRect.height);
                 var portraitRect = new Rect(boxRect.x + boxRect.width * 0.5f - portraitSize.x / 2, boxRect.y, portraitSize.x, portraitSize.y);
                 
-                Texture pawnTexture = PortraitsCache.Get(colonist, portraitSize);
+                Texture pawnTexture = PortraitsCache.Get(colonist, portraitSize, Rot4.South);
 
                 GUI.DrawTexture(portraitRect, pawnTexture);
                 TooltipHandler.TipRegion(boxRect, "FilUnderscore.PersistentRimWorlds.Colony.ChangeLeader.Select".Translate(colonist.Name.ToStringFull));

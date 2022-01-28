@@ -505,7 +505,7 @@ namespace PersistentWorlds.Logic
 
         public void SetPlayerFactionVarsToNewGeneratedFaction(FactionDef def)
         {
-            var generatedFaction = FactionGenerator.NewGeneratedFaction(def);
+            var generatedFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(def));
             generatedFaction.loadID = this.WorldData.FactionManager.OfPlayer.loadID;
             
             SetFactionVars(generatedFaction, this.WorldData.FactionManager.OfPlayer, FactionMode.Reset, true);
@@ -585,20 +585,20 @@ namespace PersistentWorlds.Logic
                         
                         if (sourceRelation != null)
                         {
-                            var goodwill = sourceRelation.goodwill;
+                            var goodwill = sourceRelation.baseGoodwill;
                             var kind = sourceRelation.kind;
 
                             targetFactionRelations.Add(new FactionRelation
                             {
                                 other = faction,
-                                goodwill = goodwill,
+                                baseGoodwill = goodwill,
                                 kind = kind
                             });
 
                             factionRelations.Add(new FactionRelation
                             {
                                 other = targetFaction,
-                                goodwill = goodwill,
+                                baseGoodwill = goodwill,
                                 kind = kind
                             });
 
@@ -635,13 +635,13 @@ namespace PersistentWorlds.Logic
                         
                         if (sourceRelation != null)
                         {
-                            var goodwill = sourceRelation.goodwill;
+                            var goodwill = sourceRelation.baseGoodwill;
                             var kind = sourceRelation.kind;
 
                             targetFactionRelations.Add(new FactionRelation
                             {
                                 other = faction,
-                                goodwill = goodwill,
+                                baseGoodwill = goodwill,
                                 kind = kind
                             });
                         }
@@ -683,7 +683,7 @@ namespace PersistentWorlds.Logic
                         factionRelations.Add(new FactionRelation
                         {
                             other = targetFaction,
-                            goodwill = factionRelation.goodwill,
+                            baseGoodwill = factionRelation.baseGoodwill,
                             kind = factionRelation.kind
                         });
                     }

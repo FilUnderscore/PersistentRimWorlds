@@ -33,8 +33,8 @@ namespace PersistentWorlds.Patches.UI
                 .SetPlayerFactionVarsToNewGeneratedFaction((FactionDef) FactionDefField.GetValue(__instance));
             
             Find.GameInitData.playerFaction = PersistentWorldManager.GetInstance().PersistentWorld.WorldData.FactionManager.OfPlayer;
-            FactionGenerator.EnsureRequiredEnemies(Find.GameInitData.playerFaction);
-            
+            Find.FactionManager.Add(Find.GameInitData.playerFaction);
+
             return false;
         }
         #endregion

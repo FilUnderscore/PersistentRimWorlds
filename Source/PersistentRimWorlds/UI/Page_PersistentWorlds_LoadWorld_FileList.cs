@@ -86,7 +86,7 @@ namespace PersistentWorlds.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            WorldUI.DrawWorldList(ref inRect, this.Margin, this.CloseButSize, this.worldEntries, this.saveGameEntries,
+            WorldUI.DrawWorldList(ref inRect, this.Margin, CloseButSize, this.worldEntries, this.saveGameEntries,
                 this.LoadWorld, this.OpenDeleteWorldDialog, this.ConvertWorld);
         }
 
