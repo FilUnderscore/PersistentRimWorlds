@@ -14,8 +14,6 @@ namespace PersistentWorlds.Patches
     [StaticConstructorOnStartup]
     public class MainMenuMarker
     {
-        private static readonly Texture2D WorldIcon = ContentFinder<Texture2D>.Get("UI/WorldIcon");
-        
         public static bool drawing;
 
         static void Prefix()
@@ -26,20 +24,6 @@ namespace PersistentWorlds.Patches
         static void Postfix()
         {
             drawing = false;
-
-            Vector2 size = new Vector2(WorldIcon.width / 16f, WorldIcon.height / 16f);
-
-            Rect rect = new Rect((Verse.UI.screenWidth - size.x) * 0.99675f, (Verse.UI.screenHeight - size.y) * 0.99f, size.x, size.y);
-
-            GUI.BeginGroup(rect);
-            Rect rect1 = new Rect(0, 0, size.x, size.y);
-
-            if (WidgetExtensions.ButtonImageOn(rect1, WorldIcon))
-                Find.WindowStack.Add(new Page_PersistentWorlds_LoadWorld_FileList());
-            
-            TooltipHandler.TipRegion(rect1, "FilUnderscore.PersistentRimWorlds".Translate());
-
-            GUI.EndGroup();
         }
     }
 
@@ -50,6 +34,20 @@ namespace PersistentWorlds.Patches
         {
             if (!MainMenuMarker.drawing)
                 return;
+
+            if (Current.ProgramState == ProgramState.Entry)
+            {
+                int index1;
+                if ((index1 = optList.FindIndex(opt => opt.label == "LoadGame".Translate())) != -1)
+                {
+                    optList.Insert(index1 + 1, new ListableOption("FilUnderscore.PersistentRimWorlds".Translate(), () =>
+                    {
+                        Find.WindowStack.Add(new Page_PersistentWorlds_LoadWorld_FileList());
+                    }));
+                }
+
+                return;
+            }
 
             if (Current.ProgramState != ProgramState.Playing ||
                 !PersistentWorldManager.GetInstance().PersistentWorldNotNull()) return;

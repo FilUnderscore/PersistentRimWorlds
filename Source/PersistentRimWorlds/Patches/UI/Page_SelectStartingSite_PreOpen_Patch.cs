@@ -29,6 +29,9 @@ namespace PersistentWorlds.Patches.UI
             persistentWorld.Game.World.pathGrid = new WorldPathGrid();
             Current.Game.Scenario.PostWorldGenerate();
 
+            if (!ModsConfig.IdeologyActive)
+                Current.Game.Scenario.PostIdeoChosen();
+
             persistentWorld.LoadSaver.Status =
                 PersistentWorldLoadSaver.PersistentWorldLoadStatus.Creating;
         }

@@ -20,7 +20,7 @@ namespace PersistentWorlds.SaveAndLoad
         {
             if (Scribe.mode != LoadSaveMode.Inactive)
             {
-                Log.Error("Called InitLoading() but current mode is " + Scribe.mode.ToString(), false);
+                Log.Error("Called InitLoading() but current mode is " + Scribe.mode.ToString());
                 Scribe.ForceStop();
             }
             
@@ -51,7 +51,7 @@ namespace PersistentWorlds.SaveAndLoad
                     filePaths.ToCommaList(),
                     "\n",
                     e
-                }), false);
+                }));
                 
                 throw;
             }

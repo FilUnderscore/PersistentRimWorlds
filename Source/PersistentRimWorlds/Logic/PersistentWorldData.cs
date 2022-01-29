@@ -19,6 +19,7 @@ namespace PersistentWorlds.Logic
         private WorldGrid grid;
 
         private FactionManager factionManager;
+        private IdeoManager ideoManager;
         private WorldPawns worldPawns;
         private WorldObjectsHolder worldObjectsHolder;
         private GameConditionManager gameConditionManager;
@@ -52,6 +53,7 @@ namespace PersistentWorlds.Logic
         public WorldGrid Grid => grid;
 
         public FactionManager FactionManager => factionManager;
+        public IdeoManager IdeoManager => ideoManager;
         public WorldPawns WorldPawns => worldPawns;
         public WorldObjectsHolder WorldObjectsHolder => worldObjectsHolder;
         public GameConditionManager GameConditionManager => gameConditionManager;
@@ -95,7 +97,10 @@ namespace PersistentWorlds.Logic
             
             Scribe_Deep.Look<FactionManager>(ref this.factionManager, "factionManager", new object[0]);
             Current.Game.World.factionManager = this.factionManager;
-            
+
+            Scribe_Deep.Look<IdeoManager>(ref this.ideoManager, "ideoManager", new object[0]);
+            Current.Game.World.ideoManager = this.ideoManager;
+
             Scribe_Deep.Look<WorldPawns>(ref this.worldPawns, "worldPawns", new object[0]);
             Current.Game.World.worldPawns = this.worldPawns;
             
@@ -155,6 +160,7 @@ namespace PersistentWorlds.Logic
                 grid = game.World.grid,
                 tickManager = game.tickManager,
                 factionManager = game.World.factionManager,
+                ideoManager = game.World.ideoManager,
                 worldPawns = game.World.worldPawns,
                 worldObjectsHolder = game.World.worldObjects,
                 gameConditionManager = game.World.gameConditionManager,
@@ -175,6 +181,7 @@ namespace PersistentWorlds.Logic
                    $"{nameof(info)}={info}, " +
                    $"{nameof(grid)}={grid}, " +
                    $"{nameof(factionManager)}={factionManager}, " +
+                   $"{nameof(ideoManager)}={ideoManager}, " +
                    $"{nameof(worldPawns)}={worldPawns}, " +
                    $"{nameof(worldObjectsHolder)}={worldObjectsHolder}, " +
                    $"{nameof(gameConditionManager)}={gameConditionManager}, " +

@@ -165,7 +165,7 @@ namespace PersistentWorlds.Logic
             
             if (this.Game.Maps.RemoveAll((Map x) => x == null) != 0)
             {
-                Log.Warning($"{nameof(LoadMaps)}: Some maps were null after loading.", false);
+                Log.Warning($"{nameof(LoadMaps)}: Some maps were null after loading.");
             }
 
             int num = -1;
@@ -173,13 +173,13 @@ namespace PersistentWorlds.Logic
             num = Colony.GameData.CurrentMapIndex;
             if (num < 0 && this.Game.Maps.Any<Map>())
             {
-                Log.Error($"{nameof(LoadMaps)}: PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].", false);
+                Log.Error($"{nameof(LoadMaps)}: PersistentWorlds - Current map is null after loading but there are maps available. Setting current map to [0].");
                 num = 0;
             }
 
             if (num >= this.Game.Maps.Count)
             {
-                Log.Error($"{nameof(LoadMaps)}: Current map index out of bounds after loading.", false);
+                Log.Error($"{nameof(LoadMaps)}: Current map index out of bounds after loading.");
                 if (this.Game.Maps.Any<Map>())
                 {
                     num = 0;
@@ -200,7 +200,7 @@ namespace PersistentWorlds.Logic
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"{nameof(LoadMaps)}: Error in Map.FinalizeLoading(): {e}", false);
+                    Log.Error($"{nameof(LoadMaps)}: Error in Map.FinalizeLoading(): {e}");
                 }
 
                 try
@@ -209,7 +209,7 @@ namespace PersistentWorlds.Logic
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"{nameof(LoadMaps)}: Error in MapParent.FinalizeLoading(): {e}", false);
+                    Log.Error($"{nameof(LoadMaps)}: Error in MapParent.FinalizeLoading(): {e}");
                 }
 
                 this.LoadedMaps.Add(t.Tile, new HashSet<PersistentColony>(){Colony});
@@ -266,6 +266,7 @@ namespace PersistentWorlds.Logic
         {
             this.Game.tickManager = this.WorldData.TickManager;
             this.Game.World.factionManager = this.WorldData.FactionManager;
+            this.Game.World.ideoManager = this.WorldData.IdeoManager;
             this.Game.World.worldPawns = this.WorldData.WorldPawns;
             this.Game.World.worldObjects = this.WorldData.WorldObjectsHolder;
             this.Game.World.gameConditionManager = this.WorldData.GameConditionManager;
@@ -537,6 +538,8 @@ namespace PersistentWorlds.Logic
             targetFaction.defeated = sourceFaction.defeated;
             targetFaction.lastTraderRequestTick = sourceFaction.lastTraderRequestTick;
             targetFaction.lastMilitaryAidRequestTick = sourceFaction.lastMilitaryAidRequestTick;
+
+            targetFaction.ideos = sourceFaction.ideos;
 
             NaturalGoodwillTimerField.SetValue(targetFaction, NaturalGoodwillTimerField.GetValue(sourceFaction));
 
