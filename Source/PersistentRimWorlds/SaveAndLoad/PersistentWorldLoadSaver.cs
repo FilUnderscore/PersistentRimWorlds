@@ -286,6 +286,8 @@ namespace PersistentWorlds.SaveAndLoad
             Scribe.saver.loadIDsErrorsChecker.CheckForErrorsAndClear();
             
             this.persistentWorld.ConvertToCurrentGameWorldObjects();
+
+            Status = PersistentWorldLoadStatus.Ingame;
         }
 
         public void SaveWorldData(bool check = false)
