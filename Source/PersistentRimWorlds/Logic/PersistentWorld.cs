@@ -838,17 +838,10 @@ namespace PersistentWorlds.Logic
         {
             LongEventHandler.QueueLongEvent(delegate
             {
-                this.SaveColony();
-                    
-                this.ConvertCurrentGameWorldObjects();
-                
-                this.LoadSaver.SaveWorldData();
-                    
-                this.ConvertToCurrentGameWorldObjects();
+                this.LoadSaver.SaveWorld();
 
                 if (toExecuteWhenFinished != null)
                     LongEventHandler.ExecuteWhenFinished(toExecuteWhenFinished);
-                //this.LoadSaver.SaveWorld();
             }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
         }
         #endregion
