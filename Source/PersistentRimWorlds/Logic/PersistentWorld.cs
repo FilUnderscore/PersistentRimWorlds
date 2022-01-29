@@ -553,7 +553,7 @@ namespace PersistentWorlds.Logic
             }
         }
 
-        private void SetFactionRelationsVars(Faction sourceFaction, Faction targetFaction, FactionMode mode)
+        public void SetFactionRelationsVars(Faction sourceFaction, Faction targetFaction, FactionMode mode)
         {
             var sourceFactionRelations = (List<FactionRelation>) RelationsField.GetValue(sourceFaction);
             var targetFactionRelations = (List<FactionRelation>) RelationsField.GetValue(targetFaction);
@@ -577,7 +577,7 @@ namespace PersistentWorlds.Logic
                         {
                             var relation = factionRelations[i];
                             
-                            if (relation.other == null || relation.other.IsPlayer)
+                            if (relation.other == null || relation.other == targetFaction)
                             {
                                 factionRelations.Remove(relation);
                             }
@@ -628,7 +628,7 @@ namespace PersistentWorlds.Logic
                         {
                             var relation = factionRelations[i];
                             
-                            if (relation.other != null && relation.other.IsPlayer && relation.other != sourceFaction)
+                            if (relation.other != null && relation.other == targetFaction && relation.other != sourceFaction)
                             {
                                 factionRelations.Remove(relation);
                             }
@@ -669,7 +669,7 @@ namespace PersistentWorlds.Logic
                         {
                             var relation = factionRelations[i];
                             
-                            if (relation.other != null && relation.other.IsPlayer)
+                            if (relation.other != null && relation.other == targetFaction)
                             {
                                 factionRelations.Remove(relation);
                             }
@@ -847,7 +847,7 @@ namespace PersistentWorlds.Logic
         #endregion
         
         #region Enums
-        private enum FactionMode
+        public enum FactionMode
         {
             Save,
             Load,

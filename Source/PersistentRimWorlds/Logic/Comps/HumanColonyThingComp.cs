@@ -17,6 +17,11 @@ namespace PersistentWorlds.Logic.Comps
             this.SetColonyData();
         }
 
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+        }
+
         private void SetColonyData()
         {
             if (!PersistentWorldManager.GetInstance().HasPersistentWorld)

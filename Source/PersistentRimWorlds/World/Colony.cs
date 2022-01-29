@@ -128,9 +128,43 @@ namespace PersistentWorlds.World
 
         private void Visit(Caravan caravan)
         {
-            DynamicMapLoader.LoadMap(this.Tile);
+            Map map = DynamicMapLoader.LoadMap(this.Tile);
+
+            List<Pawn> toUpdate = new List<Pawn>();
+
+            foreach (var pawn in map.mapPawns.AllPawns)
+            {
+                toUpdate.Add(pawn);
+            }
+
+            Faction faction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(FactionDefOf.OutlanderCivil));
+            SetupTemporaryFaction(faction);
+            Find.FactionManager.Add(faction);
+
+            foreach (var pawn in toUpdate)
+            {
+                pawn.SetFactionDirect(faction);
+            }
+
+            toUpdate.Clear();
             
             CaravanEnterMapUtility.Enter(caravan, this.Map, x => CellFinder.RandomEdgeCell(this.Map));
+        }
+
+        private void SetupTemporaryFaction(Faction faction)
+        {
+            faction.Name = this.PersistentColonyData.ColonyFaction.Name;
+    
+            if(this.PersistentColonyData.ColonyFaction.leader != null)
+                faction.leader = this.PersistentColonyData.ColonyFaction.leader;
+            
+            faction.colorFromSpectrum = this.PersistentColonyData.ColonyFaction.colorFromSpectrum;
+            faction.centralMelanin = this.PersistentColonyData.ColonyFaction.centralMelanin;
+
+            PersistentWorldManager.GetInstance().PersistentWorld.SetFactionRelationsVars(this.PersistentColonyData.ColonyFaction, faction, PersistentWorld.FactionMode.Load);
+            faction.TryMakeInitialRelationsWith(Find.FactionManager.OfPlayer);
+
+            faction.ideos = this.PersistentColonyData.ColonyFaction.ideos;
         }
         #endregion
     }
