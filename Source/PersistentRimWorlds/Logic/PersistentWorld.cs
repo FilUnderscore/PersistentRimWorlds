@@ -838,6 +838,7 @@ namespace PersistentWorlds.Logic
         {
             LongEventHandler.QueueLongEvent(delegate
             {
+                /*
                 this.SaveColony();
                     
                 this.ConvertCurrentGameWorldObjects();
@@ -845,6 +846,8 @@ namespace PersistentWorlds.Logic
                 this.LoadSaver.SaveWorldData();
                     
                 this.ConvertToCurrentGameWorldObjects();
+                */
+                this.LoadSaver.SaveWorld();
             }, "FilUnderscore.PersistentRimWorlds.Saving.World", false, null);
             
             if(toExecuteWhenFinished != null)
